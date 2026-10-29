@@ -3,15 +3,8 @@
 /* OberVave on the M-Vave SMK-37 (BOARD_SMK37; SMK37.md, smk37-port.yaml). The FM-1's panel keeps its jobs (the
  * middle 27 keys, the 14 buttons by printed name, the knobs: platform.c); this file adds what the SMK has more:
  *
- *   pads        the step sequencer: the 16 steps of the selected track's page, in reading order (top row 1-8,
- *               bottom 9-16). A pad is the step's white key in the SEQ layer: pressed on an empty step it sets it at
- *               once with the pen chord (the last notes played) at the pad's velocity; a set step pressed and let go
- *               is cleared; held, the knobs edit it (NOTE LEVEL RATCHET GATE) and a later pad makes a long note. While
- *               REC is on (armed or recording) the pads play the pen chord live at their velocity, as the keys play.
- *               Lit: set steps in the track's colour, the playhead bright, the held step red, beats 1 5 9 13 glow.
- *   < >         the step page of the selected track (1-8, as OCT- / OCT+ in the SEQ layer and the black keys)
  *   outer keys  C3-E3 and G#5-C6 extend the keyboard (notes below F3 and above G5), with velocity, through the
- *               same path as the keys (EDIT held: they erase their note)
+ *               same path as the keys
  *   keys        velocity from the unit's factory curves (hal/smk_input.h); the FM-1 plays 100
  *   faders      two banks, FADER BANK switches (LED lit on B): A = PERFORM's CUTOFF RESO ENV AMT RELEASE,
  *               B = CHORUS / DELAY / REVERB mix and MASTER (the level K1 turns). A fader acts once it moves (also
@@ -21,19 +14,16 @@
  *               Self-calibrating (smk_wheel.h)
  *   KNOB BANK   held: the panel check (a bring-up screen in place of a serial console: the flash part, the factory
  *               calibration, the ADC, faders, wheels, keys, buttons and every pad's reading above its baseline)
+ *
+ * (The pads were OberVave's step sequencer and < > its page nav; both free, pads dark, with the sequencer DØG-5
+ * deleted: CLAUDE.md §5.)
  */
 #include "smk_wheel.h"
 
-static const uint8_t SMK_WK[16] = {0, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26};   /* step -> its white key */
-#define SMK_TRK_A RGB(96, 176, 255)             /* track A: the screen's light blue accent (C_AMBER) */
-#define SMK_TRK_B RGB(226, 232, 240)            /* track B: the screen's legends (C_CREAM) */
-
 static uint32_t smk_bank;                       /* FADER BANK: 0 = A (PERFORM), 1 = B (effects, MASTER) */
 static uint8_t smk_fad_last[4] = {0xFF, 0xFF, 0xFF, 0xFF};
-static uint8_t smk_live[16][SEQ_CHORD];         /* the notes a pad plays live (REC on): its release ends them */
-static uint8_t smk_ext_note[FM1_NKEY], smk_ext_erase[FM1_NKEY];   /* an outer key's note; 1: it erases (EDIT held) */
-static uint32_t smk_view_prev;
-static const char *smk_ov1;                     /* the overlay under the page (faders, banks, step pages), 1.5 s */
+static uint8_t smk_ext_note[FM1_NKEY];          /* an outer key's note, so its release knows what to end */
+static const char *smk_ov1;                     /* the overlay under the page (faders, banks), 1.5 s */
 static char smk_ov2[40];
 static uint32_t smk_ov_t, smk_ov_on, smk_ov_dirty;
 
@@ -70,99 +60,33 @@ static void smk_bar(char *s, uint32_t v, uint32_t max)   /* [#######---------] *
     scat(s, "]");
 }
 
-/* ---- the pads and the outer keys (main loop, after the keys) */
-static void smk_pads(uint32_t base, uint32_t *dirty)
+/* ---- the outer keys (main loop, after the keys): more notes, the keys' own path */
+static void smk_extkeys(uint32_t base)
 {
     int32_t e;
-    uint32_t v;
-    (void)base;
-    while ((e = smk_pad_take()) >= 0) {
-        uint32_t p = ((uint32_t)e >> 8) & 15u, vel = (uint32_t)e & 0xFFu, k = SMK_WK[p], q;
-        if (vel) {
-            if (rec) {                              /* REC on: the pad plays the pen chord, recorded as the keys are */
-                for (q = 0; q < SEQ_CHORD; q++) {
-                    uint32_t n = q < (pen_n ? pen_n : 1u) ? (pen_n ? pen_chord[q] : pen) : 0u;
-                    smk_live[p][q] = (uint8_t)n;
-                    if (!n) continue;
-                    play_note(1, n, vel); midi_send(0x90u | MIDI_OUT_CH, n, vel);
-                    if (rec_keys()) rec_note(1, n, vel);
-                }
-            } else {                                /* a step: as its white key in the SEQ layer */
-                smk_pads_held |= 1u << p;
-                if (!(smk_pads_held & ~(1u << p))) smk_pad_t0 = fm1_ms;
-                smk_step_vel = vel;
-                seq_key_down(k);
-                smk_step_vel = 0;
-            }
-        } else if (smk_pads_held >> p & 1u) {
-            smk_pads_held &= ~(1u << p);
-            seq_key_up(k);
-            if (!smk_pads_held && step_held >= 0 && layer != L_SEQ) {   /* (the page moved under the pad: let go) */
-                step_held = -1;
-                audition_off();
-            }
-        } else {
-            for (q = 0; q < SEQ_CHORD; q++) {
-                uint32_t n = smk_live[p][q];
-                smk_live[p][q] = 0;
-                if (!n) continue;
-                play_note(0, n, 0); midi_send(0x80u | MIDI_OUT_CH, n, 0);
-                if (rec_keys()) rec_note(0, n, 0);
-            }
-        }
-        *dirty = 1;
-    }
-    while ((e = smk_extkey_take()) >= 0) {      /* the outer keys: more notes, the keys' path */
+    while ((e = smk_extkey_take()) >= 0) {
         uint32_t kk = ((uint32_t)e >> 8) % FM1_NKEY, vel = (uint32_t)e & 0xFFu;
         if (vel) {
             uint32_t n = (uint32_t)clampi((int32_t)base + (int32_t)kk - (int32_t)SMK_KEY_F3, 1, 127);
             smk_ext_note[kk] = (uint8_t)n;
-            smk_ext_erase[kk] = layer == L_EDIT;
-            if (smk_ext_erase[kk]) {
-                if (!layer_used) undo_save();
-                layer_used = 1;
-                erase_note(n);
-                say("ERASED");
-            } else {
-                play_note(1, n, vel); midi_send(0x90u | MIDI_OUT_CH, n, vel);
-                if (rec_keys()) rec_note(1, n, vel);
-                pen_add(n);
-            }
+            play_note(1, n, vel); midi_send(0x90u | MIDI_OUT_CH, n, vel);
         } else if (smk_ext_note[kk]) {
             uint32_t n = smk_ext_note[kk];
             smk_ext_note[kk] = 0;
-            if (smk_ext_erase[kk]) erase_on[(uint32_t)clampi((int32_t)n - pat.trk[seq_trk].transp, 1, 127)] = 0;
-            else {
-                play_note(0, n, 0); midi_send(0x80u | MIDI_OUT_CH, n, 0);
-                if (rec_keys()) rec_note(0, n, 0);
-                if (notes_down) notes_down--;
-            }
+            play_note(0, n, 0); midi_send(0x80u | MIDI_OUT_CH, n, 0);
         }
-        if (notes_shown()) *dirty = 1;          /* (a note alone changes no knob page) */
     }
-    v = SMK_PAD_HELD;                           /* the step view comes and goes with a held pad */
-    if (v != smk_view_prev) { smk_view_prev = v; *dirty = 1; hints_key = 0xFFFFFFFFu; }
 }
 
-/* ---- FADER BANK, < > (main loop, with the other buttons) */
-static void smk_buttons(uint32_t b, uint32_t *dirty)
+/* ---- FADER BANK (main loop, with the other buttons) */
+static void smk_buttons(uint32_t b)
 {
-    static char msg[24];
-    uint32_t t = seq_trk, pg = seq_pg[t];
     if (b & (1u << BTN_FADER_BANK)) {
         uint32_t i;
         smk_bank ^= 1u;
         for (i = 0; i < 4u; i++) smk_fad_last[i] = 0xFF;   /* a new bank: each fader waits until it moves */
         smk_overlay(smk_bank ? "FADER BANK B" : "FADER BANK A",
                     smk_bank ? "CHORUS DELAY REVERB MASTER" : "CUTOFF RESO ENV AMT RELEASE");
-    }
-    if (b & ((1u << BTN_LEFT) | (1u << BTN_RIGHT))) {
-        if (b & (1u << BTN_LEFT) && seq_pg[t]) seq_pg[t]--;
-        if (b & (1u << BTN_RIGHT) && seq_pg[t] + 1u < seq_pages(t)) seq_pg[t]++;
-        msg[0] = 0; scat(msg, "PAGE "); fmt_u(msg + slen(msg), seq_pg[t] + 1u); scat(msg, " OF "); fmt_u(msg + slen(msg), seq_pages(t));
-        smk_overlay(msg, seq_pg[t] == pg ? (b & (1u << BTN_LEFT) ? "THE FIRST PAGE" : "THE LAST PAGE: LENGTH ADDS MORE")
-                                         : t ? "TRACK B ON THE PADS" : "TRACK A ON THE PADS");
-        *dirty = 1;
     }
 }
 
@@ -185,7 +109,7 @@ static void smk_faders(uint32_t *dirty_page, uint32_t *dirty_hdr, uint32_t *dirt
         smk_fad_last[i] = (uint8_t)v;
         if (p >= 0) {
             set_param((uint32_t)p, (int32_t)(v * PDEF[p].max + 63u) / 127);
-            param_value(val, (uint32_t)p, ed_patch((uint32_t)p)->v[p]);
+            param_value(val, (uint32_t)p, live.v[p]);
             if (p == P_CUTOFF) cut_shown_t = fm1_ms + 1u;
             *dirty_page = *dirty_hdr = 1;
             if (smk_bank) *dirty_tags = 1;      /* (the FX tag) */
@@ -224,34 +148,12 @@ static void smk_wheels(void)
 }
 
 /* ---- the pads' and the extra buttons' lights */
-static uint16_t smk_dim(uint16_t c, uint32_t k)   /* c * k / 256 */
-{
-    return blend565(0, c, k);
-}
 static void smk_leds(void)
 {
-    uint32_t t = seq_trk, len = pat.trk[t].len, w0 = seq_pg[t] * 16u, ph = len ? ui_seq_pos[t] % len : 0u, p;
-    uint16_t tc = t ? SMK_TRK_B : SMK_TRK_A;
-    for (p = 0; p < 16u; p++) {
-        uint32_t n = w0 + p, q, live_on = 0;
-        uint16_t c = 0;
-        for (q = 0; q < SEQ_CHORD; q++) live_on |= smk_live[p][q];
-        if (live_on) c = C_CREAM;               /* playing live (REC) */
-        else if (n < len) {
-            const step_t *st = seq_step(t, n);
-            uint32_t set = st->note[0] && !(st->ratch & STEP_OFF);
-            if ((int32_t)n == step_held) c = C_RED;
-            else if (ctl_seq_run && n == ph) c = rec == REC_ON ? C_RED : set ? tc : smk_dim(tc, 90);   /* the playhead */
-            else if (set) c = smk_dim(tc, st->chance < 100u ? 32 : 56);
-            else if (st->note[0]) c = smk_dim(C_DIMT, 16);   /* switched off, notes kept */
-            else if (!(p & 3u)) c = smk_dim(tc, 8);           /* beats 1 5 9 13 glow */
-        }
-        padled_set(p, (uint8_t)((c >> 11) * 255u / 31u), (uint8_t)(((c >> 5) & 63u) * 255u / 63u), (uint8_t)((c & 31u) * 255u / 31u));
-    }
+    uint32_t p;
+    for (p = 0; p < 16u; p++) padled_set(p, 0, 0, 0);   /* the pads are free (DØG-5 deleted the sequencer) */
     fm1_led_key(BTN_FADER_BANK, smk_bank != 0u);
     fm1_led_key(BTN_KNOB_BANK, fm1_in.buttons >> BTN_KNOB_BANK & 1u);   /* (lit while the panel check is up) */
-    fm1_led_key(BTN_LEFT, seq_pg[t] > 0u);
-    fm1_led_key(BTN_RIGHT, seq_pg[t] + 1u < seq_pages(t));
     padled_flush();                             /* (only when a colour changed; between LCD transfers) */
 }
 
@@ -304,21 +206,15 @@ static int smk_check(uint32_t *redraw)
 }
 
 #ifdef OBV_HOST
-/* the host test's "dump" (tests/host.c): the pads, the controls, the steps on the pads */
+/* the host test's "dump" (tests/host.c): the pads (free, always dark) and the controls */
 static void host_dump(void)
 {
-    uint32_t p, t = seq_trk;
+    uint32_t p;
     printf("%6u ms  PADS", fm1_ms);
     for (p = 0; p < 16u; p++) printf(" %06X", padled_rgb[p]);
-    printf("\n%6u ms  STATE bank=%u bend=%d vib=%d master=%d cutoff=%u reso=%u envamt=%u release=%u cho=%u dly=%u rev=%u"
-           " trk=%u seqpg=%u len=%u held=%d view=%u rec=%u run=%u\n", fm1_ms, smk_bank, ctl_bend, ctl_vib, smk_master,
+    printf("\n%6u ms  STATE bank=%u bend=%d vib=%d master=%d cutoff=%u reso=%u envamt=%u release=%u cho=%u dly=%u rev=%u\n",
+           fm1_ms, smk_bank, ctl_bend, ctl_vib, smk_master,
            live.v[P_CUTOFF], live.v[P_RESO], live.v[P_FENV_AMT], live.v[P_AR], live.v[P_CHO_MIX], live.v[P_DLY_MIX],
-           live.v[P_REV_MIX], t, seq_pg[t], pat.trk[t].len, step_held, seq_shown(), rec, ctl_seq_run);
-    printf("%6u ms  STEPS", fm1_ms);
-    for (p = 0; p < 16u && seq_pg[t] * 16u + p < pat.trk[t].len; p++) {
-        const step_t *st = seq_step(t, seq_pg[t] * 16u + p);
-        if (st->note[0]) printf(" %u:%u/%u%s", p + 1u, st->note[0], st->vel, st->note[1] ? "+" : "");
-    }
-    printf("\n");
+           live.v[P_REV_MIX]);
 }
 #endif

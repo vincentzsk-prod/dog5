@@ -50,7 +50,6 @@ static struct {
 } fm1_in = {.wheel = {535, 620}};               /* (the wheels at rest, as a unit reads them) */
 static uint8_t smk_store_cleared, smk_trim_ok;
 static uint32_t smk_jedec;
-static uint8_t smk_pad_events;
 static int32_t smk_master = 724;
 static int32_t host_q[2][64];                   /* 0: pad events, 1: outer keys (key << 8 | velocity, 0 = release) */
 static uint32_t host_qw[2], host_qr[2];

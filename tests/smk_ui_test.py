@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-only
 # SMK-37 port of OberVave: Copyright (C) 2026 zvenson
-"""The SMK-37 mapping on the host (tests/host.c with BOARD_SMK37): the step pads, REC on the pads, the fader banks,
-the wheels, the outer keys. Builds build/host/obervave-smk37-test, runs tests/smk/*.txt, checks what comes out
-(MIDI out, the dumped state, the pad colours). Exit 1 on a failure.
+"""The SMK-37 mapping on the host (tests/host.c with BOARD_SMK37): the fader banks, the wheels, the outer keys
+(the pads were the step sequencer; DØG-5 deleted it, CLAUDE.md §5 -- they're free and always dark now).
+Builds build/host/obervave-smk37-test, runs tests/smk/*.txt, checks what comes out (MIDI out, the dumped
+state). Exit 1 on a failure.
 
   python3 tests/smk_ui_test.py
 """
@@ -29,7 +30,7 @@ def run(script):
                          capture_output=True, text=True, check=True).stdout
     dumps = {}
     for ln in out.splitlines():
-        m = re.match(r"\s*(\d+) ms  (PADS|STATE|STEPS)(.*)$", ln)
+        m = re.match(r"\s*(\d+) ms  (PADS|STATE)(.*)$", ln)
         if m:
             dumps.setdefault(int(m[1]), {})[m[2]] = m[3].strip()
     return out, dumps
@@ -39,63 +40,11 @@ def state(d, t):
     return dict(kv.split("=") for kv in d[t]["STATE"].split())
 
 
-def steps(d, t):
-    return {int(a): (int(n), int(v), c == "+") for a, n, v, c in re.findall(r"(\d+):(\d+)/(\d+)(\+?)", d[t]["STEPS"])}
-
-
-def pads(d, t):
-    return [int(x, 16) for x in d[t]["PADS"].split()]
-
-
-def grb(c):
-    return (c >> 8) & 255, (c >> 16) & 255, c & 255
-
-
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     subprocess.run(["cc", "-O1", "-Wall", "-Wno-unused-function", "-DOBV_HOST", "-DBOARD_SMK37=1", '-DAPP_VER="test"',
                     "-I" + str(ROOT / "firmware/src"), "-I" + str(ROOT / "firmware/gen"), "-o", str(BIN),
                     str(ROOT / "firmware/src/obervave.c")], check=True)
-
-    print("== pads: the step sequencer")
-    out, d = run("steps")
-    check("keys play with their velocity (C4 at 80)", "MIDI out 90 60 80" in out)
-    s = steps(d, 3700)
-    check("an empty pad sets its step with the pen at the pad's velocity", s.get(3) == (60, 90, False), s)
-    check("a set pad tapped clears it", 3 not in steps(d, 4200), d[4200]["STEPS"])
-    s = steps(d, 5200)
-    check("the pen chord (three keys struck together) lands on a pad", s.get(1) == (60, 100, True), s)
-    st = state(d, 6000)
-    check("a held pad shows its step and the knobs edit it", st["held"] == "5" and st["view"] == "1", st)
-    s = steps(d, 6300)
-    check("K5 (knob 1) moved the held step's chord up, kept when let go", s.get(6) == (61, 64, True), s)
-    check("the view goes back when the pad is let go", state(d, 6300)["view"] == "0", state(d, 6300))
-    s = steps(d, 7000)
-    check("hold pad 9 + tap pad 12: a long note 9-12", all(k in s for k in (9, 10, 11, 12)), s)
-    st = state(d, 7900)
-    check("SEQ + K8 (a fast turn: x3): 64 steps; > shows page 2 on the pads", st["len"] == "64" and st["seqpg"] == "1", st)
-    check("a pad on page 2 sets step 17", steps(d, 7900).get(1, (0,))[0] == 60, d[7900]["STEPS"])
-    check("< back to page 1", state(d, 8200)["seqpg"] == "0", state(d, 8200))
-    p = pads(d, 8200)
-    lit = [i for i in range(16) if p[i]]
-    r, g, b = grb(p[0])
-    check("set steps lit in track A's blue, empty ones dark but the beats", b > r and p[1] == 0 and p[2] == 0 and
-          all(p[i] for i in (0, 4, 5, 8, 9, 10, 11)), [f"{x:06X}" for x in p])
-    st, p = state(d, 8500), pads(d, 8500)
-    check("K3: track B (off): no steps, the pads dark", st["trk"] == "1" and st["len"] == "0" and not any(p), (st, p))
-
-    st = state(d, 9200)
-    check("the page moved under a held pad: let go, no step stays held", st["held"] == "-1" and st["view"] == "0", st)
-
-    print("== pads while REC is on: they play")
-    out, d = run("rec")
-    check("REC armed: a pad plays the pen (C4) at its velocity", "MIDI out 90 60 70" in out, out[-400:])
-    check("... and lets it go", "MIDI out 80 60 0" in out)
-    st = state(d, 3600)
-    check("the first note started the take (REC on, running)", st["rec"] == "2" and st["run"] == "1", st)
-    s = steps(d, 3600)
-    check("the pen landed on step 1 as recorded, its ties keep the velocity", s.get(1, (0, 0))[:2] == (60, 70) and
-          all(v[1] == 70 for v in s.values()), d[3600]["STEPS"])
 
     print("== faders: banks A and B, a fader acts once it moves")
     out, d = run("faders")

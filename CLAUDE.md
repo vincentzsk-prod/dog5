@@ -224,8 +224,8 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
 
 ## 11. OPEN — needs Vincent's confirmation (defaults recorded so nothing stalls)
 
-1. **LICENSING.md credit line** — default used: **"DØG-5 by Vincent Kruger (DØGS)"**. Confirm or change.
-   Keep the Felucca/Kuroshita, SLOOP/isod89, Dinghy/zvenson credits above it (GPL obligation).
+1. **LICENSING.md credit line** — confirmed: **"DØG-5 by ZIGGY (DØGS)"** (in `LICENSING.md`). The
+   Felucca/Kuroshita, SLOOP/isod89, Dinghy/zvenson credits stay in full below it (GPL obligation).
 2. **`PATCH_BYTES` 80→96** — recommended yes (§7). Confirm.
 3. **FM-1 arrival** — "within ~2 weeks" as of 27 Oct. Sets how much of Stage 3–4 finishes before it lands.
 4. **The 15–16 hand-drawn assets** (build kit §1) — the only thing gating Stage 3.
