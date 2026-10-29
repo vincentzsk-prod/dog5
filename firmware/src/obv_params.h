@@ -21,10 +21,17 @@ enum {
     P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX,
     NPARAM
 };
-#define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 (uses 4 of the 7 spare; 3 spare left) */
-#define PATCH_BYTES 80u                         /* NPARAM (63) values, the 14-char name at NPARAM, 3 bytes spare */
-#if NPARAM + PATCH_NAME > PATCH_BYTES
-#error "the patch outgrew PATCH_BYTES"
+#define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 */
+#define PATCH_BYTES 96u                         /* DØG-5: grown 80 -> 96 (the "DOG5" program format) */
+#define PATCH_NAME_AT 80u                       /* the name at a FIXED offset, decoupled from NPARAM: bytes 0-79 are
+                                                 * parameters (63 used; room for the Psych Chain GROWL/ALLEY/DRAIN/CHEW,
+                                                 * P_POLY_N and v1.1), the 14-char name 80-93, 2 spare (94-95). Adding a
+                                                 * parameter (always at the end of the table) never moves the name. */
+#if NPARAM > PATCH_NAME_AT
+#error "the parameters run into the name field"
+#endif
+#if PATCH_NAME_AT + PATCH_NAME > PATCH_BYTES
+#error "the name + spare outgrew PATCH_BYTES"
 #endif
 #define NPROG 99u                               /* 1-32 the DØG-5 factory, 33-99 INIT; the user's saves over them */
 #define NFACT 32u                               /* the 32 DØG-5 patches (dog5-docs/DOG-5-presets.md); the rest INIT */
@@ -148,13 +155,14 @@ static const page_t PAGE[NPAGE] = {
     [PG_GLOBAL] = {"GLOBAL", {-1, -1, -1, -1}},   /* tempo, MIDI channel, tune, CPU: globals, drawn by hand */
 };
 
-typedef struct { uint8_t v[PATCH_BYTES]; } patch_t;   /* v[0..NPARAM) the parameters, v[NPARAM..] the name */
+typedef struct { uint8_t v[PATCH_BYTES]; } patch_t;   /* v[0..79] parameters, v[80..93] name, v[94..95] spare */
 
 static void patch_defaults(patch_t *p)
 {
     uint32_t i;
     for (i = 0; i < NPARAM; i++) p->v[i] = PDEF[i].def;
-    for (; i < PATCH_BYTES; i++) p->v[i] = ' ';
+    for (; i < PATCH_BYTES; i++) p->v[i] = 0;                        /* unused param space (63-79) + spare (94-95) */
+    for (i = 0; i < PATCH_NAME; i++) p->v[PATCH_NAME_AT + i] = ' ';  /* the name field: space-filled (short names blank, not '?') */
 }
 
 /* a factory patch: a name and a list of (parameter, value) pairs over the defaults, ended by 255 */
@@ -165,5 +173,5 @@ static void patch_from_factory(patch_t *p, const factory_t *f)
     uint32_t i;
     patch_defaults(p);
     while (s[0] != 255u) { p->v[s[0]] = s[1]; s += 2; }
-    for (i = 0; i < PATCH_NAME && f->name[i]; i++) p->v[NPARAM + i] = (uint8_t)f->name[i];
+    for (i = 0; i < PATCH_NAME && f->name[i]; i++) p->v[PATCH_NAME_AT + i] = (uint8_t)f->name[i];
 }

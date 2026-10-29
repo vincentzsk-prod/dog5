@@ -42,17 +42,14 @@ static struct {
                                                   * settings sector's layout, and SET_VERSION, don't have to change */
 } set;
 #define MIDI_OUT_CH (set.midi_ch ? set.midi_ch - 1u : 0u)   /* the keys go out on the MIDI channel set (OMNI: 1) */
-typedef struct {                                /* SET_VERSION 2 (1.4.3 and before): read once, to bring the programs over */
-    uint8_t version, prog, tempo, midi_ch;
-    int8_t tune, oct;
-    uint8_t pat, click;
-    uint32_t used;
-    patch_t user[32];
-} set_v2_t;
+/* (the OberVave SET_VERSION 2 migration that brought 32 old programs over embedded an 80-byte patch_t; with the
+ * 96-byte DØG-5 record its layout no longer matches, and a DØG-5 FM-1 arrives empty, so it is dropped -- old
+ * settings/program sectors read as empty, never misread.) */
 static uint32_t set_dirty, set_t;
 /* the user's programs: PS_N to a flash sector (psect_load / psect_save), all of them in RAM */
-#define PS_N 50u
-#define PS_TAG 0x50564F42u                      /* "BOVP" */
+#define PS_N 42u                                /* 96-byte patches: 42 per 4 KiB sector (42*96=4032; psect_t=4080 <= SETTINGS_MAX=4084) */
+#define PS_TAG 0x35474F44u                      /* "DOG5": the 96-byte program format. Old "BOVP"/80-byte sectors fail
+                                                 * sector_load's length check (and this tag check) and read as empty. */
 typedef struct { uint32_t tag; uint8_t used[PS_N], pad[2]; patch_t p[PS_N]; } psect_t;
 _Static_assert(sizeof(psect_t) <= SETTINGS_MAX, "a program sector outgrew its flash sector");
 _Static_assert(NPSECT * PS_N >= NPROG, "too few program sectors");
@@ -242,7 +239,7 @@ static void draw_header(void)
         patch_t t;
         prog_get(save_to, &t);
         scat(tags, "SAVE HERE? " NM_PRESETS);
-        ui_header(save_to, t.v + NPARAM, 0, tags);
+        ui_header(save_to, t.v + PATCH_NAME_AT, 0, tags);
         return;
     }
     if (cut_shown_t && fm1_ms + 1u - cut_shown_t < 1000u) {
@@ -250,7 +247,7 @@ static void draw_header(void)
         param_value(v, P_CUTOFF, live.v[P_CUTOFF]);
         scat(tags, "CUTOFF ");
         scat(tags, v);
-        ui_header(prog, live.v + NPARAM, edited, tags);
+        ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
         return;
     }
     {   /* short words; mode, filter, HOLD always (at most 14 characters: MONO NOTCH HOLD); then, as far as it fits, ARP, FX */
@@ -268,7 +265,7 @@ static void draw_header(void)
         if (fx) scat(tags, " FX");
         if (hold) scat(tags, " HOLD");
     }
-    ui_header(prog, live.v + NPARAM, edited, tags);
+    ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
 }
 
 static void fmt_s(char *s, int32_t v)          /* signed: +3, -12, 0 */
@@ -461,18 +458,9 @@ static void app_main(void)
             }
         set.version = 0;
         if (settings_load(&set, sizeof set) || set.version != SET_VERSION) {
-            static set_v2_t old __attribute__((section(".pool")));
             memset(&set, 0, sizeof set);
             set.version = SET_VERSION;
             set.tempo = 120;
-            old.version = 0;
-            if (!settings_load(&old, sizeof old) && old.version == 2u) {   /* 1.4.x: its globals and 32 programs move */
-                set.prog = old.prog; set.tempo = old.tempo; set.midi_ch = old.midi_ch;
-                set.tune = old.tune; set.oct = old.oct;
-                for (n = 0; n < 32u; n++)
-                    if (old.used >> n & 1u) prog_put(n, &old.user[n]);
-                set_dirty = 1;                  /* (the programs are written first, then these) */
-            }
         }
     }
     if (set.prog >= NPROG) set.prog = 0;

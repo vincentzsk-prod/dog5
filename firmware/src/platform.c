@@ -125,8 +125,13 @@ static volatile uint32_t fm1_ms;                /* milliseconds since power-on (
 #define SETTINGS_MAX (4096u - 12u)              /* the sector minus the header (OberVave keeps 32 programs in it) */
 #define BLOBS_AT 0x000F4000u                    /* OberVave's sequencer patterns: 8 sectors below the settings, free on the FM-1 */
 #define NBLOB 8u
-#define PSECT_AT 0x00097000u                    /* the 99 programs: 2 sectors at the start of Felucca's store (FL_DATA) */
-#define NPSECT 2u
+#define PSECT_AT 0x00097000u                    /* the 99 programs at the start of Felucca's store (FL_DATA, the app's own
+                                                 * writable area). 96-byte patches, 42/sector -> 3 sectors 0x97000-0x99FFF.
+                                                 * The 3rd (0x99000) is in FL_DATA (0x97000-0xE0000), above the app XIP
+                                                 * (< 0x97000), far below OTA (0xE0000+) and the globals/settings (0xFC000);
+                                                 * it was in no write range before, so unused. (The freed sequencer-pattern
+                                                 * sectors at BLOBS_AT 0xF4000 are also free and could host these instead.) */
+#define NPSECT 3u
 #define FL_RANGE_OK(off, n) (FL_IN(off, n, FL_OTA_LO, FL_OTA_HI) || FL_IN(off, n, SETTINGS_AT, SETTINGS_AT + 0x1000u) || \
                              FL_IN(off, n, BLOBS_AT, BLOBS_AT + NBLOB * 0x1000u) || FL_IN(off, n, PSECT_AT, PSECT_AT + NPSECT * 0x1000u))
 #endif

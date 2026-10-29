@@ -145,7 +145,7 @@ static int blob_save(uint32_t i, const void *p, uint32_t n)
     printf("%6u ms  blob %u saved (%u B)\n", fm1_ms, i, n);
     return 0;
 }
-#define NPSECT 2u
+#define NPSECT 3u                               /* must track the device NPSECT (platform.c / smk_store.h) */
 static uint8_t host_psect[NPSECT][SETTINGS_MAX + 4];
 static int psect_load(uint32_t i, void *p, uint32_t n)
 {

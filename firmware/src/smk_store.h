@@ -18,8 +18,9 @@
 #define SETTINGS_MAX (4096u - 12u)              /* the sector minus the header (OberVave keeps 32 programs in it) */
 #define BLOBS_AT 0x0009E000u                    /* the sequencer patterns: NBLOB sectors */
 #define NBLOB 8u
-#define PSECT_AT 0x000A6000u                    /* the user programs: NPSECT sectors */
-#define NPSECT 2u
+#define PSECT_AT 0x000A6000u                    /* the user programs: 3 sectors 0xA6000-0xA8FFF (96-byte patches, 42/sector;
+                                                 * the 3rd lands in the free gap between the patterns and the owner tag) */
+#define NPSECT 3u
 #define OWNER_AT 0x000AF000u                    /* the store's owner tag (the kit's place for it) */
 #ifndef OBV_DATA_FAMILY
 #define OBV_DATA_FAMILY "OBERVAV"               /* (tools/build.py sets it: SMK_DATA_FAMILY) */
