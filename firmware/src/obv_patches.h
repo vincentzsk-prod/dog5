@@ -164,22 +164,20 @@ static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
-static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 65-99 */
+static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
+
+/* The DØG-5 factory: the 32 patches of dog5-docs/DOG-5-presets.md §3, in its slot order, their final names
+ * (14-char field; "THE DØG" needs the Ø byte 0xD8, so it is written "\xD8", not a UTF-8 literal). The SOUND of
+ * each is, for now, its documented "nearest base patch" (the PF_* above, kept as the starting point) -- the
+ * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
+ * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"DARK ARP", PF_DARK_ARP}, {"POLY BRASS", PF_POLY_BRASS}, {"SYNC LEAD", PF_SYNC_LEAD}, {"UNISON LD", PF_UNISON_LEAD},
-    {"PWM STRING", PF_PWM_STRINGS}, {"BELL XMOD", PF_BELL_XMOD}, {"FAT BASS", PF_FAT_BASS}, {"ARP SEQ", PF_ARP_SEQ},
-    {"SWEEP PAD", PF_SWEEP_PAD}, {"BP QUACK", PF_BP_QUACK}, {"DUAL SAW", PF_DUAL_SAW}, {"RESO ZAP", PF_RESO_ZAP},
-    {"BRASS STAB", PF_BRASS_STAB}, {"NOISE WASH", PF_NOISE_WASH}, {"HOLLOW PAD", PF_HOLLOW_PAD}, {"SQUARE LD", PF_SQUARE_LEAD},
-    {"SUB BASS", PF_SUB_BASS}, {"SOFT KEYS", PF_SOFT_KEYS}, {"SYNC BRASS", PF_SYNC_BRASS}, {"DRONE UNI", PF_DRONE_UNI},
-    {"CLAV PLUCK", PF_CLAV_PLUCK}, {"WOBBLE BS", PF_WOBBLE_BASS}, {"ARP PLUCK", PF_ARP_PLUCK}, {"ARP CHORD", PF_ARP_CHORD},
-    {"RANDOM ARP", PF_RANDOM_ARP}, {"UPSIDE ARP", PF_UPSIDE_ARP}, {"FIFTHS LD", PF_FIFTHS_LEAD}, {"VINTAGE PD", PF_VINTAGE_PAD},
-    {"NEON PAD", PF_NEON_PAD}, {"XMOD GROWL", PF_XMOD_GROWL}, {"PERC HIT", PF_PERC_HIT}, {"INIT", PF_INIT},
-    {"NIGHTDRIVE", PF_NIGHT_DRIVE}, {"MINOR FALL", PF_MINOR_FALL}, {"SHADOW ARP", PF_SHADOW_ARP}, {"GLASS ARP", PF_GLASS_ARP},
-    {"PULSE ARP", PF_PULSE_ARP}, {"ARP BASS", PF_ARP_BASS}, {"DREAM ARP", PF_DREAM_ARP}, {"STAB CHORD", PF_STAB_CHORD},
-    {"BIG BRASS", PF_BIG_BRASS}, {"HORN SECT", PF_HORN_SECT}, {"WARM PAD", PF_WARM_PAD}, {"DARK PAD", PF_DARK_PAD},
-    {"AIR CHOIR", PF_AIR_CHOIR}, {"SLOW SWEEP", PF_SLOW_SWEEP}, {"GHOST PAD", PF_GHOST_PAD}, {"ENSEMBLE", PF_ENSEMBLE},
-    {"SYNC PAD", PF_SYNC_PAD}, {"ICE BELLS", PF_ICE_BELLS}, {"SOFT EP", PF_SOFT_EP}, {"PULSE ORGN", PF_PULSE_ORGN},
-    {"TAPE KEYS", PF_TAPE_KEYS}, {"ACID LINE", PF_ACID_LINE}, {"PLUCK BASS", PF_PLUCK_BASS}, {"DEEP BASS", PF_DEEP_BASS},
-    {"SYNC BASS", PF_SYNC_BASS}, {"SOLO LEAD", PF_SOLO_LEAD}, {"PWM LEAD", PF_PWM_LEAD}, {"SCREAM LD", PF_SCREAM_LD},
-    {"SOFT FLUTE", PF_SOFT_FLUTE}, {"LASER", PF_LASER}, {"WIND RISE", PF_WIND_RISE}, {"SPACEDRONE", PF_SPACE_DRONE},
+    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_DUAL_SAW},    {"V-Sync", PF_SYNC_LEAD},
+    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
+    {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
+    {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
+    {"Titanic", PF_DUAL_SAW},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
+    {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
+    {"SAWTOOTH", PF_POLY_BRASS},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
+    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_DRONE_UNI},     {"Fi(l)fth", PF_FIFTHS_LEAD},  {"Init bruv?", PF_INIT},
 };

@@ -21,13 +21,13 @@ enum {
     P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX,
     NPARAM
 };
-#define PATCH_NAME 10u
-#define PATCH_BYTES 80u                         /* NPARAM values, the name at NPARAM, the rest spare */
+#define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 (uses 4 of the 7 spare; 3 spare left) */
+#define PATCH_BYTES 80u                         /* NPARAM (63) values, the 14-char name at NPARAM, 3 bytes spare */
 #if NPARAM + PATCH_NAME > PATCH_BYTES
 #error "the patch outgrew PATCH_BYTES"
 #endif
-#define NPROG 99u                               /* 1-64 factory sounds, 65-99 INIT; the user's saves over them */
-#define NFACT 64u
+#define NPROG 99u                               /* 1-32 the DØG-5 factory, 33-99 INIT; the user's saves over them */
+#define NFACT 32u                               /* the 32 DØG-5 patches (dog5-docs/DOG-5-presets.md); the rest INIT */
 
 enum { K_NUM, K_BIP, K_ONOFF, K_WAVE, K_FTYPE, K_MODE, K_LSHAPE, K_LPHASE, K_TO, K_ARP, K_DIV, K_SEMI, K_MS, K_HZ,
        K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV };
