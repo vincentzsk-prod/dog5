@@ -22,6 +22,9 @@
 #include <sys/syscall.h>
 #include <linux/perf_event.h>
 #endif
+#ifdef OBV_CALLGRIND
+#include <valgrind/callgrind.h>
+#endif
 
 #ifndef APP_NAME
 #define APP_NAME "OBERVAVE"
@@ -300,6 +303,17 @@ static void perf_report(void)
                (unsigned long long)(perf_insns / perf_frames), (unsigned long long)perf_frames);
 }
 
+/* the same yardstick where OBV_PERF can't run (no hardware PMU, as in this project's cloud build
+ * containers): build with -DOBV_CALLGRIND and run under
+ *   valgrind --tool=callgrind --collect-atstart=no --combine-dumps=yes ./obervave ...
+ * CALLGRIND_TOGGLE_COLLECT (a no-op, and costs nothing, outside valgrind) brackets each app_audio()
+ * call past the 1 s warm-up, same as perf_fd's window above, so callgrind.out.<pid>'s Ir total after
+ * the run is instructions *fetched* in exactly that window (deterministic re-execution, not sampled;
+ * dog5-docs/PERF-BASELINE.md has the division by cg_frames and what it means). */
+#ifdef OBV_CALLGRIND
+static uint64_t cg_frames;
+#endif
+
 static void platform_poll(void)                 /* one call = one millisecond */
 {
     static uint32_t step, shot, owed, frame;
@@ -355,7 +369,13 @@ static void platform_poll(void)                 /* one call = one millisecond */
 #ifdef __linux__
         if (perf_fd >= 0) { ioctl(perf_fd, PERF_EVENT_IOC_RESET, 0); ioctl(perf_fd, PERF_EVENT_IOC_ENABLE, 0); }
 #endif
+#ifdef OBV_CALLGRIND
+        if (fm1_ms > 1000u) CALLGRIND_TOGGLE_COLLECT;
+#endif
         app_audio(blk, HALF_FRAMES);
+#ifdef OBV_CALLGRIND
+        if (fm1_ms > 1000u) { CALLGRIND_TOGGLE_COLLECT; cg_frames += HALF_FRAMES; }
+#endif
 #ifdef __linux__
         if (perf_fd >= 0) {
             long long c = 0;
@@ -391,6 +411,13 @@ static void platform_poll(void)                 /* one call = one millisecond */
     if (fm1_ms >= end_ms) {
         write_wav();
         perf_report();
+#ifdef OBV_CALLGRIND
+        if (cg_frames) {
+            printf("callgrind frames %llu (divide callgrind_annotate's Ir total by this)\n",
+                   (unsigned long long)cg_frames);
+            CALLGRIND_DUMP_STATS;
+        }
+#endif
         exit(0);
     }
 }
