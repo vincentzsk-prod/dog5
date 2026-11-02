@@ -1,0 +1,53 @@
+# GROWL on the DRIVE page (KNOB 1), its secondaries on SELECT held (DRIVE +: BIAS on KNOB 1, TONE on KNOB 2), the FX-held
+# layer's KNOB 1. Parameters: 54 GROWL, 52 BIAS, 53 TONE, 13 RESO (obv_params.h). Encoders: 2 = KNOB 1, 3 = KNOB 2;
+# buttons: 2 FX, 3 SELECT, 6 EDIT. Program 1 (Red Pill): GROWL 0, BIAS 40, TONE 50, RESO 30.
+3000 expect param 54 0
+3000 btn 2   # FX: DRIVE
+3200 expect page 11
+3200 enc 2 1
+3250 enc 2 1
+3300 enc 2 1
+3350 enc 2 1
+3400 enc 2 1
+3500 expect param 54 10   # five detents, two steps each
+3500 shot
+3600 btndown 3   # SELECT held: DRIVE +
+3800 shot
+3800 enc 2 1
+3850 enc 2 1
+3900 enc 2 1
+3950 enc 3 -1
+4000 enc 3 -1
+4050 enc 3 -1
+4100 enc 3 -1
+4150 enc 3 -1
+4300 expect param 52 46   # KNOB 1 is BIAS now
+4300 expect param 53 40   # KNOB 2 is TONE
+4300 expect param 54 10   # GROWL untouched
+4400 btnup 3   # SELECT let go: GROWL again
+4500 enc 2 1
+4600 expect param 54 12
+4600 expect param 52 46
+4700 btndown 8   # HOME held on DRIVE: the map names GROWL
+5100 shot
+5200 btnup 8
+5400 expect page 11
+5400 btndown 3   # SELECT held while HOME is held: the map shows DRIVE +'s knobs
+5500 btndown 8
+5900 shot
+6000 btnup 8
+6100 btnup 3
+6300 btn 6   # EDIT: back to where EDIT was (OSC 1), then on to FILTER
+6500 btn 6
+6700 btn 6
+6900 btn 6
+7100 expect page 4
+7100 btndown 3   # SELECT held on FILTER: no secondaries there, KNOB 1 stays RESO
+7300 enc 2 1
+7500 expect param 13 32
+7500 btnup 3
+7700 btndown 2   # FX held: the layer's KNOB 1 is GROWL
+7900 enc 2 1
+8100 expect param 54 14
+8100 btnup 2
+8600 end

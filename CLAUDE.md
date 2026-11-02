@@ -145,6 +145,12 @@ POUND (locked factory) / THE PACK (live). FLEAS = the degradation dial (CLEAN/IT
 `VOICES → PREAMP DRIVE (new) → BBD DELAY (re-voiced, free-ms, REC=tap-tempo) → SPRING REVERB (re-voiced) →
 TAPE DEGRADE (new) → MASTER GATE`. The 3 freed chorus param slots (`P_CHO_*`) carry Drive + Tape; no new
 patch storage. Build Drive/Tape as integer fixed-point.
+**DRIVE (GROWL) — DONE** (`obv_drive.h`): on the voice bus before the output stage; the 3 chorus bytes are GROWL (54,
+CC 69), BIAS (52, CC 67), TONE (53, CC 68), so **Tape takes bytes from the 64..79 gap** (no byte or CC moves). KNOB 1 on
+DRIVE, SELECT held = DRIVE + (BIAS, TONE). 4x oversampled tanh-table clip, pre-clip low-pass closing with GROWL, loudness
+held within ~0.6 dB 0..100 % (K-weighted trim), GROWL 0 a bit-exact bypass. Measurements: `listen/drive/README.md`,
+`dog5-docs/PERF-BASELINE.md` (742 host instr/sample). ⚠️ Six factory patches (10, 12, 13, 16, 24, 29) had chorus on:
+their old mix now reads as GROWL 45-70 until they are re-voiced (proposals pending; `obv_params.h`).
 
 **Spring reverb:** re-voice the Dattorro plate *toward* spring — allpasses faster+shallower, short PRE-DLY,
 brighter DAMP, clamp SIZE so it can't bloom into a hall. **Excellence is NOT required** (Vincent has real

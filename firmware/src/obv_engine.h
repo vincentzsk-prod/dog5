@@ -592,8 +592,8 @@ static void engine_audio(int32_t *out, uint32_t n)
             voice_render(&vc[v], out + 2u * b);
         }
     }
-    for (i = 0; i < 2u * n; i++) out[i] = clampi(out[i], -262144, 262143) >> 2;   /* the bus at the output stage's scale */
-    drive_process(out, n);                      /* GROWL: voices -> DRIVE -> output stage -> delay -> reverb */
+    if (drive_on()) drive_process(out, n, vol_q12);   /* GROWL: voices -> DRIVE -> output stage -> delay -> reverb */
+    else for (i = 0; i < 2u * n; i++) out[i] = clampi(out[i], -262144, 262143) >> 2;   /* the output stage's scale */
     for (i = 0; i < n; i++) {                   /* the output stage: a gentle tanh, never a hard clip */
         int32_t l = softclip(out[2u * i] * vol_q12 >> 10);
         int32_t r = softclip(out[2u * i + 1u] * vol_q12 >> 10);
