@@ -1,7 +1,8 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
-/* The effects after the output stage: a stereo chorus, a ping-pong delay in note values of the tempo, and a
- * plate reverb (J. Dattorro's figure-of-eight tank, 1997). All lines are int16 in one .pool buffer; the
- * signals are Q15 as the output stage leaves them. Integers only.
+/* The effects after the output stage: a ping-pong delay in note values of the tempo, and a plate reverb (J. Dattorro's
+ * figure-of-eight tank, 1997). All lines are int16 in one .pool buffer; the signals are Q15 as the output stage leaves
+ * them. Integers only. (The chorus is gone: its three patch bytes carry the preamp drive, obv_drive.h, which runs
+ * on the voice bus before the output stage.)
  * REV_DIV 1: the reverb at the full rate (the sound comes first). 2: at half the rate, if the chip turns out
  * to need it: a dark hall loses little by it and it halves the reverb's time and memory. */
 #ifndef REV_DIV
@@ -9,7 +10,6 @@
 #endif
 #define RVL(x) ((uint32_t)((x) * 44100u / 29761u / REV_DIV))   /* the paper's 29761 Hz lengths at our rate */
 #define DLY_MAX 32768u                          /* a side of the delay: 743 ms */
-#define CHO_N 1024u
 #define REV_PRE_N (8192u / REV_DIV)             /* up to 120 ms of pre-delay */
 #define RV_IN1 RVL(142)
 #define RV_IN2 RVL(107)
@@ -25,7 +25,7 @@
 #define RV_D4 RVL(3163)
 #define REV_N (REV_PRE_N + RV_IN1 + RV_IN2 + RV_IN3 + RV_IN4 + RV_AP1 + 16u + RV_D1 + RV_AP2 + RV_D2 + RV_AP3 + 16u + RV_D3 + RV_AP4 + RV_D4)
 #define RV_BW (REV_DIV == 2u ? 24000 : 16700)   /* the input's one-pole: ~5 kHz either way */
-#define FX_MEM_N (CHO_N + 2u * DLY_MAX + REV_N)
+#define FX_MEM_N (2u * DLY_MAX + REV_N)
 
 typedef struct { int16_t *b; uint32_t len, w; } line_t;   /* w: where the next sample goes */
 static int16_t fx_mem[FX_MEM_N] __attribute__((section(".pool")));
@@ -67,9 +67,9 @@ static inline int32_t tri_q(uint32_t ph)        /* a triangle -2048..2047 (so Q8
 }
 
 /* ---- the state */
-static line_t cho, dl, dr, rv_pre, rv_in[4], rv_ap1, rv_d1, rv_ap2, rv_d2, rv_ap3, rv_d3, rv_ap4, rv_d4;
-static uint32_t cho_ph, cho_inc, rv_ph1, rv_ph2;
-static int32_t cho_depth_k, cho_mix, dly_mix, rev_mix, dly_fb, dly_tone_k, rev_decay, rev_damp_k;
+static line_t dl, dr, rv_pre, rv_in[4], rv_ap1, rv_d1, rv_ap2, rv_d2, rv_ap3, rv_d3, rv_ap4, rv_d4;
+static uint32_t rv_ph1, rv_ph2;
+static int32_t dly_mix, rev_mix, dly_fb, dly_tone_k, rev_decay, rev_damp_k;
 static int32_t dly_time, dly_cur;               /* Q16 samples: the target and where the read is (it slews like a tape) */
 static int32_t dly_lpl, dly_lpr, rv_lp_in, rv_lpl, rv_lpr, rv_yl, rv_yr;
 #if REV_DIV == 2u
@@ -82,7 +82,6 @@ static uint32_t fx_odd;
 
 static void fx_init(void)
 {
-    line_init(&cho, CHO_N);
     line_init(&dl, DLY_MAX);
     line_init(&dr, DLY_MAX);
     line_init(&rv_pre, REV_PRE_N);
@@ -97,9 +96,6 @@ static void fx_block(const patch_t *p, uint32_t quarter)
 {
     int32_t d, t;
     uint32_t div = p->v[P_DLY_TIME] % NDDIV, samples;
-    d = p->v[P_CHO_RATE]; cho_inc = (uint32_t)(10 + ((d * d * 590) >> 14)) * 974u;   /* 0.1 .. 5.9 Hz */
-    cho_depth_k = p->v[P_CHO_DEPTH] * 67;       /* x the triangle's +-2048 = Q16 samples: up to +-6 ms */
-    cho_mix = p->v[P_CHO_MIX];
     dly_mix = (p->v[P_DLY_MIX] * 180) >> 7;     /* wet up to 0.7 of the dry (Q8): the sum stays in range */
     rev_mix = (p->v[P_REV_MIX] * 180) >> 7;
     dly_fb = p->v[P_DLY_FB] * 250;              /* up to 0.97 */
@@ -127,15 +123,6 @@ static inline __attribute__((always_inline)) int32_t line_read_q16(const line_t 
     int32_t f = (back_q16 >> 8) & 255, a = line_read(l, b), c = line_read(l, b + 1u);
     return a + (((c - a) * f) >> 8);
 }
-/* 4-point Hermite for a tap that is always moving (the chorus): no treble loss between the samples */
-static inline __attribute__((always_inline)) int32_t line_read_q16_h(const line_t *l, int32_t back_q16)
-{
-    uint32_t b = (uint32_t)back_q16 >> 16;
-    int32_t f = (back_q16 >> 8) & 255, p0 = line_read(l, b - 1u), p1 = line_read(l, b), p2 = line_read(l, b + 1u), p3 = line_read(l, b + 2u);
-    int32_t c1 = (p2 - p0) >> 1, c2 = p0 - ((5 * p1) >> 1) + 2 * p2 - (p3 >> 1), c3 = ((p3 - p0) >> 1) + ((3 * (p1 - p2)) >> 1);
-    return p1 + ((f * (c1 + ((f * (c2 + ((f * c3) >> 8))) >> 8))) >> 8);
-}
-
 /* one reverb sample at the half rate: in -> pre-delay -> bandwidth -> 4 diffusers -> the two tank halves */
 static inline void rev_tick(int32_t in)
 {
@@ -177,16 +164,9 @@ static inline void rev_tick(int32_t in)
 static void fx_process(int32_t *out, uint32_t n)
 {
     uint32_t i, do_dly = dly_active != 0, do_rev = rev_active != 0;
-    int32_t cm = cho_mix, dm = dly_mix, rm = rev_mix;
+    int32_t dm = dly_mix, rm = rev_mix;
     for (i = 0; i < n; i++) {
         int32_t l = out[2u * i], r = out[2u * i + 1u];
-        if (cm) {                               /* two taps a quarter turn apart on one line, around 12 ms */
-            int32_t bl = (529 << 16) + tri_q(cho_ph) * cho_depth_k, br = (529 << 16) + tri_q(cho_ph + 0x40000000u) * cho_depth_k;
-            cho_ph += cho_inc;
-            line_write(&cho, (l + r) >> 1);
-            l += ((line_read_q16_h(&cho, bl) - l) * cm) >> 8;
-            r += ((line_read_q16_h(&cho, br) - r) * cm) >> 8;
-        }
         if (do_dly) {                           /* ping-pong: the input enters left, the feedback crosses */
             int32_t wl, wr;
             if (dly_cur < dly_time) { dly_cur += 1 << 15; if (dly_cur > dly_time) dly_cur = dly_time; }

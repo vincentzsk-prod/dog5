@@ -4,7 +4,8 @@
  *
  *   obv_dsp.h       oscillators (polyBLEP events), filter (trapezoidal SVF), tanh
  *   obv_params.h    the parameter table: patches, pages, MIDI CC
- *   obv_fx.h        chorus, ping-pong delay, plate reverb (after the voices, same ISR)
+ *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
+ *   obv_fx.h        ping-pong delay, plate reverb (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
  *   this file       the panel, MIDI, the screen, the storage
@@ -19,6 +20,7 @@ static void app_idle(void);
 #include "obv_dsp.h"
 #include "obv_params.h"
 #include "obv_fx.h"
+#include "obv_drive.h"
 #include "obv_engine.h"
 #include "obv_patches.h"
 
