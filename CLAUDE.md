@@ -69,9 +69,9 @@ specific fixes deliberately if ever needed. The base is ours and has stopped mov
 
 | Fact | Value | Source |
 |---|---|---|
-| Program slots | **99** (`NPROG 99`) — 1–64 factory, 65–99 INIT | `firmware/src/obv_params.h` |
-| Patch size | `PATCH_BYTES 80` (→ **grow to 96**, see §7) | `obv_params.h` |
-| Patch name field | `PATCH_NAME 10` (→ **widen to 14**, see §7) | `obv_params.h` |
+| Program slots | **99** (`NPROG 99`) — **1–32 the DØG-5 factory (`NFACT 32`), 33–99 INIT** | `firmware/src/obv_params.h` |
+| Patch size | **`PATCH_BYTES 96`** (was 80; grown — §7, done) — 42 patches per 4 KiB sector, 3 sectors | `obv_params.h` |
+| Patch name field | **`PATCH_NAME 14`** (was 10; widened — §7, done), at a fixed offset `PATCH_NAME_AT 80` | `obv_params.h` |
 | Pages | 19 in base (DØG-5 → **20**, see §5), a table of `{title,{4 param ids}}` | `obv_params.h` PG_* |
 | Font | **ASCII 32–126 only**; anything else draws as `?` | `gfx.c`, `felucca_font.h` |
 | ⚠️ Ø renders as `?` | `THE DØG` currently shows `THE D?G` — **fix via `tools/gen_font.py`** (Terminus has Ø) | — |
@@ -95,7 +95,7 @@ then decays and the art returns. The bar is never permanently filled with live v
 his name), no knob values. Legible 16px font (`FONT_S`/Terminus). It is the one element that never degrades
 and is never broken by the fracture — **top of the screen breaks, the bottom bar is sacred.**
 
-**Pages = 20**, a table edit (one row each):
+**Pages = 20** (**DONE**, `PAGE[]` in `obv_params.h`; DRIVE and TAPE have no knobs until the Psych Chain lands; VOICE + carries `P_POLY_N`), a table edit (one row each):
 
 | Family | Button | Pages |
 |---|---|---|
@@ -112,9 +112,14 @@ ALGORITHM, PLAY, REC.)
 
 **Adopted from Skiff** (the strongest navigation model in the scene; upstream already borrows from it):
 - ⭐ **Hold HOME = a live control map** showing what every button/knob does on the current page. This is the
-  answer to the renamed controls — no memorisation, no dual-labelling; the headers stay pure. Build this.
-- **Page families remember their last page** (one `uint8_t` each) — so HOME→play→EDIT returns you to where
-  you were, not to the top of the cycle. A real live-ergonomics win.
+  answer to the renamed controls — no memorisation, no dual-labelling; the headers stay pure. **DONE**
+  (`ui_map`/`draw_map`; tests/map.txt): held ≥ 350 ms it shows the page's four knobs and, per button, the label
+  printed on the panel, its dog name (DIG, HOWL, PANT, FLEAS, ZOOMIES, BURY, FETCH, BARKS — the FX button has none
+  in the brief, so it shows blank) and where a press goes *now*; letting go stays on the page. The page titles
+  stay plain (HOME, FILTER, BBD DELAY…): the dog names live in the map only. A tap goes HOME **on release** (that is the cost: HOME no longer
+  acts on press). The map draw calls `app_idle()` (DRAW RULE) — the host script asserts it.
+- **Page families remember their last page** (one `uint8_t` each, `fam_last`) — so HOME→play→EDIT returns you to
+  where you were, not to the top of the cycle. **DONE** (tests/families.txt, 43 `expect page` checks).
 - Each parameter page **draws what its knobs affect** (envelope shape, LFO wave, etc.) — already DØG-5 law.
 
 **OCT− / OCT+ = octave, always** (−2..+2, both = 0). Undo/redo was a sequencer feature and leaves with it.
@@ -137,11 +142,15 @@ patch storage. Build Drive/Tape as integer fixed-point.
 brighter DAMP, clamp SIZE so it can't bloom into a hall. **Excellence is NOT required** (Vincent has real
 analogue units); "the next closest thing" is explicitly enough. `REV_DIV 2` (half-rate) is the CPU lever.
 
-**Variable polyphony — `P_POLY_N`, range 1–8, default 5.** Cheap: every voice path already takes its window
-from `part_cards(part,&lo,&n)`; add one clamp + one parameter on a VOICE page. It won't speed up normal
-playing (idle voices are already skipped) — what it buys is a guaranteed worst-case CPU ceiling, real
-voice-stealing character (tonal, not spec), and it settles 5-vs-8 by ear on the device. Ships at 5 (keeps
-the five-motif: POLY 5, Fi(l)fth, 5th quadrant).
+**Variable polyphony — `P_POLY_N`, range 1–8, default 5. DONE** (on VOICE +; `poly_n()` in `obv_engine.h`;
+tests/poly.txt). It clamps the **POLY/DUAL** allocation window (`voice_alloc`), so a chord steals once the
+window fills — the voice-stealing character. **UNISON/MONO keep their own count (`P_UNI_N`), so no existing
+patch's sound changes** — the `part_cards` window the brief assumed went with track B, so the clamp lives in
+`voice_alloc` now. At `P_POLY_N = 8` the allocation is **byte-identical** to before the parameter existed
+(proven against the session-start build). It won't speed up normal playing (idle voices are already skipped) —
+what it buys is a worst-case CPU ceiling for POLY playing and the stealing character; it settles 5-vs-8 by
+ear on the device. Ships at 5 (keeps the five-motif: POLY 5, Fi(l)fth, 5th quadrant). It is byte 63 of the
+patch record (appended; MIDI CC 82; the earlier CCs are unchanged).
 
 **Note-event latency — resolved, inherited.** Upstream fixed note timing in 1.4.2 (notes are serviced
 inside the LCD's DMA wait via `app_idle`). We inherit it by pinning 1.5.3. **The one DRAW RULE going
@@ -152,12 +161,17 @@ loop.** No new drawing code may block without yielding to notes. That is the who
 
 ## 7. THE PRESET BANK
 
-- **99 slots** (inherited). **A/B as a write-lock, not a store expansion:** lock slots 1–64 (factory, THE
-  POUND, write-protected) vs 65–99 (live, THE PACK). The old "expand to 64" plan is obsolete — 99 is bigger.
-- **Widen the name field 10 → 14 characters, and grow `PATCH_BYTES` 80 → 96 in the same change.** With the
-  14-char name plus DØG-5's new params (Tape 2nd macro, `P_POLY_N`) the struct hits 79/80 — one spare byte,
-  which a planned v1.1 can't extend without migrating every patch. 96 costs ~1.6 KB flash (16×99) and buys
-  17 spare bytes. Do it before any patch exists (free migration).
+- **99 slots** (inherited). **A/B as a write-lock, not a store expansion:** lock slots 1–32 (factory, THE
+  POUND, write-protected) vs 33–99 (live, THE PACK). The factory bank is now the 32 DØG-5 patches
+  (`NFACT 32`); the old "expand to 64" plan is obsolete — 99 is bigger, and the factory half tracks the
+  32-patch bank, not 64. (The write-lock itself is Stage 2 — the bytes/sectors below are done.)
+- **Name field widened 10 → 14 characters and `PATCH_BYTES` grown 80 → 96 — DONE** (§4, committed). The
+  14-char name plus DØG-5's new params (Tape 2nd macro, `P_POLY_N`) hit 79/80 at 80 bytes — one spare,
+  which a planned v1.1 couldn't extend without migrating every patch. The 96-byte record (name at a fixed
+  offset `PATCH_NAME_AT 80`, 14 bytes, then 2 spare) costs ~1.6 KB flash (16×99) and buys 2 spare bytes now
+  plus the whole 63..79 parameter gap (NPARAM 63) for growth. The store carries a new `"DOG5"` version tag,
+  so old 80-byte data is never misread; **42 patches per 4 KiB sector, 3 program sectors** hold the 99
+  slots. Done before any patch existed (free migration).
 - **The 32 patches** and their SOUND briefs are locked (`dog5-docs/DOG-5-presets.md`). Voice them by ear on the
   host build. Minimum gig set defined there if time bites. ~Half are buildable before the Psych Chain exists.
 - **4 names changed** for the 14-char fit (and taste): 09 Skinhead Bubble→**Skeenhead**, 17 North Water
@@ -207,8 +221,9 @@ wordmark) — full spec in the build kit.
 ## 10. BUILD ORDER
 
 **Stage 1 — foundations (no art, no toolchain needed):** fork pinned → host build + sim running as DØG-5 →
-font Ø fix → name 10→14 & `PATCH_BYTES` 80→96 → delete sequencer → 20-page table + hold-HOME map +
-families-remember → `P_POLY_N`.
+font Ø fix → name 10→14 & `PATCH_BYTES` 80→96 (done; 14-char name, 96-byte record, 3 sectors, DOG5 tag) →
+delete sequencer → 20-page table + hold-HOME map +
+families-remember → `P_POLY_N` (done; byte 63, CC 82, VOICE +).
 **Stage 2 — the voice (no art, runs parallel to drawing):** Psych Chain (Drive, Tape, free-ms BBD, spring
 re-voice) → voice the 32 patches by ear → A/B write-lock.
 **Stage 3 — the screen (needs the art):** dog (REST+BARK registered redraw) → beam → bottom bar + transient
@@ -224,9 +239,11 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
 
 ## 11. OPEN — needs Vincent's confirmation (defaults recorded so nothing stalls)
 
-1. **LICENSING.md credit line** — default used: **"DØG-5 by Vincent Kruger (DØGS)"**. Confirm or change.
-   Keep the Felucca/Kuroshita, SLOOP/isod89, Dinghy/zvenson credits above it (GPL obligation).
-2. **`PATCH_BYTES` 80→96** — recommended yes (§7). Confirm.
+1. **LICENSING.md credit line** — confirmed: **"DØG-5 by ZIGGY (DØGS)"** (in `LICENSING.md`). The
+   Felucca/Kuroshita, SLOOP/isod89, Dinghy/zvenson credits stay in full below it (GPL obligation).
+2. **`PATCH_BYTES` 80→96** — **DONE** (§4/§7, committed): 96-byte record, 14-char name at offset 80, new
+   `"DOG5"` store tag, 3 program sectors (42/sector). Proven by the host self-test (99 patches round-trip
+   byte-exact across a power cycle, save-isolation, old 80-byte "BOVP" sector rejected as empty INIT).
 3. **FM-1 arrival** — "within ~2 weeks" as of 27 Oct. Sets how much of Stage 3–4 finishes before it lands.
 4. **The 15–16 hand-drawn assets** (build kit §1) — the only thing gating Stage 3.
 
@@ -401,34 +418,6 @@ GPL-3.0. Identity `FM-1_95N`. Name by the user ("OberVave": Ober... + M-VAVE).
 
 ## Status (2026-10-13, third session)
 
-**3.3.1 (2026-11-02, tag v3.3.1, FM-1_9533):** only the UC25HQ80 flash (JEDEC 0xB36014, newer FM-1s from AliExpress) in
-`FL_JEDEC_OK` (hal/fm1_flash_map.h) beside the Puya 0x856014 – app, recovery, update loader; on it 3.3 saved to RAM only and
-refused updates (Paul Nederhoed). The user: fix OberVave, not sloopDX. Not tested on that chip before the release (Paul cannot
-flash a file himself: the hub's installer is his way). The SMK-37 packages stay 3.3-beta.
-
-**3.3 (2026-10-31, tag v3.3, FM-1_9533, "Oberheim wäre massiver"; heard by the user on the FM-1 and released the same day, the CI's attested packages in docs/firmware (FM-1) and docs/firmware/smk37 (3.3-beta, tag smk37-v3.3-beta); the native VIBE 3.3 carries the same engine, vibe-sdk 03010dc):** LP24 is a
-real four-pole ladder (`lad_coef` / `lad_step` in obv_dsp.h: four TPT one-poles, the resonance fed back around all four,
-zero-delay linear solve, a tanh on the loop's input, input gain 1 + k/2 so the bass stays; was two cascaded SVFs with the
-resonance on the first). The mixer's hard clamp and the post-filter clamp are gone: `sat_in` (tanh, unity below ~30000,
-DRIVE's gain 1..16 in front of it, always on) and `sat_knee` (linear to 32768, tanh to 65535). The vintage walk moves the
-cutoff too (~1/4 semitone at the default). Levels within ~1 dB of before (tests/fat.txt + the ana script in the
-session: brass -6 dBFS peak), a full-resonance cutoff sweep stays bounded (tests/fat_sweep.txt). Host cost +7 %
-(1653 instr/sample on fat.txt, was 1544). `TANH_Q15` is tanh(x/32768), unity slope (its old comment said x2).
-Not done yet: oversampling, the SVF's integrator saturation, retuning the brass patches.
-
-**3.0.1** (2026-10-23, tag v3.0.1: identity FM-1_95XY from now on, FM-1_9530, its own; 3.0 (tag v3.0) reported FM-1_950, shared with CS-1, OPN-1, FMEL-1, so the hub could not tell them apart; the CI's attested package in docs/firmware; the SMK-37's 3.0.1 packages (SMK-37 Pro / Elite / MKE-P37_9530, the CI's) in docs/firmware/smk37 too, tag smk37-v3.0.1-beta, the user's go 2026-10-23): the VIBE edition
-(~/VibeFMmk1/vibe-sdk/firmware/obervave, OberVave 3.0 native; the FM-1-code 2.0 edition is in that repo's tag
-vor-aufraeumen-2026-10-22) back on the FM-1 and the SMK-37: 4 tracks A-D on the 8 voices (MONO/UNISON groups pick their
-cards: group_pick), mixer (level, pan, sends chorus/delay/reverb/drive, mute/solo, meters), DRIVE and MASTER (DJ
-filter, drive, compressor, limiter) in fixed point, tracks start/stop on the bar, every pattern keeps its sounds and
-mix (psnd_t behind the pattern in a 4-sector slot: FM-1 0x99000.., SMK 0xC2000.. in FL_SMP; 1.5's patterns and
-settings convert at boot, the old ones stay), 3.0's recording (quantise per track, nudge, legato, arp takes, knob
-lanes), SYNC AUTO/INTERNAL. Panel: ALGORITHM track, PRESETS its sound, SELECT bar (STEPS) / next pattern (sequencer,
-MIXER) / tempo, SELECT held = STEP+ (GLOBAL: SYNC), HOME again = MIXER and its rows, GLO held = keys 1-4 start/stop
-(REC: record), 5-8 mute, 9-12 solo, G5 tap; SAVE in the sequencer asks. Host worst case ~2460 instr/sample. Tests:
-tests/v3_*.txt, OBV_V15=1 simulates a 1.5 store. Shine On got the same (its own CLAUDE.md).
-
-
 Released: **1.5.3** (2026-10-19, FM-1_955, tag v1.5.3: the update loader's screen, `firmware/loader/ldr_screen.c` (the hub's look; Skiff's idea, illuminus5): name, status, 20 segments with a running light while it waits, the percent while it writes, thefirmwarehub.com; FM-1 only, the SMK-37's loader stays dark; tested on the user's FM-1, two installs) after **1.5.2** (2026-10-19, FM-1_955, tag v1.5.2 (v1.5.1 = 1.5 rebuilt by the CI): the TRS MIDI IN on (FELUCCA_UART on the FM-1 board, sloopDX's
 midi_uart.c polled at 2 kHz in TIMER5; users said MIDI from external gear did not work), the keys send on the set
 channel (`MIDI_OUT_CH`); installed on the user's FM-1, USB-MIDI and a second update fine, the jack itself not tried here;
@@ -530,7 +519,7 @@ Priorities from the user: **the audio engine first, the look second**. Max depth
 ### Controls
 
 - PRESETS = program, ALGORITHM = CUTOFF (always), SELECT = page scroll, KNOB 1-4 = the page's four parameters.
-- HOME = PERFORM (RESO, F.ENV AMT, A.RELEASE, MOD DEPTH). EDIT cycles OSC1 / OSC2 / VOICE (since 3.3, as native 3.2) / OSC MOD / FILTER / FILTER +,
+- HOME = PERFORM (RESO, F.ENV AMT, A.RELEASE, MOD DEPTH). EDIT cycles OSC1 / OSC2 / OSC MOD / FILTER / FILTER +,
   ENV cycles FILTER ENV / AMP ENV, LFO cycles LFO / LFO DEST / LFO +, FX cycles CHORUS / DELAY / REVERB,
   ARP = arp on/off + its page, GLO cycles GLOBAL (TEMPO, MIDI CH, TUNE, CPU meter) / VOICE (mode, unison, glide) /
   OUTPUT (vintage, spread, bend, volume).

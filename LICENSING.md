@@ -1,8 +1,9 @@
 # Licensing
 
-OberVave is free software under the GNU General Public License, version 3 only (`GPL-3.0-only`, full text in
-`LICENSE`). You may use, study, change and share it. If you give someone a firmware built from it, give them its
-complete source under the same licence too.
+**DØG-5 by ZIGGY (DØGS).** DØG-5 is a fork of OberVave, free software under the GNU General Public License,
+version 3 only (`GPL-3.0-only`, full text in `LICENSE`). You may use, study, change and share it. If you give
+someone a firmware built from it, give them its complete source under the same licence too. The table below is
+OberVave's own credits, inherited and kept in full as the GPL requires.
 
 ## Who made what
 

@@ -19,15 +19,23 @@ enum {
     P_CHO_RATE, P_CHO_DEPTH, P_CHO_MIX,
     P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX,
     P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX,
+    P_POLY_N,                                   /* (appended: the MIDI CC numbers of the above stay) */
     NPARAM
 };
-#define PATCH_NAME 10u
-#define PATCH_BYTES 80u                         /* NPARAM values, the name at NPARAM, the rest spare */
-#if NPARAM + PATCH_NAME > PATCH_BYTES
-#error "the patch outgrew PATCH_BYTES"
+#define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 */
+#define PATCH_BYTES 96u                         /* DØG-5: grown 80 -> 96 (the "DOG5" program format) */
+#define PATCH_NAME_AT 80u                       /* the name at a FIXED offset, decoupled from NPARAM: bytes 0-79 are
+                                                 * parameters (63 used; room for the Psych Chain GROWL/ALLEY/DRAIN/CHEW,
+                                                 * P_POLY_N and v1.1), the 14-char name 80-93, 2 spare (94-95). Adding a
+                                                 * parameter (always at the end of the table) never moves the name. */
+#if NPARAM > PATCH_NAME_AT
+#error "the parameters run into the name field"
 #endif
-#define NPROG 99u                               /* 1-64 factory sounds, 65-99 INIT; the user's saves over them */
-#define NFACT 64u
+#if PATCH_NAME_AT + PATCH_NAME > PATCH_BYTES
+#error "the name + spare outgrew PATCH_BYTES"
+#endif
+#define NPROG 99u                               /* 1-32 the DØG-5 factory, 33-99 INIT; the user's saves over them */
+#define NFACT 32u                               /* the 32 DØG-5 patches (dog5-docs/DOG-5-presets.md); the rest INIT */
 
 enum { K_NUM, K_BIP, K_ONOFF, K_WAVE, K_FTYPE, K_MODE, K_LSHAPE, K_LPHASE, K_TO, K_ARP, K_DIV, K_SEMI, K_MS, K_HZ,
        K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV };
@@ -109,6 +117,7 @@ static const pdef_t PDEF[NPARAM] = {
     [P_REV_DAMP] = {"DAMP", 127, 60, K_NUM, 0},
     [P_REV_PRE] = {"PRE-DLY", 127, 20, K_NUM, 0},
     [P_REV_MIX] = {"MIX", 127, 0, K_NUM, 0},
+    [P_POLY_N] = {"POLY", 8, 5, K_NUM, 0},      /* 1-8, default 5: the POLY/DUAL voice window (obv_engine.h poly_n) */
 };
 
 static const char *const WAVE_NAME[4] = {"OFF", "SAW", "PULSE", "SAW+PLS"};
@@ -123,13 +132,21 @@ static const uint8_t DIV_PER_QUARTER[NDIV] = {1, 2, 3, 4, 6, 8, 12};
 static const char *const DDIV_NAME[NDDIV] = {"1/16", "1/8T", "1/8", "1/8.", "1/4", "1/4.", "1/2"};
 static const uint8_t DDIV_NUM[NDDIV] = {1, 1, 1, 3, 1, 3, 2}, DDIV_DEN[NDDIV] = {4, 3, 2, 4, 1, 2, 1};   /* of a quarter */
 
-/* the pages: four knobs each (-1 = no knob) */
+/* the pages: four knobs each (-1 = no knob). DØG-5 has 20 (CLAUDE.md §5); a button's pages are contiguous, so a
+ * family is "first page + count" (FAM_* below). DRIVE, TAPE and VOICE + have no knobs yet: their parameters
+ * (preamp drive, tape degrade) arrive with the Psych Chain, which changes the patch and the DSP. VOICE + now
+ * carries P_POLY_N (the polyphony / voice window). */
 typedef struct { const char *title; int8_t p[4]; } page_t;
-enum { PG_PERFORM, PG_OSC1, PG_OSC2, PG_VOICE, PG_OSCMOD, PG_FILTER, PG_FILTER2, PG_FENV, PG_AENV, PG_LFO, PG_LFODEST,
-       PG_LFO2, PG_ARP, PG_CHORUS, PG_DELAY, PG_REVERB, PG_DRIVE, PG_OUTPUT, PG_GLOBAL,   /* (3.3, as native 3.2) VOICE under EDIT, after OSC 2 */
-       PG_MIXER, PG_SEQ, NPAGE };              /* the mixer (VIBE), the sequencer's step view: drawn by hand */
+enum { PG_PERFORM,                                                              /* HOME */
+       PG_OSC1, PG_OSC2, PG_OSCMOD, PG_FILTER, PG_FILTER2,                      /* EDIT */
+       PG_FENV, PG_AENV,                                                        /* ENV */
+       PG_LFO, PG_LFODEST, PG_LFO2,                                             /* LFO */
+       PG_DRIVE, PG_BBD, PG_SPRING, PG_TAPE,                                    /* FX: the Psych Chain */
+       PG_ARP,                                                                  /* ARP */
+       PG_GLOBAL, PG_VOICE, PG_VOICE2, PG_OUTPUT,                               /* GLO */
+       NPAGE };
 static const page_t PAGE[NPAGE] = {
-    [PG_PERFORM] = {"PERFORM", {P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}},   /* (ALGORITHM picks the track now, as sloopDX) */
+    [PG_PERFORM] = {"HOME", {P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}},
     [PG_OSC1] = {"OSC 1", {P_O1_WAVE, P_O1_PW, P_O1_LVL, P_NOISE}},
     [PG_OSC2] = {"OSC 2", {P_O2_WAVE, P_O2_PW, P_O2_LVL, P_O2_SEMI}},
     [PG_OSCMOD] = {"OSC MOD", {P_SYNC, P_XMOD, P_ENV_O2, P_O2_FINE}},
@@ -140,25 +157,33 @@ static const page_t PAGE[NPAGE] = {
     [PG_LFO] = {"LFO", {P_LFO_SHAPE, P_LFO_RATE, P_LFO_DELAY, P_LFO_PHASE}},
     [PG_LFODEST] = {"LFO DEST", {P_LFO_PITCH, P_LFO_PWM, P_LFO_FLT, P_LFO_AMP}},
     [PG_LFO2] = {"LFO +", {P_LFO_PITCH_TO, P_LFO_PWM_TO, -1, -1}},
-    [PG_VOICE] = {"VOICE", {P_MODE, P_UNI_N, P_UNI_DET, P_GLIDE}},
-    [PG_OUTPUT] = {"OUTPUT", {P_VINTAGE, P_SPREAD, P_BEND, P_VOLUME}},
+    [PG_DRIVE] = {"DRIVE", {-1, -1, -1, -1}},                                   /* preamp drive: Psych Chain, not built */
+    [PG_BBD] = {"BBD DELAY", {P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},
+    [PG_SPRING] = {"SPRING", {P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX}},
+    [PG_TAPE] = {"TAPE", {-1, -1, -1, -1}},                                     /* tape degrade: Psych Chain, not built */
     [PG_ARP] = {"ARP", {P_ARP_MODE, P_ARP_DIV, P_ARP_OCT, P_ARP_GATE}},
-    [PG_CHORUS] = {"CHORUS", {P_CHO_RATE, P_CHO_DEPTH, P_CHO_MIX, -1}},
-    [PG_DELAY] = {"DELAY", {P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},
-    [PG_REVERB] = {"REVERB", {P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX}},
-    [PG_DRIVE] = {"DRIVE", {-1, -1, -1, -1}},   /* (VIBE) the drive send: TYPE, DRIVE, TONE, MIX – the settings', drawn by hand */
     [PG_GLOBAL] = {"GLOBAL", {-1, -1, -1, -1}},   /* tempo, MIDI channel, tune, CPU: globals, drawn by hand */
-    [PG_MIXER] = {"MIXER", {-1, -1, -1, -1}},   /* level, pan, send per track (VIBE): drawn by hand */
-    [PG_SEQ] = {"SEQUENCER", {-1, -1, -1, -1}},   /* length, note value, swing, transpose; a held step: its own four */
+    [PG_VOICE] = {"VOICE", {P_MODE, P_UNI_N, P_UNI_DET, P_GLIDE}},
+    [PG_VOICE2] = {"VOICE +", {P_POLY_N, -1, -1, -1}},                          /* polyphony: the voice window 1-8 */
+    [PG_OUTPUT] = {"OUTPUT", {P_VINTAGE, P_SPREAD, P_BEND, P_VOLUME}},
+};
+_Static_assert(NPAGE == 20, "DOG-5 has 20 pages (CLAUDE.md section 5)");
+
+/* the button families: each remembers its last page (fam_last in obervave.c) */
+enum { FAM_HOME, FAM_EDIT, FAM_ENV, FAM_LFO, FAM_FX, FAM_ARP, FAM_GLO, NFAM };
+static const struct { uint8_t first, count; } FAM[NFAM] = {
+    [FAM_HOME] = {PG_PERFORM, 1}, [FAM_EDIT] = {PG_OSC1, 5}, [FAM_ENV] = {PG_FENV, 2}, [FAM_LFO] = {PG_LFO, 3},
+    [FAM_FX] = {PG_DRIVE, 4}, [FAM_ARP] = {PG_ARP, 1}, [FAM_GLO] = {PG_GLOBAL, 4},
 };
 
-typedef struct { uint8_t v[PATCH_BYTES]; } patch_t;   /* v[0..NPARAM) the parameters, v[NPARAM..] the name */
+typedef struct { uint8_t v[PATCH_BYTES]; } patch_t;   /* v[0..79] parameters, v[80..93] name, v[94..95] spare */
 
 static void patch_defaults(patch_t *p)
 {
     uint32_t i;
     for (i = 0; i < NPARAM; i++) p->v[i] = PDEF[i].def;
-    for (; i < PATCH_BYTES; i++) p->v[i] = ' ';
+    for (; i < PATCH_BYTES; i++) p->v[i] = 0;                        /* unused param space (63-79) + spare (94-95) */
+    for (i = 0; i < PATCH_NAME; i++) p->v[PATCH_NAME_AT + i] = ' ';  /* the name field: space-filled (short names blank, not '?') */
 }
 
 /* a factory patch: a name and a list of (parameter, value) pairs over the defaults, ended by 255 */
@@ -169,5 +194,5 @@ static void patch_from_factory(patch_t *p, const factory_t *f)
     uint32_t i;
     patch_defaults(p);
     while (s[0] != 255u) { p->v[s[0]] = s[1]; s += 2; }
-    for (i = 0; i < PATCH_NAME && f->name[i]; i++) p->v[NPARAM + i] = (uint8_t)f->name[i];
+    for (i = 0; i < PATCH_NAME && f->name[i]; i++) p->v[PATCH_NAME_AT + i] = (uint8_t)f->name[i];
 }

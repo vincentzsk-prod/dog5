@@ -146,24 +146,17 @@ static void draw_logo_small(int32_t x, int32_t y)   /* "OBERVAVE" in FONT_S with
 }
 
 /* ---- the parts of the screen (the app decides when) */
-#define C_TRK_B RGB(255, 150, 40)               /* track B's orange */
-#define C_GREEN RGB(110, 231, 140)
-/* the tracks' colours, everywhere: A the light blue accent, B orange, C green, D pink */
-static const uint16_t C_TRKC[4] = {RGB(96, 176, 255), RGB(255, 150, 40), RGB(110, 220, 150), RGB(255, 96, 150)};
-/* trk: the track the panel is on (its letter before the name, in its colour; the number in red for A) */
-static void ui_header(uint32_t prog, const uint8_t *name, uint32_t edited, const char *tags, uint32_t trk)
+static void ui_header(uint32_t prog, const uint8_t *name, uint32_t edited, const char *tags)
 {
-    char n[PATCH_NAME + 2], tl[2] = {(char)('A' + trk % 4u), 0};
+    char n[PATCH_NAME + 2];
     uint32_t i;
-    uint16_t c = C_TRKC[trk % 4u];
     cv_begin(240, 44, C_PANEL);
-    cv_seg7(6, 6, (prog + 1u) / 10u, trk ? c : C_RED, C_RED_DIM);
-    cv_seg7(26, 6, (prog + 1u) % 10u, trk ? c : C_RED, C_RED_DIM);
+    cv_seg7(6, 6, (prog + 1u) / 10u, C_RED, C_RED_DIM);
+    cv_seg7(26, 6, (prog + 1u) % 10u, C_RED, C_RED_DIM);
     for (i = 0; i < PATCH_NAME; i++) n[i] = (char)name[i];
     n[PATCH_NAME] = edited ? '*' : 0;
     n[PATCH_NAME + 1] = 0;
-    cv_text(54, 4, &FONT_S, tl, c);
-    cv_text(66, 4, &FONT_S, n, trk ? c : C_CREAM);
+    cv_text(54, 4, &FONT_S, n, C_CREAM);
     cv_text(54, 22, &FONT_S, tags, C_DIMT);
     draw_logo_small(240 - 4 - text_w(&FONT_S, "OBERVAVE"), 4);
     cv_rect(0, 42, 240, 1, C_RULE);
@@ -186,6 +179,52 @@ static void ui_page(const char *title, const knob_view_t *k, const char *note)
     if (note)
         cv_text(240 - 4 - text_w(&FONT_S, note), 1, &FONT_S, note, C_RED);
     cv_blit(0, 46);
+}
+
+/* HOLD HOME: the control map of the page you are on. Three strips (the canvas is 120 rows at most on the host), each
+ * followed by app_idle(), and app_idle() after every row: the DRAW RULE (CLAUDE.md section 6), a draw that takes time
+ * lets the notes through.
+ *   top    the page's name, and under it the four knobs (what each one is on this page; "-" = none)
+ *   rows   one per button: the label printed on the panel, its dog name, and what it does (for the page buttons: where
+ *          a press goes NOW, so the map stays true as the families' memories change)
+ *   foot   one line */
+typedef struct { const char *hw, *dog, *what; } map_row_t;
+#define MAP_ROWS 11
+#define MAP_ROW_Y 48                            /* the first row; 16 px a row, the foot under the last (y 224) */
+static void ui_map(const char *title, const knob_view_t *k, const char *knob_note, const map_row_t *r, int32_t hi,
+                   const char *foot)
+{
+    int32_t i;
+    cv_begin(240, 46, C_PANEL);
+    cv_text((240 - text_w(&FONT_S, title)) / 2, 2, &FONT_S, title, C_AMBER);
+    cv_rect(0, 21, 240, 1, C_RULE);
+    for (i = 0; i < 4; i++) {
+        if (k[i].present)
+            cv_text(30 + 60 * i - text_w(&FONT_S, k[i].label) / 2, 24, &FONT_S, k[i].label, C_CREAM);
+        else if (!knob_note)
+            cv_text(30 + 60 * i - text_w(&FONT_S, "-") / 2, 24, &FONT_S, "-", C_RULE);
+        if (i && !knob_note) cv_rect(60 * i, 25, 1, 16, C_RULE);
+    }
+    if (knob_note)
+        cv_text((240 - text_w(&FONT_S, knob_note)) / 2, 24, &FONT_S, knob_note, C_DIMT);
+    cv_rect(0, 44, 240, 1, C_RULE);
+    cv_blit(0, 0);
+    app_idle();
+    for (i = 0; i < MAP_ROWS; i++) {
+        int32_t y;
+        if (i == 0 || i == 6) {                 /* a new strip: rows 0-5 from y 46, rows 6-10 + the foot from y 144 */
+            cv_begin(240, i ? 96 : 98, C_PANEL);
+        }
+        y = i < 6 ? MAP_ROW_Y - 46 + i * 16 : (i - 6) * 16;
+        cv_text(4, y, &FONT_S, r[i].hw, C_DIMT);
+        cv_text(68, y, &FONT_S, r[i].dog, i == hi ? C_AMBER : C_CREAM);
+        cv_text(134, y, &FONT_S, r[i].what, i == hi ? C_AMBER : C_DIMT);
+        app_idle();                             /* (a row is ~1 ms: the keys and MIDI in between) */
+        if (i == 5) { cv_blit(0, 46); app_idle(); }
+    }
+    cv_text((240 - text_w(&FONT_S, foot)) / 2, 80, &FONT_S, foot, C_DIMT);
+    cv_blit(0, 144);
+    app_idle();
 }
 
 static void ui_scope(const int16_t *s, uint32_t n)
@@ -213,58 +252,6 @@ static void ui_leds(const volatile int32_t *level, uint32_t n)
     cv_blit(0, 200);
 }
 
-/* the sequencer's strip (instead of the scope): a line of text, then the 16 steps of track t from w0 (the page the
- * white keys play). A step: its chord as bars by pitch, dim when it plays by chance, grey when switched off, ticks
- * for a ratchet, a bridge to the next for a tie. The playhead's step is blue, the selected one framed in red. */
-static void ui_steps(uint32_t t, uint32_t w0, int32_t cursor, int32_t playhead, uint32_t rec, const char *left, const char *right)
-{
-    uint32_t len = pat.trk[t].len, i, k;
-    int32_t lo = 127, hi = 0;
-    cv_begin(240, 50, C_SCOPE_BG);
-    cv_text(4, 0, &FONT_S, left, C_CREAM);
-    if (right) cv_text(236 - text_w(&FONT_S, right), 0, &FONT_S, right, rec ? C_RED : C_AMBER);
-    if (!len) {
-        cv_text(4, 24, &FONT_S, "TRACK OFF: GIVE IT A LENGTH", C_DIMT);
-        cv_blit(0, 146);
-        return;
-    }
-    for (i = 0; i < 16u && w0 + i < len; i++) {   /* the pitch range shown: the window's notes, at least an octave */
-        const step_t *st = seq_step(t, w0 + i);
-        for (k = 0; k < SEQ_CHORD && st->note[k]; k++) {
-            if (st->note[k] < lo) lo = st->note[k];
-            if (st->note[k] > hi) hi = st->note[k];
-        }
-    }
-    if (hi < lo) { lo = 48; hi = 72; }
-    if (hi - lo < 12) { lo -= (12 - (hi - lo)) / 2; hi = lo + 12; }
-    for (i = 0; i < 16u; i++) {
-        uint32_t n = w0 + i;
-        int32_t x = (int32_t)i * 15, y = 19, h = 29;
-        const step_t *st;
-        uint16_t bg;
-        if (n >= len) break;
-        st = seq_step(t, n);
-        bg = playhead >= 0 && n == (uint32_t)playhead ? STRIPE[0] : (n & 3u) ? C_KNOB : C_RULE;
-        cv_rect(x + 1, y, 13, h, bg);
-        if (n % 4u == 0u) cv_rect(x + 1, y, 13, 1, C_KNOB_HI);   /* the beats */
-        if (!st->note[0]) cv_rect(x + 6, y + h / 2, 3, 2, C_DIMT);
-        else {
-            uint16_t c = st->ratch & STEP_OFF ? C_KNOB_HI : st->chance < 100u ? C_DIMT : C_CREAM;
-            for (k = 0; k < SEQ_CHORD && st->note[k]; k++) {
-                int32_t yy = y + h - 5 - (int32_t)(st->note[k] - lo) * (h - 9) / (hi - lo);
-                cv_rect(x + 3, yy, 9, 2, c);
-            }
-            for (k = 0; k < (st->ratch & 3u); k++) cv_rect(x + 3 + (int32_t)k * 3, y + h - 3, 2, 2, C_AMBER);
-            if (st->gate >= GATE_TIE && i < 15u) cv_rect(x + 12, y + h / 2 - 1, 5, 3, C_AMBER);
-        }
-        if (cursor >= 0 && n == (uint32_t)cursor) {   /* the selected step: a red frame */
-            cv_rect(x, y - 1, 15, 2, C_RED); cv_rect(x, y + h - 1, 15, 2, C_RED);
-            cv_rect(x, y - 1, 2, h + 1, C_RED); cv_rect(x + 13, y - 1, 2, h + 1, C_RED);
-        }
-    }
-    cv_blit(0, 146);
-}
-
 /* the step view's hints (instead of the voice LEDs): what the keys do now, two lines */
 static void ui_hints(const char *l1, const char *l2, uint16_t c1)
 {
@@ -272,251 +259,6 @@ static void ui_hints(const char *l1, const char *l2, uint16_t c1)
     cv_text((240 - text_w(&FONT_S, l1)) / 2, 1, &FONT_S, l1, c1);
     cv_text((240 - text_w(&FONT_S, l2)) / 2, 19, &FONT_S, l2, C_DIMT);
     cv_blit(0, 200);
-}
-
-/* ---- the full-screen sequencer (SEQ tapped), as SLOOP's STEP page but on the whole screen:
- *   0..23     the top line: the track, the view, the pattern, the tempo, PLAY / STOP / REC
- *   24..135   the 16 steps around the cursor as a piano roll (a bar per note: its width the gate, its brightness
- *             the velocity), the cursor framed in red, the playhead blue, step numbers under every beat
- *   136..187  a line (what the step holds, or a message), then up to 64 steps as small cells (the roll's 16 lit)
- *   188..239  the four knobs as label, value and a bar */
-/* the tracks' colours, everywhere in the sequencer (the user: "not always clear which track you are in"):
- * C_TRKC above; ui_trk is the track drawn */
-static uint32_t ui_trk;
-#define C_TRK (C_TRKC[ui_trk % 4u])
-
-static void ui_seq_top(uint32_t t, const char *view, const char *mid, const char *right, uint16_t rc, uint32_t on)
-{
-    uint32_t i;
-    cv_begin(240, 24, C_PANEL);
-    for (i = 0; i < 4u; i++) {                  /* the four tracks: the one shown filled, the others a frame (dim: stopped) */
-        char tl[2] = {(char)('A' + i), 0};
-        int32_t x = 3 + (int32_t)i * 15;
-        uint16_t c = C_TRKC[i];
-        if (i == t) { cv_rect(x, 3, 13, 17, c); cv_text(x + 7 - text_w(&FONT_S, tl) / 2, 3, &FONT_S, tl, C_PANEL); }
-        else {
-            uint16_t d = on >> i & 1u ? blend565(C_PANEL, c, 170) : C_KNOB_HI;
-            cv_rect(x, 3, 13, 1, d); cv_rect(x, 19, 13, 1, d); cv_rect(x, 3, 1, 17, d); cv_rect(x + 12, 3, 1, 17, d);
-            cv_text(x + 7 - text_w(&FONT_S, tl) / 2, 3, &FONT_S, tl, d);
-        }
-    }
-    cv_text(66, 3, &FONT_S, view, C_TRK);
-    cv_text(70 + text_w(&FONT_S, view), 3, &FONT_S, mid, C_CREAM);
-    cv_text(236 - text_w(&FONT_S, right), 3, &FONT_S, right, rc);
-    cv_rect(0, 23, 240, 1, C_RULE);
-    cv_blit(0, 0);
-}
-
-static uint16_t seq_note_c(const step_t *st)    /* a note's colour: its velocity, dim by chance, grey when off */
-{
-    if (st->ratch & STEP_OFF) return C_KNOB_HI;
-    return blend565(st->chance < 100u ? C_RULE : blend565(C_PANEL, C_TRK, 110), st->chance < 100u ? blend565(C_PANEL, C_TRK, 150) : C_TRK, (uint32_t)st->vel * 2u);
-}
-
-static void ui_seq_roll(uint32_t t, uint32_t w0, int32_t cursor, int32_t playhead)
-{
-    static const int32_t TOP = 4, AH = 88;      /* the notes' area */
-    uint32_t len = pat.trk[t].len, i, k;
-    int32_t lo = 127, hi = 0;
-    cv_begin(240, 112, C_SCOPE_BG);
-    cv_rect(0, 0, 240, 1, C_TRK);               /* (the track's colour round the roll) */
-    for (i = 0; i < 16u && w0 + i < len; i++) {   /* the pitch range: the window's notes, at least an octave */
-        const step_t *st = seq_step(t, w0 + i);
-        for (k = 0; k < SEQ_CHORD && st->note[k]; k++) {
-            if (st->note[k] < lo) lo = st->note[k];
-            if (st->note[k] > hi) hi = st->note[k];
-        }
-    }
-    if (hi < lo) { lo = 54; hi = 66; }
-    if (hi - lo < 12) { lo -= (12 - (hi - lo)) / 2; hi = lo + 12; }
-    for (i = 0; i < 16u; i++) {
-        uint32_t n = w0 + i;
-        int32_t x = (int32_t)i * 15;
-        const step_t *st;
-        if (n >= len) { cv_rect(x + 1, TOP, 13, AH, C_PANEL); continue; }
-        st = seq_step(t, n);
-        cv_rect(x + 1, TOP, 13, AH, playhead >= 0 && n == (uint32_t)playhead ? STRIPE[0]
-                                    : cursor >= 0 && n == (uint32_t)cursor ? C_RULE : n % 4u ? C_KNOB : RGB(44, 52, 68));
-        if (n % 4u == 0u) {                     /* the beats: a tick and the step's number */
-            char s[4];
-            uint32_t v = n + 1u, j = 0;
-            if (v >= 100u) s[j++] = (char)('0' + v / 100u);
-            if (v >= 10u) s[j++] = (char)('0' + v / 10u % 10u);
-            s[j++] = (char)('0' + v % 10u);
-            s[j] = 0;
-            cv_rect(x + 1, TOP, 13, 1, C_KNOB_HI);
-            cv_text(x + 2, TOP + AH + 3, &FONT_S, s, cursor >= 0 && n == (uint32_t)cursor ? C_CREAM : C_DIMT);
-        }
-        if (!st->note[0]) cv_rect(x + 5, TOP + AH / 2, 5, 2, C_KNOB_HI);
-        else {
-            uint16_t c = seq_note_c(st);
-            int32_t w = st->gate >= GATE_TIE ? 15 : clampi(st->gate * 11 / 120, 3, 11);
-            for (k = 0; k < SEQ_CHORD && st->note[k]; k++) {
-                int32_t y = TOP + 2 + (hi - st->note[k]) * (AH - 8) / (hi - lo);
-                cv_rect(x + 2, y, i == 15u && w > 11 ? 12 : w, 4, c);   /* a tie runs on into the next step */
-            }
-            for (k = 0; k < (st->ratch & 3u); k++) cv_rect(x + 3 + (int32_t)k * 3, TOP + AH - 4, 2, 2, C_AMBER);
-        }
-        if (cursor >= 0 && n == (uint32_t)cursor) {   /* the cursor: a red frame */
-            cv_rect(x, TOP - 2, 15, 2, C_RED); cv_rect(x, TOP + AH, 15, 2, C_RED);
-            cv_rect(x, TOP - 2, 2, AH + 4, C_RED); cv_rect(x + 13, TOP - 2, 2, AH + 4, C_RED);
-        }
-    }
-    cv_blit(0, 24);
-}
-
-static void ui_seq_info(uint32_t t, const char *line, uint16_t lc, const char *right, uint32_t w0, int32_t cursor, int32_t playhead)
-{
-    uint32_t len = pat.trk[t].len, win = w0 / 64u * 64u, i;
-    cv_begin(240, 52, C_PANEL);
-    cv_text(4, 0, &FONT_S, line, lc);
-    if (right) cv_text(236 - text_w(&FONT_S, right), 0, &FONT_S, right, right[0] == 'P' ? C_CREAM : C_DIMT);   /* (PLAYS n: bright) */
-    for (i = 0; i < 64u; i++) {                 /* the overview: four rows of 16 */
-        uint32_t n = win + i;
-        int32_t x = (int32_t)(i % 16u) * 15 + 1, y = 20 + (int32_t)(i / 16u) * 8;
-        const step_t *st;
-        uint16_t c;
-        if (n >= len) break;
-        st = seq_step(t, n);
-        if (cursor >= 0 && n == (uint32_t)cursor) c = C_RED;
-        else if (playhead >= 0 && n == (uint32_t)playhead) c = STRIPE[2];
-        else if (st->note[0]) c = seq_note_c(st);
-        else c = n / 16u == w0 / 16u ? C_KNOB_HI : C_KNOB;
-        cv_rect(x, y, 13, 6, c);
-    }
-    cv_blit(0, 136);
-}
-
-static void ui_seq_knobs(const knob_view_t *k)
-{
-    int32_t i;
-    cv_begin(240, 52, C_PANEL);
-    cv_rect(0, 0, 240, 1, C_RULE);
-    for (i = 0; i < 4; i++) {
-        int32_t cx = 30 + 60 * i, f;
-        if (!k[i].present) continue;
-        cv_text(cx - text_w(&FONT_S, k[i].label) / 2, 3, &FONT_S, k[i].label, C_DIMT);
-        cv_text(cx - text_w(&FONT_S, k[i].value) / 2, 19, &FONT_S, k[i].value, C_CREAM);
-        cv_rect(cx - 22, 42, 44, 3, C_KNOB);
-        if (k[i].max > 0) {
-            f = 44 * clampi(k[i].v, 0, k[i].max) / k[i].max;
-            if (k[i].bip) { if (f >= 22) cv_rect(cx, 42, f - 22, 3, C_TRK); else cv_rect(cx - 22 + f, 42, 22 - f, 3, C_TRK); }
-            else cv_rect(cx - 22, 42, f, 3, C_TRK);
-        }
-    }
-    cv_blit(0, 188);
-}
-
-/* TRACKS (as SLOOP's): A-D one under the other, 36 px each from y 24, the chosen one lit in its colour. A row: the
- * letter in a tile, the sound (number and name), its state on the right (PLAY, STOP, NEXT: starts on the bar, ENDS:
- * stops on the bar, MUTE), the 16 steps of the page that plays (stopped: the cursor's), the playhead under its step */
-static void ui_seq_track_row(uint32_t t, uint32_t sel, const char *title, uint16_t tc, const char *status, uint16_t sc,
-                             uint32_t w0, int32_t playhead)
-{
-    uint32_t len = pat.trk[t].len, i;
-    uint16_t c = C_TRKC[t % 4u], dim = blend565(C_PANEL, c, 110);
-    char tl[2] = {(char)('A' + t), 0};
-    cv_begin(240, 36, sel ? C_KNOB : C_PANEL);
-    if (sel) cv_rect(0, 0, 3, 36, c);
-    if (sel) { cv_rect(7, 7, 22, 22, c); cv_text(18 - text_w(&FONT_S, tl) / 2, 10, &FONT_S, tl, C_PANEL); }
-    else {
-        cv_rect(7, 7, 22, 1, dim); cv_rect(7, 28, 22, 1, dim); cv_rect(7, 7, 1, 22, dim); cv_rect(28, 7, 1, 22, dim);
-        cv_text(18 - text_w(&FONT_S, tl) / 2, 10, &FONT_S, tl, dim);
-    }
-    cv_text(36, 2, &FONT_S, title, sel ? tc : blend565(C_PANEL, tc, 170));
-    if (status[0]) cv_text(236 - text_w(&FONT_S, status), 2, &FONT_S, status, sc);
-    for (i = 0; i < 16u; i++) {
-        uint32_t n = w0 + i;
-        int32_t x = 36 + (int32_t)i * 12 + (i > 7u ? 2 : 0);
-        uint16_t cc;
-        if (n >= len) { cv_rect(x, 21, 10, 9, sel ? C_PANEL : C_KNOB); continue; }
-        if (seq_step(t, n)->note[0] && !(seq_step(t, n)->ratch & STEP_OFF)) cc = sel ? c : dim;
-        else cc = n % 4u ? (sel ? C_PANEL : C_KNOB) : C_KNOB_HI;
-        cv_rect(x, 21, 10, 9, cc);
-        if (playhead >= 0 && n == (uint32_t)playhead) cv_rect(x, 31, 10, 2, C_CREAM);
-    }
-    if (len > 16u) {                            /* the whole track under it: a piece per bar, filled up to where it plays */
-        uint32_t bars = (len + 15u) / 16u, k, pg = playhead >= 0 ? (uint32_t)playhead / 16u : 0xFFFFu;
-        for (k = 0; k < bars; k++) {
-            int32_t x0 = 36 + (int32_t)(k * 194u / bars), x1 = 36 + (int32_t)((k + 1u) * 194u / bars) - 2, w = x1 - x0;
-            uint32_t in = len - k * 16u < 16u ? len - k * 16u : 16u;
-            cv_rect(x0, 33, w, 1, sel ? C_PANEL : C_KNOB);
-            if (k < pg) cv_rect(x0, 33, w, 1, dim);
-            else if (k == pg) cv_rect(x0, 33, (int32_t)(((uint32_t)playhead - k * 16u + 1u) * (uint32_t)w / in), 1, C_CREAM);
-        }
-    }
-    cv_rect(0, 35, 240, 1, C_RULE);
-    cv_blit(0, 24 + (int32_t)t * 36);
-}
-
-/* the mixer page's strip (instead of the scope and the voice lights): per track a column with its letter, its level
- * as a bar, its state (PLAY, STOP, NEXT, ENDS), MUTE and SOLO lit; the chosen track framed */
-static void ui_mix_strip(const uint8_t *lvl, uint32_t mute, uint32_t solo, const uint32_t *state, uint32_t sel, uint32_t blink,
-                         const uint8_t *meter)   /* (VIBE) meter: what each track plays now, 0..44 px */
-{
-    static const char *const ST[5] = {"STOP", "PLAY", "NEXT", "ENDS", "OFF"};
-    uint32_t t;
-    cv_begin(240, 94, C_PANEL);
-    for (t = 0; t < 4u; t++) {
-        int32_t x = (int32_t)t * 60 + 3, h = (int32_t)lvl[t] * 44 / 127;
-        uint16_t c = C_TRKC[t], dim = blend565(C_PANEL, c, 90);
-        char tl[2] = {(char)('A' + t), 0};
-        const char *st = ST[state[t] > 4u ? 4u : state[t]];   /* (4: no length, off) */
-        uint16_t stc = state[t] == 1u ? C_GREEN : state[t] == 2u || state[t] == 3u ? (blink ? C_AMBER : C_DIMT) : C_DIMT;
-        if (t == sel) { cv_rect(x - 2, 0, 58, 1, c); cv_rect(x - 2, 93, 58, 1, c); cv_rect(x - 2, 0, 1, 94, c); cv_rect(x + 55, 0, 1, 94, c); }
-        cv_rect(x + 2, 4, 18, 18, c);
-        cv_text(x + 11 - text_w(&FONT_S, tl) / 2, 5, &FONT_S, tl, C_PANEL);
-        cv_rect(x + 26, 4, 8, 44, C_KNOB);                    /* the level */
-        cv_rect(x + 26, 48 - h, 8, h, mute >> t & 1u || (solo && !(solo >> t & 1u)) ? C_KNOB_HI : c);
-        cv_rect(x + 2, 28, 18, 20, dim);
-        {   /* (VIBE) the meter beside the level: green, from -6 dB amber, near full red */
-            int32_t mh = meter[t] > 44u ? 44 : (int32_t)meter[t], j;
-            cv_rect(x + 37, 4, 6, 44, C_KNOB);
-            for (j = 0; j < mh; j += 2) cv_rect(x + 37, 46 - j, 6, 1, j >= 40 ? C_RED : j >= 31 ? RGB(255, 200, 40) : C_GREEN);
-        }
-        cv_text(x + 2, 52, &FONT_S, st, stc);
-        cv_rect(x + 2, 72, 24, 18, mute >> t & 1u ? C_RED : C_KNOB);
-        cv_text(x + 14 - text_w(&FONT_S, "M") / 2, 73, &FONT_S, "M", mute >> t & 1u ? C_PANEL : C_DIMT);
-        cv_rect(x + 30, 72, 24, 18, solo >> t & 1u ? RGB(255, 210, 60) : C_KNOB);
-        cv_text(x + 42 - text_w(&FONT_S, "S") / 2, 73, &FONT_S, "S", solo >> t & 1u ? C_PANEL : C_DIMT);
-    }
-    cv_blit(0, 146);
-}
-
-static void ui_seq_tline(const char *l, uint16_t c)   /* TRACKS: the line under the four rows */
-{
-    cv_begin(240, 20, C_PANEL);
-    cv_text((240 - text_w(&FONT_S, l)) / 2, 2, &FONT_S, l, c);
-    cv_blit(0, 168);
-}
-
-/* PATTERNS: the eight slots as two columns of four (selected: framed in red; the one playing: a blue bar) */
-static void ui_seq_slots(const char *const *txt, uint32_t used, uint32_t sel, uint32_t now, uint32_t now_edited)
-{
-    uint32_t i;
-    cv_begin(240, 112, C_PANEL);
-    for (i = 0; i < 8u; i++) {
-        int32_t x = (int32_t)(i % 2u) * 120 + 2, y = (int32_t)(i / 2u) * 28 + 2;
-        char num[3] = {(char)('1' + i), i == now && now_edited ? '*' : 0, 0};
-        cv_rect(x, y, 116, 24, i == sel ? C_RULE : C_KNOB);
-        if (i == now) cv_rect(x, y, 4, 24, STRIPE[1]);
-        cv_text(x + 10, y + 4, &FONT_S, num, i == now ? C_AMBER : C_CREAM);
-        cv_text(x + 34, y + 4, &FONT_S, txt[i], used >> i & 1u ? C_CREAM : C_DIMT);
-        if (i == sel) {
-            cv_rect(x - 2, y - 2, 120, 2, C_RED); cv_rect(x - 2, y + 24, 120, 2, C_RED);
-            cv_rect(x - 2, y - 2, 2, 28, C_RED); cv_rect(x + 116, y - 2, 2, 28, C_RED);
-        }
-    }
-    cv_blit(0, 24);
-}
-
-static void ui_seq_lines(const char *l1, uint16_t c1, const char *l2, const char *l3)
-{
-    cv_begin(240, 52, C_PANEL);
-    cv_text(4, 0, &FONT_S, l1, c1);
-    cv_text(4, 18, &FONT_S, l2, C_CREAM);
-    cv_text(4, 34, &FONT_S, l3, C_DIMT);
-    cv_blit(0, 136);
 }
 
 /* the splash: the logo (firmware/gen/obv_splash.h, from tools/make_logo.py --splash). The glowing letters strike
@@ -540,7 +282,7 @@ static void splash_frame(uint32_t fade, int32_t x_to, uint32_t sub)
         if (++x == SPLASH_W) { x = 0; y++; }
     }
     if (sub) {                                      /* the line under the logo, as in assets/logo.png, in two rows */
-        const char *t1 = "4-TRACK ANALOG POLY", *t2 = "M-VAVE FM-1";
+        const char *t1 = "8-VOICE ANALOG POLY", *t2 = "M-VAVE FM-1";
         uint16_t c = sub >= 256u ? C_AMBER : blend565(C_PANEL, C_AMBER, sub);
         cv_text((240 - text_w(&FONT_S, t1)) / 2, SPLASH_H + 14, &FONT_S, t1, c);
         cv_text((240 - text_w(&FONT_S, t2)) / 2, SPLASH_H + 28, &FONT_S, t2, c);

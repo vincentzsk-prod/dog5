@@ -162,58 +162,22 @@ static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
     P_AA, 15, P_AR, 90, P_SPREAD, 120, P_CHO_MIX, 55, P_DLY_TIME, DD_4D, P_DLY_FB, 60, P_DLY_TONE, 35, P_DLY_MIX, 50,
     P_REV_SIZE, 120, P_REV_MIX, 60, X};
 static const uint8_t PF_INIT[] = {X};
-/* 65 (VIBE): a kick – osc 2 an octave down, its pitch thrown 2 octaves down by the filter envelope (ENV>O2), the
- * 24 dB filter nearly shut, a short punch; play it low (C1-C2) */
-static const uint8_t PF_KICK[] = {P_MODE, M_MONO, P_O1_WAVE, W_OFF, P_O2_WAVE, W_PLS, P_O2_PW, 64, P_O2_LVL, 127, P_O2_SEMI, 12,
-    P_O2_FINE, 64, P_ENV_O2, 127, P_NOISE, 6, P_CUTOFF, 40, P_RESO, 8, P_FENV_AMT, 100, P_KEYTRK, 127, P_FTYPE, F_LP24,
-    P_FA, 0, P_FD, 58, P_FS, 0, P_FR, 58, P_AA, 0, P_AD, 84, P_AS, 0, P_AR, 82, P_DRIVE, 45, P_VEL_FLT, 30, P_VEL_AMP, 50,
-    P_VINTAGE, 0, P_SPREAD, 0, P_VOLUME, 127, X};
-/* 66 (VIBE): a snare – noise through a bright low-pass, a body around 200 Hz (at C3) whose pitch drops, short */
-static const uint8_t PF_SNARE[] = {P_O1_WAVE, W_OFF, P_O2_WAVE, W_PLS, P_O2_PW, 64, P_O2_LVL, 85, P_O2_SEMI, 31, P_ENV_O2, 100,
-    P_NOISE, 115, P_FTYPE, F_LP12, P_CUTOFF, 96, P_RESO, 10, P_FENV_AMT, 92, P_KEYTRK, 64, P_FA, 0, P_FD, 50, P_FS, 0,
-    P_AA, 0, P_AD, 75, P_AS, 0, P_AR, 72, P_DRIVE, 70, P_VEL_FLT, 50, P_VEL_AMP, 70, P_VINTAGE, 0, P_SPREAD, 0,
-    P_VOLUME, 127, P_REV_SIZE, 60, P_REV_MIX, 18, X};
-/* 67 (VIBE): a closed hi-hat – bright high-passed noise, very short (higher keys: brighter) */
-static const uint8_t PF_HIHAT[] = {P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_NOISE, 127, P_FTYPE, F_HP12, P_CUTOFF, 100, P_RESO, 25, P_DRIVE, 60,
-    P_FENV_AMT, 64, P_KEYTRK, 40, P_AA, 0, P_AD, 58, P_AS, 0, P_AR, 56, P_VEL_AMP, 80, P_VINTAGE, 0, P_SPREAD, 0, P_VOLUME, 127, X};
-/* 68 (VIBE): a clap – band-passed noise chopped by a fast square LFO (the flutter), restarted with every hit */
-static const uint8_t PF_CLAP[] = {P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_NOISE, 127, P_FTYPE, F_LP12, P_CUTOFF, 98, P_RESO, 25, P_DRIVE, 80,
-    P_FENV_AMT, 64, P_KEYTRK, 30, P_AA, 0, P_AD, 78, P_AS, 0, P_AR, 76, P_LFO_SHAPE, L_SQR, P_LFO_RATE, 122,
-    P_LFO_PHASE, LP_SYNC, P_LFO_AMP, 110, P_VEL_AMP, 70, P_VINTAGE, 0, P_SPREAD, 0, P_VOLUME, 127, P_REV_SIZE, 70, P_REV_MIX, 25, X};
-/* 69 (VIBE): an electric piano in the Rhodes manner – a warm low-passed fundamental, a bright tine two octaves up
- * with a touch of cross-mod for the bark, played harder = brighter and louder; tremolo across the stereo, chorus */
-static const uint8_t PF_EPIANO[] = {P_O1_WAVE, W_PLS, P_O1_PW, 64, P_O1_LVL, 120, P_O2_WAVE, W_SAW, P_O2_SEMI, 48, P_O2_LVL, 38,
-    P_XMOD, 28, P_FTYPE, F_LP24, P_CUTOFF, 52, P_RESO, 5, P_FENV_AMT, 100, P_KEYTRK, 100, P_FA, 0, P_FD, 72, P_FS, 20,
-    P_FR, 70, P_AA, 0, P_AD, 102, P_AS, 18, P_AR, 80, P_VEL_FLT, 110, P_VEL_AMP, 100, P_LFO_SHAPE, L_TRI, P_LFO_RATE, 90,
-    P_LFO_PHASE, LP_SPREAD, P_LFO_AMP, 22, P_VINTAGE, 25, P_SPREAD, 90, P_CHO_MIX, 40, P_CHO_RATE, 30, P_CHO_DEPTH, 45,
-    P_REV_SIZE, 85, P_REV_MIX, 22, X};
-/* 70 (VIBE): a Wurlitzer-ish piano – a reedy narrow pulse with an octave above, a little drive for the growl when
- * played hard, a quicker tremolo */
-static const uint8_t PF_WURLI[] = {P_O1_WAVE, W_PLS, P_O1_PW, 38, P_O2_WAVE, W_PLS, P_O2_PW, 50, P_O2_SEMI, 36, P_O2_LVL, 48,
-    P_FTYPE, F_LP12, P_CUTOFF, 50, P_RESO, 15, P_FENV_AMT, 100, P_KEYTRK, 90, P_FA, 0, P_FD, 66, P_FS, 22, P_FR, 60,
-    P_AA, 1, P_AD, 94, P_AS, 30, P_AR, 62, P_DRIVE, 35, P_VEL_FLT, 100, P_VEL_AMP, 90, P_LFO_SHAPE, L_TRI, P_LFO_RATE, 96,
-    P_LFO_PHASE, LP_FREE, P_LFO_AMP, 30, P_VINTAGE, 30, P_SPREAD, 60, P_REV_SIZE, 75, P_REV_MIX, 20, X};
 #undef X
 
-static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 71-99 */
-static const factory_t FACT_VIBE[] = {                  /* 65-70 (VIBE): drums and keys */
-    {"KICK", PF_KICK}, {"SNARE", PF_SNARE}, {"HIHAT", PF_HIHAT}, {"CLAP", PF_CLAP}, {"E-PIANO", PF_EPIANO}, {"WURLI", PF_WURLI}};
-#define NVIBE (sizeof FACT_VIBE / sizeof FACT_VIBE[0])
+static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
+
+/* The DØG-5 factory: the 32 patches of dog5-docs/DOG-5-presets.md §3, in its slot order, their final names
+ * (14-char field; "THE DØG" needs the Ø byte 0xD8, so it is written "\xD8", not a UTF-8 literal). The SOUND of
+ * each is, for now, its documented "nearest base patch" (the PF_* above, kept as the starting point) -- the
+ * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
+ * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"DARK ARP", PF_DARK_ARP}, {"POLY BRASS", PF_POLY_BRASS}, {"SYNC LEAD", PF_SYNC_LEAD}, {"UNISON LD", PF_UNISON_LEAD},
-    {"PWM STRING", PF_PWM_STRINGS}, {"BELL XMOD", PF_BELL_XMOD}, {"FAT BASS", PF_FAT_BASS}, {"ARP SEQ", PF_ARP_SEQ},
-    {"SWEEP PAD", PF_SWEEP_PAD}, {"BP QUACK", PF_BP_QUACK}, {"DUAL SAW", PF_DUAL_SAW}, {"RESO ZAP", PF_RESO_ZAP},
-    {"BRASS STAB", PF_BRASS_STAB}, {"NOISE WASH", PF_NOISE_WASH}, {"HOLLOW PAD", PF_HOLLOW_PAD}, {"SQUARE LD", PF_SQUARE_LEAD},
-    {"SUB BASS", PF_SUB_BASS}, {"SOFT KEYS", PF_SOFT_KEYS}, {"SYNC BRASS", PF_SYNC_BRASS}, {"DRONE UNI", PF_DRONE_UNI},
-    {"CLAV PLUCK", PF_CLAV_PLUCK}, {"WOBBLE BS", PF_WOBBLE_BASS}, {"ARP PLUCK", PF_ARP_PLUCK}, {"ARP CHORD", PF_ARP_CHORD},
-    {"RANDOM ARP", PF_RANDOM_ARP}, {"UPSIDE ARP", PF_UPSIDE_ARP}, {"FIFTHS LD", PF_FIFTHS_LEAD}, {"VINTAGE PD", PF_VINTAGE_PAD},
-    {"NEON PAD", PF_NEON_PAD}, {"XMOD GROWL", PF_XMOD_GROWL}, {"PERC HIT", PF_PERC_HIT}, {"INIT", PF_INIT},
-    {"NIGHTDRIVE", PF_NIGHT_DRIVE}, {"MINOR FALL", PF_MINOR_FALL}, {"SHADOW ARP", PF_SHADOW_ARP}, {"GLASS ARP", PF_GLASS_ARP},
-    {"PULSE ARP", PF_PULSE_ARP}, {"ARP BASS", PF_ARP_BASS}, {"DREAM ARP", PF_DREAM_ARP}, {"STAB CHORD", PF_STAB_CHORD},
-    {"BIG BRASS", PF_BIG_BRASS}, {"HORN SECT", PF_HORN_SECT}, {"WARM PAD", PF_WARM_PAD}, {"DARK PAD", PF_DARK_PAD},
-    {"AIR CHOIR", PF_AIR_CHOIR}, {"SLOW SWEEP", PF_SLOW_SWEEP}, {"GHOST PAD", PF_GHOST_PAD}, {"ENSEMBLE", PF_ENSEMBLE},
-    {"SYNC PAD", PF_SYNC_PAD}, {"ICE BELLS", PF_ICE_BELLS}, {"SOFT EP", PF_SOFT_EP}, {"PULSE ORGN", PF_PULSE_ORGN},
-    {"TAPE KEYS", PF_TAPE_KEYS}, {"ACID LINE", PF_ACID_LINE}, {"PLUCK BASS", PF_PLUCK_BASS}, {"DEEP BASS", PF_DEEP_BASS},
-    {"SYNC BASS", PF_SYNC_BASS}, {"SOLO LEAD", PF_SOLO_LEAD}, {"PWM LEAD", PF_PWM_LEAD}, {"SCREAM LD", PF_SCREAM_LD},
-    {"SOFT FLUTE", PF_SOFT_FLUTE}, {"LASER", PF_LASER}, {"WIND RISE", PF_WIND_RISE}, {"SPACEDRONE", PF_SPACE_DRONE},
+    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_DUAL_SAW},    {"V-Sync", PF_SYNC_LEAD},
+    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
+    {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
+    {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
+    {"Titanic", PF_DUAL_SAW},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
+    {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
+    {"SAWTOOTH", PF_POLY_BRASS},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
+    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_DRONE_UNI},     {"Fi(l)fth", PF_FIFTHS_LEAD},  {"Init bruv?", PF_INIT},
 };

@@ -22,6 +22,9 @@
 #include <sys/syscall.h>
 #include <linux/perf_event.h>
 #endif
+#ifdef OBV_CALLGRIND
+#include <valgrind/callgrind.h>
+#endif
 
 #ifndef APP_NAME
 #define APP_NAME "OBERVAVE"
@@ -47,7 +50,6 @@ static struct {
 } fm1_in = {.wheel = {535, 620}};               /* (the wheels at rest, as a unit reads them) */
 static uint8_t smk_store_cleared, smk_trim_ok;
 static uint32_t smk_jedec;
-static uint8_t smk_pad_events;
 static int32_t smk_master = 724;
 static int32_t host_q[2][64];                   /* 0: pad events, 1: outer keys (key << 8 | velocity, 0 = release) */
 static uint32_t host_qw[2], host_qr[2];
@@ -77,8 +79,6 @@ static uint32_t fm1_input_note_edges(void) { return 0; }   /* (the script sets f
 static int32_t host_enc[HOST_NENC], host_enc_pos[HOST_NENC];   /* detents owed to the app; the position so far (the film's log) */
 static int32_t fm1_enc_take(uint32_t e) { int32_t v = host_enc[e % HOST_NENC]; host_enc[e % HOST_NENC] = 0; return v; }
 static uint64_t host_leds;                      /* bit id: LED id lit (0..13 buttons, 14..40 keys) */
-static void fm1_irq_off(void) {}                 /* (the host's audio runs between the main loop's passes) */
-static void fm1_irq_on(void) {}
 static void fm1_led_key(uint32_t id, int on) { if (on) host_leds |= (uint64_t)1 << id; else host_leds &= ~((uint64_t)1 << id); }
 static uint64_t host_glow;                      /* the dim layer (not in the film log) */
 static void fm1_led_key_glow(uint32_t id, int on) { if (on) host_glow |= (uint64_t)1 << id; else host_glow &= ~((uint64_t)1 << id); }
@@ -107,34 +107,24 @@ static void lcd_blit(uint32_t x, uint32_t y, uint32_t w, uint32_t h, const uint1
 #include "gfx.c"
 
 #define SETTINGS_MAX (4096u - 12u)
-#define HOST_BLOB_SZ (4u * 4096u)               /* (one size for the simulator's storage: a pattern slot's) */
-static uint8_t host_store[HOST_BLOB_SZ];
+/* a fake flash sector: the first 4 bytes hold the stored byte count (0 = never written), the payload follows.
+ * The *length* check mirrors the device's sector_load (platform.c: it rejects h[1] != n), which is the store-
+ * format version guard -- a sector written at one size reads back only at that size. (The device also keeps a
+ * magic + CRC32; those guard corruption / foreign data and are exercised only on real hardware. Here the length
+ * is what distinguishes the old 80-byte / DOG5 96-byte program formats.) */
+static uint32_t host_slen(const uint8_t *s) { uint32_t v; memcpy(&v, s, 4); return v; }
+static void host_sput(uint8_t *s, const void *p, uint32_t n) { memcpy(s, &n, 4); memcpy(s + 4, p, n); }
+static uint8_t host_store[SETTINGS_MAX + 4];
 static int settings_load(void *p, uint32_t n)
 {
-    static int v2_done, v3_done;
-    if (!v3_done && getenv("OBV_V15")) {        /* (test: a 1.5 store: version 3, program 6, 100 BPM, pattern 1) */
-        v3_done = 1;
-        memset(host_store, 0, sizeof host_store);
-        host_store[0] = 1;
-        host_store[4] = 3; host_store[5] = 5; host_store[6] = 100;
-        host_store[11] = 1;                     /* (click: REC) */
-        if (n != 8u) return -1;                 /* (the 3.0 settings: not there yet) */
-    }
-    if (!v2_done && getenv("OBV_V2")) {         /* (test: a 1.4 store: program 4 the user's, "MMMMMMMMMM") */
-        v2_done = 1;
-        host_store[0] = 1;
-        host_store[4] = 2; host_store[5] = 3; host_store[6] = 100;   /* version 2, program 4, 100 BPM */
-        host_store[4 + 8] = 1u << 3;            /* used: bit 3 */
-        memset(host_store + 4 + 12 + 3 * 80, 'M', 80);
-    }
-    if (host_store[0] != 1 || n > SETTINGS_MAX) return -1;
+    if (host_slen(host_store) != n || n > SETTINGS_MAX) return -1;
     memcpy(p, host_store + 4, n);
     return 0;
 }
 static int settings_save(const void *p, uint32_t n)
 {
-    host_store[0] = 1;
-    memcpy(host_store + 4, p, n);
+    if (n > SETTINGS_MAX) return -1;
+    host_sput(host_store, p, n);
     printf("%6u ms  settings saved (%u B)\n", fm1_ms, n);
     return 0;
 }
@@ -142,72 +132,33 @@ static int settings_save(const void *p, uint32_t n)
 static uint8_t host_blob[NBLOB][SETTINGS_MAX + 4];
 static int blob_load(uint32_t i, void *p, uint32_t n)
 {
-    static int v15_done;
-    if (!v15_done && getenv("OBV_V15")) {       /* (test: 1.5's pattern 1: A 16 steps, a note every 4; B 8 steps from the back,
-                                                 * its own program 8, half dry) */
-        uint8_t *b = host_blob[0] + 4;
-        uint32_t k;
-        v15_done = 1;
-        memset(host_blob[0], 0, sizeof host_blob[0]);
-        host_blob[0][0] = 1;
-        b[0] = 'S'; b[1] = 'E'; b[2] = 'Q'; b[3] = '1';
-        b[4] = 16; b[6] = 2; b[7] = 50;          /* trk[0]: len 16, D_16 (2), swing 50 */
-        b[12] = 8; b[14] = 2; b[15] = 50; b[18] = 8; b[19] = 64;   /* trk[1]: len 8, B_PROG 8, B_DRY 64 */
-        for (k = 0; k < 256u; k++) { uint8_t *st = b + 20 + k * 8u; st[5] = 96; st[7] = 100; }
-        for (k = 0; k < 16u; k += 4u) { uint8_t *st = b + 20 + k * 8u; st[0] = (uint8_t)(48 + k); st[4] = 100; }
-        for (k = 0; k < 8u; k += 2u) { uint8_t *st = b + 20 + (255u - k) * 8u; st[0] = 36; st[4] = 110; }
-    }
-    if (i >= NBLOB || host_blob[i][0] != 1 || n > SETTINGS_MAX) return -1;
+    if (i >= NBLOB || host_slen(host_blob[i]) != n || n > SETTINGS_MAX) return -1;
     memcpy(p, host_blob[i] + 4, n);
     return 0;
 }
 static int blob_save(uint32_t i, const void *p, uint32_t n)
 {
     if (i >= NBLOB || n > SETTINGS_MAX) return -1;
-    host_blob[i][0] = 1;
-    memcpy(host_blob[i] + 4, p, n);
+    host_sput(host_blob[i], p, n);
     printf("%6u ms  blob %u saved (%u B)\n", fm1_ms, i, n);
     return 0;
 }
-#define SLOT_SECT 4u                            /* (3.0) a pattern slot: four sectors, two pieces (platform.c's format) */
-#define SLOT_MAX (SLOT_SECT * 4096u - 16u)
-static uint8_t host_slot[NBLOB][HOST_BLOB_SZ];   /* [0] used, [4..7] a's length, [8..11] b's, the bytes from 16 */
-static int slot_load(uint32_t i, void *a, uint32_t na, void *b, uint32_t nb)
-{
-    uint32_t n[2];
-    if (i >= NBLOB || !host_slot[i][0]) return -1;
-    memcpy(n, host_slot[i] + 4, sizeof n);
-    if (na != n[0] || nb != n[1]) return -1;
-    memcpy(a, host_slot[i] + 16, na);
-    memcpy(b, host_slot[i] + 16 + na, nb);
-    return 0;
-}
-static int slot_save(uint32_t i, const void *a, uint32_t na, const void *b, uint32_t nb)
-{
-    if (i >= NBLOB || na + nb > SLOT_MAX) return -1;
-    host_slot[i][0] = 1; memcpy(host_slot[i] + 4, &na, 4); memcpy(host_slot[i] + 8, &nb, 4);
-    memcpy(host_slot[i] + 16, a, na);
-    memcpy(host_slot[i] + 16 + na, b, nb);
-    printf("%6u ms  pattern slot %u saved (%u + %u B)\n", fm1_ms, i, na, nb);
-    return 0;
-}
-#define NPSECT 2u
-#define host_psect ((uint8_t (*)[4096])(host_store + 4096))   /* (in the settings' blob after them: the simulator keeps
-                                                 * the programs with the settings) */
+#define NPSECT 3u                               /* must track the device NPSECT (platform.c / smk_store.h) */
+static uint8_t host_psect[NPSECT][SETTINGS_MAX + 4];
 static int psect_load(uint32_t i, void *p, uint32_t n)
 {
-    if (i >= NPSECT || host_psect[i][0] != 1 || n > SETTINGS_MAX) return -1;
+    if (i >= NPSECT || host_slen(host_psect[i]) != n || n > SETTINGS_MAX) return -1;
     memcpy(p, host_psect[i] + 4, n);
     return 0;
 }
 static int psect_save(uint32_t i, const void *p, uint32_t n)
 {
     if (i >= NPSECT || n > SETTINGS_MAX) return -1;
-    host_psect[i][0] = 1;
-    memcpy(host_psect[i] + 4, p, n);
+    host_sput(host_psect[i], p, n);
     printf("%6u ms  programs %u saved (%u B)\n", fm1_ms, i, n);
     return 0;
 }
+static int host_selftest;                       /* "selftest" argv: run store_selftest() (obervave.c) instead of the app */
 
 static uint8_t mq[64][3];
 static uint32_t mq_w, mq_r;
@@ -234,8 +185,15 @@ typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn
 /* SMK-37 builds (BOARD_SMK37) also: "T vel V" (the velocity of the keys pressed from now), "T pad P V" (hardware pad
  * P hit at velocity V, V 0 = let go), "T fader F V" (0..127), "T wheel W RAW" (0 pitch, 1 mod; raw ADC 0..1023),
  * "T xkey K V" (keybed key K 0..36 at V, 0 = let go: the outer keys 0..4, 32..36), "T dump" (pads and state);
- * any build: "T shot" (the screen at T -> OUT-T.ppm) */
-enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK };
+ * any build: "T shot" (the screen at T -> OUT-T.ppm), "T expect page N" (the app must be on page N now: prints ok / FAIL
+ * and the run exits 1 on a FAIL; N = the page index, PG_* in obv_params.h), "T expect idle N" (the last control-map draw
+ * called app_idle() at least N times: the DRAW RULE), "T param P V" (set parameter P to V, as a knob would), "T expect voices N" (N voice cards gated on now) */
+enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES };
+static uint32_t host_page_now(void);            /* (obervave.c: the page the panel is on) */
+static uint32_t host_map_idle_calls(void);      /* (obervave.c: app_idle calls the last control-map draw made) */
+static void host_set_param(uint32_t p, int32_t v);   /* (obervave.c: set a parameter, as a knob would) */
+static uint32_t host_voices_on(void);           /* (obervave.c: how many voice cards are gated on) */
+static uint32_t host_fails;
 static const host_ev_t SCRIPT0[] = {
     {200, 1u << 7, -1, 0, 0, 0, -1, 0},                         /* C4 */
     {700, 1u << 7 | 1u << 11 | 1u << 14, -1, 0, 0, 0, -1, 0},   /* + E4 G4: a chord */
@@ -275,6 +233,15 @@ static void read_script(const char *path)
         else if (!strcmp(what, "xkey")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_XKEY; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
         else if (!strcmp(what, "dump")) e.smk = HS_DUMP;
         else if (!strcmp(what, "check")) e.smk = HS_CHECK;   /* (SMK: KNOB BANK pressed / let go: the panel check) */
+        else if (!strcmp(what, "expect")) {         /* "T expect page N" */
+            char kind[16] = "";
+            sscanf(line, "%*u %*s %15s %u", kind, &a);
+            if (!strcmp(kind, "page")) { e.smk = HS_PAGE; e.sa = (uint8_t)a; }
+            else if (!strcmp(kind, "idle")) { e.smk = HS_IDLE; e.sb = (uint16_t)a; }
+            else if (!strcmp(kind, "voices")) { e.smk = HS_VOICES; e.sb = (uint16_t)a; }
+            else { fprintf(stderr, "script: unknown expect '%s'\n", kind); continue; }
+        }
+        else if (!strcmp(what, "param")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_PARAM; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }   /* set parameter a = b */
         else if (!strcmp(what, "shot")) e.smk = HS_SHOT;   /* (any board: the screen now -> OUT-<ms>.ppm) */
         else if (!strcmp(what, "midi")) { sscanf(line, "%*u %*s %i %u %u", (int *)&a, &b, &c); e.st = (uint8_t)a; e.d1 = (uint8_t)b; e.d2 = (uint8_t)c; }
         else continue;
@@ -349,6 +316,17 @@ static void perf_report(void)
                (unsigned long long)(perf_insns / perf_frames), (unsigned long long)perf_frames);
 }
 
+/* the same yardstick where OBV_PERF can't run (no hardware PMU, as in this project's cloud build
+ * containers): build with -DOBV_CALLGRIND and run under
+ *   valgrind --tool=callgrind --collect-atstart=no --combine-dumps=yes ./obervave ...
+ * CALLGRIND_TOGGLE_COLLECT (a no-op, and costs nothing, outside valgrind) brackets each app_audio()
+ * call past the 1 s warm-up, same as perf_fd's window above, so callgrind.out.<pid>'s Ir total after
+ * the run is instructions *fetched* in exactly that window (deterministic re-execution, not sampled;
+ * dog5-docs/PERF-BASELINE.md has the division by cg_frames and what it means). */
+#ifdef OBV_CALLGRIND
+static uint64_t cg_frames;
+#endif
+
 static void platform_poll(void)                 /* one call = one millisecond */
 {
     static uint32_t step, shot, owed, frame;
@@ -360,6 +338,20 @@ static void platform_poll(void)                 /* one call = one millisecond */
     while (step < script_n && script[step].t <= fm1_ms) {
         if (script[step].smk == HS_SHOT) {
             write_ppm(fm1_ms);
+        } else if (script[step].smk == HS_PAGE) {
+            uint32_t now = host_page_now(), want = script[step].sa;
+            printf("%6u ms  expect page %u: on page %u  %s\n", fm1_ms, want, now, now == want ? "ok" : "FAIL");
+            host_fails += now != want;
+        } else if (script[step].smk == HS_PARAM) {
+            host_set_param(script[step].sa, (int32_t)script[step].sb);
+        } else if (script[step].smk == HS_VOICES) {
+            uint32_t n = host_voices_on(), want = script[step].sb;
+            printf("%6u ms  expect voices %u: %u gated on  %s\n", fm1_ms, want, n, n == want ? "ok" : "FAIL");
+            host_fails += n != want;
+        } else if (script[step].smk == HS_IDLE) {
+            uint32_t n = host_map_idle_calls(), want = script[step].sb;
+            printf("%6u ms  expect idle >= %u: the last map draw called app_idle %u times  %s\n", fm1_ms, want, n, n >= want ? "ok" : "FAIL");
+            host_fails += n < want;
         } else if (script[step].smk) {
 #if BOARD_SMK37
             static uint32_t vel = 100;
@@ -404,7 +396,13 @@ static void platform_poll(void)                 /* one call = one millisecond */
 #ifdef __linux__
         if (perf_fd >= 0) { ioctl(perf_fd, PERF_EVENT_IOC_RESET, 0); ioctl(perf_fd, PERF_EVENT_IOC_ENABLE, 0); }
 #endif
+#ifdef OBV_CALLGRIND
+        if (fm1_ms > 1000u) CALLGRIND_TOGGLE_COLLECT;
+#endif
         app_audio(blk, HALF_FRAMES);
+#ifdef OBV_CALLGRIND
+        if (fm1_ms > 1000u) { CALLGRIND_TOGGLE_COLLECT; cg_frames += HALF_FRAMES; }
+#endif
 #ifdef __linux__
         if (perf_fd >= 0) {
             long long c = 0;
@@ -440,17 +438,28 @@ static void platform_poll(void)                 /* one call = one millisecond */
     if (fm1_ms >= end_ms) {
         write_wav();
         perf_report();
-        exit(0);
+#ifdef OBV_CALLGRIND
+        if (cg_frames) {
+            printf("callgrind frames %llu (divide callgrind_annotate's Ir total by this)\n",
+                   (unsigned long long)cg_frames);
+            CALLGRIND_DUMP_STATS;
+        }
+#endif
+        exit(host_fails != 0);
     }
 }
 
 int main(int argc, char **argv)
 {
-    if (argc > 1) host_out = argv[1];
-    if (argc > 2) read_script(argv[2]);
-    if (argc > 3) frame_fps = (uint32_t)atoi(argv[3]);
-    perf_open();
-    app_main();
+    int i;
+    for (i = 1; i < argc; i++) if (!strcmp(argv[i], "selftest")) host_selftest = 1;
+    if (!host_selftest) {
+        if (argc > 1) host_out = argv[1];
+        if (argc > 2) read_script(argv[2]);
+        if (argc > 3) frame_fps = (uint32_t)atoi(argv[3]);
+        perf_open();
+    }
+    app_main();                                 /* store_selftest() runs and exits if host_selftest (obervave.c) */
     return 0;
 }
 #endif
