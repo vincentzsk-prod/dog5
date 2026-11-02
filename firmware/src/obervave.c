@@ -5,6 +5,7 @@
  *   obv_dsp.h       oscillators (polyBLEP events), filter (trapezoidal SVF), tanh
  *   obv_params.h    the parameter table: patches, pages, MIDI CC
  *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
+ *   obv_tape.h      CHEW, the tape (wow, flutter, saturation, head loss, hiss, dropouts; last, after the reverb)
  *   obv_fx.h        ping-pong delay, plate reverb (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
@@ -21,6 +22,7 @@ static void app_idle(void);
 #include "obv_params.h"
 #include "obv_fx.h"
 #include "obv_drive.h"
+#include "obv_tape.h"
 #include "obv_engine.h"
 #include "obv_patches.h"
 
@@ -174,6 +176,7 @@ static void randomize(void)
     d->v[P_DLY_MIX] = (uint8_t)(rn(0, 1) ? 0 : rn(20, 70));
     d->v[P_REV_SIZE] = (uint8_t)rn(40, 127);
     d->v[P_REV_MIX] = (uint8_t)(rn(0, 3) ? rn(15, 60) : 0);
+    d->v[P_CHEW] = (uint8_t)(rn(0, 3) ? 0 : rn(15, 70));   /* (last: the draws above stay as they were) */
     edited = 1;
 }
 
@@ -228,6 +231,12 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
     case K_PCT: fmt_u(s, (v * 100u + 63u) / 127u); scat(s, "%"); break;
     case K_CUT: { uint32_t hz = CUT_HZ[(v + 8u) % 137u]; if (hz < 10000u) { fmt_u(s, hz); scat(s, "Hz"); } else { fmt_u(s, hz / 1000u); scat(s, "."); fmt_u(t, (hz / 100u) % 10u); scat(s, t); scat(s, "k"); } } break;
     case K_OCT: fmt_u(s, v); scat(s, " OCT"); break;
+    case K_WF: if (v == 64u) scat(s, "BOTH"); else { scat(s, v < 64u ? "WOW+" : "FLT+"); fmt_u(t, v < 64u ? 64u - v : v - 64u); scat(s, t); } break;
+    case K_DB12:                                /* 0 off, 1..127 = -12 .. +12 dB */
+        if (!v) { scat(s, "OFF"); break; }
+        { uint32_t d = ((v > 64u ? v - 64u : 64u - v) * 12u + 31u) / 63u; scat(s, v < 64u && d ? "-" : v > 64u && d ? "+" : ""); fmt_u(t, d); scat(s, t); scat(s, "dB"); }
+        break;
+    case K_REL: if (!v) scat(s, "OFF"); else { fmt_u(s, v < 64u ? (v * 100u + 32u) / 64u : 100u + ((v - 64u) * 200u + 31u) / 63u); scat(s, "%"); } break;
     default: fmt_u(s, v);
     }
 }
@@ -256,7 +265,7 @@ static void draw_header(void)
         static const char *const MODE_S[4] = {"POLY", "DUAL", "UNI", "MONO"};
         static const char *const FT_S[NFTYPE] = {"LP12", "HP12", "BP12", "NOTCH", "LP24", "SEM"};
         const uint8_t *pv = live.v;
-        uint32_t arp = pv[P_ARP_MODE] != 0, fx = live.v[P_GROWL] || live.v[P_DLY_MIX] || live.v[P_REV_MIX];
+        uint32_t arp = pv[P_ARP_MODE] != 0, fx = live.v[P_GROWL] || live.v[P_DLY_MIX] || live.v[P_REV_MIX] || live.v[P_CHEW];
         uint32_t n = slen(MODE_S[pv[P_MODE] & 3u]) + 1u + slen(FT_S[pv[P_FTYPE] % NFTYPE]) + (hold ? 5u : 0u);
         if (arp && n + 4u <= 23u) n += 4u; else arp = 0;
         if (fx && n + 3u <= 23u) n += 3u; else fx = 0;
@@ -299,7 +308,9 @@ static void layer_knob(knob_view_t *k, uint32_t i)
 static uint32_t sel_held(void) { return fm1_in.buttons >> BTN_SEL & 1u; }
 static const page_t *page_now(void)             /* the page's knobs, or its secondaries while SELECT is held */
 {
-    return page == PG_DRIVE && sel_held() ? &PAGE_DRIVE_SEL : &PAGE[page];
+    if (sel_held() && page == PG_DRIVE) return &PAGE_DRIVE_SEL;
+    if (sel_held() && page == PG_TAPE) return &PAGE_TAPE_SEL;
+    return &PAGE[page];
 }
 
 static void draw_page(void)
@@ -414,7 +425,7 @@ static void draw_map(void)
         if (in_fam(PB[i].fam)) hi = 1 + i;
     }
     R[7].label = "BURY (SAVE)"; R[7].what = "TAP TWICE";
-    R[8].label = "FETCH (SELECT)"; R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : "TEMPO";
+    R[8].label = "FETCH (SELECT)"; R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : page == PG_TAPE ? "HOLD: TAPE +" : "TEMPO";
     R[9].label = "BARKS (" NM_PRESETS ")"; R[9].what = "SOUND";
     R[10].label = "OCT-/+"; R[10].what = "OCTAVE";
     ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, "FX HELD: GROWL + MIXES");
@@ -736,7 +747,7 @@ static void app_main(void)
         if (save_armed && fm1_ms - save_t > 3000u) { save_armed = 0; dirty_page = dirty_hdr = 1; }
         {
             static uint32_t sel_was;            /* SELECT pressed or let go on a page with secondaries: its knobs change */
-            if (sel_held() != sel_was) { sel_was = sel_held(); if (page == PG_DRIVE) { dirty_page = 1; map_dirty = map_on; } }
+            if (sel_held() != sel_was) { sel_was = sel_held(); if (page == PG_DRIVE || page == PG_TAPE) { dirty_page = 1; map_dirty = map_on; } }
         }
         if (np != page) {
             if (layer_lock) { layer = L_NONE; layer_lock = 0; }

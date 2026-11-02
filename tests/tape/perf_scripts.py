@@ -6,13 +6,15 @@ POLY, a held Cmaj7 (C4 E4 G4 B4) from 3.0 to 9.0 s, the stage(s) under test swit
 Parameter numbers: the obv_params.h enum."""
 import os
 HERE = os.path.dirname(os.path.abspath(__file__))
-P = dict(MODE=38, GROWL=54, DLY_MIX=58, REV_MIX=62)
+P = dict(MODE=38, GROWL=54, DLY_MIX=58, REV_MIX=62, CHEW=64)
 STAGES = {
     "off": [],
     "growl": [("GROWL", 100)],
     "dly": [("DLY_MIX", 60)],
     "rev": [("REV_MIX", 60)],
+    "chew": [("CHEW", 100)],
     "all3": [("GROWL", 100), ("DLY_MIX", 60), ("REV_MIX", 60)],
+    "all4": [("GROWL", 100), ("DLY_MIX", 60), ("REV_MIX", 60), ("CHEW", 100)],
 }
 for name, on in STAGES.items():
     lines = ["2600 midi 0xC0 0 0", f"2601 param {P['MODE']} 0"]
