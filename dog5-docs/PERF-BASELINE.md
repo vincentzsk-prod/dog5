@@ -125,3 +125,20 @@ what they cost the sound (estimates, not measured): (1) `REV_DIV 2`, the half-ra
 roughly half of its 566); (2) GROWL in mono, one channel for both (half of its 742 by construction; a driven pad loses
 its stereo spread); (3) GROWL at 2x instead of 4x (roughly a third of it; the pre-clip low-pass would have to close to
 ~2 kHz at the top to keep the same aliasing). None is taken: the device decides.
+
+## The running total, re-measured before TAPE (2026-11-02, main at `6630c5b`)
+
+The scripts are committed now (`tests/tape/perf_scripts.py` writes `tests/tape/perf_*.txt`; the same recipe as the
+GROWL section: program 1 in POLY, a held Cmaj7 3.0-9.0 s, the stage(s) on at 2.7 s, 299,880 frames on). Run:
+`for s in off growl dly rev all3; do tests/perf_callgrind.sh tests/tape/perf_$s.txt; done`.
+
+| Stage | Ir (374,784 frames past the warm-up) | Instructions / sample while on |
+|---|---:|---:|
+| Everything off (the voices) | 268,155,759 | (715 over the whole window) |
+| GROWL 100 | 489,450,503 | **738** |
+| BBD delay (old ping-pong, mix 60) | 300,896,311 | **109** |
+| Spring (old plate, mix 60) | 437,967,378 | **566** |
+| GROWL + delay + reverb | 692,002,674 | **1,413** (1,846 over the whole window) |
+
+Device build (`./build.sh`, the vendored toolchain): image **95,912 B**, RAM .data+.bss **31,824 B** of 98,304, pool
+**271,772 B** of 344,064 (72,292 B free).
