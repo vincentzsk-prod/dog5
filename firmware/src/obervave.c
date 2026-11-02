@@ -6,13 +6,13 @@
  *   obv_params.h    the parameter table: patches, pages, MIDI CC
  *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
  *   obv_tape.h      CHEW, the tape (wow, flutter, saturation, head loss, hiss, dropouts; last, after the reverb)
- *   obv_fx.h        ping-pong delay, plate reverb (after the output stage, same ISR)
+ *   obv_fx.h        ALLEY (the BBD delay), plate reverb (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
  *   this file       the panel, MIDI, the screen, the storage
  *
  * (OberVave's step sequencer, obv_seq.h, and the two-sound track B it alone drove, are gone: CLAUDE.md §5.
- * SEQ, ALGORITHM, PLAY and REC are free for a later DØG-5 stage to claim.)
+ * SEQ, ALGORITHM and PLAY are free for a later DØG-5 stage to claim; REC taps ALLEY's time on the BBD page.)
  *
  * Integers only (no FPU, no 64-bit division); tests/host.c runs this on a computer. */
 static void app_idle(void);
@@ -237,6 +237,17 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
         { uint32_t d = ((v > 64u ? v - 64u : 64u - v) * 12u + 31u) / 63u; scat(s, v < 64u && d ? "-" : v > 64u && d ? "+" : ""); fmt_u(t, d); scat(s, t); scat(s, "dB"); }
         break;
     case K_REL: if (!v) scat(s, "OFF"); else { fmt_u(s, v < 64u ? (v * 100u + 32u) / 64u : 100u + ((v - 64u) * 200u + 31u) / 63u); scat(s, "%"); } break;
+    case K_ALLEY: case K_AFINE:                 /* the time ALLEY + FINE make (both knobs show it); SYNC: the note value */
+        {
+            uint32_t a = p == P_ALLEY ? v : live.v[P_ALLEY], f = p == P_ALLEY_FINE ? v : live.v[P_ALLEY_FINE];
+            if (!a) { if (p == P_ALLEY) { scat(s, "S "); scat(s, DDIV_NAME[live.v[P_DLY_TIME] % NDDIV]); } else scat(s, "-"); }
+            else {                              /* (to the nearest ms from 100 ms: fmt_ms cuts the tenths there) */
+                uint32_t x10 = (((uint32_t)alley_q16(a, f) >> 8) * 100u / 441u + 128u) >> 8;
+                fmt_ms(s, x10 >= 1000u ? (x10 + 5u) / 10u * 10u : x10);
+            }
+        }
+        break;
+    case K_WIDTH: if (!v) scat(s, "MONO"); else if (v >= 127u) scat(s, "FULL"); else { fmt_u(s, (v * 100u + 63u) / 127u); scat(s, "%"); } break;
     default: fmt_u(s, v);
     }
 }
@@ -295,11 +306,55 @@ static void fmt_note(char *s, uint32_t n)       /* C4, F#3 */
     fmt_u(s + slen(s), n < 12u ? 1u : n / 12u - 1u);
 }
 
+/* ALLEY's knobs and the tap (REC on the BBD page). The time is ALLEY (a step of BBD_T) + FINE (1/128 of a step):
+ * turning ALLEY clears FINE (the knob walks clean steps); leaving SYNC (ALLEY 0) by ALLEY or FINE starts from the time
+ * that was sounding, so the echo never jumps; turning SYNC (the note value, BBD +) goes back to SYNC. A tap sets both
+ * from the time between the taps (a CC sets its byte as it is: CC 87 at 0 is SYNC) */
+static uint32_t sync_samples(void)              /* the time SYNC gives now (as fx_block works it out) */
+{
+    uint32_t q = ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240), d = live.v[P_DLY_TIME] % NDDIV;
+    return clampi((int32_t)(q * DDIV_NUM[d] / DDIV_DEN[d]), 64, DLY_MAX - 4u);
+}
+static void alley_from_sync(void)               /* SYNC -> the free step + FINE nearest the time sounding now */
+{
+    uint32_t f, a;
+    if (live.v[P_ALLEY]) return;
+    a = alley_index(sync_samples(), &f);
+    live.v[P_ALLEY] = (uint8_t)a; live.v[P_ALLEY_FINE] = (uint8_t)f;
+}
+static void alley_turn(uint32_t p, int32_t e)   /* a knob on ALLEY, FINE or SYNC turned by e detents */
+{
+    if (p == P_DLY_TIME) { set_param(P_DLY_TIME, (int32_t)live.v[P_DLY_TIME] + (e > 0 ? 1 : -1)); live.v[P_ALLEY] = 0; live.v[P_ALLEY_FINE] = 0; return; }
+    if (!live.v[P_ALLEY]) { alley_from_sync(); edited = 1; }
+    if (p == P_ALLEY) { set_param(P_ALLEY, clampi((int32_t)live.v[P_ALLEY] + e, 1, 127)); live.v[P_ALLEY_FINE] = 0; }
+    else set_param(P_ALLEY_FINE, (int32_t)live.v[P_ALLEY_FINE] + e * 2);
+}
+#define TAP_GAP_MS 2000u                        /* taps further apart start again */
+static uint32_t tap_t, tap_n, tap_sum, tap_last_iv;
+static char tap_msg[20];
+static void alley_tap(void)                     /* REC on the BBD page: the time between taps (the mean of the last 3) */
+{
+    uint32_t now = fm1_ms, iv = now - tap_t, n, f, a, fold = 0;
+    tap_t = now;
+    if (!tap_n || iv > TAP_GAP_MS || iv < 40u) { tap_n = 1; tap_sum = 0; say("TAP AGAIN"); return; }
+    if (tap_n >= 2u && (iv * 10u < tap_last_iv * 7u || iv * 7u > tap_last_iv * 10u)) { tap_n = 1; tap_sum = 0; }   /* a new tempo */
+    tap_last_iv = iv;
+    tap_sum = tap_n >= 4u ? tap_sum - tap_sum / 3u + iv : tap_sum + iv;   /* (3 intervals at most) */
+    if (tap_n < 4u) tap_n++;
+    n = tap_sum * 441u / (10u * (tap_n - 1u));  /* samples */
+    while (n > BBD_T[127]) { n >>= 1; fold++; }   /* slower than 740 ms: its 8th (and so on) */
+    a = alley_index(n, &f);
+    live.v[P_ALLEY] = (uint8_t)a; live.v[P_ALLEY_FINE] = (uint8_t)f; edited = 1;
+    tap_msg[0] = 0; scat(tap_msg, "ALLEY "); param_value(tap_msg + slen(tap_msg), P_ALLEY, a);
+    if (fold) scat(tap_msg, fold == 1u ? " /2" : " /4");
+    say(tap_msg);
+}
+
 /* FX held: its knobs are the effects' mixes (the only layer left: SEQ/EDIT/GLO/SAVE's hold-layers were sequencer
  * content and went with it; EDIT, GLO and SAVE are plain tap buttons now, see app_main) */
 static void layer_knob(knob_view_t *k, uint32_t i)
 {
-    static const int8_t FXP[4] = {P_GROWL, P_DLY_MIX, P_REV_MIX, P_DLY_TIME};
+    static const int8_t FXP[4] = {P_GROWL, P_DLY_MIX, P_REV_MIX, P_ALLEY};
     uint32_t p2 = (uint32_t)FXP[i];
     k->present = 1; k->label = PDEF[p2].name; k->v = live.v[p2]; k->max = PDEF[p2].max;
     param_value(k->value, p2, live.v[p2]);
@@ -310,6 +365,7 @@ static const page_t *page_now(void)             /* the page's knobs, or its seco
 {
     if (sel_held() && page == PG_DRIVE) return &PAGE_DRIVE_SEL;
     if (sel_held() && page == PG_TAPE) return &PAGE_TAPE_SEL;
+    if (sel_held() && page == PG_BBD) return &PAGE_BBD_SEL;
     return &PAGE[page];
 }
 
@@ -362,7 +418,7 @@ static void draw_hints(void)
     if (key == hints_key) return;
     hints_key = key;
     if (toasting) ui_hints(toast, "", C_AMBER);
-    else if (layer == L_FX) ui_hints("KNOBS: GROWL BBD SPRING", "AND THE BBD TIME", C_AMBER);
+    else if (layer == L_FX) ui_hints("KNOBS: GROWL BBD SPRING", "AND ALLEY (THE BBD TIME)", C_AMBER);
 }
 
 #ifdef OBV_HOST
@@ -425,10 +481,11 @@ static void draw_map(void)
         if (in_fam(PB[i].fam)) hi = 1 + i;
     }
     R[7].label = "BURY (SAVE)"; R[7].what = "TAP TWICE";
-    R[8].label = "FETCH (SELECT)"; R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : page == PG_TAPE ? "HOLD: TAPE +" : "TEMPO";
+    R[8].label = "FETCH (SELECT)";
+    R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : page == PG_TAPE ? "HOLD: TAPE +" : page == PG_BBD ? "HOLD: BBD +" : "TEMPO";
     R[9].label = "BARKS (" NM_PRESETS ")"; R[9].what = "SOUND";
     R[10].label = "OCT-/+"; R[10].what = "OCTAVE";
-    ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, "FX HELD: GROWL + MIXES");
+    ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, page == PG_BBD ? "WAG (REC): TAP THE TIME" : "FX HELD: GROWL + MIXES");
 #ifdef OBV_HOST
     host_map_idle = host_idle_n - idle0;
 #endif
@@ -744,10 +801,11 @@ static void app_main(void)
             save_armed = 0;
             dirty_hdr = dirty_tags = dirty_page = 1;
         }
+        if (b & (1u << BTN_REC) && page == PG_BBD && !layer) { alley_tap(); dirty_page = dirty_hdr = 1; }   /* WAG: the tap */
         if (save_armed && fm1_ms - save_t > 3000u) { save_armed = 0; dirty_page = dirty_hdr = 1; }
         {
             static uint32_t sel_was;            /* SELECT pressed or let go on a page with secondaries: its knobs change */
-            if (sel_held() != sel_was) { sel_was = sel_held(); if (page == PG_DRIVE || page == PG_TAPE) { dirty_page = 1; map_dirty = map_on; } }
+            if (sel_held() != sel_was) { sel_was = sel_held(); if (page == PG_DRIVE || page == PG_TAPE || page == PG_BBD) { dirty_page = 1; map_dirty = map_on; } }
         }
         if (np != page) {
             if (layer_lock) { layer = L_NONE; layer_lock = 0; }
@@ -785,10 +843,14 @@ static void app_main(void)
                 else { set.tune = (int8_t)clampi(set.tune + e, -50, 50); ctl_tune8 = set.tune * 256 / 100; }
                 set_dirty = 1; set_t = fm1_ms;
             } else if (layer == L_FX) {
-                static const int8_t FXP[4] = {P_GROWL, P_DLY_MIX, P_REV_MIX, P_DLY_TIME};
+                static const int8_t FXP[4] = {P_GROWL, P_DLY_MIX, P_REV_MIX, P_ALLEY};
                 layer_used = 1;
-                set_param((uint32_t)FXP[k], (int32_t)live.v[FXP[k]] + (FXP[k] == P_DLY_TIME ? (e > 0 ? 1 : -1) : e * 2));
+                if (FXP[k] == P_ALLEY) alley_turn(P_ALLEY, e);
+                else set_param((uint32_t)FXP[k], (int32_t)live.v[FXP[k]] + e * 2);
                 dirty_tags = 1;
+            } else if (p == P_ALLEY || p == P_ALLEY_FINE || p == P_DLY_TIME) {
+                alley_turn((uint32_t)p, e);
+                dirty_hdr = 1;
             } else if (p >= 0) {
                 int32_t step = PDEF[p].max >= 100 ? 2 : 1;
                 set_param((uint32_t)p, (int32_t)live.v[p] + e * step);
@@ -829,6 +891,7 @@ static void app_main(void)
         fm1_led_key(BTN_FX, in_fam(FAM_FX));
         fm1_led_key(BTN_GLO, in_fam(FAM_GLO));
         fm1_led_key(BTN_SAVE, save_armed);
+        fm1_led_key(BTN_REC, page == PG_BBD);   /* WAG lit: tap the time here */
 #if BOARD_SMK37
         smk_leds();                             /* FADER BANK, < > */
 #endif

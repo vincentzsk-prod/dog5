@@ -1,0 +1,15 @@
+# ALLEY at MIX 0 while its line is still ringing (FEEDBK 110, MIX 90 until 4.0 s, then 0): from the block after the
+# switch the output must be the old delay's at MIX 0, sample for sample (tests/bbd/analyze.py checks from 4.01 s)
+2600 midi 0xC0 31 0
+2601 param 58 90
+2601 param 56 110
+2700 midi 0x90 48 100
+2700 midi 0x90 55 100
+2700 midi 0x90 64 100
+3200 midi 0x80 48 0
+3200 midi 0x80 55 0
+3200 midi 0x80 64 0
+4000 param 58 0
+4300 midi 0x90 60 100
+5500 midi 0x80 60 0
+7000 end

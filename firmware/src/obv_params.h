@@ -21,6 +21,7 @@ enum {
     P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX,
     P_POLY_N,                                   /* (appended: the MIDI CC numbers of the above stay) */
     P_CHEW, P_TP_WOWFLT, P_TP_HISS, P_TP_DROPS, /* TAPE (obv_tape.h): bytes 64-67, CC 83-86 (appended) */
+    P_ALLEY, P_ALLEY_FINE, P_BBD_SPREAD,        /* ALLEY, the BBD (obv_fx.h): bytes 68-70, CC 87-89 (appended) */
     NPARAM
 };
 /* the chorus is gone (the Psych Chain, CLAUDE.md section 6): its bytes 52-54 and CC 67-69 are GROWL's now. The old
@@ -32,8 +33,8 @@ enum {
 #define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 */
 #define PATCH_BYTES 96u                         /* DØG-5: grown 80 -> 96 (the "DOG5" program format) */
 #define PATCH_NAME_AT 80u                       /* the name at a FIXED offset, decoupled from NPARAM: bytes 0-79 are
-                                                 * parameters (68 used: 0-63, then TAPE's 64-67; 68-79 free for
-                                                 * v1.1), the 14-char name 80-93, 2 spare (94-95). Adding a
+                                                 * parameters (71 used: 0-63, TAPE's 64-67, ALLEY's 68-70; 71-79
+                                                 * free for v1.1), the 14-char name 80-93, 2 spare (94-95). Adding a
                                                  * parameter (always at the end of the table) never moves the name. */
 #if NPARAM > PATCH_NAME_AT
 #error "the parameters run into the name field"
@@ -45,7 +46,7 @@ enum {
 #define NFACT 32u                               /* the 32 DØG-5 patches (dog5-docs/DOG-5-presets.md); the rest INIT */
 
 enum { K_NUM, K_BIP, K_ONOFF, K_WAVE, K_FTYPE, K_MODE, K_LSHAPE, K_LPHASE, K_TO, K_ARP, K_DIV, K_SEMI, K_MS, K_HZ,
-       K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV, K_WF, K_DB12, K_REL };
+       K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV, K_WF, K_DB12, K_REL, K_ALLEY, K_AFINE, K_WIDTH };
 enum { W_OFF, W_SAW, W_PLS, W_BOTH };
 enum { F_LP12, F_HP12, F_BP12, F_NOTCH, F_LP24, F_SEM, NFTYPE };   /* SEM: LP .. notch .. HP by MORPH */
 enum { M_POLY, M_DUAL, M_UNISON, M_MONO };
@@ -116,7 +117,7 @@ static const pdef_t PDEF[NPARAM] = {
     [P_GRL_BIAS] = {"BIAS", 127, 40, K_NUM, 0},   /* (the defaults stay the chorus's, so no patch's bytes change) */
     [P_GRL_TONE] = {"TONE", 127, 50, K_NUM, 0},
     [P_GROWL] = {"GROWL", 127, 0, K_PCT, 0},
-    [P_DLY_TIME] = {"TIME", NDDIV - 1, DD_8D, K_DDIV, 0},
+    [P_DLY_TIME] = {"SYNC", NDDIV - 1, DD_8D, K_DDIV, 0},   /* the note value ALLEY 0 follows */
     [P_DLY_FB] = {"FEEDBK", 127, 50, K_NUM, 0},
     [P_DLY_TONE] = {"TONE", 127, 70, K_NUM, 0},
     [P_DLY_MIX] = {"MIX", 127, 0, K_NUM, 0},
@@ -129,6 +130,10 @@ static const pdef_t PDEF[NPARAM] = {
     [P_TP_WOWFLT] = {"WOW/FLT", 127, 64, K_WF, 0},   /* 0 wow only, 64 both, 127 flutter only */
     [P_TP_HISS] = {"HISS", 127, 64, K_DB12, 0},  /* 0 off, else -12 .. +12 dB around CHEW's own hiss */
     [P_TP_DROPS] = {"DROPS", 127, 64, K_REL, 0}, /* 0 none, 64 CHEW's own, 127 three times as many */
+    [P_ALLEY] = {"ALLEY", 127, 0, K_ALLEY, 0},  /* the BBD's time: 0 SYNC (TIME's note value at the tempo), 1..127 free,
+                                                 * 10 .. 740 ms (BBD_T); REC on the BBD page taps it in */
+    [P_ALLEY_FINE] = {"FINE", 127, 0, K_AFINE, 0},   /* 1/128ths of an ALLEY step (a tap's precision) */
+    [P_BBD_SPREAD] = {"PINGPONG", 127, 127, K_WIDTH, 0},   /* 0 mono repeats (a BBD's), 127 ping-pong (as before) */
 };
 
 static const char *const WAVE_NAME[4] = {"OFF", "SAW", "PULSE", "SAW+PLS"};
@@ -168,7 +173,8 @@ static const page_t PAGE[NPAGE] = {
     [PG_LFODEST] = {"LFO DEST", {P_LFO_PITCH, P_LFO_PWM, P_LFO_FLT, P_LFO_AMP}},
     [PG_LFO2] = {"LFO +", {P_LFO_PITCH_TO, P_LFO_PWM_TO, -1, -1}},
     [PG_DRIVE] = {"DRIVE", {P_GROWL, -1, -1, -1}},                              /* SELECT held: BIAS, TONE (PAGE_SEL) */
-    [PG_BBD] = {"BBD DELAY", {P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},
+    [PG_BBD] = {"BBD DELAY", {P_ALLEY, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},     /* SELECT held: TIME (sync), FINE,
+                                                 * PINGPONG (PAGE_BBD_SEL); REC tapped: the time (tap tempo) */
     [PG_SPRING] = {"SPRING", {P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX}},
     [PG_TAPE] = {"TAPE", {P_CHEW, -1, -1, -1}},                                 /* SELECT held: WOW/FLT, HISS, DROPS */
     [PG_ARP] = {"ARP", {P_ARP_MODE, P_ARP_DIV, P_ARP_OCT, P_ARP_GATE}},
@@ -181,6 +187,8 @@ _Static_assert(NPAGE == 20, "DOG-5 has 20 pages (CLAUDE.md section 5)");
 /* SELECT held: a Psych Chain page's knobs turn to its secondaries (dog5-docs/DOG-5-presets.md section 2: KNOB 1's
  * secondary is the drive's bias; TONE beside it). The pages without any keep their knobs */
 static const page_t PAGE_DRIVE_SEL = {"DRIVE +", {P_GRL_BIAS, P_GRL_TONE, -1, -1}};
+static const page_t PAGE_BBD_SEL = {"BBD +", {P_DLY_TIME, P_ALLEY_FINE, P_BBD_SPREAD, -1}};   /* (TIME turned:
+                                                 * ALLEY back to SYNC) */
 static const page_t PAGE_TAPE_SEL = {"TAPE +", {P_TP_WOWFLT, P_TP_HISS, P_TP_DROPS, -1}};   /* (KNOB 4's secondary: the
                                                  * brief's wow/flutter balance, with the noise and the dropouts) */
 
@@ -197,7 +205,7 @@ static void patch_defaults(patch_t *p)
 {
     uint32_t i;
     for (i = 0; i < NPARAM; i++) p->v[i] = PDEF[i].def;
-    for (; i < PATCH_BYTES; i++) p->v[i] = 0;                        /* unused param space (63-79) + spare (94-95) */
+    for (; i < PATCH_BYTES; i++) p->v[i] = 0;                        /* unused param space (71-79) + spare (94-95) */
     for (i = 0; i < PATCH_NAME; i++) p->v[PATCH_NAME_AT + i] = ' ';  /* the name field: space-filled (short names blank, not '?') */
 }
 

@@ -1,8 +1,27 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
-/* The effects after the output stage: a ping-pong delay in note values of the tempo, and a plate reverb (J. Dattorro's
- * figure-of-eight tank, 1997). All lines are int16 in one .pool buffer; the signals are Q15 as the output stage leaves
- * them. Integers only. (The chorus is gone: its three patch bytes carry the preamp drive, obv_drive.h, which runs
- * on the voice bus before the output stage.)
+/* The effects after the output stage: ALLEY, the BBD delay, and a plate reverb (J. Dattorro's figure-of-eight tank,
+ * 1997). All lines are int16 in one .pool buffer; the signals are Q15 as the output stage leaves them. Integers only.
+ * (The chorus is gone: its three patch bytes carry the preamp drive, obv_drive.h, which runs on the voice bus before
+ * the output stage.)
+ *
+ * ALLEY (the Psych Chain's stage 2, CLAUDE.md section 6) is OberVave's ping-pong delay re-voiced as a bucket brigade:
+ *   - the time is free, 10 .. 740 ms (P_ALLEY 1..127, BBD_T; P_ALLEY_FINE splits a step, so a tapped time is exact),
+ *     or SYNC (P_ALLEY 0): the note value in P_DLY_TIME at the tempo, as the old delay (the factory patches' times);
+ *   - each pass through the line is band-limited as a BBD's filters do it, a 2-pole (Q 0.8) and a 1-pole low-pass,
+ *     and the corner falls with the time (8 kHz at 10 ms .. 2.8 kHz at 740 ms: more buckets per second of delay is a
+ *     slower clock), so a long echo is darker and every repeat darker than the last;
+ *   - the feedback path keeps OberVave's TONE (a 1-pole, the same law), loses its lows (a 1-pole high-pass at 80 Hz,
+ *     the coupling caps: repeats thin out instead of booming) and goes through the BBD's headroom (Drive's tanh at
+ *     half level: unity for small signals, -0.7 dB and H3 at -34 dB for a full-scale input, a ceiling at 2x full
+ *     scale); the repeats on their way back also pass the tanh at full level (a ceiling at full scale), so the
+ *     repeats grit up as they build and a runaway settles under full scale. FEEDBK keeps the old law (x 250, Q15) up to 112, then runs to 1.25 at 127: from ~119 the loop gains
+ *     more than it loses and the repeats run away into self-oscillation, held by that headroom;
+ *   - a time change moves the read like a BBD's clock: the repeats in the line bend in pitch (down while the time
+ *     grows, up while it shrinks), at most an octave down / a fifth up, the bend eased in and out (the read's speed
+ *     changes at most 0.5 in 1024 samples): never a jump in the read, so never a click (the old delay's speed stepped);
+ *   - PINGPONG (P_BBD_SPREAD) 127 is the old ping-pong (the input enters left, the repeats cross), 0 puts every repeat
+ *     in the middle as a mono BBD does (equal power: 0.71 each side).
+ * DLY_MIX 0 adds nothing to the dry: the output is the old delay's bypass, bit for bit (the line may still run).
  * REV_DIV 1: the reverb at the full rate (the sound comes first). 2: at half the rate, if the chip turns out
  * to need it: a dark hall loses little by it and it halves the reverb's time and memory. */
 #ifndef REV_DIV
@@ -70,8 +89,12 @@ static inline int32_t tri_q(uint32_t ph)        /* a triangle -2048..2047 (so Q8
 static line_t dl, dr, rv_pre, rv_in[4], rv_ap1, rv_d1, rv_ap2, rv_d2, rv_ap3, rv_d3, rv_ap4, rv_d4;
 static uint32_t rv_ph1, rv_ph2;
 static int32_t dly_mix, rev_mix, dly_fb, dly_tone_k, rev_decay, rev_damp_k;
-static int32_t dly_time, dly_cur;               /* Q16 samples: the target and where the read is (it slews like a tape) */
+static int32_t dly_time, dly_cur, dly_vel;      /* Q16 samples: the target and where the read is; its speed (Q16 a sample) */
 static int32_t dly_lpl, dly_lpr, rv_lp_in, rv_lpl, rv_lpr, rv_yl, rv_yr;
+typedef struct { int32_t ic1, ic2, p3, hp; } bbd_ch_t;   /* a line's filters: the SVF, the third pole, the high-pass */
+static bbd_ch_t bbd_ch[2];
+static int32_t bbd_a1, bbd_a2, bbd_a3, bbd_k1, bbd_ca, bbd_cb;   /* the bandwidth (Q14, Q15); PINGPONG's gains (Q8) */
+
 #if REV_DIV == 2u
 static int32_t rv_hold;
 #endif
@@ -91,6 +114,24 @@ static void fx_init(void)
     dly_cur = dly_time = 11025 << 16;
 }
 
+/* ALLEY's time in samples (Q16) for P_ALLEY a (1..127) and FINE f: BBD_T, f/128 of the way to the next step */
+static int32_t alley_q16(uint32_t a, uint32_t f)
+{
+    uint32_t t0 = BBD_T[a & 127u], t1 = a < 127u ? BBD_T[a + 1u] : t0;
+    return (int32_t)((t0 << 16) + (((t1 - t0) * (f & 127u)) << 9));
+}
+/* the other way: the step at or below n samples (1..127) and the 1/128ths to the next, for a tap or a knob leaving SYNC */
+static uint32_t alley_index(uint32_t n, uint32_t *fine)
+{
+    uint32_t lo = 1, hi = 127;
+    if (n <= BBD_T[1]) { *fine = 0; return 1; }
+    if (n >= BBD_T[127]) { *fine = 0; return 127; }
+    while (hi - lo > 1u) { uint32_t m = (lo + hi) >> 1; if (BBD_T[m] <= n) lo = m; else hi = m; }
+    *fine = ((n - BBD_T[lo]) * 128u + ((BBD_T[hi] - BBD_T[lo]) >> 1)) / (BBD_T[hi] - BBD_T[lo]);
+    if (*fine > 127u) *fine = 127u;
+    return lo;
+}
+
 /* the patch's numbers, once per ISR call. quarter: frames per quarter note (the arp's clock) */
 static void fx_block(const patch_t *p, uint32_t quarter)
 {
@@ -98,7 +139,9 @@ static void fx_block(const patch_t *p, uint32_t quarter)
     uint32_t div = p->v[P_DLY_TIME] % NDDIV, samples;
     dly_mix = (p->v[P_DLY_MIX] * 180) >> 7;     /* wet up to 0.7 of the dry (Q8): the sum stays in range */
     rev_mix = (p->v[P_REV_MIX] * 180) >> 7;
-    dly_fb = p->v[P_DLY_FB] * 250;              /* up to 0.97 */
+    d = p->v[P_DLY_FB];                         /* 0 .. 0.85 as before; 113..127 on to 1.25: the loop holds at ~118 (it
+                                                 * loses ~0.3 dB a pass) and runs away above */
+    dly_fb = d <= 112 ? d * 250 : 28000 + (d - 112) * 864;
     t = p->v[P_DLY_TONE]; dly_tone_k = clampi(((t * t) >> 6) + 8, 8, 256);
     d = p->v[P_REV_SIZE]; rev_decay = 12000 + ((d * d * 19500) >> 14);   /* 0.37 .. 0.96: the top is a near-freeze */
     d = p->v[P_REV_DAMP]; rev_damp_k = 32768 - d * d * 2;   /* the one-pole's k at the half rate */
@@ -109,11 +152,32 @@ static void fx_block(const patch_t *p, uint32_t quarter)
         rev_damp_k = 32768 - (int32_t)r;
     }
     rev_pre_n = 1u + (uint32_t)p->v[P_REV_PRE] * (41u / REV_DIV);
-    samples = quarter * DDIV_NUM[div] / DDIV_DEN[div];
-    if (samples > DLY_MAX - 4u) samples = DLY_MAX - 4u;
-    if (samples < 64u) samples = 64u;
-    dly_time = (int32_t)(samples << 16);
-    if (dly_mix) dly_active = 12u * FS; else if (dly_active > HALF_FRAMES) dly_active -= HALF_FRAMES; else dly_active = 0;
+    if (p->v[P_ALLEY]) dly_time = alley_q16(p->v[P_ALLEY], p->v[P_ALLEY_FINE]);
+    else {                                      /* SYNC: a note value of the tempo, as OberVave's delay */
+        samples = quarter * DDIV_NUM[div] / DDIV_DEN[div];
+        if (samples > DLY_MAX - 4u) samples = DLY_MAX - 4u;
+        if (samples < 64u) samples = 64u;
+        dly_time = (int32_t)(samples << 16);
+    }
+    {                                           /* the bandwidth follows where the read IS (a clock, while it glides) */
+        uint32_t f, i = alley_index((uint32_t)dly_cur >> 16, &f);
+        bbd_a1 = BBD_A1[i]; bbd_a2 = BBD_A2[i]; bbd_a3 = BBD_A3[i]; bbd_k1 = BBD_K1[i];
+    }
+    d = p->v[P_BBD_SPREAD];                     /* the near side 0.71 .. 1, the far side 0.71 .. 0 */
+    bbd_ca = 181 + ((d * 75) >> 7); bbd_cb = 181 - ((d * 181 + 64) >> 7);
+    if (d >= 127) { bbd_ca = 256; bbd_cb = 0; }
+    if (dly_mix) {
+        if (!dly_active) {                      /* waking (12 s after the last mix): what the lines held is gone, so a
+                                                 * patch's old repeats (or a runaway) never come back */
+            static const bbd_ch_t z0;
+            uint32_t k;
+            for (k = 0; k < 2u * DLY_MAX; k++) fx_mem[k] = 0;
+            bbd_ch[0] = bbd_ch[1] = z0;
+            dly_lpl = dly_lpr = 0;
+            dly_cur = dly_time; dly_vel = 0;    /* (and the read starts where it belongs: no glide in from before) */
+        }
+        dly_active = 12u * FS;
+    } else if (dly_active > HALF_FRAMES) dly_active -= HALF_FRAMES; else dly_active = 0;
     if (rev_mix) rev_active = 24u * FS; else if (rev_active > HALF_FRAMES) rev_active -= HALF_FRAMES; else rev_active = 0;
 }
 
@@ -122,6 +186,28 @@ static inline __attribute__((always_inline)) int32_t line_read_q16(const line_t 
     uint32_t b = (uint32_t)back_q16 >> 16;
     int32_t f = (back_q16 >> 8) & 255, a = line_read(l, b), c = line_read(l, b + 1u);
     return a + (((c - a) * f) >> 8);
+}
+/* the BBD's tanh: softclip's table (tanh(x / full scale), flat from 2x full scale at 0.96), read branch-free (softclip's
+ * two branches cost ~20 a call here: ALLEY calls it four times a sample) */
+static inline __attribute__((always_inline)) int32_t bbd_sat(int32_t x)
+{
+    int32_t s = x >> 31, a = (x ^ s) - s, i, y;
+    a = a > 65535 ? 65535 : a;
+    i = a >> 8;
+    y = TANH_Q15[i] + (((TANH_Q15[i + 1] - TANH_Q15[i]) * (a & 255)) >> 8);
+    return (y ^ s) - s;
+}
+/* a line read at back (Q16), through the BBD's filters (a 2-pole SVF, Q 0.8, and a 1-pole at the same corner); the
+ * line holds half the level (the headroom), the read gives it back */
+static inline __attribute__((always_inline)) int32_t bbd_read(const line_t *l, bbd_ch_t *c, int32_t back_q16)
+{
+    int32_t x = line_read_q16(l, back_q16), v3 = x - c->ic2, v1, v2;
+    v1 = (bbd_a1 * c->ic1 + bbd_a2 * v3 + 8192) >> 14;   /* (rounded: a floor here leaves a DC offset) */
+    v2 = c->ic2 + ((bbd_a2 * c->ic1 + bbd_a3 * v3 + 8192) >> 14);
+    c->ic1 = 2 * v1 - c->ic1;
+    c->ic2 = 2 * v2 - c->ic2;
+    c->p3 += ((v2 - c->p3) * bbd_k1 + 16384) >> 15;
+    return c->p3 * 2;
 }
 /* one reverb sample at the half rate: in -> pre-delay -> bandwidth -> 4 diffusers -> the two tank halves */
 static inline void rev_tick(int32_t in)
@@ -161,24 +247,35 @@ static inline void rev_tick(int32_t in)
     rv_yr = (b * 19661) >> 15;
 }
 
-static void fx_process(int32_t *out, uint32_t n)
+static __attribute__((noinline)) void fx_process(int32_t *out, uint32_t n)   /* (inlined, it moved the voice loop: +28 a sample with the effects off) */
 {
     uint32_t i, do_dly = dly_active != 0, do_rev = rev_active != 0;
     int32_t dm = dly_mix, rm = rev_mix;
     for (i = 0; i < n; i++) {
         int32_t l = out[2u * i], r = out[2u * i + 1u];
-        if (do_dly) {                           /* ping-pong: the input enters left, the feedback crosses */
-            int32_t wl, wr;
-            if (dly_cur < dly_time) { dly_cur += 1 << 15; if (dly_cur > dly_time) dly_cur = dly_time; }
-            else if (dly_cur > dly_time) { dly_cur -= 1 << 15; if (dly_cur < dly_time) dly_cur = dly_time; }
-            wl = line_read_q16(&dl, dly_cur);
-            wr = line_read_q16(&dr, dly_cur);
-            dly_lpl += ((wr - dly_lpl) * dly_tone_k) >> 8;
+        if (do_dly) {                           /* ALLEY: the input enters left, the feedback crosses */
+            int32_t wl, wr, want, fl, fr;
+            if (dly_cur != dly_time || dly_vel) {   /* the read glides: ~46 ms a step, eased */
+                want = clampi((dly_time - dly_cur) >> 11, -32768, 32768);
+                dly_vel += clampi(want - dly_vel, -32, 32);
+                dly_cur += dly_vel;
+                if (!want && dly_vel >= -32 && dly_vel <= 32) { dly_cur = dly_time; dly_vel = 0; }   /* (the last 1/32) */
+            }
+            wl = bbd_read(&dl, &bbd_ch[0], dly_cur);
+            wr = bbd_read(&dr, &bbd_ch[1], dly_cur);
+            dly_lpl += ((wr - dly_lpl) * dly_tone_k) >> 8;   /* TONE, as before; then the coupling caps' high-pass */
             dly_lpr += ((wl - dly_lpr) * dly_tone_k) >> 8;
-            line_write(&dl, ((l + r) >> 1) + ((dly_lpl * dly_fb) >> 15));
-            line_write(&dr, (dly_lpr * dly_fb) >> 15);
-            l += (wl * dm) >> 8;
-            r += (wr * dm) >> 8;
+            bbd_ch[1].hp += (((dly_lpl * 16) - bbd_ch[1].hp) * 371) >> 15;
+            bbd_ch[0].hp += (((dly_lpr * 16) - bbd_ch[0].hp) * 371) >> 15;
+            fl = bbd_sat(dly_lpl - (bbd_ch[1].hp >> 4));   /* the loop's own limit (tanh, full scale): a runaway */
+            fr = bbd_sat(dly_lpr - (bbd_ch[0].hp >> 4));   /* rounds off here, under the line's 2x headroom */
+            line_write(&dl, bbd_sat((((l + r) >> 1) + (((fl >> 1) * dly_fb) >> 14)) >> 1));   /* the BBD's headroom: */
+            line_write(&dr, bbd_sat((((fr >> 1) * dly_fb) >> 14) >> 1));   /* tanh(u / 2) at half level */
+            if (dm) {
+                int32_t ol = (wl * bbd_ca + wr * bbd_cb) >> 8, or_ = (wr * bbd_ca + wl * bbd_cb) >> 8;
+                l += (ol * dm) >> 8;
+                r += (or_ * dm) >> 8;
+            }
         }
         if (do_rev) {
 #if REV_DIV == 2u                               /* half rate: a pair in, the output interpolated between ticks */
