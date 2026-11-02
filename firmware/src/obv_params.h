@@ -23,8 +23,8 @@ enum {
     NPARAM
 };
 /* the chorus is gone (the Psych Chain, CLAUDE.md section 6): its bytes 52-54 and CC 67-69 are GROWL's now. The old
- * names stay for obv_patches.h, whose chorus values are not yet re-voiced: six factory patches (10, 12, 13, 16, 24,
- * 29) set "CHO_MIX" 45-70 and so play with GROWL there until they are (Stage 2, by ear). */
+ * names stay for obv_patches.h's base patches outside the DØG-5 32 (the six of the 32 that had chorus on were
+ * re-voiced at GROWL 0 on 2 Nov). */
 #define P_CHO_RATE P_GRL_BIAS
 #define P_CHO_DEPTH P_GRL_TONE
 #define P_CHO_MIX P_GROWL
