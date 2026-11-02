@@ -155,12 +155,12 @@ off* run 7.3 M Ir (19 / sample) with TAPE never running; as a call (once an ISR)
 | GROWL 100 | 489,681,266 | 742 |
 | BBD delay (mix 60) | 299,859,888 | 109 |
 | Spring (mix 60) | 436,930,955 | 566 |
-| **CHEW 100** | 554,300,870 | **958** |
+| **CHEW 100** | 555,239,232 | **961** |
 | GROWL + delay + reverb | 692,233,437 | 1,418 |
-| **All four** | 979,470,933 | **2,376** (2,613 over the whole window, the voices included) |
+| **All four** | 980,408,818 | **2,379** (2,616 over the whole window, the voices included) |
 
 CHEW 0 costs nothing (the engine skips it; byte-identical output, `tests/drive/bitexact.sh 6630c5b`). CHEW costs the
-same at any setting above 0. Where its 958 go (callgrind, line by line): the 6-tap reads ~170 (4 a frame: 2 sub-samples
+same at any setting above 0. Where its 961 go (callgrind, line by line): the 6-tap reads ~170 (4 a frame: 2 sub-samples
 x L/R), the four tanh records ~150, the read's tap weights ~130 (2 a frame, shared by L and R), the halfbands up/down
 ~110, the K-weighted loudness detectors ~60, the hiss ~40, the rest (bump, head loss, glides, crossfade) ~300.
 

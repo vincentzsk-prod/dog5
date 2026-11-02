@@ -23,7 +23,7 @@ $B build/tape/bench_toggle.raw toggle 1000 8192 127
 for v in 1 16 32 48 64 80 95 111 127; do
     $B build/tape/bench_hiss_$v.raw dc 200 4 $v 64
 done
-$B build/tape/bench_hiss_127_0.raw dc 200 4 127 1
+$B build/tape/bench_hiss_127_1.raw dc 200 4 127 1
 $B build/tape/bench_hiss_127_127.raw dc 200 4 127 127
 for f in 1000 5000 10000 15000 18000; do
     TP_ONLY=read TP_LOG=build/tape/bench_read_$f.d $B build/tape/bench_read_$f.raw sine $f 16384 6 127 64 0 0
@@ -33,4 +33,5 @@ for v in 32 64 95 127; do $B build/tape/bench_wow_$v.raw sine 1000 16384 12 $v 6
 $B build/tape/bench_wow_127_wf0.raw sine 1000 16384 12 127 0 0 0
 $B build/tape/bench_wow_127_wf127.raw sine 1000 16384 12 127 127 0 0
 for v in 32 64 95 127; do $B build/tape/bench_thd_$v.raw sine 1000 16384 6 $v 64 0 0; done
+for c in 64 95 127; do for dr in 64 127; do $B build/tape/bench_drops_${c}_$dr.raw sine 1000 16384 30 $c 64 0 $dr; done; done
 echo "renders -> build/tape/"

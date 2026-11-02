@@ -85,9 +85,11 @@ static void tape_block(const patch_t *p)
 
 static inline uint32_t tape_on(void) { return tp_on || tp_run; }   /* else the engine skips it: bit for bit */
 
-static inline int32_t tp_sin(uint32_t ph)       /* a parabolic sine, +-32767 */
+static inline int32_t tp_sin(uint32_t ph)       /* a sine, +-32767: the parabola and one refinement (within 0.1 %; a
+                                                 * bare parabola's slope, the pitch, would turn in corners) */
 {
-    int32_t t = (int32_t)ph >> 16, a = t < 0 ? -t : t, y = (t * (32768 - a)) >> 13;
+    int32_t t = (int32_t)ph >> 16, a = t < 0 ? -t : t, y = clampi((t * (32768 - a)) >> 13, -32767, 32767);
+    y += (7373 * (((y * (y < 0 ? -y : y)) >> 15) - y)) >> 15;
     return clampi(y, -32767, 32767);
 }
 
