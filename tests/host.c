@@ -187,12 +187,15 @@ typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn
  * "T xkey K V" (keybed key K 0..36 at V, 0 = let go: the outer keys 0..4, 32..36), "T dump" (pads and state);
  * any build: "T shot" (the screen at T -> OUT-T.ppm), "T expect page N" (the app must be on page N now: prints ok / FAIL
  * and the run exits 1 on a FAIL; N = the page index, PG_* in obv_params.h), "T expect idle N" (the last control-map draw
- * called app_idle() at least N times: the DRAW RULE), "T param P V" (set parameter P to V, as a knob would), "T expect voices N" (N voice cards gated on now) */
-enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES };
+ * called app_idle() at least N times: the DRAW RULE), "T param P V" (set parameter P to V, as a knob would), "T expect voices N" (N voice cards gated on now),
+ * "T expect param P V" (parameter P holds V now) */
+enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES,
+       HS_PVAL };
 static uint32_t host_page_now(void);            /* (obervave.c: the page the panel is on) */
 static uint32_t host_map_idle_calls(void);      /* (obervave.c: app_idle calls the last control-map draw made) */
 static void host_set_param(uint32_t p, int32_t v);   /* (obervave.c: set a parameter, as a knob would) */
 static uint32_t host_voices_on(void);           /* (obervave.c: how many voice cards are gated on) */
+static uint32_t host_get_param(uint32_t p);     /* (obervave.c: a parameter's value now) */
 static uint32_t host_fails;
 static const host_ev_t SCRIPT0[] = {
     {200, 1u << 7, -1, 0, 0, 0, -1, 0},                         /* C4 */
@@ -239,6 +242,7 @@ static void read_script(const char *path)
             if (!strcmp(kind, "page")) { e.smk = HS_PAGE; e.sa = (uint8_t)a; }
             else if (!strcmp(kind, "idle")) { e.smk = HS_IDLE; e.sb = (uint16_t)a; }
             else if (!strcmp(kind, "voices")) { e.smk = HS_VOICES; e.sb = (uint16_t)a; }
+            else if (!strcmp(kind, "param")) { sscanf(line, "%*u %*s %*s %u %u", &a, &b); e.smk = HS_PVAL; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
             else { fprintf(stderr, "script: unknown expect '%s'\n", kind); continue; }
         }
         else if (!strcmp(what, "param")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_PARAM; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }   /* set parameter a = b */
@@ -348,6 +352,10 @@ static void platform_poll(void)                 /* one call = one millisecond */
             uint32_t n = host_voices_on(), want = script[step].sb;
             printf("%6u ms  expect voices %u: %u gated on  %s\n", fm1_ms, want, n, n == want ? "ok" : "FAIL");
             host_fails += n != want;
+        } else if (script[step].smk == HS_PVAL) {
+            uint32_t v = host_get_param(script[step].sa), want = script[step].sb;
+            printf("%6u ms  expect param %u = %u: %u  %s\n", fm1_ms, script[step].sa, want, v, v == want ? "ok" : "FAIL");
+            host_fails += v != want;
         } else if (script[step].smk == HS_IDLE) {
             uint32_t n = host_map_idle_calls(), want = script[step].sb;
             printf("%6u ms  expect idle >= %u: the last map draw called app_idle %u times  %s\n", fm1_ms, want, n, n >= want ? "ok" : "FAIL");

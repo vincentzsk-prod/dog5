@@ -185,10 +185,10 @@ static void ui_page(const char *title, const knob_view_t *k, const char *note)
  * followed by app_idle(), and app_idle() after every row: the DRAW RULE (CLAUDE.md section 6), a draw that takes time
  * lets the notes through.
  *   top    the page's name, and under it the four knobs (what each one is on this page; "-" = none)
- *   rows   one per button: the label printed on the panel, its dog name, and what it does (for the page buttons: where
- *          a press goes NOW, so the map stays true as the families' memories change)
+ *   rows   one per button: its dog name with the label printed on the panel ("DIG (EDIT)"), and what it does (for the
+ *          page buttons: where a press goes NOW, so the map stays true as the families' memories change)
  *   foot   one line */
-typedef struct { const char *hw, *dog, *what; } map_row_t;
+typedef struct { const char *label, *what; } map_row_t;
 #define MAP_ROWS 11
 #define MAP_ROW_Y 48                            /* the first row; 16 px a row, the foot under the last (y 224) */
 static void ui_map(const char *title, const knob_view_t *k, const char *knob_note, const map_row_t *r, int32_t hi,
@@ -210,15 +210,18 @@ static void ui_map(const char *title, const knob_view_t *k, const char *knob_not
     cv_rect(0, 44, 240, 1, C_RULE);
     cv_blit(0, 0);
     app_idle();
+    int32_t xw = 0;
+    for (i = 0; i < MAP_ROWS; i++)              /* "what" starts after the widest label */
+        if (text_w(&FONT_S, r[i].label) > xw) xw = text_w(&FONT_S, r[i].label);
+    xw += 4 + 8;
     for (i = 0; i < MAP_ROWS; i++) {
         int32_t y;
         if (i == 0 || i == 6) {                 /* a new strip: rows 0-5 from y 46, rows 6-10 + the foot from y 144 */
             cv_begin(240, i ? 96 : 98, C_PANEL);
         }
         y = i < 6 ? MAP_ROW_Y - 46 + i * 16 : (i - 6) * 16;
-        cv_text(4, y, &FONT_S, r[i].hw, C_DIMT);
-        cv_text(68, y, &FONT_S, r[i].dog, i == hi ? C_AMBER : C_CREAM);
-        cv_text(134, y, &FONT_S, r[i].what, i == hi ? C_AMBER : C_DIMT);
+        cv_text(4, y, &FONT_S, r[i].label, i == hi ? C_AMBER : C_CREAM);
+        cv_text(xw, y, &FONT_S, r[i].what, i == hi ? C_AMBER : C_DIMT);
         app_idle();                             /* (a row is ~1 ms: the keys and MIDI in between) */
         if (i == 5) { cv_blit(0, 46); app_idle(); }
     }

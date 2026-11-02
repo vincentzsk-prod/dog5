@@ -575,6 +575,7 @@ static void engine_audio(int32_t *out, uint32_t n)
     static int32_t sc_prev;
     static uint32_t sc_i, sc_sub;
     fx_block(&live, ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240));
+    drive_block(&live);
     vol_q12 = (int32_t)((ctl_cc7 * ctl_cc7) >> 2);
     for (b = 0; b < n; b += CTL) {
         engine_events();
@@ -591,9 +592,11 @@ static void engine_audio(int32_t *out, uint32_t n)
             voice_render(&vc[v], out + 2u * b);
         }
     }
+    if (drive_on()) drive_process(out, n, vol_q12);   /* GROWL: voices -> DRIVE -> output stage -> delay -> reverb */
+    else for (i = 0; i < 2u * n; i++) out[i] = clampi(out[i], -262144, 262143) >> 2;   /* the output stage's scale */
     for (i = 0; i < n; i++) {                   /* the output stage: a gentle tanh, never a hard clip */
-        int32_t l = softclip((clampi(out[2u * i], -262144, 262143) >> 2) * vol_q12 >> 10);
-        int32_t r = softclip((clampi(out[2u * i + 1u], -262144, 262143) >> 2) * vol_q12 >> 10);
+        int32_t l = softclip(out[2u * i] * vol_q12 >> 10);
+        int32_t r = softclip(out[2u * i + 1u] * vol_q12 >> 10);
         int32_t m = (l + r) >> 1;
         out[2u * i] = l;
         out[2u * i + 1u] = r;

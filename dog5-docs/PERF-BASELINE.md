@@ -92,3 +92,36 @@ lighter than this 1,024/1,025 baseline, measured the same way, on the same host.
 per ISR call, aim under half) is measured on the actual FM-1's GLOBAL page, in µs, not inferred from
 this count — every sound-quality trade-off still has to be decided there, per the existing project
 rule, once the unit is in hand.
+
+## The Psych Chain, stage 1: GROWL replaces the chorus (2026-11-02)
+
+Measured the same way (`tests/perf_callgrind.sh`), on one script: program 1 switched to POLY, a held Cmaj7 (C4 E4 G4
+B4) from 3.0 to 9.0 s, the effect under test switched on at 2.7 s. An effect's cost is its `Ir` over the effects-off
+run, divided by the 299,880 frames it was on (instructions per sample, host x86-64, `-O2`).
+
+| Stage | Before (chorus build, `cf9f246`) | After (GROWL build) |
+|---|---:|---:|
+| Everything off (the voices) | 269,667,985 Ir | 266,984,658 Ir |
+| Chorus (mix 70) | **169** / sample | (gone) |
+| GROWL (any setting: the clip is branch-free) | — | **742** / sample |
+| BBD delay (mix 60) | 107 / sample | 109 / sample |
+| Spring / plate reverb (mix 60) | 566 / sample | 566 / sample |
+| All of them on | **843** / sample | **1,417** / sample (**+574**) |
+
+Over the whole 8.5 s window (the way the table above this section counts): all on 1,394 -> 1,846 instructions per
+sample; everything off 720 -> 712.
+
+GROWL's 742 is two channels of: a 2-pole pre-clip low-pass, 4x up (6 allpass sections), 4 table soft clips, 4x down
+(6 sections), DC block, TONE, makeup, and the loudness detectors. It was 1,572 before the inner loop was written out
+(halfband loops unrolled: -525) and the clip read the table once, branch-free (-213), and the halfbands went from 5+3
+to 4+2 coefficients (-95: tests/drive measured the same aliasing). GROWL 0 costs nothing: the engine skips it.
+
+Memory (the device build, `./build.sh`): pool 273,820 -> **271,772 B** of 344,064 (the chorus's 2 KB line gone; GROWL
+keeps no lines). RAM .data+.bss 31,536 -> 31,824 B (+288: GROWL's filter states). Image 92,768 -> 95,672 B (+2,904:
+the code and 640 B of tables).
+
+**If the device's render time is too high with all of it on** (the GLOBAL page, aim < 2900 us), the levers in order of
+what they cost the sound (estimates, not measured): (1) `REV_DIV 2`, the half-rate reverb (CLAUDE.md section 6;
+roughly half of its 566); (2) GROWL in mono, one channel for both (half of its 742 by construction; a driven pad loses
+its stereo spread); (3) GROWL at 2x instead of 4x (roughly a third of it; the pre-clip low-pass would have to close to
+~2 kHz at the top to keep the same aliasing). None is taken: the device decides.

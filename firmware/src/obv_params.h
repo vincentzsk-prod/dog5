@@ -16,12 +16,18 @@ enum {
     P_MOD_DEPTH,
     P_ARP_MODE, P_ARP_DIV, P_ARP_OCT, P_ARP_GATE,
     P_FMORPH,                                   /* (appended: the MIDI CC numbers of the above stay) */
-    P_CHO_RATE, P_CHO_DEPTH, P_CHO_MIX,
+    P_GRL_BIAS, P_GRL_TONE, P_GROWL,           /* the preamp drive (obv_drive.h), in the chorus's three bytes */
     P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX,
     P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX,
     P_POLY_N,                                   /* (appended: the MIDI CC numbers of the above stay) */
     NPARAM
 };
+/* the chorus is gone (the Psych Chain, CLAUDE.md section 6): its bytes 52-54 and CC 67-69 are GROWL's now. The old
+ * names stay for obv_patches.h's base patches outside the DØG-5 32 (the six of the 32 that had chorus on were
+ * re-voiced at GROWL 0 on 2 Nov). */
+#define P_CHO_RATE P_GRL_BIAS
+#define P_CHO_DEPTH P_GRL_TONE
+#define P_CHO_MIX P_GROWL
 #define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 */
 #define PATCH_BYTES 96u                         /* DØG-5: grown 80 -> 96 (the "DOG5" program format) */
 #define PATCH_NAME_AT 80u                       /* the name at a FIXED offset, decoupled from NPARAM: bytes 0-79 are
@@ -106,9 +112,9 @@ static const pdef_t PDEF[NPARAM] = {
     [P_ARP_OCT] = {"OCTAVES", 4, 1, K_OCT, 0},
     [P_ARP_GATE] = {"GATE", 127, 64, K_PCT, 0},
     [P_FMORPH] = {"MORPH", 127, 0, K_MORPH, 0},
-    [P_CHO_RATE] = {"RATE", 127, 40, K_NUM, 0},
-    [P_CHO_DEPTH] = {"DEPTH", 127, 50, K_NUM, 0},
-    [P_CHO_MIX] = {"MIX", 127, 0, K_NUM, 0},
+    [P_GRL_BIAS] = {"BIAS", 127, 40, K_NUM, 0},   /* (the defaults stay the chorus's, so no patch's bytes change) */
+    [P_GRL_TONE] = {"TONE", 127, 50, K_NUM, 0},
+    [P_GROWL] = {"GROWL", 127, 0, K_PCT, 0},
     [P_DLY_TIME] = {"TIME", NDDIV - 1, DD_8D, K_DDIV, 0},
     [P_DLY_FB] = {"FEEDBK", 127, 50, K_NUM, 0},
     [P_DLY_TONE] = {"TONE", 127, 70, K_NUM, 0},
@@ -146,7 +152,7 @@ enum { PG_PERFORM,                                                              
        PG_GLOBAL, PG_VOICE, PG_VOICE2, PG_OUTPUT,                               /* GLO */
        NPAGE };
 static const page_t PAGE[NPAGE] = {
-    [PG_PERFORM] = {"HOME", {P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}},
+    [PG_PERFORM] = {"D\xD8G-5", {P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}},   /* (HOME; the Ø is the font's byte 0xD8) */
     [PG_OSC1] = {"OSC 1", {P_O1_WAVE, P_O1_PW, P_O1_LVL, P_NOISE}},
     [PG_OSC2] = {"OSC 2", {P_O2_WAVE, P_O2_PW, P_O2_LVL, P_O2_SEMI}},
     [PG_OSCMOD] = {"OSC MOD", {P_SYNC, P_XMOD, P_ENV_O2, P_O2_FINE}},
@@ -157,7 +163,7 @@ static const page_t PAGE[NPAGE] = {
     [PG_LFO] = {"LFO", {P_LFO_SHAPE, P_LFO_RATE, P_LFO_DELAY, P_LFO_PHASE}},
     [PG_LFODEST] = {"LFO DEST", {P_LFO_PITCH, P_LFO_PWM, P_LFO_FLT, P_LFO_AMP}},
     [PG_LFO2] = {"LFO +", {P_LFO_PITCH_TO, P_LFO_PWM_TO, -1, -1}},
-    [PG_DRIVE] = {"DRIVE", {-1, -1, -1, -1}},                                   /* preamp drive: Psych Chain, not built */
+    [PG_DRIVE] = {"DRIVE", {P_GROWL, -1, -1, -1}},                              /* SELECT held: BIAS, TONE (PAGE_SEL) */
     [PG_BBD] = {"BBD DELAY", {P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},
     [PG_SPRING] = {"SPRING", {P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX}},
     [PG_TAPE] = {"TAPE", {-1, -1, -1, -1}},                                     /* tape degrade: Psych Chain, not built */
@@ -168,6 +174,9 @@ static const page_t PAGE[NPAGE] = {
     [PG_OUTPUT] = {"OUTPUT", {P_VINTAGE, P_SPREAD, P_BEND, P_VOLUME}},
 };
 _Static_assert(NPAGE == 20, "DOG-5 has 20 pages (CLAUDE.md section 5)");
+/* SELECT held: a Psych Chain page's knobs turn to its secondaries (dog5-docs/DOG-5-presets.md section 2: KNOB 1's
+ * secondary is the drive's bias; TONE beside it). The pages without any keep their knobs */
+static const page_t PAGE_DRIVE_SEL = {"DRIVE +", {P_GRL_BIAS, P_GRL_TONE, -1, -1}};
 
 /* the button families: each remembers its last page (fam_last in obervave.c) */
 enum { FAM_HOME, FAM_EDIT, FAM_ENV, FAM_LFO, FAM_FX, FAM_ARP, FAM_GLO, NFAM };

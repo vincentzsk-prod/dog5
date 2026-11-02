@@ -4,7 +4,8 @@
  *
  *   obv_dsp.h       oscillators (polyBLEP events), filter (trapezoidal SVF), tanh
  *   obv_params.h    the parameter table: patches, pages, MIDI CC
- *   obv_fx.h        chorus, ping-pong delay, plate reverb (after the voices, same ISR)
+ *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
+ *   obv_fx.h        ping-pong delay, plate reverb (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
  *   this file       the panel, MIDI, the screen, the storage
@@ -19,6 +20,7 @@ static void app_idle(void);
 #include "obv_dsp.h"
 #include "obv_params.h"
 #include "obv_fx.h"
+#include "obv_drive.h"
 #include "obv_engine.h"
 #include "obv_patches.h"
 
@@ -166,7 +168,7 @@ static void randomize(void)
     d->v[P_GLIDE] = (uint8_t)(d->v[P_MODE] >= M_UNISON && rn(0, 1) ? rn(5, 40) : 0);
     d->v[P_VINTAGE] = (uint8_t)rn(0, 100);
     d->v[P_SPREAD] = (uint8_t)rn(20, 127);
-    d->v[P_CHO_MIX] = (uint8_t)(rn(0, 2) ? 0 : rn(30, 100));
+    d->v[P_GROWL] = (uint8_t)(rn(0, 2) ? 0 : rn(30, 100));
     d->v[P_DLY_TIME] = (uint8_t)rn(0, NDDIV - 1);
     d->v[P_DLY_FB] = (uint8_t)rn(20, 80);
     d->v[P_DLY_MIX] = (uint8_t)(rn(0, 1) ? 0 : rn(20, 70));
@@ -254,7 +256,7 @@ static void draw_header(void)
         static const char *const MODE_S[4] = {"POLY", "DUAL", "UNI", "MONO"};
         static const char *const FT_S[NFTYPE] = {"LP12", "HP12", "BP12", "NOTCH", "LP24", "SEM"};
         const uint8_t *pv = live.v;
-        uint32_t arp = pv[P_ARP_MODE] != 0, fx = live.v[P_CHO_MIX] || live.v[P_DLY_MIX] || live.v[P_REV_MIX];
+        uint32_t arp = pv[P_ARP_MODE] != 0, fx = live.v[P_GROWL] || live.v[P_DLY_MIX] || live.v[P_REV_MIX];
         uint32_t n = slen(MODE_S[pv[P_MODE] & 3u]) + 1u + slen(FT_S[pv[P_FTYPE] % NFTYPE]) + (hold ? 5u : 0u);
         if (arp && n + 4u <= 23u) n += 4u; else arp = 0;
         if (fx && n + 3u <= 23u) n += 3u; else fx = 0;
@@ -288,17 +290,23 @@ static void fmt_note(char *s, uint32_t n)       /* C4, F#3 */
  * content and went with it; EDIT, GLO and SAVE are plain tap buttons now, see app_main) */
 static void layer_knob(knob_view_t *k, uint32_t i)
 {
-    static const int8_t FXP[4] = {P_CHO_MIX, P_DLY_MIX, P_REV_MIX, P_DLY_TIME};
+    static const int8_t FXP[4] = {P_GROWL, P_DLY_MIX, P_REV_MIX, P_DLY_TIME};
     uint32_t p2 = (uint32_t)FXP[i];
     k->present = 1; k->label = PDEF[p2].name; k->v = live.v[p2]; k->max = PDEF[p2].max;
     param_value(k->value, p2, live.v[p2]);
+}
+
+static uint32_t sel_held(void) { return fm1_in.buttons >> BTN_SEL & 1u; }
+static const page_t *page_now(void)             /* the page's knobs, or its secondaries while SELECT is held */
+{
+    return page == PG_DRIVE && sel_held() ? &PAGE_DRIVE_SEL : &PAGE[page];
 }
 
 static void draw_page(void)
 {
     knob_view_t k[4];
     uint32_t i;
-    const page_t *pg = &PAGE[page];
+    const page_t *pg = page_now();
     for (i = 0; i < 4u; i++) {
         int32_t p = pg->p[i];
         k[i].present = 0;
@@ -343,13 +351,14 @@ static void draw_hints(void)
     if (key == hints_key) return;
     hints_key = key;
     if (toasting) ui_hints(toast, "", C_AMBER);
-    else if (layer == L_FX) ui_hints("KNOBS: CHORUS BBD SPRING", "AND THE BBD TIME", C_AMBER);
+    else if (layer == L_FX) ui_hints("KNOBS: GROWL BBD SPRING", "AND THE BBD TIME", C_AMBER);
 }
 
 #ifdef OBV_HOST
 static uint32_t host_page_now(void) { return page; }   /* (tests/host.c: "T expect page N") */
 static void host_set_param(uint32_t p, int32_t v) { set_param(p, v); }   /* (tests/host.c: "T param P V") */
 static uint32_t host_voices_on(void) { uint32_t v, n = 0; for (v = 0; v < NV; v++) n += vc[v].gate; return n; }   /* ("T expect voices N") */
+static uint32_t host_get_param(uint32_t p) { return live.v[p % PATCH_BYTES]; }   /* ("T expect param P V") */
 static uint32_t host_map_idle_calls(void);
 #endif
 static uint8_t fam_last[NFAM];                  /* each family's last page (set to FAM[].first at start) */
@@ -377,10 +386,11 @@ static uint32_t host_idle_n, host_map_idle;     /* tests: app_idle calls that go
 #endif
 static void draw_map(void)
 {
-    /* the label printed on the panel, its dog name (CLAUDE.md section 5; the FX button has none in the brief) */
-    static const struct { uint8_t fam; const char *hw, *dog; } PB[6] = {
-        {FAM_EDIT, "EDIT", "DIG"}, {FAM_ENV, "ENV", "HOWL"}, {FAM_LFO, "LFO", "PANT"},
-        {FAM_FX, "FX", ""}, {FAM_GLO, "GLO", "FLEAS"}, {FAM_ARP, "ARP", "ZOOMIES"}};
+    /* each button as "DOG NAME (PRINTED NAME)" (CLAUDE.md section 5); FX and OCT have no dog name in the brief, HOME's
+     * is HOME */
+    static const struct { uint8_t fam; const char *label; } PB[6] = {
+        {FAM_EDIT, "DIG (EDIT)"}, {FAM_ENV, "HOWL (ENV)"}, {FAM_LFO, "PANT (LFO)"},
+        {FAM_FX, "FX"}, {FAM_GLO, "FLEAS (GLO)"}, {FAM_ARP, "ZOOMIES (ARP)"}};
     map_row_t R[MAP_ROWS];
     knob_view_t k[4];
     int32_t i, hi = page == PG_PERFORM ? 0 : -1;
@@ -389,7 +399,7 @@ static void draw_map(void)
     uint32_t idle0 = host_idle_n;
 #endif
     for (i = 0; i < 4; i++) {
-        int32_t p = PAGE[page].p[i];
+        int32_t p = page_now()->p[i];
         k[i].present = 0;
         if (page == PG_GLOBAL) {                /* (the globals are drawn by hand: tempo, -, MIDI channel, tune) */
             static const char *const GL[4] = {"TEMPO", "", "MIDI CH", "TUNE"};
@@ -397,17 +407,17 @@ static void draw_map(void)
         } else if (p >= 0) { k[i].label = PDEF[p].name; k[i].present = 1; }
         none &= !k[i].present;
     }
-    R[0].hw = "HOME"; R[0].dog = "HOME"; R[0].what = "TAP: HOME";
+    R[0].label = "HOME"; R[0].what = "TAP: HOME";
     for (i = 0; i < 6; i++) {                   /* the page buttons: where a press goes NOW (the live part) */
-        R[1 + i].hw = PB[i].hw; R[1 + i].dog = PB[i].dog;
+        R[1 + i].label = PB[i].label;
         R[1 + i].what = PB[i].fam == FAM_ARP && page == PG_ARP ? "HOLD" : PAGE[cycle_fam(PB[i].fam)].title;
         if (in_fam(PB[i].fam)) hi = 1 + i;
     }
-    R[7].hw = "SAVE"; R[7].dog = "BURY"; R[7].what = "TAP TWICE";
-    R[8].hw = "SELECT"; R[8].dog = "FETCH"; R[8].what = "TEMPO";
-    R[9].hw = NM_PRESETS; R[9].dog = "BARKS"; R[9].what = "SOUND";
-    R[10].hw = "OCT-/+"; R[10].dog = ""; R[10].what = "OCTAVE";
-    ui_map(PAGE[page].title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, "FX HELD: MIXES");
+    R[7].label = "BURY (SAVE)"; R[7].what = "TAP TWICE";
+    R[8].label = "FETCH (SELECT)"; R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : "TEMPO";
+    R[9].label = "BARKS (" NM_PRESETS ")"; R[9].what = "SOUND";
+    R[10].label = "OCT-/+"; R[10].what = "OCTAVE";
+    ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, "FX HELD: GROWL + MIXES");
 #ifdef OBV_HOST
     host_map_idle = host_idle_n - idle0;
 #endif
@@ -724,6 +734,10 @@ static void app_main(void)
             dirty_hdr = dirty_tags = dirty_page = 1;
         }
         if (save_armed && fm1_ms - save_t > 3000u) { save_armed = 0; dirty_page = dirty_hdr = 1; }
+        {
+            static uint32_t sel_was;            /* SELECT pressed or let go on a page with secondaries: its knobs change */
+            if (sel_held() != sel_was) { sel_was = sel_held(); if (page == PG_DRIVE) { dirty_page = 1; map_dirty = map_on; } }
+        }
         if (np != page) {
             if (layer_lock) { layer = L_NONE; layer_lock = 0; }
             page = np; fam_note(np); dirty_page = 1; map_dirty = map_on;   /* (the map follows the page) */
@@ -751,7 +765,7 @@ static void app_main(void)
             dirty_page |= page == PG_GLOBAL;
         }
         for (k = 0; k < 4u; k++) {
-            int32_t p = PAGE[page].p[k];
+            int32_t p = page_now()->p[k];
             if ((e = fm1_enc_take(ENC_KNOB1 + k)) == 0) continue;
             if (e > 1 || e < -1) e *= 3;        /* a fast turn goes further */
             if (page == PG_GLOBAL && !layer && !SMK_PAD_HELD && k != 1u) {   /* (a held layer has the knobs, on every page) */
@@ -760,14 +774,14 @@ static void app_main(void)
                 else { set.tune = (int8_t)clampi(set.tune + e, -50, 50); ctl_tune8 = set.tune * 256 / 100; }
                 set_dirty = 1; set_t = fm1_ms;
             } else if (layer == L_FX) {
-                static const int8_t FXP[4] = {P_CHO_MIX, P_DLY_MIX, P_REV_MIX, P_DLY_TIME};
+                static const int8_t FXP[4] = {P_GROWL, P_DLY_MIX, P_REV_MIX, P_DLY_TIME};
                 layer_used = 1;
                 set_param((uint32_t)FXP[k], (int32_t)live.v[FXP[k]] + (FXP[k] == P_DLY_TIME ? (e > 0 ? 1 : -1) : e * 2));
                 dirty_tags = 1;
             } else if (p >= 0) {
                 int32_t step = PDEF[p].max >= 100 ? 2 : 1;
                 set_param((uint32_t)p, (int32_t)live.v[p] + e * step);
-                if (p == P_MODE || p == P_FTYPE || p == P_ARP_MODE || p >= P_CHO_RATE) dirty_tags = 1;
+                if (p == P_MODE || p == P_FTYPE || p == P_ARP_MODE || p >= P_GRL_BIAS) dirty_tags = 1;
                 dirty_hdr = 1;
             }
             dirty_page = 1;

@@ -121,10 +121,10 @@ ALGORITHM, PLAY, REC.)
 **Adopted from Skiff** (the strongest navigation model in the scene; upstream already borrows from it):
 - ⭐ **Hold HOME = a live control map** showing what every button/knob does on the current page. This is the
   answer to the renamed controls — no memorisation, no dual-labelling; the headers stay pure. **DONE**
-  (`ui_map`/`draw_map`; tests/map.txt): held ≥ 350 ms it shows the page's four knobs and, per button, the label
-  printed on the panel, its dog name (DIG, HOWL, PANT, FLEAS, ZOOMIES, BURY, FETCH, BARKS — the FX button has none
-  in the brief, so it shows blank) and where a press goes *now*; letting go stays on the page. The page titles
-  stay plain (HOME, FILTER, BBD DELAY…): the dog names live in the map only. A tap goes HOME **on release** (that is the cost: HOME no longer
+  (`ui_map`/`draw_map`; tests/map.txt): held ≥ 350 ms it shows the page's four knobs and, per button, its dog name with the
+  label printed on the panel ("DIG (EDIT)", "HOWL (ENV)" … "BARKS (PRESETS)"; FX and OCT have none in the brief, HOME's
+  is HOME) and where a press goes *now*; letting go stays on the page. The page titles stay plain (FILTER, BBD
+  DELAY…; HOME's is **DØG-5**, the owner's choice 2 Nov): the dog names live in the map only. A tap goes HOME **on release** (that is the cost: HOME no longer
   acts on press). The map draw calls `app_idle()` (DRAW RULE) — the host script asserts it.
 - **Page families remember their last page** (one `uint8_t` each, `fam_last`) — so HOME→play→EDIT returns you to
   where you were, not to the top of the cycle. **DONE** (tests/families.txt, 43 `expect page` checks).
@@ -145,6 +145,13 @@ POUND (locked factory) / THE PACK (live). FLEAS = the degradation dial (CLEAN/IT
 `VOICES → PREAMP DRIVE (new) → BBD DELAY (re-voiced, free-ms, REC=tap-tempo) → SPRING REVERB (re-voiced) →
 TAPE DEGRADE (new) → MASTER GATE`. The 3 freed chorus param slots (`P_CHO_*`) carry Drive + Tape; no new
 patch storage. Build Drive/Tape as integer fixed-point.
+**DRIVE (GROWL) — DONE** (`obv_drive.h`): on the voice bus before the output stage; the 3 chorus bytes are GROWL (54,
+CC 69), BIAS (52, CC 67), TONE (53, CC 68), so **Tape takes bytes from the 64..79 gap** (no byte or CC moves). KNOB 1 on
+DRIVE, SELECT held = DRIVE + (BIAS, TONE). 4x oversampled tanh-table clip, pre-clip low-pass closing with GROWL, loudness
+held within ~0.6 dB 0..100 % (K-weighted trim), GROWL 0 a bit-exact bypass. Measurements: `listen/drive/README.md`,
+`dog5-docs/PERF-BASELINE.md` (742 host instr/sample). The six factory patches that had chorus on (10, 12, 13, 16, 24,
+29) are at GROWL 0, with width compensation (approved 2 Nov): 10/12 SPREAD 100; 13/16 LFO PITCH 3; 24 LFO PITCH 4 +
+DLY MIX 35; 29 unchanged otherwise.
 
 **Spring reverb:** re-voice the Dattorro plate *toward* spring — allpasses faster+shallower, short PRE-DLY,
 brighter DAMP, clamp SIZE so it can't bloom into a hall. **Excellence is NOT required** (Vincent has real

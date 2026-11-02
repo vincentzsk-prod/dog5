@@ -7,7 +7,7 @@
  *               same path as the keys
  *   keys        velocity from the unit's factory curves (hal/smk_input.h); the FM-1 plays 100
  *   faders      two banks, FADER BANK switches (LED lit on B): A = PERFORM's CUTOFF RESO ENV AMT RELEASE,
- *               B = CHORUS / DELAY / REVERB mix and MASTER (the level K1 turns). A fader acts once it moves (also
+ *               B = GROWL / DELAY / REVERB mix and MASTER (the level K1 turns). A fader acts once it moves (also
  *               after a bank change), so nothing jumps; a short bar under the page shows it
  *   wheels      pitch = bend, +-2 semitones (the program's BEND range, 2 in every factory program), every voice;
  *               mod = a gentle vibrato from the program's LFO, up to +-1/2 semitone (obv_engine.h ctl_vib).
@@ -86,15 +86,15 @@ static void smk_buttons(uint32_t b)
         smk_bank ^= 1u;
         for (i = 0; i < 4u; i++) smk_fad_last[i] = 0xFF;   /* a new bank: each fader waits until it moves */
         smk_overlay(smk_bank ? "FADER BANK B" : "FADER BANK A",
-                    smk_bank ? "CHORUS DELAY REVERB MASTER" : "CUTOFF RESO ENV AMT RELEASE");
+                    smk_bank ? "GROWL DELAY REVERB MASTER" : "CUTOFF RESO ENV AMT RELEASE");
     }
 }
 
 /* ---- the faders: two banks, a fader acts once it moves */
 static void smk_faders(uint32_t *dirty_page, uint32_t *dirty_hdr, uint32_t *dirty_tags)
 {
-    static const int8_t FP[2][4] = {{P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}, {P_CHO_MIX, P_DLY_MIX, P_REV_MIX, -1}};
-    static const char *const FN[2][4] = {{"CUTOFF", "RESO", "ENV AMT", "RELEASE"}, {"CHORUS", "DELAY", "REVERB", "MASTER"}};
+    static const int8_t FP[2][4] = {{P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}, {P_GROWL, P_DLY_MIX, P_REV_MIX, -1}};
+    static const char *const FN[2][4] = {{"CUTOFF", "RESO", "ENV AMT", "RELEASE"}, {"GROWL", "DELAY", "REVERB", "MASTER"}};
     static char l1[32], l2[32];
     uint32_t i;
     for (i = 0; i < 4u; i++) {
@@ -214,7 +214,7 @@ static void host_dump(void)
     for (p = 0; p < 16u; p++) printf(" %06X", padled_rgb[p]);
     printf("\n%6u ms  STATE bank=%u bend=%d vib=%d master=%d cutoff=%u reso=%u envamt=%u release=%u cho=%u dly=%u rev=%u\n",
            fm1_ms, smk_bank, ctl_bend, ctl_vib, smk_master,
-           live.v[P_CUTOFF], live.v[P_RESO], live.v[P_FENV_AMT], live.v[P_AR], live.v[P_CHO_MIX], live.v[P_DLY_MIX],
+           live.v[P_CUTOFF], live.v[P_RESO], live.v[P_FENV_AMT], live.v[P_AR], live.v[P_GROWL], live.v[P_DLY_MIX],
            live.v[P_REV_MIX]);
 }
 #endif
