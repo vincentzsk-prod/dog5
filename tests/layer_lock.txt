@@ -1,0 +1,48 @@
+# Layer-lock under HOME-acts-on-release: hold FX (the layer), tap HOME -> locked. HOME's tap does NOT go HOME (its
+# press was the lock, so its release does nothing); FX's release keeps the lock; the knobs stay the layer's on any page
+# until FX is pressed again (or ENV / LFO / ARP), and only then does a HOME tap go HOME, on its release.
+# Buttons: 2 FX, 4 ENV, 6 EDIT, 8 HOME. KNOB 1 = encoder 2: on FILTER it is RESO (13), in the FX layer GROWL (54).
+# Program 1 (Red Pill): RESO 30, GROWL 0.
+3000 btn 6   # EDIT: OSC 1
+3200 btn 6   # OSC 2
+3400 btn 6   # OSC MOD
+3600 btn 6   # FILTER
+3800 expect page 4
+3800 expect param 13 30
+3800 expect param 54 0
+4000 btndown 2   # FX held: the layer
+4200 btn 8   # HOME tapped while FX is held: the lock
+4400 expect page 4   # (the tap's release did not go HOME)
+4400 btnup 2   # FX let go: still locked
+4600 expect page 4
+4600 shot
+4700 enc 2 1   # KNOB 1 is the layer's GROWL, not FILTER's RESO
+4900 expect param 54 2
+4900 expect param 13 30
+5000 btn 2   # FX pressed again: the lock goes; its release does nothing (no page step)
+5200 expect page 4
+5200 enc 2 1   # KNOB 1 is RESO again
+5400 expect param 13 32
+5400 expect param 54 2
+5500 btn 8   # HOME tapped with no layer: HOME, on its release
+5700 expect page 0
+5800 btn 6   # EDIT: back to FILTER (the family remembers)
+6000 expect page 4
+6000 btndown 2   # the other way out: lock again ...
+6200 btn 8
+6300 btnup 2
+6400 expect page 4
+6500 enc 2 1
+6700 expect param 54 4   # locked: GROWL
+6800 btn 4   # ... and ENV lets it go (without leaving the page)
+7000 expect page 4
+7000 enc 2 1
+7200 expect param 13 34   # RESO again
+7200 expect param 54 4
+7300 btndown 8   # a held HOME is still the control map, not HOME
+7700 expect page 4
+7800 btnup 8
+8000 expect page 4
+8000 btn 8   # and a tap still goes HOME
+8200 expect page 0
+8500 end

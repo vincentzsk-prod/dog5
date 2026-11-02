@@ -28,6 +28,8 @@ run "FM-1 hold-HOME control map: held stays on the page, a tap goes HOME, the ma
 run "FM-1 polyphony P_POLY_N: default 5, then 8 and 1, gated-voice counts under a 10-note cluster" sh tests/run_host.sh tests/poly.txt
 # GROWL (obv_drive.h): KNOB 1 on DRIVE, SELECT held = DRIVE + (BIAS, TONE), the FX-held layer; "T expect param P V"
 run "FM-1 DRIVE page: GROWL on KNOB 1, SELECT held turns it to BIAS / TONE, nowhere else; FX held reaches GROWL" sh tests/run_host.sh tests/drive_page.txt
+# layer-lock with HOME acting on its release: hold FX + tap HOME locks; the tap never goes HOME; FX / ENV let it go
+run "FM-1 layer-lock: FX held + HOME tapped locks (no jump HOME), the lock outlives FX's release, FX or ENV ends it" sh tests/run_host.sh tests/layer_lock.txt
 run "SMK-37 mapping: step pads, REC pads, fader banks, wheels, outer keys" python3 tests/smk_ui_test.py
 # the 96-byte / 3-sector / DOG5 program store (the FM-1 and SMK-37 host binaries from run_host.sh above):
 # 99 distinct patches round-trip byte-exact across a power cycle, one save touches only its sector, an old

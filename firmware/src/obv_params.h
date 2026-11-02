@@ -152,7 +152,7 @@ enum { PG_PERFORM,                                                              
        PG_GLOBAL, PG_VOICE, PG_VOICE2, PG_OUTPUT,                               /* GLO */
        NPAGE };
 static const page_t PAGE[NPAGE] = {
-    [PG_PERFORM] = {"HOME", {P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}},
+    [PG_PERFORM] = {"D\xD8G-5", {P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}},   /* (HOME; the Ø is the font's byte 0xD8) */
     [PG_OSC1] = {"OSC 1", {P_O1_WAVE, P_O1_PW, P_O1_LVL, P_NOISE}},
     [PG_OSC2] = {"OSC 2", {P_O2_WAVE, P_O2_PW, P_O2_LVL, P_O2_SEMI}},
     [PG_OSCMOD] = {"OSC MOD", {P_SYNC, P_XMOD, P_ENV_O2, P_O2_FINE}},

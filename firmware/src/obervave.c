@@ -351,7 +351,7 @@ static void draw_hints(void)
     if (key == hints_key) return;
     hints_key = key;
     if (toasting) ui_hints(toast, "", C_AMBER);
-    else if (layer == L_FX) ui_hints("KNOBS: CHORUS BBD SPRING", "AND THE BBD TIME", C_AMBER);
+    else if (layer == L_FX) ui_hints("KNOBS: GROWL BBD SPRING", "AND THE BBD TIME", C_AMBER);
 }
 
 #ifdef OBV_HOST
@@ -386,10 +386,11 @@ static uint32_t host_idle_n, host_map_idle;     /* tests: app_idle calls that go
 #endif
 static void draw_map(void)
 {
-    /* the label printed on the panel, its dog name (CLAUDE.md section 5; the FX button has none in the brief) */
-    static const struct { uint8_t fam; const char *hw, *dog; } PB[6] = {
-        {FAM_EDIT, "EDIT", "DIG"}, {FAM_ENV, "ENV", "HOWL"}, {FAM_LFO, "LFO", "PANT"},
-        {FAM_FX, "FX", ""}, {FAM_GLO, "GLO", "FLEAS"}, {FAM_ARP, "ARP", "ZOOMIES"}};
+    /* each button as "DOG NAME (PRINTED NAME)" (CLAUDE.md section 5); FX and OCT have no dog name in the brief, HOME's
+     * is HOME */
+    static const struct { uint8_t fam; const char *label; } PB[6] = {
+        {FAM_EDIT, "DIG (EDIT)"}, {FAM_ENV, "HOWL (ENV)"}, {FAM_LFO, "PANT (LFO)"},
+        {FAM_FX, "FX"}, {FAM_GLO, "FLEAS (GLO)"}, {FAM_ARP, "ZOOMIES (ARP)"}};
     map_row_t R[MAP_ROWS];
     knob_view_t k[4];
     int32_t i, hi = page == PG_PERFORM ? 0 : -1;
@@ -406,17 +407,17 @@ static void draw_map(void)
         } else if (p >= 0) { k[i].label = PDEF[p].name; k[i].present = 1; }
         none &= !k[i].present;
     }
-    R[0].hw = "HOME"; R[0].dog = "HOME"; R[0].what = "TAP: HOME";
+    R[0].label = "HOME"; R[0].what = "TAP: HOME";
     for (i = 0; i < 6; i++) {                   /* the page buttons: where a press goes NOW (the live part) */
-        R[1 + i].hw = PB[i].hw; R[1 + i].dog = PB[i].dog;
+        R[1 + i].label = PB[i].label;
         R[1 + i].what = PB[i].fam == FAM_ARP && page == PG_ARP ? "HOLD" : PAGE[cycle_fam(PB[i].fam)].title;
         if (in_fam(PB[i].fam)) hi = 1 + i;
     }
-    R[7].hw = "SAVE"; R[7].dog = "BURY"; R[7].what = "TAP TWICE";
-    R[8].hw = "SELECT"; R[8].dog = "FETCH"; R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : "TEMPO";
-    R[9].hw = NM_PRESETS; R[9].dog = "BARKS"; R[9].what = "SOUND";
-    R[10].hw = "OCT-/+"; R[10].dog = ""; R[10].what = "OCTAVE";
-    ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, "FX HELD: MIXES");
+    R[7].label = "BURY (SAVE)"; R[7].what = "TAP TWICE";
+    R[8].label = "FETCH (SELECT)"; R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : "TEMPO";
+    R[9].label = "BARKS (" NM_PRESETS ")"; R[9].what = "SOUND";
+    R[10].label = "OCT-/+"; R[10].what = "OCTAVE";
+    ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, "FX HELD: GROWL + MIXES");
 #ifdef OBV_HOST
     host_map_idle = host_idle_n - idle0;
 #endif
