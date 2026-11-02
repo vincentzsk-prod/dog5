@@ -214,14 +214,17 @@ wordmark) — full spec in the build kit.
 - **Host build + browser sim need only clang + Python + Pillow** — all present in a default cloud env. The
   whole synth, the Psych Chain, patch voicing and the art can be built and heard/seen there with no special
   setup. `tests/run_host.sh` (WAV + screen PNGs), `web/sim/build.sh` (browser).
-- ⚠️ **The device build (`.fwsc`) needs two JieLi downloads NOT reachable on a default cloud env** (tested
-  and confirmed blocked):
+- **The device build (`.fwsc`) needs two JieLi downloads.** Re-tested 2026-11-02: the original hosts work
+  fine from this cloud environment once `pkgman.jieliapp.com`, `gitee.com` and
+  `jl-update.oss-cn-shenzhen.aliyuncs.com` (the redirect target the toolchain link lands on) are allowlisted
+  in the cloud environment's network settings:
   - toolchain: `tools/get_toolchain.sh` → `https://pkgman.jieliapp.com/s/linux-toolchain`
   - SDK: `git clone --depth 1 --branch AC79NN_SDK_V1.2.1_2023-12-13 https://gitee.com/Jieli-Tech/fw-AC79_AIoT_SDK.git ~/fw-AC79_AIoT_SDK`
-  Fix: allowlist `pkgman.jieliapp.com` and `gitee.com` in the cloud environment's network settings (and run
-  the two fetches in a setup script), OR vendor both into a GitHub Release once so the build never reaches
-  out again (preferred long-term — a one-person vendor host can vanish). These are re-downloadable, so this
-  is NOT transition-critical; it only gates the final pack-for-device step.
+  A session can instead run **`tools/get_vendored_deps.sh`**, which pulls the same toolchain + SDK (pinned
+  to the same versions, 20260730.1 / AC79NN_SDK_V1.2.1_2023-12-13) from our own GitHub Release
+  (`build-deps-v1`, two `.tar.xz` archives, no firmware code in it) instead of those three outside hosts —
+  faster, and it still works if any of them is ever unreachable. Both scripts unpack to the same
+  `~/.jieli/toolchain` / `~/fw-AC79_AIoT_SDK` paths `build.sh` expects, so either is a drop-in.
 - Build entrypoints: `tests/run_host.sh` → `./build.sh` (env: `JIELI_TOOLCHAIN`, `AC79_SDK`) → the `.fwsc`.
 
 ---
