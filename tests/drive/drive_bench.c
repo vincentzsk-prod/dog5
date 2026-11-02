@@ -6,6 +6,7 @@
  *   cc -O2 -Ifirmware/src -Ifirmware/gen -o build/drive/bench tests/drive/drive_bench.c -lm
  *   build/drive/bench OUT.raw saw F0 PEAK SECONDS GROWL [BIAS TONE]   a band-limited saw (every harmonic below fs/2,
  *                                                                   summed in double: no aliasing in the input)
+ *   build/drive/bench OUT.raw sine F0 PEAK SECONDS GROWL [BIAS TONE]  a sine (the harmonics are all the drive's)
  *   build/drive/bench OUT.raw sweep F0 PEAK                          a sine, GROWL 0 -> 127 -> 0 one detent (2) every
  *                                                                   60 ms, as a knob turned on the DRIVE page
  *   build/drive/bench OUT.txt fixed F0 PEAK                          the sine at each FIXED GROWL 0..127 (1 s to settle,
@@ -45,7 +46,8 @@ int main(int argc, char **argv)
     if (argc < 3) { fprintf(stderr, "see the comment at the top\n"); return 1; }
     out = fopen(argv[1], "wb");
     patch_defaults(&pt);
-    if (!strcmp(argv[2], "saw")) {
+    if (!strcmp(argv[2], "saw") || !strcmp(argv[2], "sine")) {
+        int sine = argv[2][1] == 'i';
         double f0 = atof(argv[3]), peak = atof(argv[4]), ph = 0;
         uint32_t n = (uint32_t)(atof(argv[5]) * FS), nh = (uint32_t)(FS / 2 / f0);
         pt.v[P_GROWL] = (uint8_t)atoi(argv[6]);
@@ -55,7 +57,8 @@ int main(int argc, char **argv)
             for (k = 0; k < 256u; k++, ph += f0 / FS) {
                 double s = 0;
                 uint32_t h;
-                for (h = 1; h <= nh; h++) s += sin(2 * M_PI * h * ph) / h * (h & 1u ? 1 : -1);
+                if (sine) s = sin(2 * M_PI * ph) * M_PI / 2 * 1.18;
+                else for (h = 1; h <= nh; h++) s += sin(2 * M_PI * h * ph) / h * (h & 1u ? 1 : -1);
                 l[k] = r[k] = peak * s * 2 / M_PI / 1.18;   /* (the band-limited saw overshoots to ~1.18) */
             }
             run(l, r, 256);

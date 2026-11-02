@@ -155,20 +155,43 @@ def main():
         plots(d, png)
 
 
+def harmonics(x, f0_guess, n=40, nfft=1 << 15):
+    f, p = spectrum(x, nfft)
+    f0 = fundamental(f, p, f0_guess)
+    df = f[1] - f[0]
+    h = np.array([p[np.abs(f - k * f0) <= 3 * df].max() if k * f0 < FS / 2 - 4 * df else np.nan
+                  for k in range(1, n + 1)])
+    return 10 * np.log10(h / h[0])
+
+
 def plots(d, out):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     os.makedirs(out, exist_ok=True)
-    s0 = int(3.0 * FS)
-    for src in SOURCES:
+    colours = ("#999999", "#4a90d9", "#2ca02c", "#ff7f0e", "#d62728")
+    # one held note: its harmonics one by one (an overlaid spectrum hides how they change)
+    for src, f0, w in (("lowsaw", 65.4, (3.3, 5.3)), ("lead", 1046.5, (3.6, 5.2))):
         fig, ax = plt.subplots(figsize=(9, 4.2), dpi=110)
-        for v, c in zip(LEVELS, ("#999999", "#4a90d9", "#2ca02c", "#ff7f0e", "#d62728")):
+        k = np.arange(1, 41)
+        for v, c in zip(LEVELS, colours):
+            x = read(f"{d}/src_{src}_{v:03d}.wav")[int(w[0] * FS):int(w[1] * FS)]
+            ax.plot(k, harmonics(x, f0), "o-", color=c, ms=3, lw=0.8, label=f"GROWL {v}%")
+        ax.set(xlim=(0.5, 40.5), ylim=(-70, 3), xlabel="harmonic", ylabel="dB re the fundamental",
+               title=f"{src}: harmonics 1-40 at GROWL 0 / 25 / 50 / 75 / 100 %")
+        ax.grid(alpha=0.3); ax.legend(loc="lower left", fontsize=8)
+        fig.tight_layout(); fig.savefig(f"{out}/harmonics_{src}.png"); plt.close(fig)
+    # several notes: the spectra stacked, one row a setting
+    s0 = int(3.0 * FS)
+    for src in ("chord", "bass"):
+        fig, axs = plt.subplots(len(LEVELS), 1, figsize=(9, 8), dpi=110, sharex=True)
+        for ax, v, c in zip(axs, LEVELS, colours):
             f, p = spectrum(read(f"{d}/src_{src}_{v:03d}.wav")[s0:])
-            ax.semilogx(f[1:], 10 * np.log10(p[1:] / p.max() + 1e-14), color=c, lw=0.7, label=f"GROWL {v}%")
-        ax.set(xlim=(20, 22050), ylim=(-110, 3), xlabel="Hz", ylabel="dB (each to its own peak)",
-               title=f"{src}: spectrum at GROWL 0 / 25 / 50 / 75 / 100 %")
-        ax.grid(alpha=0.3, which="both"); ax.legend(loc="lower left", fontsize=8)
+            ax.semilogx(f[1:], 10 * np.log10(p[1:] / p.max() + 1e-14), color=c, lw=0.6)
+            ax.set(ylim=(-100, 3), xlim=(20, 22050)); ax.grid(alpha=0.3, which="both")
+            ax.text(0.99, 0.85, f"GROWL {v}%", transform=ax.transAxes, ha="right", fontsize=8)
+        axs[0].set_title(f"{src}: spectrum at GROWL 0 / 25 / 50 / 75 / 100 % (dB, each to its own peak)")
+        axs[-1].set_xlabel("Hz")
         fig.tight_layout(); fig.savefig(f"{out}/spectrum_{src}.png"); plt.close(fig)
     for nm, guess in (("c6", 1046.5), ("c7", 2093.0)):
         fig, ax = plt.subplots(figsize=(9, 4.2), dpi=110)
