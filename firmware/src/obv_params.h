@@ -20,6 +20,7 @@ enum {
     P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX,
     P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX,
     P_POLY_N,                                   /* (appended: the MIDI CC numbers of the above stay) */
+    P_CHEW, P_TP_WOWFLT, P_TP_HISS, P_TP_DROPS, /* TAPE (obv_tape.h): bytes 64-67, CC 83-86 (appended) */
     NPARAM
 };
 /* the chorus is gone (the Psych Chain, CLAUDE.md section 6): its bytes 52-54 and CC 67-69 are GROWL's now. The old
@@ -31,8 +32,8 @@ enum {
 #define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 */
 #define PATCH_BYTES 96u                         /* DØG-5: grown 80 -> 96 (the "DOG5" program format) */
 #define PATCH_NAME_AT 80u                       /* the name at a FIXED offset, decoupled from NPARAM: bytes 0-79 are
-                                                 * parameters (63 used; room for the Psych Chain GROWL/ALLEY/DRAIN/CHEW,
-                                                 * P_POLY_N and v1.1), the 14-char name 80-93, 2 spare (94-95). Adding a
+                                                 * parameters (68 used: 0-63, then TAPE's 64-67; 68-79 free for
+                                                 * v1.1), the 14-char name 80-93, 2 spare (94-95). Adding a
                                                  * parameter (always at the end of the table) never moves the name. */
 #if NPARAM > PATCH_NAME_AT
 #error "the parameters run into the name field"
@@ -44,7 +45,7 @@ enum {
 #define NFACT 32u                               /* the 32 DØG-5 patches (dog5-docs/DOG-5-presets.md); the rest INIT */
 
 enum { K_NUM, K_BIP, K_ONOFF, K_WAVE, K_FTYPE, K_MODE, K_LSHAPE, K_LPHASE, K_TO, K_ARP, K_DIV, K_SEMI, K_MS, K_HZ,
-       K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV };
+       K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV, K_WF, K_DB12, K_REL };
 enum { W_OFF, W_SAW, W_PLS, W_BOTH };
 enum { F_LP12, F_HP12, F_BP12, F_NOTCH, F_LP24, F_SEM, NFTYPE };   /* SEM: LP .. notch .. HP by MORPH */
 enum { M_POLY, M_DUAL, M_UNISON, M_MONO };
@@ -124,6 +125,10 @@ static const pdef_t PDEF[NPARAM] = {
     [P_REV_PRE] = {"PRE-DLY", 127, 20, K_NUM, 0},
     [P_REV_MIX] = {"MIX", 127, 0, K_NUM, 0},
     [P_POLY_N] = {"POLY", 8, 5, K_NUM, 0},      /* 1-8, default 5: the POLY/DUAL voice window (obv_engine.h poly_n) */
+    [P_CHEW] = {"CHEW", 127, 0, K_PCT, 0},      /* TAPE: wow, flutter, saturation, head loss, hiss, dropouts */
+    [P_TP_WOWFLT] = {"WOW/FLT", 127, 64, K_WF, 0},   /* 0 wow only, 64 both, 127 flutter only */
+    [P_TP_HISS] = {"HISS", 127, 64, K_DB12, 0},  /* 0 off, else -12 .. +12 dB around CHEW's own hiss */
+    [P_TP_DROPS] = {"DROPS", 127, 64, K_REL, 0}, /* 0 none, 64 CHEW's own, 127 three times as many */
 };
 
 static const char *const WAVE_NAME[4] = {"OFF", "SAW", "PULSE", "SAW+PLS"};
@@ -139,9 +144,8 @@ static const char *const DDIV_NAME[NDDIV] = {"1/16", "1/8T", "1/8", "1/8.", "1/4
 static const uint8_t DDIV_NUM[NDDIV] = {1, 1, 1, 3, 1, 3, 2}, DDIV_DEN[NDDIV] = {4, 3, 2, 4, 1, 2, 1};   /* of a quarter */
 
 /* the pages: four knobs each (-1 = no knob). DØG-5 has 20 (CLAUDE.md §5); a button's pages are contiguous, so a
- * family is "first page + count" (FAM_* below). DRIVE, TAPE and VOICE + have no knobs yet: their parameters
- * (preamp drive, tape degrade) arrive with the Psych Chain, which changes the patch and the DSP. VOICE + now
- * carries P_POLY_N (the polyphony / voice window). */
+ * family is "first page + count" (FAM_* below). DRIVE and TAPE carry one macro each on KNOB 1 (GROWL, CHEW), their
+ * secondaries on SELECT held; VOICE + carries P_POLY_N (the polyphony / voice window). */
 typedef struct { const char *title; int8_t p[4]; } page_t;
 enum { PG_PERFORM,                                                              /* HOME */
        PG_OSC1, PG_OSC2, PG_OSCMOD, PG_FILTER, PG_FILTER2,                      /* EDIT */
@@ -166,7 +170,7 @@ static const page_t PAGE[NPAGE] = {
     [PG_DRIVE] = {"DRIVE", {P_GROWL, -1, -1, -1}},                              /* SELECT held: BIAS, TONE (PAGE_SEL) */
     [PG_BBD] = {"BBD DELAY", {P_DLY_TIME, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},
     [PG_SPRING] = {"SPRING", {P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX}},
-    [PG_TAPE] = {"TAPE", {-1, -1, -1, -1}},                                     /* tape degrade: Psych Chain, not built */
+    [PG_TAPE] = {"TAPE", {P_CHEW, -1, -1, -1}},                                 /* SELECT held: WOW/FLT, HISS, DROPS */
     [PG_ARP] = {"ARP", {P_ARP_MODE, P_ARP_DIV, P_ARP_OCT, P_ARP_GATE}},
     [PG_GLOBAL] = {"GLOBAL", {-1, -1, -1, -1}},   /* tempo, MIDI channel, tune, CPU: globals, drawn by hand */
     [PG_VOICE] = {"VOICE", {P_MODE, P_UNI_N, P_UNI_DET, P_GLIDE}},
@@ -177,6 +181,8 @@ _Static_assert(NPAGE == 20, "DOG-5 has 20 pages (CLAUDE.md section 5)");
 /* SELECT held: a Psych Chain page's knobs turn to its secondaries (dog5-docs/DOG-5-presets.md section 2: KNOB 1's
  * secondary is the drive's bias; TONE beside it). The pages without any keep their knobs */
 static const page_t PAGE_DRIVE_SEL = {"DRIVE +", {P_GRL_BIAS, P_GRL_TONE, -1, -1}};
+static const page_t PAGE_TAPE_SEL = {"TAPE +", {P_TP_WOWFLT, P_TP_HISS, P_TP_DROPS, -1}};   /* (KNOB 4's secondary: the
+                                                 * brief's wow/flutter balance, with the noise and the dropouts) */
 
 /* the button families: each remembers its last page (fam_last in obervave.c) */
 enum { FAM_HOME, FAM_EDIT, FAM_ENV, FAM_LFO, FAM_FX, FAM_ARP, FAM_GLO, NFAM };

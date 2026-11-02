@@ -1,0 +1,51 @@
+# CHEW on the TAPE page (KNOB 1), its secondaries on SELECT held (TAPE +: WOW/FLT on KNOB 1, HISS on KNOB 2, DROPS on
+# KNOB 3), and the map. Parameters: 64 CHEW, 65 WOW/FLT, 66 HISS, 67 DROPS, 54 GROWL (obv_params.h). Encoders: 2 = KNOB 1,
+# 3 = KNOB 2, 4 = KNOB 3; buttons: 2 FX, 3 SELECT, 8 HOME. Program 1 (Red Pill): CHEW 0, WOW/FLT 64, HISS 64, DROPS 64.
+3000 expect param 64 0
+3000 expect param 65 64
+3000 btn 2   # FX: DRIVE
+3200 btn 2   # BBD DELAY
+3400 btn 2   # SPRING
+3600 btn 2   # TAPE
+3800 expect page 14
+3800 enc 2 1
+3850 enc 2 1
+3900 enc 2 1
+3950 enc 2 1
+4000 enc 2 1
+4100 expect param 64 10   # five detents, two steps each
+4100 expect param 54 0    # GROWL untouched
+4200 shot
+4300 btndown 3   # SELECT held: TAPE +
+4500 shot
+4500 enc 2 -1
+4550 enc 2 -1
+4600 enc 3 1
+4650 enc 3 1
+4700 enc 3 1
+4750 enc 4 -1
+4800 expect param 65 60   # KNOB 1 is WOW/FLT now (toward wow)
+4800 expect param 66 70   # KNOB 2 is HISS
+4800 expect param 67 62   # KNOB 3 is DROPS
+4800 expect param 64 10   # CHEW untouched
+4900 btnup 3   # SELECT let go: CHEW again
+5000 enc 2 1
+5100 expect param 64 12
+5100 expect param 65 60
+5200 btndown 8   # HOME held on TAPE: the map names CHEW
+5600 shot
+5700 btnup 8
+5900 expect page 14
+5900 btndown 3   # SELECT held while HOME is held: the map shows TAPE +'s knobs
+6000 btndown 8
+6400 shot
+6500 btnup 8
+6600 btnup 3
+6800 btn 2   # FX again: round to DRIVE, SELECT there is still DRIVE + (BIAS on KNOB 1)
+7000 expect page 11
+7000 btndown 3
+7100 enc 2 1
+7300 expect param 52 42
+7300 expect param 65 60
+7300 btnup 3
+7800 end

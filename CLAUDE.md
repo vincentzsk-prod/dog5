@@ -152,6 +152,13 @@ held within ~0.6 dB 0..100 % (K-weighted trim), GROWL 0 a bit-exact bypass. Meas
 `dog5-docs/PERF-BASELINE.md` (742 host instr/sample). The six factory patches that had chorus on (10, 12, 13, 16, 24,
 29) are at GROWL 0, with width compensation (approved 2 Nov): 10/12 SPREAD 100; 13/16 LFO PITCH 3; 24 LFO PITCH 4 +
 DLY MIX 35; 29 unchanged otherwise.
+**TAPE (CHEW) — DONE** (`obv_tape.h`): bytes **64–67** (CHEW, WOW/FLT, HISS, DROPS; CC 83–86, appended, no byte or
+CC moves; 68–79 stay free). **For now it sits last, after the (old) reverb** — final order waits for the BBD/Spring
+re-voice. KNOB 1 on TAPE = CHEW, SELECT held = TAPE + (WOW/FLT balance, HISS ±12 dB, DROPS ×0–3). Wow (1.4 % peak at
+the top) → flutter (from 20 %) → dropouts (from 45 %), with tanh saturation, head loss and bump rising; 2x line with a
+fitted 6-point read (no aliasing from the wow: `listen/tape/README.md`), a fixed 3.6 ms head (a CHEW turn never bends
+pitch), the hiss rests 2 s after silence, loudness held within ~0.3 dB (static law + K-weighted trim), CHEW 0 a
+bit-exact bypass. ~960 host instr/sample (the most of any stage: levers in `dog5-docs/PERF-BASELINE.md`), pool +4 KB.
 
 **Spring reverb:** re-voice the Dattorro plate *toward* spring — allpasses faster+shallower, short PRE-DLY,
 brighter DAMP, clamp SIZE so it can't bloom into a hall. **Excellence is NOT required** (Vincent has real

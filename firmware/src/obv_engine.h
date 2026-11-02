@@ -576,6 +576,7 @@ static void engine_audio(int32_t *out, uint32_t n)
     static uint32_t sc_i, sc_sub;
     fx_block(&live, ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240));
     drive_block(&live);
+    tape_block(&live);
     vol_q12 = (int32_t)((ctl_cc7 * ctl_cc7) >> 2);
     for (b = 0; b < n; b += CTL) {
         engine_events();
@@ -610,6 +611,7 @@ static void engine_audio(int32_t *out, uint32_t n)
         sc_prev = m;
     }
     fx_process(out, n);
+    if (tape_on()) tape_process(out, n);   /* TAPE last, for now (CHEW 0: skipped, bit for bit) */
 }
 
 static int engine_quiet(void)                   /* nothing sounds: a flash erase is safe */

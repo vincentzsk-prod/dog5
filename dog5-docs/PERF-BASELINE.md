@@ -125,3 +125,52 @@ what they cost the sound (estimates, not measured): (1) `REV_DIV 2`, the half-ra
 roughly half of its 566); (2) GROWL in mono, one channel for both (half of its 742 by construction; a driven pad loses
 its stereo spread); (3) GROWL at 2x instead of 4x (roughly a third of it; the pre-clip low-pass would have to close to
 ~2 kHz at the top to keep the same aliasing). None is taken: the device decides.
+
+## The running total, re-measured before TAPE (2026-11-02, main at `6630c5b`)
+
+The scripts are committed now (`tests/tape/perf_scripts.py` writes `tests/tape/perf_*.txt`; the same recipe as the
+GROWL section: program 1 in POLY, a held Cmaj7 3.0-9.0 s, the stage(s) on at 2.7 s, 299,880 frames on). Run:
+`for s in off growl dly rev all3; do tests/perf_callgrind.sh tests/tape/perf_$s.txt; done`.
+
+| Stage | Ir (374,784 frames past the warm-up) | Instructions / sample while on |
+|---|---:|---:|
+| Everything off (the voices) | 268,155,759 | (715 over the whole window) |
+| GROWL 100 | 489,450,503 | **738** |
+| BBD delay (old ping-pong, mix 60) | 300,896,311 | **109** |
+| Spring (old plate, mix 60) | 437,967,378 | **566** |
+| GROWL + delay + reverb | 692,002,674 | **1,413** (1,846 over the whole window) |
+
+Device build (`./build.sh`, the vendored toolchain): image **95,912 B**, RAM .data+.bss **31,824 B** of 98,304, pool
+**271,772 B** of 344,064 (72,292 B free).
+
+## The Psych Chain, stage 4: TAPE (CHEW) added (2026-11-02, branch `claude/psych-tape`)
+
+The same scripts, plus `perf_chew` (CHEW 100 alone) and `perf_all4` (GROWL 100, delay 60, reverb 60, CHEW 100).
+`tape_process` is `noinline`: inlined into `engine_audio` it shifted the voice loop's code and cost the *everything
+off* run 7.3 M Ir (19 / sample) with TAPE never running; as a call (once an ISR) the off run is back to 267.1 M.
+
+| Stage | Ir | Instructions / sample while on |
+|---|---:|---:|
+| Everything off | 267,119,336 | (713 over the whole window) |
+| GROWL 100 | 489,681,266 | 742 |
+| BBD delay (mix 60) | 299,859,888 | 109 |
+| Spring (mix 60) | 436,930,955 | 566 |
+| **CHEW 100** | 555,239,232 | **961** |
+| GROWL + delay + reverb | 692,233,437 | 1,418 |
+| **All four** | 980,408,818 | **2,379** (2,616 over the whole window, the voices included) |
+
+CHEW 0 costs nothing (the engine skips it; byte-identical output, `tests/drive/bitexact.sh 6630c5b`). CHEW costs the
+same at any setting above 0. Where its 961 go (callgrind, line by line): the 6-tap reads ~170 (4 a frame: 2 sub-samples
+x L/R), the four tanh records ~150, the read's tap weights ~130 (2 a frame, shared by L and R), the halfbands up/down
+~110, the K-weighted loudness detectors ~60, the hiss ~40, the rest (bump, head loss, glides, crossfade) ~300.
+
+Device build: image 95,912 -> **103,316 B** (+7,404: code and 2.8 KB of tables), RAM 31,824 -> **32,208 B** (+384),
+pool 271,772 -> **275,868 B** of 344,064 (+4,096: the tape line, 1024 stereo int16 frames at 88.2 kHz; 68,196 B free).
+
+**TAPE is now the heaviest stage**, and all four together are ~2.4x what the chain cost before GROWL. If the device's
+GLOBAL page says it is too much (aim < 2900 us), TAPE's own levers, in the order of what they cost the sound (host
+estimates, not measured): (1) the record's saturation at 1x instead of 2x (~-75; it aliases above ~7 kHz at full CHEW,
+under -60 dB re the tone); (2) a 4-point Hermite read instead of the 6-point (~-110; the wow's sidebands rise from
+-80 to -43 dB under a 10 kHz tone, audible as a grainy top on bright patches); (3) the whole line at 1x (~-400; the
+sidebands at -30 dB under 10 kHz: a fizz on the top octave under wow). Before any of these: `REV_DIV 2` (~-280) and
+GROWL in mono (~-370), as the GROWL section says. None is taken: the device decides.
