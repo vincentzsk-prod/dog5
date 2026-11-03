@@ -189,7 +189,7 @@ typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn
  * and the run exits 1 on a FAIL; N = the page index, PG_* in obv_params.h), "T expect idle N" (the last control-map draw
  * called app_idle() at least N times: the DRAW RULE), "T param P V" (set parameter P to V, as a knob would), "T expect voices N" (N voice cards gated on now),
  * "T expect param P V" (parameter P holds V now), "T expect peak MS MAX" / "T expect peakmin MS MIN" (the largest |sample| of
- * the output over the last MS ms is <= MAX / >= MIN), "T expect rest R" (R 1: STOP and TAPE STOP at rest, adding nothing) */
+ * the output over the last MS ms is <= MAX / >= MIN), "T expect rest R" (R 1: STOP, TAPE STOP and the SLOP ride at rest, adding nothing) */
 enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES,
        HS_PVAL, HS_PEAK, HS_PEAKMIN, HS_REST };
 static uint32_t host_page_now(void);            /* (obervave.c: the page the panel is on) */

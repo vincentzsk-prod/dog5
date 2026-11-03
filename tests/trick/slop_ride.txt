@@ -1,0 +1,35 @@
+# ALGORITHM = the SLOP ride (FM-1: ENC_ALGORITHM = 1): a held chord (INIT, its VINTAGE 30), the ride turned up on the
+# PERFORM page and on another page (it is no page's knob: the patch's VINTAGE byte never moves, nothing is edited),
+# the header shows SLOP +N = VINTAGE N+30 for a second; turned back to 0 it glides home and adds nothing
+2600 midi 0xC0 32 0
+2700 midi 0x90 48 100
+2700 midi 0x90 55 100
+2700 midi 0x90 60 100
+2700 midi 0x90 64 100
+3000 expect rest 1
+3000 enc 1 1
+3100 enc 1 1
+3200 enc 1 2
+3300 expect param 42 30
+3300 expect rest 0
+3350 shot
+3400 btn 6
+3500 enc 1 3
+3600 enc 1 3
+3700 enc 1 3
+3800 enc 1 3
+3900 enc 1 3
+3950 enc 1 3
+3960 expect param 42 30
+4000 shot
+5000 enc 1 -1
+5100 enc 1 -40
+5300 expect rest 1
+5300 expect param 42 30
+5300 expect peakmin 200 3000
+5600 shot
+5600 midi 0x80 48 0
+5600 midi 0x80 55 0
+5600 midi 0x80 60 0
+5600 midi 0x80 64 0
+6200 end

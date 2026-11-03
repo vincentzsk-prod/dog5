@@ -58,6 +58,12 @@ static volatile int32_t ctl_vib;                /* the SMK-37's mod wheel 0..127
 static volatile int32_t ctl_tune8;              /* global tune, Q8 semitones */
 static volatile uint32_t ctl_tempo = 120, ctl_ext_quarter;   /* MIDI clock: frames per quarter, 0 = none */
 static volatile uint32_t ctl_arp_restart, ctl_panic;
+/* the SLOP ride (ALGORITHM, SLOBBER): 0..127 added to the sound's VINTAGE, live, on every patch, never stored. It
+ * glides (~23 ms, as CUTOFF), so a fast turn is a smooth swell of drift, never a step; the sum runs to 254 (twice the
+ * knob's top: the card offsets and the random walk double, VINTAGE's own law, nothing new). 0: bit for bit as before */
+static volatile uint32_t ctl_slop;
+static int32_t slop_sm;                         /* Q8 */
+#define SLOP_MAX 254
 
 /* ISR -> main loop */
 static volatile int32_t ui_vlevel[NV];          /* each voice's amp envelope, Q15 */
@@ -437,6 +443,11 @@ static void block_globals(part_t *g)            /* a sound's derived numbers, on
     g->reso_sm += ((pv[P_RESO] << 8) - g->reso_sm) >> 6;
     g->reso_k = 8192 - g->reso_sm * 8400 / (127 * 256);
     g->vint = pv[P_VINTAGE];
+    if (ctl_slop || slop_sm) {                  /* the ride on top (glides to the last 1/256 at once) */
+        int32_t d = ((int32_t)ctl_slop << 8) - slop_sm;
+        slop_sm += d > -64 && d < 64 ? d : d >> 6;
+        g->vint = clampi(g->vint + ((slop_sm + 128) >> 8), 0, SLOP_MAX);
+    }
     g->sus_f = pv[P_FS] * (ENV_ONE / 127);
     g->sus_a = pv[P_AS] * (ENV_ONE / 127);
     d = pv[P_VOLUME];

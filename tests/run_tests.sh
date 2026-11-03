@@ -46,6 +46,7 @@ run "FM-1 STOP (PLAY): mid note, silent in 5.8 ms, nothing back on PLAY, a new n
 run "FM-1 STOP (PLAY): a runaway BBD + the whole chain, cleared: the runaway never comes back" sh tests/run_host.sh tests/trick/kill_runaway.txt
 run "FM-1 STOP (PLAY): a 3 s spring tail + CHEW, cleared: no tail, no hiss after PLAY" sh tests/run_host.sh tests/trick/kill_reverb.txt
 run "FM-1 TAPE STOP (SEQ held): a chord dives and falls silent, let go it is back at once, nothing left behind" sh tests/run_host.sh tests/trick/tapestop_chord.txt
+run "FM-1 SLOP ride (ALGORITHM): on top of VINTAGE on any page, the patch byte untouched, back to 0 adds nothing" sh tests/run_host.sh tests/trick/slop_ride.txt
 run "SMK-37 mapping: step pads, REC pads, fader banks, wheels, outer keys" python3 tests/smk_ui_test.py
 # the 96-byte / 3-sector / DOG5 program store (the FM-1 and SMK-37 host binaries from run_host.sh above):
 # 99 distinct patches round-trip byte-exact across a power cycle, one save touches only its sector, an old

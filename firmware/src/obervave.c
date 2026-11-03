@@ -12,7 +12,7 @@
  *   this file       the panel, MIDI, the screen, the storage
  *
  * (OberVave's step sequencer, obv_seq.h, and the two-sound track B it alone drove, are gone: CLAUDE.md §5.
- * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; REC taps ALLEY's time on the BBD page.)
+ * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; ALGORITHM, the SLOP ride; REC taps ALLEY's time on the BBD page.)
  *
  * Integers only (no FPU, no 64-bit division); tests/host.c runs this on a computer. */
 static void app_idle(void);
@@ -66,7 +66,7 @@ static const char *toast;
 /* the panel as sloopDX's: a function button tapped (let go, nothing else touched) opens its pages; FX held is a
  * layer (its knobs change job until it is let go; HOME tapped while it is held locks it open). (DØG-5 deleted the
  * sequencer and the two-sound track B it alone drove: obv_seq.h, CLAUDE.md §5.) The live tricks claim the buttons it
- * freed: PLAY = STOP, the kill switch (below); SEQ held = TAPE STOP (obv_engine.h). */
+ * freed: PLAY = STOP, the kill switch (below); SEQ held = TAPE STOP (obv_engine.h); ALGORITHM = the SLOP ride. */
 enum { L_NONE, L_FX };
 /* PLAY (HEEL) = STOP, the kill switch (obv_engine.h: a 5.8 ms fade, then every voice and effect cleared). A tap stops,
  * a tap starts again; the PLAY LED is lit and the header says STOPPED while it is down. KILL_MOMENTARY 1: silence only
@@ -264,6 +264,7 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
 }
 
 static uint32_t cut_shown_t;                    /* the header shows the cutoff for a second after it moved */
+static uint32_t slop, slop_shown_t;             /* ALGORITHM's ride (obv_engine.h ctl_slop), 0..127; shown a second */
 static void draw_header(void)
 {
     char tags[40];
@@ -277,6 +278,13 @@ static void draw_header(void)
     }
     if (killed) {                               /* STOP: says so until it is let go (the art is Stage 3) */
         ui_header(prog, live.v + PATCH_NAME_AT, edited, "STOPPED (PLAY)");
+        return;
+    }
+    if (slop_shown_t && fm1_ms + 1u - slop_shown_t < 1000u) {   /* SLOP +40 = VINTAGE 95: the ride and what sounds */
+        uint32_t sum = live.v[P_VINTAGE] + slop;
+        scat(tags, "SLOP +"); fmt_u(tags + slen(tags), slop);
+        scat(tags, " = VINTAGE "); fmt_u(tags + slen(tags), sum > SLOP_MAX ? SLOP_MAX : sum);
+        ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
         return;
     }
     if (cut_shown_t && fm1_ms + 1u - cut_shown_t < 1000u) {
@@ -444,7 +452,7 @@ static void host_set_param(uint32_t p, int32_t v) { set_param(p, v); }   /* (tes
 static uint32_t host_voices_on(void) { uint32_t v, n = 0; for (v = 0; v < NV; v++) n += vc[v].gate; return n; }   /* ("T expect voices N") */
 static uint32_t host_get_param(uint32_t p) { return live.v[p % PATCH_BYTES]; }   /* ("T expect param P V") */
 static uint32_t host_map_idle_calls(void);
-static uint32_t host_tricks_rest(void) { return !ts_pos && ts_gain == 32768 && kill_g == KILL_ONE && !kill_dead && !pt.ts_cut8; }   /* ("T expect rest 1") */
+static uint32_t host_tricks_rest(void) { return !ts_pos && ts_gain == 32768 && kill_g == KILL_ONE && !kill_dead && !pt.ts_cut8 && !ctl_slop && !slop_sm; }   /* ("T expect rest 1") */
 #endif
 static uint8_t fam_last[NFAM];                  /* each family's last page (set to FAM[].first at start) */
 static uint32_t in_fam(uint32_t f) { return page >= FAM[f].first && page < (uint32_t)FAM[f].first + FAM[f].count; }
@@ -858,6 +866,14 @@ static void app_main(void)
             say(msg);
             dirty_page |= page == PG_GLOBAL;
         }
+        if ((e = fm1_enc_take(ENC_ALGORITHM)) != 0) {   /* SLOBBER: the SLOP ride, on any page, on top of the sound's
+                                                 * VINTAGE; never stored, 0 at power-on */
+            if (e > 1 || e < -1) e *= 3;        /* (a fast turn goes further, as the knobs) */
+            slop = (uint32_t)clampi((int32_t)slop + e * 2, 0, 127);
+            ctl_slop = slop;
+            slop_shown_t = fm1_ms + 1u; dirty_hdr = 1;
+        }
+        if (slop_shown_t && fm1_ms + 1u - slop_shown_t >= 1000u) { slop_shown_t = 0; dirty_hdr = 1; }   /* (back to the tags) */
         for (k = 0; k < 4u; k++) {
             int32_t p = page_now()->p[k];
             if ((e = fm1_enc_take(ENC_KNOB1 + k)) == 0) continue;
