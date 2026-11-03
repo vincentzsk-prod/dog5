@@ -1,0 +1,87 @@
+# the chain at its extremes, the reverb ON (tests/bbd/worst.txt with REV_MIX 127 / SIZE 127 / DAMP 0 / PRE-DLY 0):
+# 8-voice unison at VOLUME 127, GROWL and CHEW at 127, FEEDBK 127 (runaway), then an 8-note POLY cluster; ALLEY,
+# FINE, PINGPONG, FEEDBK, TONE and MIX jumped at random. Before the fix: 245 overflows in rev_tick. For -fsanitize
+2600 midi 0xC0 31 0
+2601 param 38 2
+2601 param 39 8
+2601 param 12 127
+2601 param 14 64
+2601 param 26 127
+2601 param 45 127
+2601 param 54 127
+2601 param 56 127
+2601 param 57 127
+2601 param 58 127
+2601 param 62 127
+2601 param 60 0
+2601 param 61 0
+2601 param 59 127
+2601 param 64 127
+2601 param 68 1
+2700 midi 0x90 36 127
+2700 param 56 110
+2913 param 58 7
+3181 param 58 63
+3543 param 68 40
+3630 param 69 120
+3786 param 70 26
+4109 param 68 3
+4249 param 70 71
+4372 param 58 99
+4483 param 58 18
+4584 param 56 127
+4841 param 68 33
+4871 param 58 1
+5008 param 58 55
+5122 param 58 42
+5300 param 69 50
+5606 param 57 52
+5729 param 57 50
+5955 param 69 5
+6000 midi 0x80 36 0
+6100 param 38 0
+6169 param 70 42
+6200 midi 0x90 36 127
+6200 midi 0x90 43 127
+6200 midi 0x90 48 127
+6200 midi 0x90 52 127
+6200 midi 0x90 55 127
+6200 midi 0x90 60 127
+6200 midi 0x90 64 127
+6200 midi 0x90 67 127
+6273 param 69 16
+6472 param 69 0
+6807 param 57 86
+6870 param 69 90
+7056 param 70 80
+7180 param 70 120
+7570 param 68 14
+7731 param 68 91
+7967 param 68 107
+8184 param 70 2
+8445 param 68 46
+8794 param 68 30
+8949 param 58 118
+9155 param 56 110
+9453 param 69 118
+9500 midi 0x80 36 0
+9500 midi 0x80 43 0
+9500 midi 0x80 48 0
+9500 midi 0x80 52 0
+9500 midi 0x80 55 0
+9500 midi 0x80 60 0
+9500 midi 0x80 64 0
+9500 midi 0x80 67 0
+9538 param 56 127
+9756 param 58 75
+9804 param 70 23
+9940 param 69 92
+10045 param 69 70
+10434 param 56 0
+10623 param 57 81
+10809 param 68 20
+11159 param 68 79
+11436 param 68 12
+11507 param 56 127
+11744 param 68 60
+12500 end

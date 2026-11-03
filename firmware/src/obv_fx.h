@@ -45,6 +45,8 @@
 #define REV_N (REV_PRE_N + RV_IN1 + RV_IN2 + RV_IN3 + RV_IN4 + RV_AP1 + 16u + RV_D1 + RV_AP2 + RV_D2 + RV_AP3 + 16u + RV_D3 + RV_AP4 + RV_D4)
 #define RV_BW (REV_DIV == 2u ? 24000 : 16700)   /* the input's one-pole: ~5 kHz either way */
 #define FX_MEM_N (2u * DLY_MAX + REV_N)
+#define RV_TAP_MAX 109225                       /* the largest |sum| whose x 19661 fits int32 */
+_Static_assert(RV_TAP_MAX * 19661LL <= 2147483647LL && (RV_TAP_MAX + 1) * 19661LL > 2147483647LL, "RV_TAP_MAX");
 
 typedef struct { int16_t *b; uint32_t len, w; } line_t;   /* w: where the next sample goes */
 static int16_t fx_mem[FX_MEM_N] __attribute__((section(".pool")));
@@ -238,13 +240,16 @@ static inline void rev_tick(int32_t in)
     rv_lpr += ((b - rv_lpr) * dk) >> 15;
     b = ap_step(&rv_ap4, (rv_lpr * dec) >> 15, 16384);
     line_write(&rv_d4, b);
-    /* the output taps (the paper's), x 0.6 */
+    /* the output taps (the paper's), x 0.6. Seven int16 taps can sum to 7x full scale, and a x 19661 product leaves
+     * int32 past |109,225| (3.3x: a hot input fills the tank at a big SIZE). That wrapped on the chip into a
+     * polarity-flipped, full-scale crack (listen/spring/STEP0.md). The clamp is the identity below it, and above it
+     * still gives 2x full scale, which the output's clip pins exactly where the true product would have */
     a = line_read(&rv_d3, RVL(266)) + line_read(&rv_d3, RVL(2974)) - line_read(&rv_ap4, RVL(1913)) + line_read(&rv_d4, RVL(1996))
       - line_read(&rv_d1, RVL(1990)) - line_read(&rv_ap2, RVL(187)) - line_read(&rv_d2, RVL(1066));
     b = line_read(&rv_d1, RVL(353)) + line_read(&rv_d1, RVL(3627)) - line_read(&rv_ap2, RVL(1228)) + line_read(&rv_d2, RVL(2673))
       - line_read(&rv_d3, RVL(2111)) - line_read(&rv_ap4, RVL(335)) - line_read(&rv_d4, RVL(121));
-    rv_yl = (a * 19661) >> 15;
-    rv_yr = (b * 19661) >> 15;
+    rv_yl = (clampi(a, -RV_TAP_MAX, RV_TAP_MAX) * 19661) >> 15;
+    rv_yr = (clampi(b, -RV_TAP_MAX, RV_TAP_MAX) * 19661) >> 15;
 }
 
 static __attribute__((noinline)) void fx_process(int32_t *out, uint32_t n)   /* (inlined, it moved the voice loop: +28 a sample with the effects off) */
