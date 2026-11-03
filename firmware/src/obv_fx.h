@@ -87,10 +87,9 @@
 #define SP_CHIRP_G 22938                        /* their g, Q15: 0.7 */
 #define RV_BW (REV_DIV == 2u ? 28700 : 19950)   /* the input's one-pole: ~6.5 kHz either way */
 #define SP_HP_K (REV_DIV == 2u ? 1408 : 704)    /* the 150 Hz high-pass into the tank (Q15, its state Q8) */
-#define SP_OUT_G 16384                          /* the taps' sum x 0.5 (Q15): within ~2 dB of the plate's wet level (bench) */
 #define FX_MEM_N (2u * DLY_MAX + REV_N)
-#define RV_TAP_MAX (2147483647 / SP_OUT_G)      /* the largest |sum| whose x SP_OUT_G fits int32 */
-_Static_assert((long long)RV_TAP_MAX * SP_OUT_G <= 2147483647LL, "RV_TAP_MAX");
+#define RV_TAP_MAX 65535                        /* the taps' sum, the wet out: at most 2x full scale (the plate fix's
+                                                 * guard; the plate's taps x 0.6 could leave int32 past it) */
 
 typedef struct { int16_t *b; uint32_t len, w; } line_t;   /* w: where the next sample goes */
 static int16_t fx_mem[FX_MEM_N] __attribute__((section(".pool")));
@@ -278,6 +277,16 @@ static inline __attribute__((always_inline)) int32_t bbd_sat(int32_t x)
     y = TANH_Q15[i] + (((TANH_Q15[i + 1] - TANH_Q15[i]) * (a & 255)) >> 8);
     return (y ^ s) - s;
 }
+/* the spring's tank writes: linear to 0.75 of full scale, then K + R tanh((|x| - K) / R) (R = 8192, 32,474 at most):
+ * the tank (at half level) never reaches it in playing (the factory bank peaks at -3 dBFS there); a hot input rounds
+ * into it instead of hard-clipping inside the loop */
+static inline __attribute__((always_inline)) int32_t sp_knee(int32_t x)
+{
+    int32_t s = x >> 31, a = (x ^ s) - s;
+    if (a <= 24576) return x;
+    a = 24576 + ((bbd_sat(clampi((a - 24576) << 2, 0, 65535)) * 8192) >> 15);
+    return (a ^ s) - s;
+}
 /* a line read at back (Q16), through the BBD's filters (a 2-pole SVF, Q 0.8, and a 1-pole at the same corner); the
  * line holds half the level (the headroom), the read gives it back */
 static inline __attribute__((always_inline)) int32_t bbd_read(const line_t *l, bbd_ch_t *c, int32_t back_q16)
@@ -314,7 +323,8 @@ static inline void rev_tick(int32_t in, uint32_t pa, uint32_t pb, int32_t q, int
     if (pa != pb) { int32_t xa = SP_RD(SPO_PRE, 2047u, pa - 1u); x = xa + (((x - xa) * q) >> 8); }
     rv_lp_in += ((x - rv_lp_in) * RV_BW) >> 15;
     rv_hp += ((((rv_lp_in << 8) - rv_hp) >> 4) * SP_HP_K) >> 11;   /* (the difference to Q4 first: x 704 in int32) */
-    x = rv_lp_in - (rv_hp >> 8);
+    x = (rv_lp_in - (rv_hp >> 8)) >> 1;         /* the tank at half level: 6 dB of headroom (a pad held on a 66 ms loop
+                                                 * builds its modes up to +3 dBFS at full level: factory 08, 13, 16, 24) */
     x = ap_sat(SPO_IN1, 127u, SP_IN1, x, 19661);   /* 0.6, 0.6, 0.5, 0.5: shallower than the plate's */
     x = ap_sat(SPO_IN2, 127u, SP_IN2, x, 19661);
     x = ap_sat(SPO_IN3, 511u, SP_IN3, x, 16384);
@@ -323,25 +333,25 @@ static inline void rev_tick(int32_t in, uint32_t pa, uint32_t pb, int32_t q, int
     /* left half, fed by the right's end */
     a = x + SPD(SP_RD(SPO_D4, 511u, SP_D4) * dec);
     a = ap_mod_sat(SPO_AP1, 255u, SP_AP1, e1, a, -16384);
-    SP_WR(SPO_D1, 1023u, sat16(a));
+    SP_WR(SPO_D1, 1023u, sp_knee(a));
     b = SP_RD(SPO_D1, 1023u, SP_D1 - 1u);
     rv_lpl += ((b - rv_lpl) * dk + 16384) >> 15;
     SP_WR(SPO_D2, 511u, sat16(sp_chirp(sp_ch[1], SPD(rv_lpl * dec), r, w)));
     /* right half, fed by the left's end */
     a = x + SPD(SP_RD(SPO_D2, 511u, SP_D2 - 1u) * dec);
     a = ap_mod_sat(SPO_AP3, 511u, SP_AP3, e2, a, -16384);
-    SP_WR(SPO_D3, 1023u, sat16(a));
+    SP_WR(SPO_D3, 1023u, sp_knee(a));
     b = SP_RD(SPO_D3, 1023u, SP_D3 - 1u);
     rv_lpr += ((b - rv_lpr) * dk + 16384) >> 15;
     SP_WR(SPO_D4, 511u, sat16(sp_chirp(sp_ch[2], SPD(rv_lpr * dec), r, w)));
-    /* the output taps (the plate's, scaled to these lines; the long allpasses' went with them), x 0.5. Each is an
-     * int16, so 5 sum to 163,835 at most; the clamp (the plate fix's guard) holds the product inside int32 */
+    /* the output taps (the plate's, scaled to these lines; the long allpasses' went with them): their sum at half
+     * level is the wet x 0.5, within ~2 dB of the plate's wet level (bench). Held to 2x full scale */
     a = SP_RD(SPO_D3, 1023u, SPL(53)) + SP_RD(SPO_D3, 1023u, SPL(608)) + SP_RD(SPO_D4, 511u, SPL(212))
       - SP_RD(SPO_D1, 1023u, SPL(355)) - SP_RD(SPO_D2, 511u, SPL(110));
     b = SP_RD(SPO_D1, 1023u, SPL(62)) + SP_RD(SPO_D1, 1023u, SPL(648)) + SP_RD(SPO_D2, 511u, SPL(279))
       - SP_RD(SPO_D3, 1023u, SPL(431)) - SP_RD(SPO_D4, 511u, SPL(12));
-    rv_yl = (clampi(a, -RV_TAP_MAX, RV_TAP_MAX) * SP_OUT_G) >> 15;
-    rv_yr = (clampi(b, -RV_TAP_MAX, RV_TAP_MAX) * SP_OUT_G) >> 15;
+    rv_yl = clampi(a, -RV_TAP_MAX, RV_TAP_MAX);
+    rv_yr = clampi(b, -RV_TAP_MAX, RV_TAP_MAX);
     sp_w++;
 }
 
