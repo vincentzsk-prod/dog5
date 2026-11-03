@@ -82,6 +82,7 @@ typedef struct {
     int32_t fenv_amt, keytrk, velflt, lfo_pd, lfo_fd, lfo_pwd, lfo_ad, wheel_q, bend8, env_o2, det_fine8;
     int32_t lvl1, lvl2, lvln, drive_q12, reso_k, vint, sus_f, sus_a, gain_q12, morph_q;
     int32_t cut_sm, reso_sm;                    /* CUTOFF and RESO slewed (Q8), ~25 ms: a CC sweep in semitone steps glides */
+    int32_t ts_cut8;                            /* TAPE STOP's cutoff dive, Q8 semitones (0 when it rests) */
     uint32_t pw1_base, pw2_base, w1, w2, ftype, sync_on, xmod_q, glide_k;
 } part_t;
 static part_t pt = {&live, 0, 0, 0, 0, 60 << 16};
@@ -451,6 +452,39 @@ static void block_globals(part_t *g)            /* a sound's derived numbers, on
     g->glide_k = GLIDE_K[pv[P_GLIDE]];
 }
 
+/* ---- TAPE STOP (SEQ held, FLOP): the deck loses power. No new modulation: the dive rides the paths that exist, once
+ * a block -- the pitch on the bend's (bend8: every voice, both oscillators, as the wheel), the cutoff on the same
+ * offset the cutoff's own numbers take, the level on the sound's VOLUME (gain_q12, interpolated per sample). Held, the
+ * speed falls in a straight line (a platter's friction) over half a bar at the tempo (1 s at 120 BPM; 0.5 .. 2 s):
+ * the pitch 12 log2(speed) (TS_DIVE8: a slow sag, then the plunge), the cutoff 1.25 x as far (the head loses its top
+ * as it slows), the level flat to a third of the speed (19 semitones down), then down to nothing with it (a stopped
+ * deck is silent: holding it never leaves a rumble). Let go, it snaps back: the speed a quarter of the way home a
+ * block (~10 ms to the last cent, the tape catching), the level at most 1/16 a block (5.8 ms: never a click). At rest
+ * nothing is added: bit for bit as before */
+#define TS_ONE 65536                            /* ts_pos, Q16: 0 = full speed, TS_ONE = stopped */
+static volatile uint32_t ctl_tstop;             /* main loop: SEQ held */
+static int32_t ts_pos, ts_gain = 32768;         /* how far stopped; the level, Q15 */
+static void tstop_tick(part_t *g, uint32_t quarter)   /* once a block, after block_globals */
+{
+    int32_t tgt, i, f, dive;
+    if (ctl_tstop) {                            /* half a bar: CTL frames a block of 2 quarters */
+        int32_t step = (int32_t)((uint32_t)TS_ONE * CTL / clampi((int32_t)quarter * 2, FS / 2, 2 * FS));
+        ts_pos = ts_pos + step > TS_ONE ? TS_ONE : ts_pos + step;
+    } else if (ts_pos) {
+        ts_pos -= (ts_pos >> 2) + 16;
+        if (ts_pos < 0) ts_pos = 0;
+    }
+    tgt = (TS_ONE - ts_pos) * 3 >> 1;           /* 3 x the speed, Q15 */
+    if (tgt > 32768) tgt = 32768;
+    ts_gain = ts_gain > tgt ? tgt : ts_gain + (tgt - ts_gain > 2048 ? 2048 : tgt - ts_gain);
+    if (!ts_pos && ts_gain == 32768) { g->ts_cut8 = 0; return; }
+    i = ts_pos >> 10; f = ts_pos & 1023;
+    dive = i >= 64 ? TS_DIVE8[64] : TS_DIVE8[i] + (((TS_DIVE8[i + 1] - TS_DIVE8[i]) * f) >> 10);
+    g->bend8 += dive;
+    g->ts_cut8 = dive + (dive >> 2);
+    g->gain_q12 = (g->gain_q12 * ts_gain) >> 15;
+}
+
 static inline uint32_t pw_mod(uint32_t base, int32_t mod)
 {
     int64_t p = (int64_t)base + ((int64_t)mod << 8);
@@ -509,7 +543,7 @@ static void voice_block(voice_t *v, uint32_t card)
     /* cutoff, Q8 semitones */
     cut = g->cut_sm + 8 * 256 + ((fenv * g->fenv_amt * 390) >> 15)
         + ((int32_t)v->note - 60) * g->keytrk * 2 + (((int32_t)v->vel - 64) * g->velflt >> 1)
-        + ((lfo * g->lfo_fd * 97) >> 15) + ((lfo * g->wheel_q * 48) >> 15) + ((VINT_CUT8[card] * vint) >> 7);
+        + ((lfo * g->lfo_fd * 97) >> 15) + ((lfo * g->wheel_q * 48) >> 15) + ((VINT_CUT8[card] * vint) >> 7) + g->ts_cut8;
     svf_coef(&v->c1, cut, g->reso_k);
     if (g->ftype == F_LP24) svf_coef(&v->c2, cut, 5793);
     /* amp */
@@ -628,7 +662,8 @@ static void engine_audio(int32_t *out, uint32_t n)
         }
         kill_dead = 0;
     }
-    fx_block(&live, ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240));
+    uint32_t quarter = ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240);
+    fx_block(&live, quarter);
     drive_block(&live);
     tape_block(&live);
     vol_q12 = (int32_t)((ctl_cc7 * ctl_cc7) >> 2);
@@ -638,6 +673,7 @@ static void engine_audio(int32_t *out, uint32_t n)
         arp_tick();
         lfo_tick(&pt);
         block_globals(&pt);
+        tstop_tick(&pt, quarter);
         for (v = 0; v < NV; v++) {
             if (vc[v].ae.stage == E_IDLE && !vc[v].gate) {
                 if (ui_vlevel[v]) { ui_vlevel[v] = 0; vc[v].amp0 = vc[v].amp1 = 0; }

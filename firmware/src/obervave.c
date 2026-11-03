@@ -12,7 +12,7 @@
  *   this file       the panel, MIDI, the screen, the storage
  *
  * (OberVave's step sequencer, obv_seq.h, and the two-sound track B it alone drove, are gone: CLAUDE.md §5.
- * PLAY is STOP, the kill switch; REC taps ALLEY's time on the BBD page.)
+ * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; REC taps ALLEY's time on the BBD page.)
  *
  * Integers only (no FPU, no 64-bit division); tests/host.c runs this on a computer. */
 static void app_idle(void);
@@ -66,7 +66,7 @@ static const char *toast;
 /* the panel as sloopDX's: a function button tapped (let go, nothing else touched) opens its pages; FX held is a
  * layer (its knobs change job until it is let go; HOME tapped while it is held locks it open). (DØG-5 deleted the
  * sequencer and the two-sound track B it alone drove: obv_seq.h, CLAUDE.md §5.) The live tricks claim the buttons it
- * freed: PLAY = STOP, the kill switch (below). */
+ * freed: PLAY = STOP, the kill switch (below); SEQ held = TAPE STOP (obv_engine.h). */
 enum { L_NONE, L_FX };
 /* PLAY (HEEL) = STOP, the kill switch (obv_engine.h: a 5.8 ms fade, then every voice and effect cleared). A tap stops,
  * a tap starts again; the PLAY LED is lit and the header says STOPPED while it is down. KILL_MOMENTARY 1: silence only
@@ -444,6 +444,7 @@ static void host_set_param(uint32_t p, int32_t v) { set_param(p, v); }   /* (tes
 static uint32_t host_voices_on(void) { uint32_t v, n = 0; for (v = 0; v < NV; v++) n += vc[v].gate; return n; }   /* ("T expect voices N") */
 static uint32_t host_get_param(uint32_t p) { return live.v[p % PATCH_BYTES]; }   /* ("T expect param P V") */
 static uint32_t host_map_idle_calls(void);
+static uint32_t host_tricks_rest(void) { return !ts_pos && ts_gain == 32768 && kill_g == KILL_ONE && !kill_dead && !pt.ts_cut8; }   /* ("T expect rest 1") */
 #endif
 static uint8_t fam_last[NFAM];                  /* each family's last page (set to FAM[].first at start) */
 static uint32_t in_fam(uint32_t f) { return page >= FAM[f].first && page < (uint32_t)FAM[f].first + FAM[f].count; }
@@ -820,6 +821,7 @@ static void app_main(void)
             dirty_hdr = dirty_tags = dirty_page = 1;
         }
         if (b & (1u << BTN_REC) && page == PG_BBD && !layer) { alley_tap(); dirty_page = dirty_hdr = 1; }   /* WAG: the tap */
+        ctl_tstop = fm1_in.buttons >> BTN_SEQ & 1u;   /* FLOP: TAPE STOP while SEQ is held (obv_engine.h) */
         if (b & (1u << BTN_PLAY) || (KILL_MOMENTARY && killed && (rel & (1u << BTN_PLAY)))) {   /* HEEL: STOP / live */
             killed = KILL_MOMENTARY ? (b >> BTN_PLAY & 1u) : killed ^ 1u;
             ctl_kill = killed;
@@ -915,6 +917,7 @@ static void app_main(void)
         fm1_led_key(BTN_SAVE, save_armed);
         fm1_led_key(BTN_REC, page == PG_BBD);   /* WAG lit: tap the time here */
         fm1_led_key(BTN_PLAY, killed);          /* HEEL lit: stopped */
+        fm1_led_key(BTN_SEQ, ctl_tstop);        /* FLOP lit: the tape stops */
 #if BOARD_SMK37
         smk_leds();                             /* FADER BANK, < > */
 #endif
