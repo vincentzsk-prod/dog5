@@ -63,7 +63,18 @@ static volatile uint32_t ctl_arp_restart, ctl_panic;
  * knob's top: the card offsets and the random walk double, VINTAGE's own law, nothing new). 0: bit for bit as before */
 static volatile uint32_t ctl_slop;
 static int32_t slop_sm;                         /* Q8 */
-#define SLOP_MAX 254
+#ifndef SLOP_SCALE_X2
+#define SLOP_SCALE_X2 2                         /* the ride's depth in halves: 2 = 1x (shipped: 0..127 added), 3 = 1.5x,
+                                                 * 4 = 2x (tests/trick/slop_depths.py renders all three to choose by ear) */
+#endif
+#define SLOP_RIDE(r) ((int32_t)(r) * SLOP_SCALE_X2 / 2)   /* the ride 0..127 -> what it adds to VINTAGE */
+#define SLOP_MAX (127 + SLOP_RIDE(127))
+#ifdef OBV_HOST
+static uint32_t host_vlog;                      /* (tests/host.c "T vlog 1/0": each card's vintage pitch, logged) */
+static int64_t host_vl_sum[NV], host_vl_sq[NV];
+static int32_t host_vl_min[NV], host_vl_max[NV];
+static uint32_t host_vl_n[NV];
+#endif
 
 /* ISR -> main loop */
 static volatile int32_t ui_vlevel[NV];          /* each voice's amp envelope, Q15 */
@@ -444,7 +455,7 @@ static void block_globals(part_t *g)            /* a sound's derived numbers, on
     g->reso_k = 8192 - g->reso_sm * 8400 / (127 * 256);
     g->vint = pv[P_VINTAGE];
     if (ctl_slop || slop_sm) {                  /* the ride on top (glides to the last 1/256 at once) */
-        int32_t d = ((int32_t)ctl_slop << 8) - slop_sm;
+        int32_t d = (SLOP_RIDE(ctl_slop) << 8) - slop_sm;
         slop_sm += d > -64 && d < 64 ? d : d >> 6;
         g->vint = clampi(g->vint + ((slop_sm + 128) >> 8), 0, SLOP_MAX);
     }
@@ -539,6 +550,15 @@ static void voice_block(voice_t *v, uint32_t card)
     v->drift -= v->drift >> 11;
     /* pitch, Q8 semitones */
     p8 = (v->pitch16 >> 8) + g->bend8 + ctl_tune8 + v->det8 + ((VINT_TUNE8[card] * vint) >> 7) + ((v->drift * vint) >> 10);
+#ifdef OBV_HOST
+    if (host_vlog && v->gate) {                 /* the vintage part of this card's pitch (Q8 semitones) */
+        int32_t q = ((VINT_TUNE8[card] * vint) >> 7) + ((v->drift * vint) >> 10);
+        if (!host_vl_n[card]) host_vl_min[card] = host_vl_max[card] = q;
+        host_vl_sum[card] += q; host_vl_sq[card] += (int64_t)q * q; host_vl_n[card]++;
+        if (q < host_vl_min[card]) host_vl_min[card] = q;
+        if (q > host_vl_max[card]) host_vl_max[card] = q;
+    }
+#endif
     p8 += (lfo * g->wheel_q * 4) >> 15;         /* the wheel's vibrato */
 #if BOARD_SMK37
     p8 += (lfo * ctl_vib) >> 15;                /* the SMK-37's mod wheel: pitch only, gentle */

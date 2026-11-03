@@ -281,9 +281,9 @@ static void draw_header(void)
         return;
     }
     if (slop_shown_t && fm1_ms + 1u - slop_shown_t < 1000u) {   /* SLOP +40 = VINTAGE 95: the ride and what sounds */
-        uint32_t sum = live.v[P_VINTAGE] + slop;
-        scat(tags, "SLOP +"); fmt_u(tags + slen(tags), slop);
-        scat(tags, " = VINTAGE "); fmt_u(tags + slen(tags), sum > SLOP_MAX ? SLOP_MAX : sum);
+        uint32_t sum = live.v[P_VINTAGE] + (uint32_t)SLOP_RIDE(slop);
+        scat(tags, "SLOP +"); fmt_u(tags + slen(tags), (uint32_t)SLOP_RIDE(slop));
+        scat(tags, " = VINTAGE "); fmt_u(tags + slen(tags), sum > (uint32_t)SLOP_MAX ? (uint32_t)SLOP_MAX : sum);
         ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
         return;
     }
@@ -452,6 +452,19 @@ static void host_set_param(uint32_t p, int32_t v) { set_param(p, v); }   /* (tes
 static uint32_t host_voices_on(void) { uint32_t v, n = 0; for (v = 0; v < NV; v++) n += vc[v].gate; return n; }   /* ("T expect voices N") */
 static uint32_t host_get_param(uint32_t p) { return live.v[p % PATCH_BYTES]; }   /* ("T expect param P V") */
 static uint32_t host_map_idle_calls(void);
+static void host_vlog_set(uint32_t on)          /* ("T vlog 1" .. "T vlog 0": each gated card's vintage pitch, in cents) */
+{
+    uint32_t c;
+    if (on) { for (c = 0; c < NV; c++) { host_vl_sum[c] = host_vl_sq[c] = 0; host_vl_n[c] = 0; } host_vlog = 1; return; }
+    host_vlog = 0;
+    for (c = 0; c < NV; c++) if (host_vl_n[c]) {   /* Q8 semitones -> cents: x 100 / 256 */
+        double m = (double)host_vl_sum[c] / host_vl_n[c], var = (double)host_vl_sq[c] / host_vl_n[c] - m * m, sd = var > 0 ? var : 0;
+        int it;
+        for (it = 0; it < 60 && sd > 0; it++) sd = 0.5 * (sd + var / sd);   /* (sqrt, no libm) */
+        printf("vlog card %u: mean %+.1f cents  sd %.1f  range %+.1f .. %+.1f  (%u blocks)\n", c, m * 100 / 256, sd * 100 / 256,
+               host_vl_min[c] * 100.0 / 256, host_vl_max[c] * 100.0 / 256, host_vl_n[c]);
+    }
+}
 static uint32_t host_tricks_rest(void) { return !ts_pos && ts_gain == 32768 && kill_g == KILL_ONE && !kill_dead && !pt.ts_cut8 && !ctl_slop && !slop_sm; }   /* ("T expect rest 1") */
 #endif
 static uint8_t fam_last[NFAM];                  /* each family's last page (set to FAM[].first at start) */
