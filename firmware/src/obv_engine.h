@@ -58,6 +58,26 @@ static volatile int32_t ctl_vib;                /* the SMK-37's mod wheel 0..127
 static volatile int32_t ctl_tune8;              /* global tune, Q8 semitones */
 static volatile uint32_t ctl_tempo = 120, ctl_ext_quarter;   /* MIDI clock: frames per quarter, 0 = none */
 static volatile uint32_t ctl_arp_restart, ctl_panic;
+/* the SLOP ride (ALGORITHM, SLOBBER): the encoder's 0..127, doubled, added to the sound's VINTAGE (0..254 on top: the
+ * sum runs to 381, three times the knob's top), live, on every patch, never stored. It glides (~23 ms, as CUTOFF), so a
+ * fast turn is a smooth swell of drift, never a step; VINTAGE's own law (the cards' offsets, the random walk), nothing
+ * new. 0: bit for bit as before. The depth was chosen by ear on 3 Nov from 1x / 1.5x / 2x (listen/trick/slop_depths):
+ * 2x. At full ride each voice card sits off by its own offset (card 0 about 20 cents flat, others sharp) on top of the
+ * wander: an accepted character trait, heard and approved -- not a bug to fix */
+static volatile uint32_t ctl_slop;
+static int32_t slop_sm;                         /* Q8 */
+#ifndef SLOP_SCALE_X2
+#define SLOP_SCALE_X2 4                         /* the depth in halves: 4 = 2x, shipped (2 and 3 only for the comparison
+                                                 * renders, tests/trick/slop_depths.py) */
+#endif
+#define SLOP_RIDE(r) ((int32_t)(r) * SLOP_SCALE_X2 / 2)   /* the ride 0..127 -> what it adds to VINTAGE */
+#define SLOP_MAX (127 + SLOP_RIDE(127))
+#ifdef OBV_HOST
+static uint32_t host_vlog;                      /* (tests/host.c "T vlog 1/0": each card's vintage pitch, logged) */
+static int64_t host_vl_sum[NV], host_vl_sq[NV];
+static int32_t host_vl_min[NV], host_vl_max[NV];
+static uint32_t host_vl_n[NV];
+#endif
 
 /* ISR -> main loop */
 static volatile int32_t ui_vlevel[NV];          /* each voice's amp envelope, Q15 */
@@ -436,6 +456,11 @@ static void block_globals(part_t *g)            /* a sound's derived numbers, on
     g->reso_sm += ((pv[P_RESO] << 8) - g->reso_sm) >> 6;
     g->reso_k = 8192 - g->reso_sm * 8400 / (127 * 256);
     g->vint = pv[P_VINTAGE];
+    if (ctl_slop || slop_sm) {                  /* the ride on top (glides to the last 1/256 at once) */
+        int32_t d = (SLOP_RIDE(ctl_slop) << 8) - slop_sm;
+        slop_sm += d > -64 && d < 64 ? d : d >> 6;
+        g->vint = clampi(g->vint + ((slop_sm + 128) >> 8), 0, SLOP_MAX);
+    }
     g->sus_f = pv[P_FS] * (ENV_ONE / 127);
     g->sus_a = pv[P_AS] * (ENV_ONE / 127);
     d = pv[P_VOLUME];
@@ -493,6 +518,15 @@ static void voice_block(voice_t *v, uint32_t card)
     v->drift -= v->drift >> 11;
     /* pitch, Q8 semitones */
     p8 = (v->pitch16 >> 8) + g->bend8 + ctl_tune8 + v->det8 + ((VINT_TUNE8[card] * vint) >> 7) + ((v->drift * vint) >> 10);
+#ifdef OBV_HOST
+    if (host_vlog && v->gate) {                 /* the vintage part of this card's pitch (Q8 semitones) */
+        int32_t q = ((VINT_TUNE8[card] * vint) >> 7) + ((v->drift * vint) >> 10);
+        if (!host_vl_n[card]) host_vl_min[card] = host_vl_max[card] = q;
+        host_vl_sum[card] += q; host_vl_sq[card] += (int64_t)q * q; host_vl_n[card]++;
+        if (q < host_vl_min[card]) host_vl_min[card] = q;
+        if (q > host_vl_max[card]) host_vl_max[card] = q;
+    }
+#endif
     p8 += (lfo * g->wheel_q * 4) >> 15;         /* the wheel's vibrato */
 #if BOARD_SMK37
     p8 += (lfo * ctl_vib) >> 15;                /* the SMK-37's mod wheel: pitch only, gentle */
@@ -569,11 +603,68 @@ static void voice_render(voice_t *v, int32_t *out)
     (void)o2n;
 }
 
+/* ---- STOP (PLAY/STOP, HEEL): the kill switch, after everything (the Psych Chain's master gate). ctl_kill set: the
+ * whole output fades to nothing over KILL_FADE samples (5.8 ms, a straight line: never a hard zero, never a click),
+ * then everything that could still sound is cleared, not muted: the voices (envelopes, filters), the held keys and
+ * the arp, the queued notes, and every effect's lines and states (GROWL, ALLEY, DRAIN, CHEW). While it is down the
+ * engine does nothing (the notes that come are dropped) and sends silence; let go, it starts from that silence and the
+ * gate opens over the same 5.8 ms. Not engaged, the gate is skipped: the output bit for bit as before */
+static void deck_process(int32_t *s, uint32_t n);   /* (obv_deck.h, TAPE STOP: after everything, before the gate) */
+static void deck_clear(void);
+#define KILL_ONE 32768                          /* the gate, Q15: open */
+#define KILL_FADE 256u                          /* samples, open <-> shut (a straight line) */
+static volatile uint32_t ctl_kill;              /* main loop: 1 = STOP */
+static int32_t kill_g = KILL_ONE;
+static uint32_t kill_dead;                      /* faded out and cleared: silence until let go */
+
+static __attribute__((noinline, cold)) void kill_clear(void)   /* (out of the audio loop: it runs once a STOP) */
+{
+    static const voice_t vz;
+    uint32_t v;
+    for (v = 0; v < NV; v++) {                  /* the voices to rest; the oscillators keep their phases, the
+                                                 * vintage drift and the noise their states (nothing audible) */
+        voice_t *x = &vc[v];
+        uint32_t ph1 = x->o1.ph, ph2 = x->o2.ph, nz = x->noise, sq = x->seq;
+        int32_t dr = x->drift, gl = x->gl, gr = x->gr;
+        *x = vz;
+        x->o1.ph = ph1; x->o2.ph = ph2; x->noise = nz; x->seq = sq; x->drift = dr; x->gl = gl; x->gr = gr;
+        ui_vlevel[v] = 0;
+    }
+    nheld = 0;
+    arp.sounding = 0; arp.pos = 0; arp.cnt = 0xFFFFFFFFu;
+    nq_r = nq_w;
+    drive_clear();
+    fx_clear();
+    tape_clear();
+    deck_clear();
+}
+
+static __attribute__((noinline)) void kill_gate(int32_t *out, uint32_t n)   /* (only while STOP moves) */
+{
+    uint32_t i, k = ctl_kill;
+    int32_t g = kill_g, step = KILL_ONE / (int32_t)KILL_FADE;
+    for (i = 0; i < n; i++) {
+        g = k ? (g > step ? g - step : 0) : (g < KILL_ONE - step ? g + step : KILL_ONE);
+        out[2u * i] = (out[2u * i] * g) >> 15;  /* (|out| <= 32767 after the chain: inside int32) */
+        out[2u * i + 1u] = (out[2u * i + 1u] * g) >> 15;
+    }
+    kill_g = g;
+    if (k && !g) { kill_clear(); kill_dead = 1; }
+}
+
 static void engine_audio(int32_t *out, uint32_t n)
 {
     uint32_t b, v, i;
     static int32_t sc_prev;
     static uint32_t sc_i, sc_sub;
+    if (kill_dead) {                            /* STOP: down, silence; let go, live again from the silence */
+        if (ctl_kill) {
+            nq_r = nq_w;
+            for (i = 0; i < 2u * n; i++) out[i] = 0;
+            return;
+        }
+        kill_dead = 0;
+    }
     fx_block(&live, ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240));
     drive_block(&live);
     tape_block(&live);
@@ -614,6 +705,8 @@ static void engine_audio(int32_t *out, uint32_t n)
                                                  * record knee rounds the overs; CHEW 0: the effects' sat16, as before */
     fx_process(out, n);
     if (fx_to_tape) tape_process(out, n);       /* TAPE last (CHEW 0: skipped, bit for bit) */
+    deck_process(out, n);                       /* TAPE STOP, the whole mix (at rest: it only listens, bit for bit) */
+    if (ctl_kill || kill_g != KILL_ONE) kill_gate(out, n);   /* STOP: the master gate (open: skipped, bit for bit) */
 }
 
 static int engine_quiet(void)                   /* nothing sounds: a flash erase is safe */

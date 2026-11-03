@@ -1,0 +1,30 @@
+# PLAY = STOP, case 2: mid chord, the BBD running away (FEEDBK 127, MIX 100, ALLEY 60 = ~110 ms), the whole chain on
+# (GROWL 100, DRAIN 60, CHEW 100). STOP: silence in 5.8 ms; PLAY again: the runaway does not come back (its lines are
+# cleared, not muted), nor the spring's tail, nor the tape's hiss; a new chord plays (and runs away again: the patch)
+2600 midi 0xC0 32 0
+2601 param 54 100
+2601 param 56 127
+2601 param 58 100
+2601 param 68 60
+2601 param 62 60
+2601 param 59 100
+2601 param 64 100
+2700 midi 0x90 48 110
+2700 midi 0x90 55 110
+2700 midi 0x90 60 110
+2700 midi 0x90 63 110
+3000 midi 0x80 48 0
+3000 midi 0x80 55 0
+3000 midi 0x80 60 0
+3000 midi 0x80 63 0
+5000 expect peakmin 300 6000
+5000 btn 12
+5030 expect peak 15 0
+5600 btn 12
+8000 expect peak 2350 0
+8100 midi 0x90 50 110
+8100 midi 0x90 57 110
+8400 expect peakmin 250 6000
+8400 midi 0x80 50 0
+8400 midi 0x80 57 0
+9000 end

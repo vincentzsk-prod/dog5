@@ -1,0 +1,23 @@
+# TAPE STOP on the whole mix (obv_deck.h): a chord let go into a long spring (DRAIN 127, SIZE 127) and the BBD (MIX 80,
+# FEEDBK 100); SEQ held in the tail: the tail itself dives and stops (the old per-voice dive left it ringing), silent
+# at the bottom; let go: the live tail is back at once (the effects ran on underneath), every trick state at rest
+2600 midi 0xC0 32 0
+2601 param 62 127
+2601 param 59 127
+2601 param 58 80
+2601 param 56 100
+2601 param 68 70
+2700 midi 0x90 60 110
+2700 midi 0x90 64 110
+2700 midi 0x90 67 110
+3000 midi 0x80 60 0
+3000 midi 0x80 64 0
+3000 midi 0x80 67 0
+3500 expect peakmin 100 1500
+3500 btndown 11
+3600 expect rest 0
+4790 expect peak 200 0
+4800 btnup 11
+4850 expect rest 1
+4900 expect peakmin 50 300
+5400 end

@@ -1,0 +1,21 @@
+# SEQ held = TAPE STOP (FM-1: BTN_SEQ = 11): an INIT chord held, SEQ held 1.5 s (the dive takes 1 s at 120 BPM, then
+# silence), let go: the chord is back at once, the tricks at rest (nothing added: no stuck state), and it plays on
+2600 midi 0xC0 32 0
+2700 midi 0x90 48 100
+2700 midi 0x90 55 100
+2700 midi 0x90 60 100
+2700 midi 0x90 64 100
+3300 expect rest 1
+3300 btndown 11
+3400 expect rest 0
+3400 expect peakmin 100 3000
+4600 expect peak 200 0
+4800 btnup 11
+4840 expect rest 1
+4900 expect peakmin 50 3000
+5500 expect peakmin 500 3000
+5500 midi 0x80 48 0
+5500 midi 0x80 55 0
+5500 midi 0x80 60 0
+5500 midi 0x80 64 0
+6200 end

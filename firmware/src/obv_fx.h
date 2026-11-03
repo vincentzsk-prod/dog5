@@ -261,6 +261,24 @@ static void fx_block(const patch_t *p, uint32_t quarter)
     } else if (rev_active > HALF_FRAMES) rev_active -= HALF_FRAMES; else rev_active = 0;
 }
 
+/* STOP (PLAY, the kill switch, obv_engine.h): every line and filter state of ALLEY and DRAIN to zero, so nothing rings
+ * on and nothing comes back when it is let go. The read jumps to its target (no glide in from before); the knobs'
+ * glides and the resting timers stay as they are (a stage that was resting stays resting, one running keeps running) */
+static void fx_clear(void)
+{
+    static const bbd_ch_t z0;
+    uint32_t k;
+    for (k = 0; k < FX_MEM_N; k++) fx_mem[k] = 0;
+    for (k = 0; k < 3u * SP_NCH * 8u; k++) (&sp_ch[0][0][0])[k] = 0;
+    bbd_ch[0] = bbd_ch[1] = z0;
+    dly_lpl = dly_lpr = 0;
+    dly_cur = dly_time; dly_vel = 0;
+    rv_lp_in = rv_lpl = rv_lpr = rv_yl = rv_yr = rv_hp = 0;
+#if REV_DIV == 2u
+    rv_hold = 0;
+#endif
+}
+
 static inline __attribute__((always_inline)) int32_t line_read_q16(const line_t *l, int32_t back_q16)
 {
     uint32_t b = (uint32_t)back_q16 >> 16;

@@ -159,6 +159,16 @@ static inline __attribute__((always_inline)) int32_t grl_one(grl_ch_t *c, int32_
 
 static inline uint32_t drive_on(void) { return grl_on || grl_mix; }   /* else the engine skips it: bit for bit */
 
+/* STOP (the kill switch): the filters' and halfbands' states and the loudness detector to zero (the trim stays) */
+static void drive_clear(void)
+{
+    static const grl_ch_t z0;
+    static const grl_kw_t w0;
+    grl_ch[0] = grl_ch[1] = z0;
+    grl_kw_in = grl_kw_out = w0;
+    grl_pin = grl_pout = 0;
+}
+
 /* s: the voice bus in, the output stage's scale (the bus >> 2) out */
 static void drive_process(int32_t *s, uint32_t n, int32_t vol_q12)
 {

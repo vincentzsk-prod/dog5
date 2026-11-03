@@ -6,13 +6,14 @@
  *   obv_params.h    the parameter table: patches, pages, MIDI CC
  *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
  *   obv_tape.h      CHEW, the tape (wow, flutter, saturation, head loss, hiss, dropouts; last, after the reverb)
+ *   obv_deck.h      TAPE STOP: the whole mix slows and darkens (SEQ held), after everything, before STOP's gate
  *   obv_fx.h        ALLEY (the BBD delay), plate reverb (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
  *   this file       the panel, MIDI, the screen, the storage
  *
  * (OberVave's step sequencer, obv_seq.h, and the two-sound track B it alone drove, are gone: CLAUDE.md §5.
- * SEQ, ALGORITHM and PLAY are free for a later DØG-5 stage to claim; REC taps ALLEY's time on the BBD page.)
+ * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; ALGORITHM, the SLOP ride; REC taps ALLEY's time on the BBD page.)
  *
  * Integers only (no FPU, no 64-bit division); tests/host.c runs this on a computer. */
 static void app_idle(void);
@@ -24,6 +25,7 @@ static void app_idle(void);
 #include "obv_drive.h"
 #include "obv_tape.h"
 #include "obv_engine.h"
+#include "obv_deck.h"                             /* (after the engine: it reads the tempo; the engine calls it) */
 #include "obv_patches.h"
 
 static void app_audio(int32_t *out, uint32_t n)
@@ -64,10 +66,15 @@ static uint32_t prog, edited, page = PG_PERFORM, hold, save_armed, save_t, save_
 static uint32_t toast_t;
 static const char *toast;
 /* the panel as sloopDX's: a function button tapped (let go, nothing else touched) opens its pages; FX held is a
- * layer (its knobs change job until it is let go; HOME tapped while it is held locks it open). SEQ / ALGORITHM /
- * PLAY / REC are free (DØG-5 deleted the sequencer and the two-sound track B it alone drove: obv_seq.h,
- * CLAUDE.md §5) -- a later DØG-5 stage claims them. */
+ * layer (its knobs change job until it is let go; HOME tapped while it is held locks it open). (DØG-5 deleted the
+ * sequencer and the two-sound track B it alone drove: obv_seq.h, CLAUDE.md §5.) The live tricks claim the buttons it
+ * freed: PLAY = STOP, the kill switch (below); SEQ held = TAPE STOP (obv_deck.h); ALGORITHM = the SLOP ride. */
 enum { L_NONE, L_FX };
+/* PLAY (HEEL) = STOP, the kill switch (obv_engine.h: a 5.8 ms fade, then every voice and effect cleared). A tap stops,
+ * a tap starts again; the PLAY LED is lit and the header says STOPPED while it is down. KILL_MOMENTARY 1: silence only
+ * while PLAY is held */
+#define KILL_MOMENTARY 0
+static uint32_t killed;
 static uint32_t layer, layer_lock, layer_used, layer_t, layer_btn;
 #define SMK_PAD_HELD 0                           /* (the step pads are freed with the sequencer, both boards) */
 #if BOARD_SMK37
@@ -259,6 +266,7 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
 }
 
 static uint32_t cut_shown_t;                    /* the header shows the cutoff for a second after it moved */
+static uint32_t slop, slop_shown_t;             /* ALGORITHM's ride (obv_engine.h ctl_slop), 0..127; shown a second */
 static void draw_header(void)
 {
     char tags[40];
@@ -268,6 +276,17 @@ static void draw_header(void)
         prog_get(save_to, &t);
         scat(tags, "SAVE HERE? " NM_PRESETS);
         ui_header(save_to, t.v + PATCH_NAME_AT, 0, tags);
+        return;
+    }
+    if (killed) {                               /* STOP: says so until it is let go (the art is Stage 3) */
+        ui_header(prog, live.v + PATCH_NAME_AT, edited, "STOPPED (PLAY)");
+        return;
+    }
+    if (slop_shown_t && fm1_ms + 1u - slop_shown_t < 1000u) {   /* SLOP +40 = VINTAGE 95: the ride and what sounds */
+        uint32_t sum = live.v[P_VINTAGE] + (uint32_t)SLOP_RIDE(slop);
+        scat(tags, "SLOP +"); fmt_u(tags + slen(tags), (uint32_t)SLOP_RIDE(slop));
+        scat(tags, " = VINTAGE "); fmt_u(tags + slen(tags), sum > (uint32_t)SLOP_MAX ? (uint32_t)SLOP_MAX : sum);
+        ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
         return;
     }
     if (cut_shown_t && fm1_ms + 1u - cut_shown_t < 1000u) {
@@ -435,6 +454,20 @@ static void host_set_param(uint32_t p, int32_t v) { set_param(p, v); }   /* (tes
 static uint32_t host_voices_on(void) { uint32_t v, n = 0; for (v = 0; v < NV; v++) n += vc[v].gate; return n; }   /* ("T expect voices N") */
 static uint32_t host_get_param(uint32_t p) { return live.v[p % PATCH_BYTES]; }   /* ("T expect param P V") */
 static uint32_t host_map_idle_calls(void);
+static void host_vlog_set(uint32_t on)          /* ("T vlog 1" .. "T vlog 0": each gated card's vintage pitch, in cents) */
+{
+    uint32_t c;
+    if (on) { for (c = 0; c < NV; c++) { host_vl_sum[c] = host_vl_sq[c] = 0; host_vl_n[c] = 0; } host_vlog = 1; return; }
+    host_vlog = 0;
+    for (c = 0; c < NV; c++) if (host_vl_n[c]) {   /* Q8 semitones -> cents: x 100 / 256 */
+        double m = (double)host_vl_sum[c] / host_vl_n[c], var = (double)host_vl_sq[c] / host_vl_n[c] - m * m, sd = var > 0 ? var : 0;
+        int it;
+        for (it = 0; it < 60 && sd > 0; it++) sd = 0.5 * (sd + var / sd);   /* (sqrt, no libm) */
+        printf("vlog card %u: mean %+.1f cents  sd %.1f  range %+.1f .. %+.1f  (%u blocks)\n", c, m * 100 / 256, sd * 100 / 256,
+               host_vl_min[c] * 100.0 / 256, host_vl_max[c] * 100.0 / 256, host_vl_n[c]);
+    }
+}
+static uint32_t host_tricks_rest(void) { return deck_rest() && kill_g == KILL_ONE && !kill_dead && !ctl_slop && !slop_sm; }   /* ("T expect rest 1") */
 #endif
 static uint8_t fam_last[NFAM];                  /* each family's last page (set to FAM[].first at start) */
 static uint32_t in_fam(uint32_t f) { return page >= FAM[f].first && page < (uint32_t)FAM[f].first + FAM[f].count; }
@@ -811,6 +844,12 @@ static void app_main(void)
             dirty_hdr = dirty_tags = dirty_page = 1;
         }
         if (b & (1u << BTN_REC) && page == PG_BBD && !layer) { alley_tap(); dirty_page = dirty_hdr = 1; }   /* WAG: the tap */
+        ctl_tstop = fm1_in.buttons >> BTN_SEQ & 1u;   /* FLOP: TAPE STOP while SEQ is held (obv_deck.h) */
+        if (b & (1u << BTN_PLAY) || (KILL_MOMENTARY && killed && (rel & (1u << BTN_PLAY)))) {   /* HEEL: STOP / live */
+            killed = KILL_MOMENTARY ? (b >> BTN_PLAY & 1u) : killed ^ 1u;
+            ctl_kill = killed;
+            dirty_hdr = 1;
+        }
         if (save_armed && fm1_ms - save_t > 3000u) { save_armed = 0; dirty_page = dirty_hdr = 1; }
         {
             static uint32_t sel_was;            /* SELECT pressed or let go on a page with secondaries: its knobs change */
@@ -842,6 +881,14 @@ static void app_main(void)
             say(msg);
             dirty_page |= page == PG_GLOBAL;
         }
+        if ((e = fm1_enc_take(ENC_ALGORITHM)) != 0) {   /* SLOBBER: the SLOP ride, on any page, on top of the sound's
+                                                 * VINTAGE; never stored, 0 at power-on */
+            if (e > 1 || e < -1) e *= 3;        /* (a fast turn goes further, as the knobs) */
+            slop = (uint32_t)clampi((int32_t)slop + e * 2, 0, 127);
+            ctl_slop = slop;
+            slop_shown_t = fm1_ms + 1u; dirty_hdr = 1;
+        }
+        if (slop_shown_t && fm1_ms + 1u - slop_shown_t >= 1000u) { slop_shown_t = 0; dirty_hdr = 1; }   /* (back to the tags) */
         for (k = 0; k < 4u; k++) {
             int32_t p = page_now()->p[k];
             if ((e = fm1_enc_take(ENC_KNOB1 + k)) == 0) continue;
@@ -900,6 +947,8 @@ static void app_main(void)
         fm1_led_key(BTN_GLO, in_fam(FAM_GLO));
         fm1_led_key(BTN_SAVE, save_armed);
         fm1_led_key(BTN_REC, page == PG_BBD);   /* WAG lit: tap the time here */
+        fm1_led_key(BTN_PLAY, killed);          /* HEEL lit: stopped */
+        fm1_led_key(BTN_SEQ, ctl_tstop);        /* FLOP lit: the tape stops */
 #if BOARD_SMK37
         smk_leds();                             /* FADER BANK, < > */
 #endif

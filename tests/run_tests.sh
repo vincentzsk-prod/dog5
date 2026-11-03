@@ -41,6 +41,13 @@ run "DRAIN: the sanitizer on the hot-input scripts, the chain's extremes and the
 run "FM-1 BBD DELAY page: ALLEY from SYNC, BBD +, REC tap tempo (and its fold), the FX layer's ALLEY, CC 87 = SYNC" sh tests/run_host.sh tests/bbd_page.txt
 # layer-lock with HOME acting on its release: hold FX + tap HOME locks; the tap never goes HOME; FX / ENV let it go
 run "FM-1 layer-lock: FX held + HOME tapped locks (no jump HOME), the lock outlives FX's release, FX or ENV ends it" sh tests/run_host.sh tests/layer_lock.txt
+# the live tricks (tests/trick): PLAY = STOP, the kill switch ("T expect peak MS MAX": the output's peak over the last MS ms)
+run "FM-1 STOP (PLAY): mid note, silent in 5.8 ms, nothing back on PLAY, a new note plays" sh tests/run_host.sh tests/trick/kill_note.txt
+run "FM-1 STOP (PLAY): a runaway BBD + the whole chain, cleared: the runaway never comes back" sh tests/run_host.sh tests/trick/kill_runaway.txt
+run "FM-1 STOP (PLAY): a 3 s spring tail + CHEW, cleared: no tail, no hiss after PLAY" sh tests/run_host.sh tests/trick/kill_reverb.txt
+run "FM-1 TAPE STOP (SEQ held): a chord dives and falls silent, let go it is back at once, nothing left behind" sh tests/run_host.sh tests/trick/tapestop_chord.txt
+run "FM-1 TAPE STOP on the whole mix: a spring + BBD tail dives and stops with the rest, back on release" sh tests/run_host.sh tests/trick/tapestop_tail.txt
+run "FM-1 SLOP ride (ALGORITHM): on top of VINTAGE on any page, the patch byte untouched, back to 0 adds nothing" sh tests/run_host.sh tests/trick/slop_ride.txt
 run "SMK-37 mapping: step pads, REC pads, fader banks, wheels, outer keys" python3 tests/smk_ui_test.py
 # the 96-byte / 3-sector / DOG5 program store (the FM-1 and SMK-37 host binaries from run_host.sh above):
 # 99 distinct patches round-trip byte-exact across a power cycle, one save touches only its sector, an old

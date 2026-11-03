@@ -1,0 +1,18 @@
+# PLAY = STOP, case 3: mid reverb tail (DRAIN 127, SIZE 127 = 3 s, CHEW 60): a chord let go, STOP in its tail. Silence in
+# 5.8 ms; PLAY again: the tail is gone for good (the tank was cleared, not muted), the hiss too
+2600 midi 0xC0 32 0
+2601 param 62 127
+2601 param 59 127
+2601 param 64 60
+2700 midi 0x90 60 110
+2700 midi 0x90 64 110
+2700 midi 0x90 67 110
+3000 midi 0x80 60 0
+3000 midi 0x80 64 0
+3000 midi 0x80 67 0
+3600 expect peakmin 100 1500
+3600 btn 12
+3630 expect peak 15 0
+4100 btn 12
+7000 expect peak 2850 0
+7000 end

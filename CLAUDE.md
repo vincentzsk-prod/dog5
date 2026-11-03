@@ -132,8 +132,24 @@ ALGORITHM, PLAY, REC.)
 
 **OCT− / OCT+ = octave, always** (−2..+2, both = 0). Undo/redo was a sequencer feature and leaves with it.
 
-**Control renames (the dumb-dog register, function unchanged):** ALGORITHM=SLOBBER, ENV=HOWL, SEQ=FLOP(gone
-with the sequencer), PLAY=HEEL, REC=WAG, GLO=FLEAS, ARP=ZOOMIES, LFO=PANT, SAVE=BURY, EDIT=DIG, SEL=FETCH,
+**The live tricks — DONE** (global, live, no patch byte / CC; untouched = bit-exact; `listen/trick/`, tests/trick/):
+**PLAY (HEEL) = STOP**, the kill switch — a tap: 5.8 ms fade at the master gate (after CHEW), then every voice, held
+key, queued note and effect state cleared (`kill_clear`: `drive_clear`/`fx_clear`/`tape_clear`), PLAY LED + header
+`STOPPED`; `KILL_MOMENTARY 1` makes it hold-to-silence. **SEQ (FLOP) held = TAPE STOP** (`obv_deck.h`) — on the
+**whole mix**, one stage after everything (voices, GROWL, ALLEY, DRAIN, CHEW) and before STOP's gate: one motor, so the
+repeats, the tail and the hiss dive with the voices. The speed falls linearly over half a bar at the tempo (0.5–1.1 s);
+the mix is read back falling behind (tape's 6-point `tp_taps` read, a 557 ms line, pool +96 KB), one SVF low-pass
+(`svf_lp`) closes 1.25× the dive (`TS_DIVE8`), level to silence below 1/3 speed; let go = the live mix back over 5.8 ms.
+A/B'd against the approved per-voice render (`tests/trick/tapestop_ab.py`): the same pitch, brightness and level
+through the dive; the stop is now silent. +140 host instr/sample while held (the per-voice one was +3), 0 at rest. **ALGORITHM (SLOBBER) = the SLOP ride** — **final depth 2x** (chosen
+by ear 3 Nov from 1x / 1.5x / 2x, `listen/trick/slop_depths/`; `SLOP_SCALE_X2 4`): the encoder's 0..127 doubled, i.e.
+0..254 *added* to the patch's VINTAGE (sum ≤ 381), glides ~23 ms, never stored, 0 at power-on; header
+`SLOP +N = VINTAGE M` for 1 s. **Known, accepted character trait — heard and approved, NOT a bug, do not "fix" it:** at
+full ride each voice card sits off true by its own VINTAGE offset — voice card 0 (all MONO/UNISON notes) ~20 cents
+flat (≈10 at the old 1x, doubled at this range), other cards sharp (a chord averages ~3 cents flat), plus the wander. The hold-HOME
+map is full (11 rows) and doesn't list them yet.
+
+**Control renames (the dumb-dog register, function unchanged):** ALGORITHM=SLOBBER, ENV=HOWL, SEQ=FLOP (now TAPE STOP), PLAY=HEEL, REC=WAG, GLO=FLEAS, ARP=ZOOMIES, LFO=PANT, SAVE=BURY, EDIT=DIG, SEL=FETCH,
 PRESETS=BARKS, HOME=HOME. Psych Chain knobs: Drive=GROWL, BBD=ALLEY, Spring=DRAIN, Tape=CHEW. Banks: THE
 POUND (locked factory) / THE PACK (live). FLEAS = the degradation dial (CLEAN/ITCH/SCRATCH/MANGE).
 

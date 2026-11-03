@@ -188,14 +188,17 @@ typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn
  * any build: "T shot" (the screen at T -> OUT-T.ppm), "T expect page N" (the app must be on page N now: prints ok / FAIL
  * and the run exits 1 on a FAIL; N = the page index, PG_* in obv_params.h), "T expect idle N" (the last control-map draw
  * called app_idle() at least N times: the DRAW RULE), "T param P V" (set parameter P to V, as a knob would), "T expect voices N" (N voice cards gated on now),
- * "T expect param P V" (parameter P holds V now) */
+ * "T expect param P V" (parameter P holds V now), "T expect peak MS MAX" / "T expect peakmin MS MIN" (the largest |sample| of
+ * the output over the last MS ms is <= MAX / >= MIN), "T expect rest R" (R 1: STOP, TAPE STOP and the SLOP ride at rest, adding nothing) */
 enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES,
-       HS_PVAL };
+       HS_PVAL, HS_PEAK, HS_PEAKMIN, HS_REST, HS_VLOG };
 static uint32_t host_page_now(void);            /* (obervave.c: the page the panel is on) */
 static uint32_t host_map_idle_calls(void);      /* (obervave.c: app_idle calls the last control-map draw made) */
 static void host_set_param(uint32_t p, int32_t v);   /* (obervave.c: set a parameter, as a knob would) */
 static uint32_t host_voices_on(void);           /* (obervave.c: how many voice cards are gated on) */
 static uint32_t host_get_param(uint32_t p);     /* (obervave.c: a parameter's value now) */
+static uint32_t host_tricks_rest(void);
+static void host_vlog_set(uint32_t on);         /* (obervave.c: start / stop-and-print each card's vintage pitch) */         /* (obervave.c: STOP, TAPE STOP at rest, nothing added to the sound) */
 static uint32_t host_fails;
 static const host_ev_t SCRIPT0[] = {
     {200, 1u << 7, -1, 0, 0, 0, -1, 0},                         /* C4 */
@@ -242,10 +245,18 @@ static void read_script(const char *path)
             if (!strcmp(kind, "page")) { e.smk = HS_PAGE; e.sa = (uint8_t)a; }
             else if (!strcmp(kind, "idle")) { e.smk = HS_IDLE; e.sb = (uint16_t)a; }
             else if (!strcmp(kind, "voices")) { e.smk = HS_VOICES; e.sb = (uint16_t)a; }
+            else if (!strcmp(kind, "peak") || !strcmp(kind, "peakmin")) {   /* "T expect peak MS MAX": the output's
+                                                 * largest |sample| over the last MS ms <= MAX; peakmin: >= MIN */
+                sscanf(line, "%*u %*s %*s %u %u", &a, &b);
+                e.smk = kind[4] ? HS_PEAKMIN : HS_PEAK; e.sb = (uint16_t)a; e.st = 0; e.keys = b;
+            }
+            else if (!strcmp(kind, "rest")) { e.smk = HS_REST; e.sb = (uint16_t)a; }   /* "T expect rest 1": the tricks rest */
             else if (!strcmp(kind, "param")) { sscanf(line, "%*u %*s %*s %u %u", &a, &b); e.smk = HS_PVAL; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
             else { fprintf(stderr, "script: unknown expect '%s'\n", kind); continue; }
         }
         else if (!strcmp(what, "param")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_PARAM; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }   /* set parameter a = b */
+        else if (!strcmp(what, "vlog")) { sscanf(line, "%*u %*s %u", &a); e.smk = HS_VLOG; e.sb = (uint16_t)a; }   /* "T vlog 1" .. "T vlog 0":
+                                                 * each card's vintage pitch over that span (mean, sd, range in cents) */
         else if (!strcmp(what, "shot")) e.smk = HS_SHOT;   /* (any board: the screen now -> OUT-<ms>.ppm) */
         else if (!strcmp(what, "midi")) { sscanf(line, "%*u %*s %i %u %u", (int *)&a, &b, &c); e.st = (uint8_t)a; e.d1 = (uint8_t)b; e.d2 = (uint8_t)c; }
         else continue;
@@ -356,6 +367,21 @@ static void platform_poll(void)                 /* one call = one millisecond */
             uint32_t v = host_get_param(script[step].sa), want = script[step].sb;
             printf("%6u ms  expect param %u = %u: %u  %s\n", fm1_ms, script[step].sa, want, v, v == want ? "ok" : "FAIL");
             host_fails += v != want;
+        } else if (script[step].smk == HS_PEAK || script[step].smk == HS_PEAKMIN) {
+            uint32_t frames = script[step].sb * (FS / 1000u), i, pk = 0, lim = script[step].keys, mn = script[step].smk == HS_PEAKMIN;
+            for (i = wav_n > frames ? 2u * (wav_n - frames) : 0; i < 2u * wav_n; i++) {
+                uint32_t a = (uint32_t)(wav[i] < 0 ? -wav[i] : wav[i]);
+                if (a > pk) pk = a;
+            }
+            printf("%6u ms  expect peak over the last %u ms %s %u: %u  %s\n", fm1_ms, script[step].sb, mn ? ">=" : "<=", lim, pk,
+                   (mn ? pk >= lim : pk <= lim) ? "ok" : "FAIL");
+            host_fails += mn ? pk < lim : pk > lim;
+        } else if (script[step].smk == HS_VLOG) {
+            host_vlog_set(script[step].sb);
+        } else if (script[step].smk == HS_REST) {
+            uint32_t r = host_tricks_rest(), want = script[step].sb;
+            printf("%6u ms  expect rest %u: %u  %s\n", fm1_ms, want, r, r == want ? "ok" : "FAIL");
+            host_fails += r != want;
         } else if (script[step].smk == HS_IDLE) {
             uint32_t n = host_map_idle_calls(), want = script[step].sb;
             printf("%6u ms  expect idle >= %u: the last map draw called app_idle %u times  %s\n", fm1_ms, want, n, n >= want ? "ok" : "FAIL");

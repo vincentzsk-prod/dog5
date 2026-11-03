@@ -1,0 +1,15 @@
+# PLAY = STOP, the kill switch, case 1: mid single note (INIT, a held C4). STOP fades it out in 5.8 ms and clears; the
+# key is still held when PLAY is tapped again, and nothing comes back; a new note plays as ever. (FM-1: BTN_PLAY = 12)
+2600 midi 0xC0 32 0
+2700 midi 0x90 60 100
+3250 expect peakmin 100 3000
+3300 btn 12
+3330 expect peak 15 0
+3800 expect peak 450 0
+3800 btn 12
+4300 expect peak 480 0
+4400 midi 0x90 64 100
+4700 expect peakmin 200 3000
+4800 midi 0x80 64 0
+4800 midi 0x80 60 0
+5400 end
