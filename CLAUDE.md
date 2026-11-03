@@ -132,8 +132,16 @@ ALGORITHM, PLAY, REC.)
 
 **OCT− / OCT+ = octave, always** (−2..+2, both = 0). Undo/redo was a sequencer feature and leaves with it.
 
-**Control renames (the dumb-dog register, function unchanged):** ALGORITHM=SLOBBER, ENV=HOWL, SEQ=FLOP(gone
-with the sequencer), PLAY=HEEL, REC=WAG, GLO=FLEAS, ARP=ZOOMIES, LFO=PANT, SAVE=BURY, EDIT=DIG, SEL=FETCH,
+**The live tricks — DONE** (global, live, no patch byte / CC; untouched = bit-exact; `listen/trick/`, tests/trick/):
+**PLAY (HEEL) = STOP**, the kill switch — a tap: 5.8 ms fade at the master gate (after CHEW), then every voice, held
+key, queued note and effect state cleared (`kill_clear`: `drive_clear`/`fx_clear`/`tape_clear`), PLAY LED + header
+`STOPPED`; `KILL_MOMENTARY 1` makes it hold-to-silence. **SEQ (FLOP) held = TAPE STOP** — the speed falls linearly
+over half a bar at the tempo (pitch on the bend's path, cutoff 1.25×, level to silence below 1/3 speed), let go =
+back in ~10 ms (`tstop_tick`, `TS_DIVE8`). **ALGORITHM (SLOBBER) = the SLOP ride** — 0..127 *added* to the patch's
+VINTAGE (sum ≤ 254), glides ~23 ms, never stored, 0 at power-on; header `SLOP +N = VINTAGE M` for 1 s. The hold-HOME
+map is full (11 rows) and doesn't list them yet.
+
+**Control renames (the dumb-dog register, function unchanged):** ALGORITHM=SLOBBER, ENV=HOWL, SEQ=FLOP (now TAPE STOP), PLAY=HEEL, REC=WAG, GLO=FLEAS, ARP=ZOOMIES, LFO=PANT, SAVE=BURY, EDIT=DIG, SEL=FETCH,
 PRESETS=BARKS, HOME=HOME. Psych Chain knobs: Drive=GROWL, BBD=ALLEY, Spring=DRAIN, Tape=CHEW. Banks: THE
 POUND (locked factory) / THE PACK (live). FLEAS = the degradation dial (CLEAN/ITCH/SCRATCH/MANGE).
 
