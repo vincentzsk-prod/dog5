@@ -160,6 +160,18 @@ fitted 6-point read (no aliasing from the wow: `listen/tape/README.md`), a fixed
 pitch), the hiss rests 2 s after silence, loudness held within ~0.3 dB (static law + K-weighted trim), CHEW 0 a
 bit-exact bypass. ~960 host instr/sample (the most of any stage: levers in `dog5-docs/PERF-BASELINE.md`), pool +4 KB.
 
+**BBD (ALLEY) — DONE** (`obv_fx.h`, branch `claude/psych-bbd`): OberVave's ping-pong delay re-voiced in place (after the
+output stage, before the reverb). Bytes **68–70** (ALLEY, FINE, PINGPONG; CC 87–89, appended; 71–79 stay free); the old
+TIME byte 55 is now SYNC, the note value **ALLEY 0** follows (so the 8 factory patches with the delay on keep their
+times). KNOB 1 on BBD DELAY = ALLEY: 10–740 ms free (3.5 % a step; leaving SYNC starts from the time sounding), SELECT
+held = BBD + (SYNC, FINE, PINGPONG); **REC (WAG) on the page = tap tempo** (mean of 3 intervals, FINE makes it exact; a
+tap slower than 740 ms folds to its 8th); the REC LED is lit there. Each pass is band-limited as a BBD's (2-pole + 1-pole,
+8 kHz at 10 ms → 2.8 kHz at 740 ms), TONE stays in the loop, an 80 Hz high-pass thins the repeats, tanh headroom on the
+line and in the loop; FEEDBK keeps the old law to 112, holds at ~120 and runs away above (settling under full scale). A
+time change bends the repeats' pitch (≤ −12 / +7 semitones, eased: never a click). MIX 0 is the old delay's bypass,
+bit for bit. Buffer unchanged (743 ms a side), CPU 310 host instr/sample (old 109), all four stages 2,588.
+`listen/bbd/` has the measurements and the kit. **The reverb has a pre-existing overflow** at REV_MIX/SIZE 127 with a hot
+input (`rev_tick`'s output taps × 19661), on `main` too: left for the Spring re-voice.
 **Spring reverb:** re-voice the Dattorro plate *toward* spring — allpasses faster+shallower, short PRE-DLY,
 brighter DAMP, clamp SIZE so it can't bloom into a hall. **Excellence is NOT required** (Vincent has real
 analogue units); "the next closest thing" is explicitly enough. `REV_DIV 2` (half-rate) is the CPU lever.

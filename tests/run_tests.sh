@@ -30,6 +30,9 @@ run "FM-1 polyphony P_POLY_N: default 5, then 8 and 1, gated-voice counts under 
 run "FM-1 DRIVE page: GROWL on KNOB 1, SELECT held turns it to BIAS / TONE, nowhere else; FX held reaches GROWL" sh tests/run_host.sh tests/drive_page.txt
 # CHEW (obv_tape.h): KNOB 1 on TAPE, SELECT held = TAPE + (WOW/FLT, HISS, DROPS); the map; DRIVE + unchanged
 run "FM-1 TAPE page: CHEW on KNOB 1, SELECT held turns it to WOW/FLT / HISS / DROPS, the map names them" sh tests/run_host.sh tests/tape_page.txt
+# ALLEY (obv_fx.h): KNOB 1 leaves SYNC from the time sounding, SELECT held = BBD + (SYNC, FINE, PINGPONG), SYNC turned =
+# SYNC again, REC taps the time (500 ms taps = step 115 + FINE 66; 1000 ms ones fold to the same), FX held's 4th knob, CC 87
+run "FM-1 BBD DELAY page: ALLEY from SYNC, BBD +, REC tap tempo (and its fold), the FX layer's ALLEY, CC 87 = SYNC" sh tests/run_host.sh tests/bbd_page.txt
 # layer-lock with HOME acting on its release: hold FX + tap HOME locks; the tap never goes HOME; FX / ENV let it go
 run "FM-1 layer-lock: FX held + HOME tapped locks (no jump HOME), the lock outlives FX's release, FX or ENV ends it" sh tests/run_host.sh tests/layer_lock.txt
 run "SMK-37 mapping: step pads, REC pads, fader banks, wheels, outer keys" python3 tests/smk_ui_test.py

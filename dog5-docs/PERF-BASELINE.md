@@ -174,3 +174,31 @@ under -60 dB re the tone); (2) a 4-point Hermite read instead of the 6-point (~-
 -80 to -43 dB under a 10 kHz tone, audible as a grainy top on bright patches); (3) the whole line at 1x (~-400; the
 sidebands at -30 dB under 10 kHz: a fizz on the top octave under wow). Before any of these: `REV_DIV 2` (~-280) and
 GROWL in mono (~-370), as the GROWL section says. None is taken: the device decides.
+
+## The Psych Chain, stage 2: ALLEY (the BBD) re-voices the delay (2026-11-02, branch `claude/psych-bbd`)
+
+The same scripts (`tests/tape/perf_*.txt`; `perf_dly` is ALLEY at MIX 60 in SYNC, which costs the same as any other
+setting: the loop has no branches on the settings). `fx_process` is `noinline` now: inlined, the bigger loop moved the
+voice loop's code and cost the *everything off* run +8.5 M Ir with no effect running (the same thing CHEW's section
+describes); as a call, the off run is back to 267.1 M.
+
+| Stage | Ir | Instructions / sample while on |
+|---|---:|---:|
+| Everything off | 267,117,879 | (713 over the whole window) |
+| GROWL 100 | 489,386,808 | 741 |
+| **ALLEY (mix 60)** | 359,979,965 | **310** (old delay 109) |
+| Spring (old plate, mix 60) | 439,947,693 | 576 (566: it shares the loop, now a call) |
+| CHEW 100 | 555,234,259 | 961 |
+| GROWL + ALLEY + reverb | 755,078,708 | 1,627 |
+| **All four** | 1,043,252,469 | **2,588** (2,784 over the whole window, the voices included) |
+
+Where ALLEY's 310 go (callgrind, line by line): the four tanh reads (two line writes, two loop limits) ~86, the two
+line reads and writes ~80, the two BBD filters (2-pole SVF + 1-pole each) ~57, TONE, the high-passes, PINGPONG and the
+mix ~60. A branch-free tanh read instead of `softclip` took it from 329 to 310.
+
+Device build: image 103,384 -> **107,920 B** (+4,536: code and 1 KB of tables), RAM 32,208 -> **32,304 B** (+96), pool
+**275,868 B unchanged** (the two 743 ms lines are the old delay's).
+
+ALLEY's own levers if the device needs them (estimates): the right line's write without its tanh (~-22; the
+ping-pong's right-hand repeats lose one stage of grit), the 2-pole + 1-pole as a single 2-pole (~-30; a softer knee,
+repeats a little muddier). Before those, `REV_DIV 2` and GROWL in mono, as above.
