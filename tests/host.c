@@ -188,9 +188,10 @@ typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn
  * any build: "T shot" (the screen at T -> OUT-T.ppm), "T expect page N" (the app must be on page N now: prints ok / FAIL
  * and the run exits 1 on a FAIL; N = the page index, PG_* in obv_params.h), "T expect idle N" (the last control-map draw
  * called app_idle() at least N times: the DRAW RULE), "T param P V" (set parameter P to V, as a knob would), "T expect voices N" (N voice cards gated on now),
- * "T expect param P V" (parameter P holds V now) */
+ * "T expect param P V" (parameter P holds V now), "T expect peak MS MAX" / "T expect peakmin MS MIN" (the largest |sample| of
+ * the output over the last MS ms is <= MAX / >= MIN) */
 enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES,
-       HS_PVAL };
+       HS_PVAL, HS_PEAK, HS_PEAKMIN };
 static uint32_t host_page_now(void);            /* (obervave.c: the page the panel is on) */
 static uint32_t host_map_idle_calls(void);      /* (obervave.c: app_idle calls the last control-map draw made) */
 static void host_set_param(uint32_t p, int32_t v);   /* (obervave.c: set a parameter, as a knob would) */
@@ -242,6 +243,11 @@ static void read_script(const char *path)
             if (!strcmp(kind, "page")) { e.smk = HS_PAGE; e.sa = (uint8_t)a; }
             else if (!strcmp(kind, "idle")) { e.smk = HS_IDLE; e.sb = (uint16_t)a; }
             else if (!strcmp(kind, "voices")) { e.smk = HS_VOICES; e.sb = (uint16_t)a; }
+            else if (!strcmp(kind, "peak") || !strcmp(kind, "peakmin")) {   /* "T expect peak MS MAX": the output's
+                                                 * largest |sample| over the last MS ms <= MAX; peakmin: >= MIN */
+                sscanf(line, "%*u %*s %*s %u %u", &a, &b);
+                e.smk = kind[4] ? HS_PEAKMIN : HS_PEAK; e.sb = (uint16_t)a; e.st = 0; e.keys = b;
+            }
             else if (!strcmp(kind, "param")) { sscanf(line, "%*u %*s %*s %u %u", &a, &b); e.smk = HS_PVAL; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
             else { fprintf(stderr, "script: unknown expect '%s'\n", kind); continue; }
         }
@@ -356,6 +362,15 @@ static void platform_poll(void)                 /* one call = one millisecond */
             uint32_t v = host_get_param(script[step].sa), want = script[step].sb;
             printf("%6u ms  expect param %u = %u: %u  %s\n", fm1_ms, script[step].sa, want, v, v == want ? "ok" : "FAIL");
             host_fails += v != want;
+        } else if (script[step].smk == HS_PEAK || script[step].smk == HS_PEAKMIN) {
+            uint32_t frames = script[step].sb * (FS / 1000u), i, pk = 0, lim = script[step].keys, mn = script[step].smk == HS_PEAKMIN;
+            for (i = wav_n > frames ? 2u * (wav_n - frames) : 0; i < 2u * wav_n; i++) {
+                uint32_t a = (uint32_t)(wav[i] < 0 ? -wav[i] : wav[i]);
+                if (a > pk) pk = a;
+            }
+            printf("%6u ms  expect peak over the last %u ms %s %u: %u  %s\n", fm1_ms, script[step].sb, mn ? ">=" : "<=", lim, pk,
+                   (mn ? pk >= lim : pk <= lim) ? "ok" : "FAIL");
+            host_fails += mn ? pk < lim : pk > lim;
         } else if (script[step].smk == HS_IDLE) {
             uint32_t n = host_map_idle_calls(), want = script[step].sb;
             printf("%6u ms  expect idle >= %u: the last map draw called app_idle %u times  %s\n", fm1_ms, want, n, n >= want ? "ok" : "FAIL");

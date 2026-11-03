@@ -141,6 +141,23 @@ static inline __attribute__((always_inline)) void tp_read(uint32_t i, int32_t dq
 
 static inline uint32_t tp_rand(void) { return xorshift(&tp_rs); }
 
+/* STOP (the kill switch): the tape line, every filter, the hiss's gate and any dropout to zero / rest, so not a sample
+ * of what was recorded plays back and the hiss waits for the next note. The transport (the head, the wow) keeps
+ * turning: a CHEW that runs is not spun up again. Resting (tp_run 0), entering clears all of it anyway */
+static void tape_clear(void)
+{
+    uint32_t k, nz0 = tp_ch[0].nz, nz1 = tp_ch[1].nz;
+    static const tp_ch_t z0;
+    static const grl_kw_t w0;
+    if (!tp_run) return;
+    for (k = 0; k < 2u * TP_N; k++) tp_line[k] = 0;
+    tp_ch[0] = tp_ch[1] = z0;
+    tp_ch[0].nz = nz0; tp_ch[1].nz = nz1;
+    tp_gate = 0; tp_hold = 0;
+    tp_dlen = 0; tp_dg = tp_dg_t = 4096; tp_dg20 = 4096 << 8;
+    tp_kw_in = tp_kw_out = w0; tp_pin = tp_pout = 0;
+}
+
 /* s: the effects' output, Q15, in place: unclipped up to +-2x full scale (obv_fx.h's rail while Tape runs) */
 static __attribute__((noinline)) void tape_process(int32_t *s, uint32_t n)
 {

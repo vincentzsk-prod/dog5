@@ -569,11 +569,65 @@ static void voice_render(voice_t *v, int32_t *out)
     (void)o2n;
 }
 
+/* ---- STOP (PLAY/STOP, HEEL): the kill switch, after everything (the Psych Chain's master gate). ctl_kill set: the
+ * whole output fades to nothing over KILL_FADE samples (5.8 ms, a straight line: never a hard zero, never a click),
+ * then everything that could still sound is cleared, not muted: the voices (envelopes, filters), the held keys and
+ * the arp, the queued notes, and every effect's lines and states (GROWL, ALLEY, DRAIN, CHEW). While it is down the
+ * engine does nothing (the notes that come are dropped) and sends silence; let go, it starts from that silence and the
+ * gate opens over the same 5.8 ms. Not engaged, the gate is skipped: the output bit for bit as before */
+#define KILL_ONE 32768                          /* the gate, Q15: open */
+#define KILL_FADE 256u                          /* samples, open <-> shut (a straight line) */
+static volatile uint32_t ctl_kill;              /* main loop: 1 = STOP */
+static int32_t kill_g = KILL_ONE;
+static uint32_t kill_dead;                      /* faded out and cleared: silence until let go */
+
+static void kill_clear(void)
+{
+    static const voice_t vz;
+    uint32_t v;
+    for (v = 0; v < NV; v++) {                  /* the voices to rest; the oscillators keep their phases, the
+                                                 * vintage drift and the noise their states (nothing audible) */
+        voice_t *x = &vc[v];
+        uint32_t ph1 = x->o1.ph, ph2 = x->o2.ph, nz = x->noise, sq = x->seq;
+        int32_t dr = x->drift, gl = x->gl, gr = x->gr;
+        *x = vz;
+        x->o1.ph = ph1; x->o2.ph = ph2; x->noise = nz; x->seq = sq; x->drift = dr; x->gl = gl; x->gr = gr;
+        ui_vlevel[v] = 0;
+    }
+    nheld = 0;
+    arp.sounding = 0; arp.pos = 0; arp.cnt = 0xFFFFFFFFu;
+    nq_r = nq_w;
+    drive_clear();
+    fx_clear();
+    tape_clear();
+}
+
+static void kill_gate(int32_t *out, uint32_t n)
+{
+    uint32_t i, k = ctl_kill;
+    int32_t g = kill_g, step = KILL_ONE / (int32_t)KILL_FADE;
+    for (i = 0; i < n; i++) {
+        g = k ? (g > step ? g - step : 0) : (g < KILL_ONE - step ? g + step : KILL_ONE);
+        out[2u * i] = (out[2u * i] * g) >> 15;  /* (|out| <= 32767 after the chain: inside int32) */
+        out[2u * i + 1u] = (out[2u * i + 1u] * g) >> 15;
+    }
+    kill_g = g;
+    if (k && !g) { kill_clear(); kill_dead = 1; }
+}
+
 static void engine_audio(int32_t *out, uint32_t n)
 {
     uint32_t b, v, i;
     static int32_t sc_prev;
     static uint32_t sc_i, sc_sub;
+    if (kill_dead) {                            /* STOP: down, silence; let go, live again from the silence */
+        if (ctl_kill) {
+            nq_r = nq_w;
+            for (i = 0; i < 2u * n; i++) out[i] = 0;
+            return;
+        }
+        kill_dead = 0;
+    }
     fx_block(&live, ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240));
     drive_block(&live);
     tape_block(&live);
@@ -614,6 +668,7 @@ static void engine_audio(int32_t *out, uint32_t n)
                                                  * record knee rounds the overs; CHEW 0: the effects' sat16, as before */
     fx_process(out, n);
     if (fx_to_tape) tape_process(out, n);       /* TAPE last (CHEW 0: skipped, bit for bit) */
+    if (ctl_kill || kill_g != KILL_ONE) kill_gate(out, n);   /* STOP: the master gate (open: skipped, bit for bit) */
 }
 
 static int engine_quiet(void)                   /* nothing sounds: a flash erase is safe */
