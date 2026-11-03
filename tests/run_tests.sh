@@ -32,6 +32,8 @@ run "FM-1 DRIVE page: GROWL on KNOB 1, SELECT held turns it to BIAS / TONE, nowh
 run "FM-1 TAPE page: CHEW on KNOB 1, SELECT held turns it to WOW/FLT / HISS / DROPS, the map names them" sh tests/run_host.sh tests/tape_page.txt
 # ALLEY (obv_fx.h): KNOB 1 leaves SYNC from the time sounding, SELECT held = BBD + (SYNC, FINE, PINGPONG), SYNC turned =
 # SYNC again, REC taps the time (500 ms taps = step 115 + FINE 66; 1000 ms ones fold to the same), FX held's 4th knob, CC 87
+# the FX-held layer: KNOB 1-4 = GROWL ALLEY DRAIN CHEW on any page (ALLEY leaves SYNC from the time sounding), nothing else
+run "FM-1 FX-held layer: GROWL / ALLEY / DRAIN / CHEW on KNOB 1-4, the BBD's MIX off it, the page's knobs back on release" sh tests/run_host.sh tests/fx_layer.txt
 # DRAIN (obv_fx.h, the spring): KNOB 1 on SPRING, SELECT held = SPRING + (SIZE, DAMP, PRE-DLY), the map; TAPE + unchanged
 run "FM-1 SPRING page: DRAIN on KNOB 1, SELECT held turns it to SIZE / DAMP / PRE-DLY, the map names them" sh tests/run_host.sh tests/spring_page.txt
 # the reverb's overflow can't come back, the whole chain at its extremes is clean under the sanitizer, no crack
