@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-only
-"""The SLOP ride at three depths, to choose by ear: 1x (shipped: 0..127 added to VINTAGE), 1.5x, 2x.
+"""The SLOP ride at three depths, to choose by ear: 1x (0..127 added to VINTAGE), 1.5x, 2x (chosen
+by ear on 3 Nov: shipped).
 
   python3 tests/trick/slop_depths.py [build/trick/depths] [listen/trick/slop_depths]
 
-Builds the host app three times (-DSLOP_SCALE_X2=2/3/4; the firmware ships 2), renders the kit's slop_note and
+Builds the host app three times (-DSLOP_SCALE_X2=2/3/4; the firmware ships 4), renders the kit's slop_note and
 slop_chord scripts (tests/trick/make_kit.py, unchanged) and logs each sounding voice card's vintage pitch from inside
 the engine ("T vlog"), at ride 0 (3.0-5.7 s) and over the full-ride hold (9.8-13.7 s): its mean (the static flat /
 sharp the card's VINTAGE offset gives) and the wander around it (sd, range). The held note's pitch is also read off

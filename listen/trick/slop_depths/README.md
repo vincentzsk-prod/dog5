@@ -4,14 +4,15 @@ This is the same held note and the same chord as `../slop_note.wav` and `../slop
 plain, then the ride turns up to the top over 4 s, holds there for 4 s (1.2 to 7.2 s in the file is the climb,
 7.2 to 11.2 s is the hold), then comes back to 0 over 2 s.
 
-**The shipped depth is unchanged (1x).** The other two depths are host builds made with `-DSLOP_SCALE_X2=3` (1.5x)
-and `-DSLOP_SCALE_X2=4` (2x). Picking one is a single-line change to the default in `obv_engine.h`.
+**Decided 3 Nov: 2x ships** (`SLOP_SCALE_X2 4` in `obv_engine.h`). These renders are kept as the record of the
+choice. The 1x and 1.5x files were host builds made with `-DSLOP_SCALE_X2=2` and `=3`. The 2x files are what ships,
+byte-identical to `../slop_*.wav`.
 
 | file | depth | VINTAGE at full ride (the patch's 30 + the ride) |
 |---|---|---|
-| `slop_note_1x.wav`, `slop_chord_1x.wav` | 1x, shipped (0..127 added) | 157 (byte-identical to `../slop_*.wav`) |
+| `slop_note_1x.wav`, `slop_chord_1x.wav` | 1x (0..127 added) | 157 |
 | `slop_note_1.5x.wav`, `slop_chord_1.5x.wav` | 1.5x (0..190 added) | 220 |
-| `slop_note_2x.wav`, `slop_chord_2x.wav` | 2x (0..254 added) | 284 |
+| `slop_note_2x.wav`, `slop_chord_2x.wav` | 2x, **shipped** (0..254 added) | 284 (byte-identical to `../slop_*.wav`) |
 
 ## At full ride, per voice
 

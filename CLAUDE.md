@@ -137,8 +137,12 @@ ALGORITHM, PLAY, REC.)
 key, queued note and effect state cleared (`kill_clear`: `drive_clear`/`fx_clear`/`tape_clear`), PLAY LED + header
 `STOPPED`; `KILL_MOMENTARY 1` makes it hold-to-silence. **SEQ (FLOP) held = TAPE STOP** — the speed falls linearly
 over half a bar at the tempo (pitch on the bend's path, cutoff 1.25×, level to silence below 1/3 speed), let go =
-back in ~10 ms (`tstop_tick`, `TS_DIVE8`). **ALGORITHM (SLOBBER) = the SLOP ride** — 0..127 *added* to the patch's
-VINTAGE (sum ≤ 254), glides ~23 ms, never stored, 0 at power-on; header `SLOP +N = VINTAGE M` for 1 s. The hold-HOME
+back in ~10 ms (`tstop_tick`, `TS_DIVE8`). **ALGORITHM (SLOBBER) = the SLOP ride** — **final depth 2x** (chosen
+by ear 3 Nov from 1x / 1.5x / 2x, `listen/trick/slop_depths/`; `SLOP_SCALE_X2 4`): the encoder's 0..127 doubled, i.e.
+0..254 *added* to the patch's VINTAGE (sum ≤ 381), glides ~23 ms, never stored, 0 at power-on; header
+`SLOP +N = VINTAGE M` for 1 s. **Known, accepted character trait — heard and approved, NOT a bug, do not "fix" it:** at
+full ride each voice card sits off true by its own VINTAGE offset — voice card 0 (all MONO/UNISON notes) ~20 cents
+flat (≈10 at the old 1x, doubled at this range), other cards sharp (a chord averages ~3 cents flat), plus the wander. The hold-HOME
 map is full (11 rows) and doesn't list them yet.
 
 **Control renames (the dumb-dog register, function unchanged):** ALGORITHM=SLOBBER, ENV=HOWL, SEQ=FLOP (now TAPE STOP), PLAY=HEEL, REC=WAG, GLO=FLEAS, ARP=ZOOMIES, LFO=PANT, SAVE=BURY, EDIT=DIG, SEL=FETCH,

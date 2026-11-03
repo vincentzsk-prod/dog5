@@ -58,14 +58,17 @@ static volatile int32_t ctl_vib;                /* the SMK-37's mod wheel 0..127
 static volatile int32_t ctl_tune8;              /* global tune, Q8 semitones */
 static volatile uint32_t ctl_tempo = 120, ctl_ext_quarter;   /* MIDI clock: frames per quarter, 0 = none */
 static volatile uint32_t ctl_arp_restart, ctl_panic;
-/* the SLOP ride (ALGORITHM, SLOBBER): 0..127 added to the sound's VINTAGE, live, on every patch, never stored. It
- * glides (~23 ms, as CUTOFF), so a fast turn is a smooth swell of drift, never a step; the sum runs to 254 (twice the
- * knob's top: the card offsets and the random walk double, VINTAGE's own law, nothing new). 0: bit for bit as before */
+/* the SLOP ride (ALGORITHM, SLOBBER): the encoder's 0..127, doubled, added to the sound's VINTAGE (0..254 on top: the
+ * sum runs to 381, three times the knob's top), live, on every patch, never stored. It glides (~23 ms, as CUTOFF), so a
+ * fast turn is a smooth swell of drift, never a step; VINTAGE's own law (the cards' offsets, the random walk), nothing
+ * new. 0: bit for bit as before. The depth was chosen by ear on 3 Nov from 1x / 1.5x / 2x (listen/trick/slop_depths):
+ * 2x. At full ride each voice card sits off by its own offset (card 0 about 20 cents flat, others sharp) on top of the
+ * wander: an accepted character trait, heard and approved -- not a bug to fix */
 static volatile uint32_t ctl_slop;
 static int32_t slop_sm;                         /* Q8 */
 #ifndef SLOP_SCALE_X2
-#define SLOP_SCALE_X2 2                         /* the ride's depth in halves: 2 = 1x (shipped: 0..127 added), 3 = 1.5x,
-                                                 * 4 = 2x (tests/trick/slop_depths.py renders all three to choose by ear) */
+#define SLOP_SCALE_X2 4                         /* the depth in halves: 4 = 2x, shipped (2 and 3 only for the comparison
+                                                 * renders, tests/trick/slop_depths.py) */
 #endif
 #define SLOP_RIDE(r) ((int32_t)(r) * SLOP_SCALE_X2 / 2)   /* the ride 0..127 -> what it adds to VINTAGE */
 #define SLOP_MAX (127 + SLOP_RIDE(127))

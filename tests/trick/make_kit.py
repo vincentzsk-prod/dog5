@@ -67,7 +67,8 @@ SCRIPTS = {
                      + ["9800 end"],
     # one saw (for the pitch track): TAPE STOP held 1.5 s
     "tapestop_note": LEAD + chord(2700, 5800, [72]) + ["3300 btndown 11", "4800 btnup 11", "6300 end"],
-    # the SLOP ride under a held note: 3 s plain (the patch's VINTAGE 30), up to +127 over 4 s, held 4 s, back over 2 s
+    # the SLOP ride under a held note: 3 s plain (the patch's VINTAGE 30), the encoder up to its top over 4 s (+254 on
+    # VINTAGE, the shipped 2x depth), held 4 s, back over 2 s
     "slop_note": LEAD + chord(2700, 18500, [69]) + ride(5700, 9700, 0, 127) + ride(13700, 15700, 127, 0)
                  + ["19000 end"],
     "slop_chord": PAD + chord(2700, 18500, [48, 55, 58, 63]) + ride(5700, 9700, 0, 127) + ride(13700, 15700, 127, 0)
@@ -180,13 +181,13 @@ def main():
     # ---- the SLOP ride: the pitch's wander (cents) under a held A4
     a = load(os.path.join(bd, "slop_note.wav")); x = a.mean(1)
     cs = [(t - T0, 1200 * np.log2(f0_zc(x, t) / 440)) for t in np.arange(3.0, 18.4, 0.02)]
-    for lab, t0, t1 in (("ride 0 (VINTAGE 30)", 3.0, 5.7), ("ride +127 (VINTAGE 157)", 9.8, 13.7),
+    for lab, t0, t1 in (("ride 0 (VINTAGE 30)", 3.0, 5.7), ("full ride, +254 (VINTAGE 284)", 9.8, 13.7),
                         ("back to 0", 15.8, 18.4)):
         c = np.array([v for t, v in cs if t0 <= t + T0 < t1])
         print(f"SLOP {lab}: pitch {c.mean():+.1f} cents mean, wander sd {c.std():.1f}, range {c.min():+.1f} .. "
               f"{c.max():+.1f}")
-    plot(os.path.join(out, "slop.png"), "SLOP ride (ALGORITHM) under a held A4: 0 -> +127 (3.2-7.2 s), held, -> 0 "
-         "(11.2-13.2 s)", [("pitch, cents from 440 Hz", (200, 40, 40), cs)], "cents", (-30, 30), (0, 16))
+    plot(os.path.join(out, "slop.png"), "SLOP ride (ALGORITHM, 2x) under a held A4: 0 -> full (3.2-7.2 s), held, -> 0 "
+         "(11.2-13.2 s)", [("pitch, cents from 440 Hz", (200, 40, 40), cs)], "cents", (-60, 60), (0, 16))
     for name in ("slop_note", "slop_chord"):
         a = load(os.path.join(bd, name + ".wav")); dl = np.abs(np.diff(a[:, 0]))
         print(f"{name}: largest sample step while the ride turns {dl[int(5.7 * FS):int(9.7 * FS)].max():.0f}, "
