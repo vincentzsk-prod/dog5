@@ -610,8 +610,10 @@ static void engine_audio(int32_t *out, uint32_t n)
         }
         sc_prev = m;
     }
+    fx_to_tape = tape_on();                     /* CHEW on: the effects hand it their sum unclipped (on a 2x rail), its
+                                                 * record knee rounds the overs; CHEW 0: the effects' sat16, as before */
     fx_process(out, n);
-    if (tape_on()) tape_process(out, n);   /* TAPE last, for now (CHEW 0: skipped, bit for bit) */
+    if (fx_to_tape) tape_process(out, n);       /* TAPE last (CHEW 0: skipped, bit for bit) */
 }
 
 static int engine_quiet(void)                   /* nothing sounds: a flash erase is safe */

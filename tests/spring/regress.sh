@@ -13,22 +13,24 @@ SAN="-O1 -g -fsanitize=signed-integer-overflow,bounds -fno-sanitize-recover=all 
 cc $SAN -DOBV_HOST -DAPP_VER=\"dev\" -Ifirmware/src -Ifirmware/gen -o "$O/obervave" firmware/src/obervave.c
 cc $SAN -Ifirmware/src -Ifirmware/gen -o "$O/bench" tests/spring/spring_bench.c -lm
 fail=0
-for s in tests/spring/hot_reverb.txt tests/spring/hot_reverb_vdrive.txt tests/spring/worst_rev.txt ${EXTRA_SCRIPTS:-}; do
+for s in tests/spring/hot_reverb.txt tests/spring/hot_reverb_vdrive.txt tests/spring/worst_rev.txt tests/spring/worst_chain.txt tests/tape/worst_voices.txt ${EXTRA_SCRIPTS:-}; do
     n=$(basename "$s" .txt)
     if "$O/obervave" "$O/$n" "$s" > "$O/$n.log" 2>&1; then echo "clean   $s"; else echo "FAIL    $s"; grep runtime "$O/$n.log"; fail=1; fi
 done
 # the bench: squares (50 Hz .. 7 kHz), alternating rails, noise, a low burst, all at full scale, into the reverb at
-# MIX 127 and SIZE / DAMP at their ends (PRE-DLY 0), with ALLEY's runaway on and off
+# MIX 127 and SIZE / DAMP at their ends (PRE-DLY 0), with ALLEY's runaway on and off; then PRE-DLY, SIZE and DAMP jumped
+# to the other end while it rings
 k=0
 for sig in square:50:32767:2000 square:440:32767:2000 square:2000:32767:2000 square:7000:32767:2000 nyq:32767:2000 noise:32767:2000 burst:100:32767:2000; do
     for sz in 0 64 100 127; do for dp in 0 127; do for dm in 0 127; do
         k=$((k + 1))
-        if ! "$O/bench" /dev/null $sig 3 0:mix=127 0:size=$sz 0:damp=$dp 0:pre=0 0:dmix=$dm 0:fb=127 0:alley=30 ${BENCH_EXTRA:-} > "$O/bench.log" 2>&1; then
+        if ! "$O/bench" /dev/null $sig 3 0:mix=127 0:size=$sz 0:damp=$dp 0:pre=0 0:dmix=$dm 0:fb=127 0:alley=30 \
+             1200:pre=127 1600:size=$((127 - sz)) 2000:damp=$((127 - dp)) 2400:pre=0 ${BENCH_EXTRA:-} > "$O/bench.log" 2>&1; then
             echo "FAIL    bench $sig size $sz damp $dp dmix $dm"; grep runtime "$O/bench.log"; fail=1
         fi
     done; done; done
 done
-[ "$fail" = 0 ] && echo "clean   bench: $k runs (7 signals x SIZE 0/64/100/127 x DAMP 0/127 x ALLEY off / runaway)"
+[ "$fail" = 0 ] && echo "clean   bench: $k runs (7 signals x SIZE 0/64/100/127 x DAMP 0/127 x ALLEY off / runaway, then the jumps)"
 # no crack in the plain build's hot renders
 cc -O2 -Wall -Wno-unused-function -DOBV_HOST -DAPP_VER=\"dev\" -Ifirmware/src -Ifirmware/gen -o "$O/obervave_o2" firmware/src/obervave.c
 for s in tests/spring/hot_reverb.txt tests/spring/hot_reverb_vdrive.txt; do

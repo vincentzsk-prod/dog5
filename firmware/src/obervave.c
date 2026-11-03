@@ -247,6 +247,12 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
             }
         }
         break;
+    case K_RVSIZE: fmt_ms(s, SPR_RT_MS[v & 127u] * 10u); break;   /* the decay: 300ms .. 3.0s */
+    case K_RVDAMP:
+        if (!v) { scat(s, "OPEN"); break; }
+        { uint32_t hz = SPR_DAMP_HZ[v & 127u]; fmt_u(s, hz / 1000u); scat(s, "."); fmt_u(t, (hz / 100u) % 10u); scat(s, t); scat(s, "k"); }
+        break;
+    case K_RVPRE: fmt_ms(s, (uint32_t)v * 12u * 10000u / 44100u); break;   /* (the spring's read: 1 + 12 v samples) */
     case K_WIDTH: if (!v) scat(s, "MONO"); else if (v >= 127u) scat(s, "FULL"); else { fmt_u(s, (v * 100u + 63u) / 127u); scat(s, "%"); } break;
     default: fmt_u(s, v);
     }
@@ -366,6 +372,7 @@ static const page_t *page_now(void)             /* the page's knobs, or its seco
     if (sel_held() && page == PG_DRIVE) return &PAGE_DRIVE_SEL;
     if (sel_held() && page == PG_TAPE) return &PAGE_TAPE_SEL;
     if (sel_held() && page == PG_BBD) return &PAGE_BBD_SEL;
+    if (sel_held() && page == PG_SPRING) return &PAGE_SPRING_SEL;
     return &PAGE[page];
 }
 
@@ -805,7 +812,7 @@ static void app_main(void)
         if (save_armed && fm1_ms - save_t > 3000u) { save_armed = 0; dirty_page = dirty_hdr = 1; }
         {
             static uint32_t sel_was;            /* SELECT pressed or let go on a page with secondaries: its knobs change */
-            if (sel_held() != sel_was) { sel_was = sel_held(); if (page == PG_DRIVE || page == PG_TAPE || page == PG_BBD) { dirty_page = 1; map_dirty = map_on; } }
+            if (sel_held() != sel_was) { sel_was = sel_held(); if (page == PG_DRIVE || page == PG_TAPE || page == PG_BBD || page == PG_SPRING) { dirty_page = 1; map_dirty = map_on; } }
         }
         if (np != page) {
             if (layer_lock) { layer = L_NONE; layer_lock = 0; }

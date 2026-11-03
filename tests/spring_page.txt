@@ -1,0 +1,61 @@
+# DRAIN on the SPRING page (KNOB 1), its secondaries on SELECT held (SPRING +: SIZE on KNOB 1, DAMP on KNOB 2, PRE-DLY
+# on KNOB 3), and the map. Parameters: 62 DRAIN (the reverb's MIX byte), 59 SIZE, 60 DAMP, 61 PRE-DLY, 64 CHEW, 54
+# GROWL (obv_params.h). Encoders: 2 = KNOB 1, 3 = KNOB 2, 4 = KNOB 3, 5 = KNOB 4; buttons: 2 FX, 3 SELECT, 8 HOME.
+2900 param 62 0
+2900 param 59 80
+2900 param 60 60
+2900 param 61 20
+3000 btn 2   # FX: DRIVE
+3200 btn 2   # BBD DELAY
+3400 btn 2   # SPRING
+3600 expect page 13
+3600 enc 2 1
+3650 enc 2 1
+3700 enc 2 1
+3750 enc 2 1
+3800 enc 2 1
+3900 expect param 62 10   # KNOB 1 is DRAIN: five detents, two steps each
+3900 expect param 59 80   # SIZE untouched
+3900 enc 3 1   # KNOB 2-4 on SPRING do nothing (one macro on the page)
+3950 enc 4 1
+4000 enc 5 1
+4100 expect param 59 80
+4100 expect param 60 60
+4100 expect param 61 20
+4100 expect param 62 10
+4200 shot
+4300 btndown 3   # SELECT held: SPRING +
+4500 shot
+4500 enc 2 -1
+4550 enc 2 -1
+4600 enc 3 1
+4650 enc 3 1
+4700 enc 3 1
+4750 enc 4 1
+4800 expect param 59 76   # KNOB 1 is SIZE now
+4800 expect param 60 66   # KNOB 2 is DAMP
+4800 expect param 61 22   # KNOB 3 is PRE-DLY
+4800 expect param 62 10   # DRAIN untouched
+4850 enc 5 1   # KNOB 4 on SPRING + does nothing
+4900 expect param 62 10
+4900 btnup 3   # SELECT let go: DRAIN again
+5000 enc 2 1
+5100 expect param 62 12
+5100 expect param 59 76
+5200 btndown 8   # HOME held on SPRING: the map names DRAIN
+5600 shot
+5700 btnup 8
+5900 expect page 13
+5900 btndown 3   # SELECT held while HOME is held: the map shows SPRING +'s knobs
+6000 btndown 8
+6400 shot
+6500 btnup 8
+6600 btnup 3
+6800 btn 2   # FX again: TAPE, SELECT there is TAPE + (WOW/FLT on KNOB 1), not SPRING +
+7000 expect page 14
+7000 btndown 3
+7100 enc 2 1
+7300 expect param 65 66
+7300 expect param 59 76
+7300 btnup 3
+7800 end
