@@ -93,12 +93,24 @@ static inline int32_t tp_sin(uint32_t ph)       /* a sine, +-32767: the parabola
     return clampi(y, -32767, 32767);
 }
 
+/* the record's knee, whatever CHEW is: linear to -2 dBFS (TP_KNEE), then K + R tanh((|u| - K) / R) toward full scale
+ * (R = 32767 - K; slope 1 at the knee, 32,526 at most). The effects hand Tape their sum unclipped (obv_fx.h, up to 2x
+ * full scale), so an over is rounded here at 2x and the line never hard-clips */
+#define TP_KNEE 26029
+static inline __attribute__((always_inline)) int32_t tp_knee(int32_t u)
+{
+    int32_t s = u >> 31, a = (u ^ s) - s;
+    if (a <= TP_KNEE) return u;
+    a = a > 98304 ? 98304 : a;                  /* (3x full scale: the product below stays in int32) */
+    a = TP_KNEE + ((grl_sat(((a - TP_KNEE) * 19919) >> 12) * (32767 - TP_KNEE)) >> 15);   /* 19919: 32768 / R, Q12 */
+    return (a ^ s) - s;
+}
 /* the record: Drive's tanh table at 1.5 (tanh(1.5 x) / 1.5: unity for small signals, -4.4 dB at full scale), the
- * share s (Q12) of it blended in */
+ * share s (Q12) of it blended in, then the knee */
 static inline __attribute__((always_inline)) int32_t tp_sat(int32_t u, int32_t s)
 {
     int32_t t = (grl_sat((u * 3) >> 1) * 21845) >> 15;
-    return sat16(u + (((t - u) * s) >> 12));
+    return tp_knee(u + (((t - u) * s) >> 12));
 }
 
 /* the play head: a 6-point, 5th-order polynomial fitted for the 2x line (tests/tape/interp_fit.py; Niemitalo's
@@ -129,7 +141,7 @@ static inline __attribute__((always_inline)) void tp_read(uint32_t i, int32_t dq
 
 static inline uint32_t tp_rand(void) { return xorshift(&tp_rs); }
 
-/* s: the effects' output, Q15 (int16 range), in place */
+/* s: the effects' output, Q15, in place: unclipped up to +-2x full scale (obv_fx.h's rail while Tape runs) */
 static __attribute__((noinline)) void tape_process(int32_t *s, uint32_t n)
 {
     uint32_t i;
@@ -199,7 +211,7 @@ static __attribute__((noinline)) void tape_process(int32_t *s, uint32_t n)
         for (k = i, j = 1; k < i + 16u && k < n; k++, j++) {
             int32_t da = d0 + ((dd * (int32_t)(2u * j - 1u)) >> 5), db = d0 + ((dd * (int32_t)(2u * j)) >> 5);
             int32_t sv = s0 + ((ds * (int32_t)j) >> 4), mk = mk0 + ((dmk * (int32_t)j) >> 4), kd, ha[6], hb[6];
-            int32_t tr = tr0 + ((dtr * (int32_t)j) >> 4), yd[2], xs = s[2u * k] + s[2u * k + 1u], r0[2], r1[2];
+            int32_t tr = tr0 + ((dtr * (int32_t)j) >> 4), yd[2], xs = clampi(s[2u * k] + s[2u * k + 1u], -65534, 65534), r0[2], r1[2];
             uint32_t c;
             tp_taps(da, ha);                    /* (the same fraction for both channels) */
             tp_taps(db, hb);
@@ -238,7 +250,8 @@ static __attribute__((noinline)) void tape_process(int32_t *s, uint32_t n)
                 y = (y * tr) >> 12;             /* the slow trim */
                 y = y + (((ch->n2 >> 1) * hg) >> 19);   /* + hiss */
                 y = (y * tp_dg) >> 12;          /* a dropout dips the lot */
-                if (tp_mix < 16384 || !tp_on) y = x + (((y - x) * tp_mix) >> 14);
+                if (tp_mix < 16384 || !tp_on) y = x + ((clampi(y - x, -131071, 131071) * tp_mix) >> 14);   /* (x up
+                                                 * to 2x full scale now: the product stays in int32) */
                 s[2u * k + c] = sat16(y);
             }
             {                                   /* the powers as heard (K-weighted, mono): in, and out before the hiss */

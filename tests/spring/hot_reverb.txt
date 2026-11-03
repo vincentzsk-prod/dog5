@@ -1,0 +1,27 @@
+# the reverb overflow (obv_fx.h rev_tick: the seven output taps summed, x 19661, past int32): a hot input into the
+# plate at SIZE 127 / MIX 127. Program 1 in POLY, VOLUME 127, a 6-note chord at velocity 127 held 3 s, then let ring;
+# GROWL 127 (the chain's own hot input), delay and CHEW off. Before the fix: 76 output-tap sums past the int32 product
+# (the first 4.0 s in), each a polarity-flipped full-scale spike. tests/spring/regress.sh runs it under the sanitizer.
+2600 midi 0xC0 0 0
+2601 param 38 0
+2601 param 45 127
+2601 param 54 127
+2601 param 58 0
+2601 param 64 0
+2601 param 59 127
+2601 param 60 0
+2601 param 61 0
+2601 param 62 127
+2700 midi 0x90 36 127
+2700 midi 0x90 43 127
+2700 midi 0x90 48 127
+2700 midi 0x90 52 127
+2700 midi 0x90 55 127
+2700 midi 0x90 60 127
+5700 midi 0x80 36 0
+5700 midi 0x80 43 0
+5700 midi 0x80 48 0
+5700 midi 0x80 52 0
+5700 midi 0x80 55 0
+5700 midi 0x80 60 0
+12000 end

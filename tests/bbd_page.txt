@@ -1,6 +1,6 @@
 # ALLEY on the BBD DELAY page (obv_fx.h, obervave.c alley_*): KNOB 1 = ALLEY leaves SYNC from the time sounding,
 # SELECT held = BBD + (SYNC, FINE, PINGPONG), SYNC turned = back to SYNC, REC (WAG) taps the time, a tap slower than
-# 740 ms folds to its 8th, the FX-held layer's 4th knob is ALLEY, CC 87 = ALLEY (0 = SYNC). "T expect param P V".
+# 740 ms folds to its 8th, the FX-held layer's 2nd knob is ALLEY (GROWL ALLEY DRAIN CHEW), CC 87 = ALLEY (0 = SYNC). "T expect param P V".
 2600 midi 0xC0 31 0
 2700 btn 2
 2800 btn 2
@@ -33,7 +33,7 @@
 8100 expect param 69 66
 8200 shot
 9000 btndown 2
-9100 enc 5 -3
+9100 enc 3 -3
 9200 btnup 2
 9300 expect param 68 106
 9400 midi 0xB0 87 0

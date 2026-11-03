@@ -30,6 +30,7 @@ enum {
 #define P_CHO_RATE P_GRL_BIAS
 #define P_CHO_DEPTH P_GRL_TONE
 #define P_CHO_MIX P_GROWL
+#define P_DRAIN P_REV_MIX                       /* DRAIN, the Psych Chain's stage 3: the reverb's MIX byte (62), renamed */
 #define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 */
 #define PATCH_BYTES 96u                         /* DØG-5: grown 80 -> 96 (the "DOG5" program format) */
 #define PATCH_NAME_AT 80u                       /* the name at a FIXED offset, decoupled from NPARAM: bytes 0-79 are
@@ -46,7 +47,7 @@ enum {
 #define NFACT 32u                               /* the 32 DØG-5 patches (dog5-docs/DOG-5-presets.md); the rest INIT */
 
 enum { K_NUM, K_BIP, K_ONOFF, K_WAVE, K_FTYPE, K_MODE, K_LSHAPE, K_LPHASE, K_TO, K_ARP, K_DIV, K_SEMI, K_MS, K_HZ,
-       K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV, K_WF, K_DB12, K_REL, K_ALLEY, K_AFINE, K_WIDTH };
+       K_PCT, K_CUT, K_OCT, K_MORPH, K_DDIV, K_WF, K_DB12, K_REL, K_ALLEY, K_AFINE, K_WIDTH, K_RVSIZE, K_RVDAMP, K_RVPRE };
 enum { W_OFF, W_SAW, W_PLS, W_BOTH };
 enum { F_LP12, F_HP12, F_BP12, F_NOTCH, F_LP24, F_SEM, NFTYPE };   /* SEM: LP .. notch .. HP by MORPH */
 enum { M_POLY, M_DUAL, M_UNISON, M_MONO };
@@ -121,10 +122,10 @@ static const pdef_t PDEF[NPARAM] = {
     [P_DLY_FB] = {"FEEDBK", 127, 50, K_NUM, 0},
     [P_DLY_TONE] = {"TONE", 127, 70, K_NUM, 0},
     [P_DLY_MIX] = {"MIX", 127, 0, K_NUM, 0},
-    [P_REV_SIZE] = {"SIZE", 127, 80, K_NUM, 0},
-    [P_REV_DAMP] = {"DAMP", 127, 60, K_NUM, 0},
-    [P_REV_PRE] = {"PRE-DLY", 127, 20, K_NUM, 0},
-    [P_REV_MIX] = {"MIX", 127, 0, K_NUM, 0},
+    [P_REV_SIZE] = {"SIZE", 127, 80, K_RVSIZE, 0},   /* DRAIN's spring (obv_fx.h): the decay, 0.3 .. 3.0 s */
+    [P_REV_DAMP] = {"DAMP", 127, 60, K_RVDAMP, 0},   /* open, then 20 kHz .. 2.5 kHz */
+    [P_REV_PRE] = {"PRE-DLY", 127, 20, K_RVPRE, 0},  /* 0 .. 35 ms */
+    [P_REV_MIX] = {"DRAIN", 127, 0, K_PCT, 0},  /* the spring's wet (the old MIX byte and CC, the same law) */
     [P_POLY_N] = {"POLY", 8, 5, K_NUM, 0},      /* 1-8, default 5: the POLY/DUAL voice window (obv_engine.h poly_n) */
     [P_CHEW] = {"CHEW", 127, 0, K_PCT, 0},      /* TAPE: wow, flutter, saturation, head loss, hiss, dropouts */
     [P_TP_WOWFLT] = {"WOW/FLT", 127, 64, K_WF, 0},   /* 0 wow only, 64 both, 127 flutter only */
@@ -149,8 +150,8 @@ static const char *const DDIV_NAME[NDDIV] = {"1/16", "1/8T", "1/8", "1/8.", "1/4
 static const uint8_t DDIV_NUM[NDDIV] = {1, 1, 1, 3, 1, 3, 2}, DDIV_DEN[NDDIV] = {4, 3, 2, 4, 1, 2, 1};   /* of a quarter */
 
 /* the pages: four knobs each (-1 = no knob). DØG-5 has 20 (CLAUDE.md §5); a button's pages are contiguous, so a
- * family is "first page + count" (FAM_* below). DRIVE and TAPE carry one macro each on KNOB 1 (GROWL, CHEW), their
- * secondaries on SELECT held; VOICE + carries P_POLY_N (the polyphony / voice window). */
+ * family is "first page + count" (FAM_* below). DRIVE, SPRING and TAPE carry one macro each on KNOB 1 (GROWL, DRAIN,
+ * CHEW), their secondaries on SELECT held; VOICE + carries P_POLY_N (the polyphony / voice window). */
 typedef struct { const char *title; int8_t p[4]; } page_t;
 enum { PG_PERFORM,                                                              /* HOME */
        PG_OSC1, PG_OSC2, PG_OSCMOD, PG_FILTER, PG_FILTER2,                      /* EDIT */
@@ -175,7 +176,7 @@ static const page_t PAGE[NPAGE] = {
     [PG_DRIVE] = {"DRIVE", {P_GROWL, -1, -1, -1}},                              /* SELECT held: BIAS, TONE (PAGE_SEL) */
     [PG_BBD] = {"BBD DELAY", {P_ALLEY, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},     /* SELECT held: TIME (sync), FINE,
                                                  * PINGPONG (PAGE_BBD_SEL); REC tapped: the time (tap tempo) */
-    [PG_SPRING] = {"SPRING", {P_REV_SIZE, P_REV_DAMP, P_REV_PRE, P_REV_MIX}},
+    [PG_SPRING] = {"SPRING", {P_DRAIN, -1, -1, -1}},                            /* SELECT held: SIZE, DAMP, PRE-DLY */
     [PG_TAPE] = {"TAPE", {P_CHEW, -1, -1, -1}},                                 /* SELECT held: WOW/FLT, HISS, DROPS */
     [PG_ARP] = {"ARP", {P_ARP_MODE, P_ARP_DIV, P_ARP_OCT, P_ARP_GATE}},
     [PG_GLOBAL] = {"GLOBAL", {-1, -1, -1, -1}},   /* tempo, MIDI channel, tune, CPU: globals, drawn by hand */
@@ -189,6 +190,8 @@ _Static_assert(NPAGE == 20, "DOG-5 has 20 pages (CLAUDE.md section 5)");
 static const page_t PAGE_DRIVE_SEL = {"DRIVE +", {P_GRL_BIAS, P_GRL_TONE, -1, -1}};
 static const page_t PAGE_BBD_SEL = {"BBD +", {P_DLY_TIME, P_ALLEY_FINE, P_BBD_SPREAD, -1}};   /* (TIME turned:
                                                  * ALLEY back to SYNC) */
+static const page_t PAGE_SPRING_SEL = {"SPRING +", {P_REV_SIZE, P_REV_DAMP, P_REV_PRE, -1}};   /* (DRAIN's secondaries:
+                                                 * the brief's size/decay, with the damping and the pre-delay) */
 static const page_t PAGE_TAPE_SEL = {"TAPE +", {P_TP_WOWFLT, P_TP_HISS, P_TP_DROPS, -1}};   /* (KNOB 4's secondary: the
                                                  * brief's wow/flutter balance, with the noise and the dropouts) */
 

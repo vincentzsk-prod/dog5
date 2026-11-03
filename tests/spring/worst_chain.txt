@@ -1,0 +1,147 @@
+# the whole chain at its extremes for -fsanitize, the spring's knobs jumped too: tests/spring/worst_rev.txt (8-voice
+# unison at VOLUME 127, GROWL and CHEW 127, ALLEY's runaway, DRAIN / SIZE 127) plus 60 random jumps of SIZE, DAMP,
+# PRE-DLY and DRAIN (59-62) to their ends and between. CHEW on: Tape gets the effects' sum unclipped (up to 2x)
+2600 midi 0xC0 31 0
+2601 param 38 2
+2601 param 39 8
+2601 param 12 127
+2601 param 14 64
+2601 param 26 127
+2601 param 45 127
+2601 param 54 127
+2601 param 56 127
+2601 param 57 127
+2601 param 58 127
+2601 param 62 127
+2601 param 60 0
+2601 param 61 0
+2601 param 59 127
+2601 param 64 127
+2601 param 68 1
+2700 midi 0x90 36 127
+2700 param 56 110
+2787 param 60 0
+2848 param 62 11
+2913 param 58 7
+3181 param 58 63
+3236 param 62 0
+3300 param 62 0
+3385 param 62 0
+3495 param 59 0
+3543 param 68 40
+3630 param 69 120
+3786 param 70 26
+3991 param 62 43
+4109 param 68 3
+4249 param 70 71
+4372 param 58 99
+4470 param 62 127
+4483 param 58 18
+4584 param 56 127
+4839 param 62 33
+4841 param 68 33
+4871 param 58 1
+5008 param 58 55
+5024 param 62 0
+5122 param 58 42
+5139 param 61 0
+5300 param 69 50
+5321 param 62 112
+5427 param 61 0
+5473 param 62 127
+5585 param 59 0
+5606 param 57 52
+5626 param 62 127
+5661 param 60 46
+5664 param 62 0
+5729 param 57 50
+5925 param 62 0
+5955 param 69 5
+6000 midi 0x80 36 0
+6100 param 38 0
+6169 param 70 42
+6200 midi 0x90 36 127
+6200 midi 0x90 43 127
+6200 midi 0x90 48 127
+6200 midi 0x90 52 127
+6200 midi 0x90 55 127
+6200 midi 0x90 60 127
+6200 midi 0x90 64 127
+6200 midi 0x90 67 127
+6250 param 62 0
+6273 param 69 16
+6472 param 69 0
+6588 param 62 127
+6731 param 62 88
+6780 param 59 0
+6807 param 57 86
+6870 param 69 90
+6885 param 61 127
+7022 param 59 127
+7039 param 61 87
+7056 param 70 80
+7180 param 70 120
+7184 param 62 73
+7530 param 60 116
+7570 param 68 14
+7731 param 68 91
+7778 param 61 127
+7873 param 60 127
+7890 param 61 0
+7905 param 62 127
+7967 param 68 107
+8184 param 70 2
+8269 param 61 127
+8282 param 62 0
+8362 param 62 0
+8445 param 68 46
+8512 param 62 127
+8527 param 62 127
+8542 param 61 70
+8559 param 62 4
+8617 param 62 0
+8631 param 62 72
+8654 param 62 127
+8791 param 62 127
+8794 param 68 30
+8811 param 60 127
+8876 param 62 45
+8949 param 58 118
+9080 param 60 0
+9155 param 56 110
+9453 param 69 118
+9480 param 59 127
+9500 midi 0x80 36 0
+9500 midi 0x80 43 0
+9500 midi 0x80 48 0
+9500 midi 0x80 52 0
+9500 midi 0x80 55 0
+9500 midi 0x80 60 0
+9500 midi 0x80 64 0
+9500 midi 0x80 67 0
+9538 param 56 127
+9562 param 61 96
+9756 param 58 75
+9804 param 70 23
+9940 param 69 92
+9988 param 60 0
+10045 param 69 70
+10069 param 61 85
+10165 param 62 0
+10401 param 62 0
+10434 param 56 0
+10623 param 57 81
+10758 param 61 0
+10809 param 68 20
+10880 param 61 0
+11159 param 68 79
+11436 param 68 12
+11507 param 56 127
+11534 param 60 46
+11608 param 59 0
+11661 param 61 83
+11744 param 68 60
+11763 param 61 0
+12216 param 62 127
+12303 param 59 0
+12500 end

@@ -174,7 +174,11 @@ bit for bit. Buffer unchanged (743 ms a side), CPU 310 host instr/sample (old 10
 input (`rev_tick`'s output taps × 19661), on `main` too: left for the Spring re-voice.
 **Spring reverb:** re-voice the Dattorro plate *toward* spring — allpasses faster+shallower, short PRE-DLY,
 brighter DAMP, clamp SIZE so it can't bloom into a hall. **Excellence is NOT required** (Vincent has real
-analogue units); "the next closest thing" is explicitly enough. `REV_DIV 2` (half-rate) is the CPU lever.
+analogue units); "the next closest thing" is explicitly enough. `REV_DIV 2` (half-rate) is the CPU lever. **DONE** (`claude/psych-spring`, DRAIN on SPRING
+KNOB 1 = the old MIX byte 62; SIZE / DAMP / PRE-DLY on SELECT held; a 66 ms tank, chirp chains of 5-sample allpasses,
+SIZE 0.3–3.0 s, PRE-DLY 0–35 ms; DRAIN 0 bit-exact; pool −69 KB; `listen/spring/`). The plate's tap-sum overflow is
+fixed (clamp); with CHEW on, the effects hand it their sum unclipped and its record stage has its own knee. FX held =
+GROWL / ALLEY / DRAIN / CHEW.
 
 **Variable polyphony — `P_POLY_N`, range 1–8, default 5. DONE** (on VOICE +; `poly_n()` in `obv_engine.h`;
 tests/poly.txt). It clamps the **POLY/DUAL** allocation window (`voice_alloc`), so a chord steals once the

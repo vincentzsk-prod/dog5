@@ -1,0 +1,32 @@
+# The FX-held layer: KNOB 1-4 = GROWL, ALLEY, DRAIN, CHEW (the Psych Chain's macros in the chain's order, DOG-5-presets.md
+# section 2), on any page, nothing else moves. Parameters: 54 GROWL, 68 ALLEY, 62 DRAIN, 64 CHEW, 58 BBD MIX, 13 RESO
+# (obv_params.h). Encoders 2-5 = KNOB 1-4; buttons: 2 FX, 6 EDIT, 8 HOME. ALLEY 0 (SYNC) leaves SYNC from the time
+# sounding (its 1/8. at 120 BPM = 375 ms: step 107 and its FINE), one detent on = step 108, as on its own page.
+2900 param 54 0
+2900 param 68 0
+2900 param 62 0
+2900 param 64 0
+2900 param 58 0
+2900 param 55 3
+3000 btn 6   # EDIT: OSC 1 (the layer works on any page)
+3300 btndown 2   # FX held: the layer
+3400 enc 2 1
+3450 enc 2 1
+3500 enc 4 1
+3550 enc 4 1
+3600 enc 4 1
+3650 enc 5 1
+3700 shot
+3800 expect param 54 4   # KNOB 1 GROWL
+3800 expect param 62 6   # KNOB 3 DRAIN
+3800 expect param 64 2   # KNOB 4 CHEW
+3800 expect param 68 0   # ALLEY untouched
+3800 expect param 58 0   # the BBD's MIX is not on the layer any more
+3900 enc 3 1   # KNOB 2 ALLEY: leaves SYNC from the time sounding, one step on
+4000 expect param 68 108
+4000 expect param 54 4
+4100 btnup 2   # FX let go: the layer's turns don't open a page
+4300 expect page 1
+4300 enc 2 1   # KNOB 1 is OSC 1's WAVE again, not GROWL
+4400 expect param 54 4
+4600 end

@@ -1,0 +1,55 @@
+== the sources x the spring (whole render from the first note; energy against dry, peak, samples at full scale)
+                       boing               default                splash                  dark                   max           OLD default            OLD splash
+stab       +0.6 dB  -4.0   0     +1.4 dB  -5.6   0     +5.3 dB  -1.8   0     +3.8 dB  -2.8   0     +7.7 dB  -0.4   0     +0.7 dB  -5.4   0     +3.6 dB  -3.7   0
+bass       +0.0 dB -14.3   0     -0.1 dB -14.1   0     +0.1 dB -12.7   0     -0.1 dB -13.4   0     +0.5 dB -12.1   0     +0.1 dB -11.7   0     +3.4 dB  -7.2   0
+lead       +0.5 dB  -8.8   0     +0.9 dB  -8.1   0     +1.9 dB  -6.0   0     +1.6 dB  -8.0   0     +3.4 dB  -4.8   0     +0.7 dB -10.0   0     +3.6 dB  -6.9   0
+pluck      +1.1 dB -10.8   0     +1.7 dB -10.9   0     +5.4 dB -10.8   0     +3.1 dB -10.7   0     +7.2 dB  -9.7   0     +0.7 dB -10.3   0     +3.5 dB -11.2   0
+hit        +0.7 dB -12.1   0     +1.2 dB -12.1   0     +4.3 dB -12.1   0     +2.0 dB -12.1   0     +6.0 dB -12.1   0     +0.7 dB -12.1   0     +3.3 dB -12.1   0
+
+== loudness (LUFS), default spring vs the old plate at the same bytes
+  stab   dry  -18.4  spring  -18.9  plate  -21.1  | splash: spring  -16.8  plate  -20.9
+  bass   dry  -26.1  spring  -26.0  plate  -26.1  | splash: spring  -24.7  plate  -24.4
+  lead   dry  -18.2  spring  -17.4  plate  -19.0  | splash: spring  -17.4  plate  -18.5
+  pluck  dry  -32.4  spring  -31.2  plate  -32.6  | splash: spring  -28.6  plate  -32.2
+  hit    dry  -40.6  spring  -41.6  plate  -42.9  | splash: spring  -40.1  plate  -44.3
+
+== the whole chain (GROWL -> ALLEY -> DRAIN -> CHEW): peak / full-scale samples; what DRAIN adds (energy
+   against the same chain without it); against the same bytes on the build before (old plate, old routing)
+  stab   mild    peak  -6.8 dBFS,    0 at FS | DRAIN adds  +1.4 dB | old plate chain  +0.7 dB, peak  -9.1,    0 at FS | LUFS  -20.0 (old  -21.3)
+  stab   surf    peak  -3.5 dBFS,    0 at FS | DRAIN adds  +5.6 dB | old plate chain  +3.6 dB, peak  -7.5,    0 at FS | LUFS  -16.6 (old  -20.6)
+  stab   mangle  peak  -3.1 dBFS,    0 at FS | DRAIN adds  +7.0 dB | old plate chain  +6.7 dB, peak  -6.9,    0 at FS | LUFS  -16.7 (old  -17.1)
+  bass   mild    peak -12.2 dBFS,    0 at FS | DRAIN adds  -0.1 dB | old plate chain  +0.1 dB, peak -10.3,    0 at FS | LUFS  -25.8 (old  -26.1)
+  bass   surf    peak -10.9 dBFS,    0 at FS | DRAIN adds  +0.5 dB | old plate chain  +3.5 dB, peak  -8.7,    0 at FS | LUFS  -24.1 (old  -23.9)
+  bass   mangle  peak  -9.1 dBFS,    0 at FS | DRAIN adds  +2.7 dB | old plate chain  +6.8 dB, peak  -6.8,    0 at FS | LUFS  -21.9 (old  -19.5)
+  lead   mild    peak  -9.4 dBFS,    0 at FS | DRAIN adds  +0.9 dB | old plate chain  +0.7 dB, peak -10.5,    0 at FS | LUFS  -18.1 (old  -19.3)
+  lead   surf    peak  -6.2 dBFS,    0 at FS | DRAIN adds  +1.6 dB | old plate chain  +3.6 dB, peak  -6.6,    0 at FS | LUFS  -17.2 (old  -17.8)
+  lead   mangle  peak  -6.0 dBFS,    0 at FS | DRAIN adds  +3.4 dB | old plate chain  +6.4 dB, peak  -4.8,    0 at FS | LUFS  -16.0 (old  -13.1)
+  pluck  mild    peak -13.2 dBFS,    0 at FS | DRAIN adds  +1.5 dB | old plate chain  +0.7 dB, peak -13.1,    0 at FS | LUFS  -31.6 (old  -33.0)
+  pluck  surf    peak -11.6 dBFS,    0 at FS | DRAIN adds  +5.7 dB | old plate chain  +3.5 dB, peak -14.2,    0 at FS | LUFS  -27.7 (old  -31.6)
+  pluck  mangle  peak  -9.9 dBFS,    0 at FS | DRAIN adds  +9.2 dB | old plate chain  +5.9 dB, peak -12.0,    0 at FS | LUFS  -20.7 (old  -24.0)
+
+== decay (T20, s) after a 300 ms noise burst, DAMP open: SIZE -> spring (target) | old plate
+  SIZE   0:  0.32 (0.30) |   1.34
+  SIZE  16:  0.43 (0.40) |   1.37
+  SIZE  32:  0.56 (0.54) |   1.46
+  SIZE  48:  0.73 (0.72) |   1.64
+  SIZE  64:  0.97 (0.96) |   1.94
+  SIZE  80:  1.29 (1.28) |   2.47
+  SIZE  96:  1.70 (1.71) |   3.50
+  SIZE 112:  2.24 (2.29) |   6.17
+  SIZE 127:  2.89 (3.00) |  23.10
+
+== the chirp: one chain of the firmware's integer allpasses (4 x 5 samples, g 0.7), impulse in; group delay (ms)
+   2 chains (1 loop + ...): 250:0.16 500:0.16 1000:0.18 2000:0.27 3000:0.63 3500:1.24 4000:3.10 4400:5.14 5000:2.18 6000:0.52
+   4 chains (2 loops + ...): 250:0.32 500:0.33 1000:0.36 2000:0.55 3000:1.24 3500:2.48 4000:6.19 4400:10.27 5000:4.36 6000:1.03
+  10 chains (5 loops + ...): 250:0.81 500:0.83 1000:0.91 2000:1.38 3000:3.11 3500:6.17 4000:15.51 4400:25.67 5000:10.91 6000:2.56
+
+== the overflow, before the fix (c10db7d) and after (tests/spring/hot_reverb.txt on the plate and on DRAIN)
+  plate before the fix: largest step between neighbours 65534; the plate fixed: 7862 (76 frames differ, all inside the overflow's bursts); DRAIN: 9002, peak 0.0 dBFS
+
+== the knob sweeps on SPRING + (SELECT held: one detent every 40 ms, up, down, then a flick) and the jumps
+  size turned over the pad: 0 candidates (the pad held still: 0); above 10 kHz -91 dBFS RMS
+  damp turned over the pad: 0 candidates (the pad held still: 0); above 10 kHz -91 dBFS RMS
+  pre  turned over the pad: 0 candidates (the pad held still: 0); above 10 kHz -90 dBFS RMS
+  the hit, SIZE / DAMP / PRE-DLY jumped end to end while the splash rings: 3 candidates, all but 0 the hit's own attack
+pictures -> listen/spring
