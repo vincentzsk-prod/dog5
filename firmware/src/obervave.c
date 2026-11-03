@@ -6,6 +6,7 @@
  *   obv_params.h    the parameter table: patches, pages, MIDI CC
  *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
  *   obv_tape.h      CHEW, the tape (wow, flutter, saturation, head loss, hiss, dropouts; last, after the reverb)
+ *   obv_deck.h      TAPE STOP: the whole mix slows and darkens (SEQ held), after everything, before STOP's gate
  *   obv_fx.h        ALLEY (the BBD delay), plate reverb (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
@@ -24,6 +25,7 @@ static void app_idle(void);
 #include "obv_drive.h"
 #include "obv_tape.h"
 #include "obv_engine.h"
+#include "obv_deck.h"                             /* (after the engine: it reads the tempo; the engine calls it) */
 #include "obv_patches.h"
 
 static void app_audio(int32_t *out, uint32_t n)
@@ -66,7 +68,7 @@ static const char *toast;
 /* the panel as sloopDX's: a function button tapped (let go, nothing else touched) opens its pages; FX held is a
  * layer (its knobs change job until it is let go; HOME tapped while it is held locks it open). (DØG-5 deleted the
  * sequencer and the two-sound track B it alone drove: obv_seq.h, CLAUDE.md §5.) The live tricks claim the buttons it
- * freed: PLAY = STOP, the kill switch (below); SEQ held = TAPE STOP (obv_engine.h); ALGORITHM = the SLOP ride. */
+ * freed: PLAY = STOP, the kill switch (below); SEQ held = TAPE STOP (obv_deck.h); ALGORITHM = the SLOP ride. */
 enum { L_NONE, L_FX };
 /* PLAY (HEEL) = STOP, the kill switch (obv_engine.h: a 5.8 ms fade, then every voice and effect cleared). A tap stops,
  * a tap starts again; the PLAY LED is lit and the header says STOPPED while it is down. KILL_MOMENTARY 1: silence only
@@ -465,7 +467,7 @@ static void host_vlog_set(uint32_t on)          /* ("T vlog 1" .. "T vlog 0": ea
                host_vl_min[c] * 100.0 / 256, host_vl_max[c] * 100.0 / 256, host_vl_n[c]);
     }
 }
-static uint32_t host_tricks_rest(void) { return !ts_pos && ts_gain == 32768 && kill_g == KILL_ONE && !kill_dead && !pt.ts_cut8 && !ctl_slop && !slop_sm; }   /* ("T expect rest 1") */
+static uint32_t host_tricks_rest(void) { return deck_rest() && kill_g == KILL_ONE && !kill_dead && !ctl_slop && !slop_sm; }   /* ("T expect rest 1") */
 #endif
 static uint8_t fam_last[NFAM];                  /* each family's last page (set to FAM[].first at start) */
 static uint32_t in_fam(uint32_t f) { return page >= FAM[f].first && page < (uint32_t)FAM[f].first + FAM[f].count; }
@@ -842,7 +844,7 @@ static void app_main(void)
             dirty_hdr = dirty_tags = dirty_page = 1;
         }
         if (b & (1u << BTN_REC) && page == PG_BBD && !layer) { alley_tap(); dirty_page = dirty_hdr = 1; }   /* WAG: the tap */
-        ctl_tstop = fm1_in.buttons >> BTN_SEQ & 1u;   /* FLOP: TAPE STOP while SEQ is held (obv_engine.h) */
+        ctl_tstop = fm1_in.buttons >> BTN_SEQ & 1u;   /* FLOP: TAPE STOP while SEQ is held (obv_deck.h) */
         if (b & (1u << BTN_PLAY) || (KILL_MOMENTARY && killed && (rel & (1u << BTN_PLAY)))) {   /* HEEL: STOP / live */
             killed = KILL_MOMENTARY ? (b >> BTN_PLAY & 1u) : killed ^ 1u;
             ctl_kill = killed;

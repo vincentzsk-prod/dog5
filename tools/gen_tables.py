@@ -191,8 +191,9 @@ def main(path):
     L += tape_tables()
     L += bbd_tables()
     L += spring_tables()
-    # TAPE STOP (SEQ held, obv_engine.h): the pitch of a tape whose speed falls in a straight line, 12 log2(speed)
-    # semitones (Q8) at speed 1 - i/64, held at -48 semitones from there (the deck all but stopped)
+    # TAPE STOP (SEQ held, obv_deck.h): the pitch of a tape whose speed falls in a straight line, 12 log2(speed)
+    # semitones (Q8) at speed 1 - i/64, held at -48 semitones from there (the deck all but stopped); the deck's
+    # low-pass closes by it (the pitch itself comes from the read)
     L += arr("TS_DIVE8", "int16_t", [max(-48 * 256, int(round(12 * 256 * math.log2(1 - i / 64)))) if i < 64 else -48 * 256
                                      for i in range(65)])
     Path(path).write_text("\n".join(L) + "\n")

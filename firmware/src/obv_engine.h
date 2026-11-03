@@ -103,7 +103,6 @@ typedef struct {
     int32_t lvl1, lvl2, lvln, drive_q12, reso_k, vint, sus_f, sus_a, gain_q12, morph_q;
     int32_t cut_sm, reso_sm;                    /* CUTOFF and RESO slewed (Q8), ~25 ms: a CC sweep in semitone steps glides */
     uint32_t pw1_base, pw2_base, w1, w2, ftype, sync_on, xmod_q, glide_k;
-    int32_t ts_cut8;                            /* TAPE STOP's cutoff dive, Q8 semitones (0 when it rests) */
 } part_t;
 static part_t pt = {&live, 0, 0, 0, 0, 60 << 16};
 
@@ -477,40 +476,6 @@ static void block_globals(part_t *g)            /* a sound's derived numbers, on
     g->glide_k = GLIDE_K[pv[P_GLIDE]];
 }
 
-/* ---- TAPE STOP (SEQ held, FLOP): the deck loses power. No new modulation: the dive rides the paths that exist, once
- * a block -- the pitch on the bend's (bend8: every voice, both oscillators, as the wheel), the cutoff on the same
- * offset the cutoff's own numbers take, the level on the sound's VOLUME (gain_q12, interpolated per sample). Held, the
- * speed falls in a straight line (a platter's friction) over half a bar at the tempo (1 s at 120 BPM; 0.5 .. 2 s):
- * the pitch 12 log2(speed) (TS_DIVE8: a slow sag, then the plunge), the cutoff 1.25 x as far (the head loses its top
- * as it slows), the level flat to a third of the speed (19 semitones down), then down to nothing with it (a stopped
- * deck is silent: holding it never leaves a rumble). Let go, it snaps back: the speed a quarter of the way home a
- * block (~10 ms to the last cent, the tape catching), the level at most 1/16 a block (5.8 ms: never a click). At rest
- * nothing is added: bit for bit as before */
-#define TS_ONE 65536                            /* ts_pos, Q16: 0 = full speed, TS_ONE = stopped */
-static volatile uint32_t ctl_tstop;             /* main loop: SEQ held */
-static int32_t ts_pos, ts_gain = 32768;         /* how far stopped; the level, Q15 */
-static __attribute__((noinline)) void tstop_tick(part_t *g)   /* once a block, after block_globals */
-{
-    uint32_t quarter = ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240);
-    int32_t tgt, i, f, dive;
-    if (ctl_tstop) {                            /* half a bar: CTL frames a block of 2 quarters */
-        int32_t step = (int32_t)((uint32_t)TS_ONE * CTL / clampi((int32_t)quarter * 2, FS / 2, 2 * FS));
-        ts_pos = ts_pos + step > TS_ONE ? TS_ONE : ts_pos + step;
-    } else if (ts_pos) {
-        ts_pos -= (ts_pos >> 2) + 16;
-        if (ts_pos < 0) ts_pos = 0;
-    }
-    tgt = (TS_ONE - ts_pos) * 3 >> 1;           /* 3 x the speed, Q15 */
-    if (tgt > 32768) tgt = 32768;
-    ts_gain = ts_gain > tgt ? tgt : ts_gain + (tgt - ts_gain > 2048 ? 2048 : tgt - ts_gain);
-    if (!ts_pos && ts_gain == 32768) { g->ts_cut8 = 0; return; }
-    i = ts_pos >> 10; f = ts_pos & 1023;
-    dive = i >= 64 ? TS_DIVE8[64] : TS_DIVE8[i] + (((TS_DIVE8[i + 1] - TS_DIVE8[i]) * f) >> 10);
-    g->bend8 += dive;
-    g->ts_cut8 = dive + (dive >> 2);
-    g->gain_q12 = (g->gain_q12 * ts_gain) >> 15;
-}
-
 static inline uint32_t pw_mod(uint32_t base, int32_t mod)
 {
     int64_t p = (int64_t)base + ((int64_t)mod << 8);
@@ -578,7 +543,7 @@ static void voice_block(voice_t *v, uint32_t card)
     /* cutoff, Q8 semitones */
     cut = g->cut_sm + 8 * 256 + ((fenv * g->fenv_amt * 390) >> 15)
         + ((int32_t)v->note - 60) * g->keytrk * 2 + (((int32_t)v->vel - 64) * g->velflt >> 1)
-        + ((lfo * g->lfo_fd * 97) >> 15) + ((lfo * g->wheel_q * 48) >> 15) + ((VINT_CUT8[card] * vint) >> 7) + g->ts_cut8;
+        + ((lfo * g->lfo_fd * 97) >> 15) + ((lfo * g->wheel_q * 48) >> 15) + ((VINT_CUT8[card] * vint) >> 7);
     svf_coef(&v->c1, cut, g->reso_k);
     if (g->ftype == F_LP24) svf_coef(&v->c2, cut, 5793);
     /* amp */
@@ -644,6 +609,8 @@ static void voice_render(voice_t *v, int32_t *out)
  * the arp, the queued notes, and every effect's lines and states (GROWL, ALLEY, DRAIN, CHEW). While it is down the
  * engine does nothing (the notes that come are dropped) and sends silence; let go, it starts from that silence and the
  * gate opens over the same 5.8 ms. Not engaged, the gate is skipped: the output bit for bit as before */
+static void deck_process(int32_t *s, uint32_t n);   /* (obv_deck.h, TAPE STOP: after everything, before the gate) */
+static void deck_clear(void);
 #define KILL_ONE 32768                          /* the gate, Q15: open */
 #define KILL_FADE 256u                          /* samples, open <-> shut (a straight line) */
 static volatile uint32_t ctl_kill;              /* main loop: 1 = STOP */
@@ -669,6 +636,7 @@ static __attribute__((noinline, cold)) void kill_clear(void)   /* (out of the au
     drive_clear();
     fx_clear();
     tape_clear();
+    deck_clear();
 }
 
 static __attribute__((noinline)) void kill_gate(int32_t *out, uint32_t n)   /* (only while STOP moves) */
@@ -707,7 +675,6 @@ static void engine_audio(int32_t *out, uint32_t n)
         arp_tick();
         lfo_tick(&pt);
         block_globals(&pt);
-        if (ctl_tstop || ts_pos || ts_gain != 32768) tstop_tick(&pt);   /* (at rest: not even a call) */
         for (v = 0; v < NV; v++) {
             if (vc[v].ae.stage == E_IDLE && !vc[v].gate) {
                 if (ui_vlevel[v]) { ui_vlevel[v] = 0; vc[v].amp0 = vc[v].amp1 = 0; }
@@ -738,6 +705,7 @@ static void engine_audio(int32_t *out, uint32_t n)
                                                  * record knee rounds the overs; CHEW 0: the effects' sat16, as before */
     fx_process(out, n);
     if (fx_to_tape) tape_process(out, n);       /* TAPE last (CHEW 0: skipped, bit for bit) */
+    deck_process(out, n);                       /* TAPE STOP, the whole mix (at rest: it only listens, bit for bit) */
     if (ctl_kill || kill_g != KILL_ONE) kill_gate(out, n);   /* STOP: the master gate (open: skipped, bit for bit) */
 }
 

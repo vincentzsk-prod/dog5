@@ -135,9 +135,13 @@ ALGORITHM, PLAY, REC.)
 **The live tricks — DONE** (global, live, no patch byte / CC; untouched = bit-exact; `listen/trick/`, tests/trick/):
 **PLAY (HEEL) = STOP**, the kill switch — a tap: 5.8 ms fade at the master gate (after CHEW), then every voice, held
 key, queued note and effect state cleared (`kill_clear`: `drive_clear`/`fx_clear`/`tape_clear`), PLAY LED + header
-`STOPPED`; `KILL_MOMENTARY 1` makes it hold-to-silence. **SEQ (FLOP) held = TAPE STOP** — the speed falls linearly
-over half a bar at the tempo (pitch on the bend's path, cutoff 1.25×, level to silence below 1/3 speed), let go =
-back in ~10 ms (`tstop_tick`, `TS_DIVE8`). **ALGORITHM (SLOBBER) = the SLOP ride** — **final depth 2x** (chosen
+`STOPPED`; `KILL_MOMENTARY 1` makes it hold-to-silence. **SEQ (FLOP) held = TAPE STOP** (`obv_deck.h`) — on the
+**whole mix**, one stage after everything (voices, GROWL, ALLEY, DRAIN, CHEW) and before STOP's gate: one motor, so the
+repeats, the tail and the hiss dive with the voices. The speed falls linearly over half a bar at the tempo (0.5–1.1 s);
+the mix is read back falling behind (tape's 6-point `tp_taps` read, a 557 ms line, pool +96 KB), one SVF low-pass
+(`svf_lp`) closes 1.25× the dive (`TS_DIVE8`), level to silence below 1/3 speed; let go = the live mix back over 5.8 ms.
+A/B'd against the approved per-voice render (`tests/trick/tapestop_ab.py`): the same pitch, brightness and level
+through the dive; the stop is now silent. +140 host instr/sample while held (the per-voice one was +3), 0 at rest. **ALGORITHM (SLOBBER) = the SLOP ride** — **final depth 2x** (chosen
 by ear 3 Nov from 1x / 1.5x / 2x, `listen/trick/slop_depths/`; `SLOP_SCALE_X2 4`): the encoder's 0..127 doubled, i.e.
 0..254 *added* to the patch's VINTAGE (sum ≤ 381), glides ~23 ms, never stored, 0 at power-on; header
 `SLOP +N = VINTAGE M` for 1 s. **Known, accepted character trait — heard and approved, NOT a bug, do not "fix" it:** at
