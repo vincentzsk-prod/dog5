@@ -202,3 +202,36 @@ Device build: image 103,384 -> **107,920 B** (+4,536: code and 1 KB of tables), 
 ALLEY's own levers if the device needs them (estimates): the right line's write without its tanh (~-22; the
 ping-pong's right-hand repeats lose one stage of grit), the 2-pole + 1-pole as a single 2-pole (~-30; a softer knee,
 repeats a little muddier). Before those, `REV_DIV 2` and GROWL in mono, as above.
+
+## The Psych Chain, stage 3: DRAIN (the spring) re-voices the plate (2026-11-03, branch `claude/psych-spring`)
+
+The same scripts (`tests/tape/perf_*.txt`; `perf_rev` is DRAIN at 60 on the patch's SIZE 80 / DAMP 60 / PRE 20). The
+"everything off" run is **6.8 M Ir cheaper** now: `fx_process` returns at once (only the clip) when the delay and the
+spring both rest. That moves the baseline under every "while on" number, so the absolute counts are the fair comparison:
+
+| script | before (step 0) | after | Δ / sample (over 299,880 frames) |
+|---|---:|---:|---:|
+| everything off | 267,117,879 | 260,322,688 | −22.7 |
+| GROWL 100 | 489,386,808 | 483,583,130 | −19.4 |
+| ALLEY (mix 60) | 359,979,965 | 364,082,030 | +13.7 |
+| reverb → **DRAIN** (mix 60) | 439,947,693 | 442,583,745 | +8.8 (the plate's overflow clamp +11.0; the spring −2.2 against the clamped plate) |
+| CHEW 100 | 555,234,259 | 549,951,676 | −17.6 |
+| **all four** | 1,043,252,469 | **1,054,083,499** | **+36.1** (2,812 a sample over the whole window, voices included; was 2,784) |
+
+**Per stage, against the new off run:** GROWL 745, ALLEY 346, DRAIN 608, CHEW 966, all four 2,647.
+
+**Where DRAIN's goes** (callgrind line by line, `perf_rev`, per sample):
+- the saturation of ~21 int16 nodes (every tank write and allpass node), `sat16`, **~119**;
+- the three chirp chains' arithmetic (12 allpasses written out), **~120**;
+- the four diffusers and the two swaying allpasses (their reads, interpolation, products), **~110**;
+- the 10 output taps ~24, the tank's decay / damping / band filters / glides and the pre-delay, the rest.
+
+The lines' bookkeeping is small now: masked power-of-two lines with one shared write index, where the plate's
+compare-and-wrap lines cost ~90 more. The chirp's sat16 is what keeps its node provably in range. If the device needs
+cycles, the next lever after `REV_DIV 2` is dropping the input chirp chain (about −60, a less drippy first arrival).
+
+**Device build:** pool 275,868 → **206,592 B** (the spring's lines 13,824 B, the plate's were 83,098), RAM +64 B
+(32,368), image +1,796 B (109,716).
+
+**Lever if the device needs it:** `REV_DIV 2`, the spring at half rate, still builds and keeps its decay times
+(`listen/spring/README.md`).

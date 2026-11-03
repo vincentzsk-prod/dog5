@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
     int n = argc > 1 ? atoi(argv[1]) : 1, k, i;
     static int16_t ch[16][SP_NCH][8];
-    for (i = 0; i < 4096; i++) {
+    for (i = 0; i < 32768; i++) {
         int32_t x = i == 0 ? 16384 : 0;
         uint32_t r = sp_w & 7u, w = (sp_w + SP_M) & 7u;
         for (k = 0; k < n; k++) x = sp_chirp(ch[k], x, r, w);

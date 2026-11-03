@@ -66,7 +66,7 @@
 #define SP_D3 SPL(863)
 #define SP_D4 SPL(337)
 /* the spring's lines: one write index for all (sp_w, a tick each), each line a power of two at a fixed place in fx_mem
- * (a mask, not a compare and wrap: ~-90 instructions a sample; 13.8 KB, the plate's lines took 83 KB). Sizes for the
+ * (a mask, not a compare and wrap: cheaper on every read; 13.8 KB, the plate's lines took 83 KB). Sizes for the
  * full rate (the half rate uses half of each) */
 #define SPB (2u * DLY_MAX)
 #define SPO_PRE SPB                             /* 2048: the pre-delay */
