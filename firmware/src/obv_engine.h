@@ -88,8 +88,8 @@ typedef struct {
     int32_t fenv_amt, keytrk, velflt, lfo_pd, lfo_fd, lfo_pwd, lfo_ad, wheel_q, bend8, env_o2, det_fine8;
     int32_t lvl1, lvl2, lvln, drive_q12, reso_k, vint, sus_f, sus_a, gain_q12, morph_q;
     int32_t cut_sm, reso_sm;                    /* CUTOFF and RESO slewed (Q8), ~25 ms: a CC sweep in semitone steps glides */
-    int32_t ts_cut8;                            /* TAPE STOP's cutoff dive, Q8 semitones (0 when it rests) */
     uint32_t pw1_base, pw2_base, w1, w2, ftype, sync_on, xmod_q, glide_k;
+    int32_t ts_cut8;                            /* TAPE STOP's cutoff dive, Q8 semitones (0 when it rests) */
 } part_t;
 static part_t pt = {&live, 0, 0, 0, 0, 60 << 16};
 
@@ -475,8 +475,9 @@ static void block_globals(part_t *g)            /* a sound's derived numbers, on
 #define TS_ONE 65536                            /* ts_pos, Q16: 0 = full speed, TS_ONE = stopped */
 static volatile uint32_t ctl_tstop;             /* main loop: SEQ held */
 static int32_t ts_pos, ts_gain = 32768;         /* how far stopped; the level, Q15 */
-static void tstop_tick(part_t *g, uint32_t quarter)   /* once a block, after block_globals */
+static __attribute__((noinline)) void tstop_tick(part_t *g)   /* once a block, after block_globals */
 {
+    uint32_t quarter = ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240);
     int32_t tgt, i, f, dive;
     if (ctl_tstop) {                            /* half a bar: CTL frames a block of 2 quarters */
         int32_t step = (int32_t)((uint32_t)TS_ONE * CTL / clampi((int32_t)quarter * 2, FS / 2, 2 * FS));
@@ -626,7 +627,7 @@ static volatile uint32_t ctl_kill;              /* main loop: 1 = STOP */
 static int32_t kill_g = KILL_ONE;
 static uint32_t kill_dead;                      /* faded out and cleared: silence until let go */
 
-static void kill_clear(void)
+static __attribute__((noinline, cold)) void kill_clear(void)   /* (out of the audio loop: it runs once a STOP) */
 {
     static const voice_t vz;
     uint32_t v;
@@ -647,7 +648,7 @@ static void kill_clear(void)
     tape_clear();
 }
 
-static void kill_gate(int32_t *out, uint32_t n)
+static __attribute__((noinline)) void kill_gate(int32_t *out, uint32_t n)   /* (only while STOP moves) */
 {
     uint32_t i, k = ctl_kill;
     int32_t g = kill_g, step = KILL_ONE / (int32_t)KILL_FADE;
@@ -673,8 +674,7 @@ static void engine_audio(int32_t *out, uint32_t n)
         }
         kill_dead = 0;
     }
-    uint32_t quarter = ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240);
-    fx_block(&live, quarter);
+    fx_block(&live, ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240));
     drive_block(&live);
     tape_block(&live);
     vol_q12 = (int32_t)((ctl_cc7 * ctl_cc7) >> 2);
@@ -684,7 +684,7 @@ static void engine_audio(int32_t *out, uint32_t n)
         arp_tick();
         lfo_tick(&pt);
         block_globals(&pt);
-        tstop_tick(&pt, quarter);
+        if (ctl_tstop || ts_pos || ts_gain != 32768) tstop_tick(&pt);   /* (at rest: not even a call) */
         for (v = 0; v < NV; v++) {
             if (vc[v].ae.stage == E_IDLE && !vc[v].gate) {
                 if (ui_vlevel[v]) { ui_vlevel[v] = 0; vc[v].amp0 = vc[v].amp1 = 0; }
