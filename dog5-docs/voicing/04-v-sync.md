@@ -3,8 +3,43 @@
 4 Nov 2026. Brief (Batch 1A, the attack set): *tearing hard-sync lead: OSC 2 synced and swept by the filter envelope, alias-tolerant so it rips, fat enough to cut through a drum machine, dead-stop on release.* A Pro-One sync lead, with Prophet-5 fatness, ARP Odyssey nasal bite and Prodigy rawness. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
 files, the numbers and the variants table: `listen/voicing/batch-01a/04-v-sync/` (`README.md` there is the full table).
 
-**Status: AWAITING THE LISTENING ROUND (round 1).** Variant **B** is committed as the recommended starting point; A, C, D stay render-only.
-No voice card yet (written after approval). **Round count so far: 1 silent measured round, 0 listening rounds.**
+**Status: APPROVED AS IS (Vincent, 5 Nov 2026, after listening to Batch 1A): variant **D (fat)**. D doubles the synced voice (UNISON, 2 voices, a few cents apart) for fatness. It is the committed patch; the other variants stay render-only in
+`listen/voicing/batch-01a/04-v-sync/`. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/04-v-sync.md`.
+
+### What the tree holds now (5 Nov): variant D, the fat sync lead (UNISON, 2 voices) — bold = differs from the round-1 B this log describes below
+
+| byte | parameter | value | was | in its own units |
+|---|---|---|---|---|
+| 2 | O1_LVL | 80 | 80 |  |
+| 6 | O2_LVL | 127 | 127 |  |
+| 7 | O2_SEMI | +7 st | +7 st |  |
+| 8 | SYNC | ON | ON |  |
+| 10 | ENV_O2 | 112 | 112 | +18.3 st at the env peak |
+| 12 | CUTOFF | 92 | 92 | 2637 Hz |
+| 13 | RESO | 24 | 24 |  |
+| 14 | FENV_AMT | 88 | 88 |  |
+| 17 | DRIVE | 20 | 20 |  |
+| 21 | FD | 78 | 78 | 219 ms |
+| 22 | FS | 28 | 28 |  |
+| 23 | FR | 30 | 30 | 5 ms |
+| 24 | AA | 0 | 0 | 0 ms |
+| 26 | AS | 127 | 127 |  |
+| 27 | AR | 30 | 30 | 5 ms |
+| 38 | MODE | **UNISON** | MONO |  |
+| 39 | UNI_N | **2** | 4 |  |
+| 40 | UNI_DET | **22** | 30 | +-2.7 cents |
+| 41 | GLIDE | 20 | 20 |  |
+| 45 | VOLUME | **91** | 107 |  |
+| 55 | DLY_TIME | 1/16 | 1/16 |  |
+| 56 | DLY_FB | 18 | 18 |  |
+| 58 | DLY_MIX | 12 | 12 |  |
+
+Level (lead phrase d): **-18.0 dBFS RMS** ((b) reads -17.7), peak -10.1, VOLUME 91. Worst-case CPU 790 host instr/sample (idle 381 + load 410; B was 587; device unmeasured).
+Voice dead-stop alone: 20 ms to −60 dB. Proofs (5 Nov): the committed slot == variant D in resolved bytes and bit for bit in audio on a / b / c / d; the other programs byte-identical (see `README.md` §9).
+
+---
+# ROUND 1 RECORD (4 Nov; the values and numbers below describe B, the first committed reading, superseded by D)
+
 
 ## 0. Before: where it stood
 

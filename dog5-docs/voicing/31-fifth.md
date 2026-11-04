@@ -3,8 +3,46 @@
 4 Nov 2026. Brief (Batch 1A, the attack set): *the archetypal aggressive chord stab: OSC A + B a fifth apart (OSC 2 SEMI +7), fast decay, a short delay.* A Prophet-5 stab through a Space Echo, with Juno pluck and a little MS-20 bite. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
 files, the numbers and the variants table: `listen/voicing/batch-01a/31-fifth/` (`README.md` there is the full table).
 
-**Status: AWAITING THE LISTENING ROUND (round 1).** Variant **B** is committed as the recommended starting point; A, C, D stay render-only.
-No voice card yet (written after approval). **Round count so far: 1 silent measured round, 0 listening rounds.**
+**Status: APPROVED AS IS (Vincent, 5 Nov 2026, after listening to Batch 1A): variant **C (dual)**. C is the DUAL stab: a detuned pair per note, fatter and heavier on CPU than the single-voice B. It is the committed patch; the other variants stay render-only in
+`listen/voicing/batch-01a/31-fifth/`. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/31-fifth.md`.
+
+### What the tree holds now (5 Nov): variant C, the DUAL stab — bold = differs from the round-1 B this log describes below
+
+| byte | parameter | value | was | in its own units |
+|---|---|---|---|---|
+| 7 | O2_SEMI | +7 st | +7 st |  |
+| 11 | O2_FINE | 66 | 66 | +1.6 cents |
+| 12 | CUTOFF | 92 | 92 | 2637 Hz |
+| 13 | RESO | 22 | 22 |  |
+| 14 | FENV_AMT | 106 | 106 |  |
+| 17 | DRIVE | 20 | 20 |  |
+| 20 | FA | 0 | 0 | 0 ms |
+| 21 | FD | 52 | 52 | 29 ms |
+| 22 | FS | 22 | 22 |  |
+| 23 | FR | 50 | 50 | 25 ms |
+| 24 | AA | 0 | 0 | 0 ms |
+| 25 | AD | 72 | 72 | 137 ms |
+| 26 | AS | 70 | 70 |  |
+| 27 | AR | 52 | 52 | 29 ms |
+| 38 | MODE | **DUAL** | POLY |  |
+| 40 | UNI_DET | **36** | 30 | +-7.8 cents |
+| 42 | VINTAGE | 35 | 35 |  |
+| 43 | SPREAD | **90** | 70 |  |
+| 45 | VOLUME | **92** | 113 |  |
+| 56 | DLY_FB | 28 | 28 |  |
+| 57 | DLY_TONE | 55 | 55 |  |
+| 58 | DLY_MIX | 36 | 36 |  |
+| 63 | POLY_N | **8** | 6 |  |
+| 68 | ALLEY | 65 | 65 | 89 ms |
+| 70 | BBD_SPREAD | 60 | 60 |  |
+
+Level (b): **-18.0 dBFS RMS**, peak -6.5, VOLUME 92. **Worst-case CPU 1765 host instr/sample** (idle 380 + load 1384; B was 1075; device unmeasured).
+**Voices verified** (`tests/voicing/dual_voices_31.txt`, the host's `expect voices`): DUAL with POLY 8: a three-note chord gates **6 voices** (2 per note) and a fourth note **8**: no stealing.
+Proofs (5 Nov): the committed slot == variant C in resolved bytes and bit for bit in audio on a / b / c; the other programs byte-identical (see the batch proof in `README.md` §9).
+
+---
+# ROUND 1 RECORD (4 Nov; the values and numbers below describe B, the first committed reading, superseded by C)
+
 
 ## 0. Before: where it stood
 
