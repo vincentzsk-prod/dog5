@@ -3,8 +3,75 @@
 4 Nov 2026. Brief (Batch 1A, the attack set): *every voice stacked on one note (unison), slight detune, filter wide open, low register, floor-shaking bass.* Minimoog-in-unison weight with a Taurus floor, SH-101 punch, a little MS-20 bite. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
 files, the numbers and the variants table: `listen/voicing/batch-01a/30-the-dog/` (`README.md` there is the full table).
 
-**Status: AWAITING THE LISTENING ROUND (round 1).** Variant **B** is committed as the recommended starting point; A, C, D stay render-only.
-No voice card yet (written after approval). **Round count so far: 1 silent measured round, 0 listening rounds.**
+**Status: ROUND 2 DONE (silent measured round); AWAITING LISTENING ROUND 2.** Round 1: Vincent listened to B on 4 Nov and kept it as the starting point
+(punch and slight dryness are right; the stack and bottom end read thin; wants it a bit wider but clearly under C, a little brighter and warmer, driven a bit harder
+but not fuzzy, and "a LOT of presence"). Round 2 (5 Nov) is in `listen/voicing/batch-01a/30-the-dog/round2/` (B re-rendered as the anchor, E fuller+wider, F warm drive,
+G the edge of fuzzy, H presence; README there has every table). **H is committed as slot 30** (the others are render-only); B's round-1 list is in this file's history and in
+`listen/voicing/batch-01a/30-the-dog/results.json`. No voice card yet.
+**Round count: 2 silent measured rounds + 1 listening round done (round 1); listening round 2 pending.** Sections below the Round 2 block are the round-1 record.
+
+## ROUND 2 (5 Nov)
+
+### The brief, translated
+Keep B's punch and dryness (hard limits: snap not lost, release to −60 dB ≲ 80 ms, no spring, no long tail). Fuller/thicker; slightly wider than B (14–16 cents, clearly under C's 23);
+a very slight bit brighter and warmer; driven a bit harder but not fuzzy; flagship presence (allowed up to −16.5 dBFS RMS on the level phrase, peak ≤ −4, as a variant dimension).
+
+### Final parameter list (what the tree holds now = variant H); bold = differs from round 1's B
+
+| byte | parameter | value | was | in its own units |
+|---|---|---|---|---|
+| 2 | O1_LVL | **114** | 110 |  |
+| 6 | O2_LVL | **94** | 100 |  |
+| 7 | O2_SEMI | -12 st | -12 st |  |
+| 12 | CUTOFF | **104** | 100 | 5274 Hz |
+| 13 | RESO | 12 | 12 |  |
+| 14 | FENV_AMT | **88** | 86 |  |
+| 15 | KEYTRK | **60** | 64 |  |
+| 17 | DRIVE | **100** | 0 |  |
+| 20 | FA | 10 | 10 | 1 ms |
+| 21 | FD | 58 | 58 | 46 ms |
+| 22 | FS | **40** | 35 |  |
+| 23 | FR | 50 | 50 | 25 ms |
+| 24 | AA | 4 | 4 | 1 ms |
+| 26 | AS | 127 | 127 |  |
+| 27 | AR | 48 | 48 | 21 ms |
+| 38 | MODE | UNISON | UNISON |  |
+| 39 | UNI_N | 8 | 8 |  |
+| 40 | UNI_DET | **35** | 28 | +-7.4 cents |
+| 42 | VINTAGE | 40 | 40 |  |
+| 43 | SPREAD | 50 | 50 |  |
+| 45 | VOLUME | **56** | 65 |  |
+
+### What I learned
+* **B's band split** (phrase e, % of energy): <60 Hz 57.2 · 60–150 27.4 · 150–400 10.4 · 400–1.2k 3.9 · 1.2k+ 1.1.
+  57 % is under 60 Hz, where small speakers and many PAs give nothing; the audible bottom is the 27 % in 60–150 and 10 % in 150–400. "Thin" is consistent with that, not with weak low-mids.
+* **Body can't be had from balance.** At equal level no oscillator / filter / drive lever moved a band by more than about ±1.5 dB (O2 level 40–127, O2 at 0 / −7 / −12 st, saw+pulse, O1 up, KEY TRK 64 → 20, CUTOFF 100 → 112, ENV AMT, FS,
+  DETUNE, per-voice DRIVE 30–127): the spectrum is saws. E's "fuller" is +0.7 dB above 1.2 kHz and nothing below. The things that change feel: **width** (inner motion of the 60–400 Hz band, s.d. 0.99 → 1.47 dB at 14.8 cents; C
+  measured 1.65), **K-weighted level** (H), and **harmonic density** (drive). Side result, not used: O2 at 0 st instead of −12 (the sub becomes a second layer at the root) (tried inside an H-like blend: O2 SEMI 0, LEVEL 80, DRIVE 90, GROWL 22, −16.5) gives the steadiest snap (+2.8 whole-hold) and the cleanest
+  harmonic structure (hash 1.4 %), but it removes the sub-octave that is the patch's brief; it is a candidate for round 3 if the ears want it.
+* **At A0 the −12 st sub is 13.75 Hz and at A1 27.5 Hz**: inaudible weight that costs headroom. Worth hearing H against a version with the sub moved up; I did not change it (not asked).
+* **Wider:** DETUNE 28 → 35 = 14.8 cents end to end (B 9.4, C 23.4), 2.1 cents between neighbours; VINTAGE unchanged (40), wander s.d. 1.2–1.9 cents, range −7 … +8 per card.
+* **Drive routes, compared at equal level** (`round2/drive_routes.md`): per-voice DRIVE (FILTER+ knob 1) adds harmonic density with no compression (crest ~9.4 dB) and takes 1–2 dB off the top: warmth; +~100 instr/sample.
+  GROWL is inert to ~28, then compresses (crest 8.3 at 40, 7.0 at 55, 5.5 at 70) and the inter-harmonic hash reaches fuzz (17 % at 70); +~595 always on. BIAS exists only inside GROWL and trades peak for even harmonics (crest 8.3 → 10.3, peak −8.7 → −6.1).
+  **Presence without compression = DRIVE.** The edge of fuzzy, by my definition (hash 2× the undriven E, crest −2.5 dB), is G (DRIVE 110 + GROWL 55); GROWL 70 alone is past it. The ears decide where the edge really is.
+* **Correction to round 1:** its "snap +4.0 dB" (peak against the last 110 ms of the held note) moves ±2 dB with the stack's beat phase. Whole-hold it is +0.5 dB for B; on the chopped roots +0.9. The punch is spectral (attack 1224 Hz → body 725). Round 2 reads three
+  ways (table in the README) and requires only that no variant fall below B on the steadier two and on the brightness ratio: E, F, H do not; G does a little on the ratio. By the literal round-1 reading E–H read +1.5 … +2.5, i.e. under +3.
+* **Presence** is one dimension only: H alone uses −16.5 dBFS (E, F, G are at −18.0); H's peak is −7.3 dBFS (all four phrases ≤ −7.3), K-weighted −19.5 (B −20.9).
+* CPU (host, relative, device unmeasured): B / E 1616, F 1718, H 1705, G 2294 (the only variant with GROWL). Check the GLOBAL page.
+* Release to −60 dB: 54–64 ms in every variant (H 56 ms), no spring, no delay, no tail.
+
+### Rounds
+* **Round 2, silent (5 Nov):** ~120 host renders: band-balance levers (O2/O1 level, O2 semitone and wave, KEY TRK, CUTOFF, ENV AMT, FS, DETUNE), the stack's motion against DETUNE / FINE / VINTAGE, the drive ladders (DRIVE 30–127, GROWL 12–70, BIAS 0–100, TONE 20–80),
+  and E–H with the hard limits checked. New measures (`tests/voicing/dog_metrics.py`): 5-band split, odd/even harmonic energy, inter-harmonic hash, crest, inner motion, whole-hold and chopped snap.
+* **Round 2, for ears:** five files per phrase. Budget: this is the flagship; further rounds as needed.
+
+### Proofs (5 Nov)
+* committed slot 30 == variant H: resolved bytes equal; audio bit-exact on a / b / c / e;
+* the other 31 programs (including 31, 04 and 25 as committed in Batch 1A) byte-identical to the commit before this round: `python3 tests/voicing/identical.py build/voicing/base2 30` — **31 of 31 other slots byte-identical on all six phrases (a, b, c, stress chord, d, e), 31 of 32 patch hashes unchanged (only slot 30 differs)**;
+* `tests/run_host.sh` passes.
+
+---
+# ROUND 1 RECORD (4 Nov; the values below are B, superseded by round 2's H)
 
 ## 0. Before: where it stood
 

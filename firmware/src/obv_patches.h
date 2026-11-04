@@ -186,14 +186,15 @@ static const uint8_t PF_HALF_LIFE[] = {P_MODE, M_DUAL, P_UNI_DET, 60, P_POLY_N, 
 static const uint8_t PF_V_SYNC[] = {P_O1_LVL, 80, P_O2_LVL, 127, P_O2_SEMI, 31, P_SYNC, 1, P_ENV_O2, 112,
     P_CUTOFF, 92, P_RESO, 24, P_FENV_AMT, 88, P_DRIVE, 20, P_FD, 78, P_FS, 28, P_FR, 30, P_AA, 0, P_AS, 127,
     P_AR, 30, P_MODE, M_MONO, P_GLIDE, 20, P_VOLUME, 107, P_DLY_TIME, DD_16, P_DLY_FB, 18, P_DLY_MIX, 12, X};
-/* 30 THE D\xD8G (voiced 4 Nov, dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's and 21 Cowl Shadow's): the signature
- * low stack. UNISON, all 8 voices on one note, DETUNE 28 (the stack spans ~9 cents, the drone's was ~78), a sub-octave saw under every
- * voice, the filter wide (CUTOFF 100, ENV AMT 86 snaps it open on the attack and settles), a 0.7 ms attack and a 21 ms
- * release for a punchy chop, SPREAD 50 so the bass stays put in a mono PA, no GROWL (measured inert at 18; D has the nasty one), no spring. VOLUME 65 puts it
- * on the bank reference (-18.0 dBFS RMS on the low-unison phrase, tests/voicing) */
-static const uint8_t PF_THE_DOG[] = {P_O2_SEMI, 12, P_CUTOFF, 100, P_RESO, 12, P_FENV_AMT, 86, P_FA, 10, P_FD, 58,
-    P_FS, 35, P_FR, 50, P_AA, 4, P_AS, 127, P_AR, 48, P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 28, P_VINTAGE, 40,
-    P_SPREAD, 50, P_VOLUME, 65, X};
+/* 30 THE D\xD8G (voiced 4 Nov, round 2 on 5 Nov: dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's and 21 Cowl Shadow's): the
+ * signature low stack. UNISON, all 8 voices on one note, DETUNE 35 (the stack spans ~15 cents; round 1 had ~9, the drone ~78), a sub-octave saw under every
+ * voice, the filter wide (CUTOFF 104, ENV AMT 88 snaps it open on the attack, KEY TRK 60, sustain 40), a 0.7 ms attack and a 21 ms release
+ * for a punchy chop, SPREAD 50 so the bass stays put in a mono PA, per-voice DRIVE 100 (FILTER+ page: warmth and weight without compression or
+ * the CPU of GROWL, which stays 0), no spring. VOLUME 56 puts it at the TOP of the loudness band, -16.5 dBFS RMS on the low-unison phrase
+ * (+1.5 dB over the -18.0 bank reference: the flagship's presence), peak -7.3 */
+static const uint8_t PF_THE_DOG[] = {P_O1_LVL, 114, P_O2_LVL, 94, P_O2_SEMI, 12, P_CUTOFF, 104, P_RESO, 12,
+    P_FENV_AMT, 88, P_KEYTRK, 60, P_DRIVE, 100, P_FA, 10, P_FD, 58, P_FR, 50, P_AA, 4, P_AS, 127, P_AR, 48,
+    P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 35, P_VINTAGE, 40, P_SPREAD, 50, P_VOLUME, 56, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
