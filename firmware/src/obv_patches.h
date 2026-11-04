@@ -161,6 +161,14 @@ static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
     P_O2_FINE, 74, P_LFO_PWM, 35, P_LFO_RATE, 40, P_CUTOFF, 60, P_RESO, 20, P_FENV_AMT, 90, P_FA, 20, P_FD, 80, P_FS, 40,
     P_AA, 15, P_AR, 90, P_SPREAD, 120, P_CHO_MIX, 55, P_DLY_TIME, DD_4D, P_DLY_FB, 60, P_DLY_TONE, 35, P_DLY_MIX, 50,
     P_REV_SIZE, 120, P_REV_MIX, 60, X};
+/* 03 Half-Life (voiced 4 Nov, dog5-docs/voicing/03-half-life.md; PF_DUAL_SAW stays as 17 Titanic's): DUAL pair a few cents
+ * either side of true over a sub-octave saw, VINTAGE 90 (the SLOP ride goes on top: 90 + 254 = 344 of 381), and the VCA's
+ * LFO a 20 Hz SQUARE gate on AMP 100 that fades in over ~110 ms (LFO DELAY): a staccato note's body is clean and its
+ * tail spits. POLY 6 so the three-note fifth-and-octave stab needs no stealing. FX macros all 0; VOLUME 112 puts
+ * it on the bank reference (-18.0 dBFS RMS, tests/voicing) */
+static const uint8_t PF_HALF_LIFE[] = {P_MODE, M_DUAL, P_UNI_DET, 60, P_POLY_N, 6, P_SPREAD, 110, P_VINTAGE, 90,
+    P_O2_WAVE, W_SAW, P_O2_SEMI, 12, P_O2_LVL, 80, P_CUTOFF, 76, P_RESO, 30, P_FENV_AMT, 96, P_AR, 62,
+    P_LFO_SHAPE, L_SQR, P_LFO_RATE, 119, P_LFO_DELAY, 19, P_LFO_AMP, 100, P_VOLUME, 112, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -172,7 +180,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_DUAL_SAW},    {"V-Sync", PF_SYNC_LEAD},
+    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_SYNC_LEAD},
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
     {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
