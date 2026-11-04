@@ -4,8 +4,7 @@ Nov 2026. Brief (Batch 2A, "weight and space"): *percussive surf bass. Single tr
 Precision Bass into a Space Echo (SH-101 tightness, Minimoog round low end, a Fender-style spring for the surf wash). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the
 `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/11-slapback-strut/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
-**Status: ROUND 2 — H (blend) COMMITTED, awaiting Vincent's ears (see the end of this log).** Round 1 (B) was committed first; Vincent's feedback follows below. A, C, D and round 2's E, F, G are render-only. **Round count so far: 1 silent measured round (incl. a sweep of the decay against the reachable level)
-+ 0 listening rounds.** No voice card yet.
+**Status: APPROVED AS IS (Vincent, after listening to round 2): variant G (crisp), committed in this step** (H was committed first; the tree now holds G). "Hits the mark perfectly." B (round 1) and E, F, H (round 2) stay render-only. **Final round count: 2 listening + 2 silent measured rounds.** Voice card: `cards/11-slapback-strut.md`.
 
 ## 0. Before
 
@@ -154,3 +153,8 @@ F is the milder one (1.6 %); G is the crispest (5.0 %, the echo 78 % under 150 H
 
 ## Round count (11)
 Round 1: 1 silent measured + 1 listening. Round 2 so far: 1 silent measured + 0 listening.
+
+## FINAL (approved): variant G
+
+Committed: O1 PW 32, CUTOFF 82, RESO 16, ENV AMT 76, KEY TRK 90, DRIVE 40, filter and amp ATTACK 0, DECAY 55 (36 ms), SUSTAIN 100, RELEASE 10 (1 ms), FEEDBK 6, TONE 127, MIX 127, ALLEY 62, PINGPONG 0, MONO, GLIDE 5, VOLUME 102 (25 steps of headroom to 127). Level -18.0 dBFS (riff, echo included), phrase (b) -17.6, peak -11.9 dBFS, worst-case CPU 569 host instr/sample (idle 380).
+First repeat -6.0 dB under the note's peak, second -29 dB under the first; harmonics 3 / 5 / 7 of the oscillator at -10.7 / -15.2 / -21.7 dB (a square -9.5 / -14.0 / -16.9, a triangle -19 / -28 / -34). `check_slot.py 11 G round2`: resolved bytes identical, audio bit-identical from the boot patch and from INIT.

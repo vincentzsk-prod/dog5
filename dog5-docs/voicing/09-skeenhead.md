@@ -4,7 +4,7 @@ Nov 2026. Brief (Batch 2A, "weight and space"): *the reggae off-beat stab. Tight
 Fender-style spring tank (SH-101 tightness, Prodigy rawness, a Space-Echo dub warmth in the tail). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the
 `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/09-skeenhead/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
-**Status: ROUND 2 — H (blend) COMMITTED, awaiting Vincent's ears (see the end of this log).** Round 1's B was heard and rejected for the note (not for the effects). A, C, D and round 2's E, F, G are render-only. **Round count so far: 1 silent measured round + 0 listening rounds.** No voice card yet.
+**Status: APPROVED AS IS (Vincent, after listening to round 2): variant E (the body fix alone, spring unchanged), committed in this step** (H was committed first; the tree now holds E). "Hits the mark." B (round 1) and F, G, H (round 2) stay render-only. **Final round count: 2 listening + 2 silent measured rounds.** Voice card: `cards/09-skeenhead.md`.
 
 ## 0. Before
 
@@ -191,3 +191,8 @@ In the vocabulary: *punchy and tight, with a body that holds through the gate; r
 
 ## Round count (09)
 Round 1: 1 silent measured + 1 listening (rejected for the note). Round 2 so far: 1 silent measured (diagnosis + variants) + 0 listening.
+
+## FINAL (approved): variant E
+
+Committed over round 1's B: CUTOFF 40 -> 46, FILTER SUSTAIN 0 -> 40, AMP SUSTAIN 30 -> 64, VOLUME 115 -> 92 (35 steps of headroom); the spring is exactly B's (DRAIN 90, SIZE 70, DAMP 40, PRE-DLY 4 = 1.1 ms); VINTAGE stays at the default 30. Level -17.9 dBFS (stabs, spring on; dry stabs alone -19.0), phrase (b) -17.4, peak -6.3 dBFS (stabs phrase b), worst-case CPU 1172 host instr/sample (idle 589).
+Spring re dry: -6.1 dB over the stabs' note-on regions; per window -21.7 / -5.9 / +5.9 dB (0-20 / 20-100 / 100-250 ms); tail -20 / -40 / -60 dB at 0.47 / 0.84 / 1.07 s. `check_slot.py 9 E round2`: resolved bytes identical, audio bit-identical when both are loaded from INIT (from the boot patch they differ 28-36 dB: the slew floor).
