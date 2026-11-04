@@ -114,9 +114,9 @@ much the ride *multiplies* the patch's own slop (patch 90: ×3.8; 127: ×3.0; 55
 own slop tops out at a 6 cent s.d.; the "dying tape motor" territory is the ride's.
 
 **The VCA / release, as the engine does it** (`obv_engine.h`): the amp envelope is an analog RC fall, the release time
-(0.5 ms · 20000^(v/127), the *5 %* point; the voice is freed at −78 dB, about 2.6× that) is scaled per card by VINTAGE (±12 %
-at 127, ×3 at the ride's top), and the VCA also takes the LFO: `AMP` (LFO → amp) multiplies the voice by
-`1 − AMP/128 · (1 − lfo)/2`, so SQUARE at AMP 127 is a hard gate and a shorter depth is a dip. **LFO DELAY is a per-note
+(0.5 ms · 20000^(v/127), the *5 %* point; the voice is freed at −78 dB, about 3× that) is scaled per card by VINTAGE (±12 %
+on the rate at 127, ±37 % at the ride's top), and the VCA also takes the LFO: `AMP` (LFO → amp) multiplies the voice by
+`1 − AMP/256 · (1 − lfo)` (lfo −1..+1), so SQUARE at AMP 127 swings between full level and silence (a hard gate) and a lower AMP swings between full level and a dip of `AMP/128`. **LFO DELAY is a per-note
 fade-in of every LFO destination** (`5000 ms · (v/127)²`, then a ramp half as long again): until it has run, the LFO is
 held at its centre, so with AMP set the note first sits at a fixed `1 − AMP/256` (−3 dB at AMP 80) and the chop grows in
 after. That is the only note-age control the engine has — **there is no release-triggered modulation**; a "VCA that

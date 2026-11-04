@@ -39,7 +39,7 @@ def main():
             ok = False
             print(f"PATCH BYTES slot {s:02d}: {'unexpectedly differ' if not same else 'did not change'}  {o} | {n}")
     print(f"patch bytes: {sum(o == n for o, n in zip(d_old, d_new))} of 32 slots identical (slot {slot} is the one that changes)")
-    nid = 0
+    nid, named_differs = 0, None
     for s in range(1, 33):
         same = True
         for ph in K.PHRASE_FILES:
@@ -51,10 +51,12 @@ def main():
             if not same:
                 ok = False
                 print(f"AUDIO slot {s:02d}: DIFFERS")
-        elif same:
-            ok = False
-            print(f"AUDIO slot {s:02d}: did not change")
-    print(f"audio: {nid} of 31 other slots byte-identical on all three phrases; slot {slot} differs: {not same}")
+        else:
+            named_differs = not same
+            if same:
+                ok = False
+                print(f"AUDIO slot {s:02d}: did not change")
+    print(f"audio: {nid} of 31 other slots byte-identical on all three phrases; slot {slot} differs: {named_differs}")
     print("OK" if ok else "FAIL")
     sys.exit(0 if ok else 1)
 
