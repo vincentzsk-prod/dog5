@@ -31,7 +31,8 @@ T_PARAMS = T_SELECT + 10                        # ms: the parameters, after the 
                                                 # is read by the main loop: a "param" in the same ms would be overwritten)
 T_CUT = 2.9                                     # s: the WAVs start here (100 ms before the first note)
 INIT_PROGRAM = 32                               # program change data byte: slot 33 = INIT, all defaults
-PHRASE_FILES = {"a_riff": "a_riff.txt", "b_stabs": "b_stabs.txt", "c_held": "c_held.txt", "x_stress": "x_stress.txt"}
+PHRASE_FILES = {"a_riff": "a_riff.txt", "b_stabs": "b_stabs.txt", "c_held": "c_held.txt", "x_stress": "x_stress.txt",
+                "d_lead": "d_lead.txt", "e_lowuni": "e_lowuni.txt"}
 AUDITION = ("a_riff", "b_stabs", "c_held")      # the three phrases every variant is rendered on (x_stress is CPU only)
 
 

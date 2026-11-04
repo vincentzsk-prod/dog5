@@ -1,0 +1,29 @@
+# VOICING PHRASE (e): LOW UNISON, A0-A2 roots.  For stacked-unison basses (30 THE DOG).  (1) A1 (55 Hz) held 3 s: the
+# beat/wander of the stack and the sub weight; (2) A0 (27.5 Hz) held 1.5 s: the floor; (3) chopped roots, eighths on 250 ms
+# with a 130 ms gate: A1 A1 A2 A1 G1 A1 E1 A1 (the stab/silence relationship, release on short notes); (4) A2 held 800 ms.
+# Judges: weight under 150 Hz, the width of the stack, the attack, headroom with eight voices on one note.
+# Level: replaces phrase (b) for a unison/mono bass -- RMS over the note-on region.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 33 110
+6000 midi 0x80 33 0
+7000 midi 0x90 21 110
+8500 midi 0x80 21 0
+9000 midi 0x90 33 100
+9130 midi 0x80 33 0
+9250 midi 0x90 33 105
+9380 midi 0x80 33 0
+9500 midi 0x90 45 110
+9630 midi 0x80 45 0
+9750 midi 0x90 33 100
+9880 midi 0x80 33 0
+10000 midi 0x90 31 105
+10130 midi 0x80 31 0
+10250 midi 0x90 33 110
+10380 midi 0x80 33 0
+10500 midi 0x90 28 100
+10630 midi 0x80 28 0
+10750 midi 0x90 33 105
+10880 midi 0x80 33 0
+11200 midi 0x90 45 105
+12000 midi 0x80 45 0
+13300 end
