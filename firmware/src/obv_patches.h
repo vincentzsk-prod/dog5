@@ -56,8 +56,6 @@ static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, 
     P_FENV_AMT, 104, P_FA, 20, P_FD, 70, P_FS, 40, P_AA, 10, P_AR, 50, X};
 static const uint8_t PF_DRONE_UNI[] = {P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 80, P_O2_SEMI, 12, P_CUTOFF, 45, P_FENV_AMT, 79,
     P_FA, 100, P_AA, 100, P_AR, 110, P_LFO_FLT, 20, P_LFO_RATE, 25, P_RESO, 10, P_VINTAGE, 80, P_SPREAD, 127, P_REV_SIZE, 120, P_REV_DAMP, 80, P_REV_MIX, 50, X};
-static const uint8_t PF_CLAV_PLUCK[] = {P_O1_WAVE, W_PLS, P_O1_PW, 20, P_O2_WAVE, W_PLS, P_O2_PW, 20, P_O2_FINE, 67, P_FTYPE, F_LP12,
-    P_RESO, 40, P_CUTOFF, 55, P_FENV_AMT, 127, P_FD, 35, P_FS, 0, P_AD, 60, P_AS, 0, P_AR, 30, P_KEYTRK, 127, P_AA, 1, X};
 static const uint8_t PF_WOBBLE_BASS[] = {P_MODE, M_MONO, P_O2_SEMI, 12, P_CUTOFF, 35, P_RESO, 50, P_LFO_FLT, 70, P_LFO_RATE, 45,
     P_DRIVE, 50, P_AA, 2, P_AS, 127, P_AR, 20, P_FS, 100, P_FENV_AMT, 64, X};
 static const uint8_t PF_ARP_PLUCK[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_ARP_OCT, 3, P_ARP_GATE, 40, P_O2_WAVE, W_PLS,
@@ -211,6 +209,13 @@ static const uint8_t PF_TITANIC[] = {P_O2_SEMI, 31, P_CUTOFF, 66, P_RESO, 12, P_
 static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14, P_FENV_AMT, 118, P_KEYTRK, 127,
     P_FA, 127, P_FS, 127, P_FR, 110, P_AA, 96, P_AS, 127, P_AR, 108, P_MODE, M_UNISON, P_UNI_N, 5, P_UNI_DET, 40,
     P_VINTAGE, 45, P_SPREAD, 100, P_VOLUME, 79, X};
+/* 09 Skeenhead (voiced Nov 2026, dog5-docs/voicing/09-skeenhead.md; was PF_CLAV_PLUCK, this slot's alone): the reggae off-beat stab. One tight square (a 50 % pulse), a resonant 12 dB low-pass
+ * (RESO 62) whose envelope falls in ~39 ms to a cutoff that rests near 115 Hz, under an A3 (KEY TRK 100) = the plop (the first 23 ms of a stab are 2.2x brighter than the next 67), a short pluck (amp decay
+ * 117 ms to sustain 30, 4 ms release), drenched in spring: DRAIN 90, SIZE 70 (tail -60 dB at ~1.0 s), DAMP 40 (bright), PRE-DLY 4 ms so the chirp starts at once. The spring's return is
+ * -4.2 dB under the dry stab. VOLUME 115 puts it on the bank reference: -18.1 dBFS RMS over the stabs of the skank phrase (g) with the spring on (peak -4.4) */
+static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_OFF, P_CUTOFF, 40, P_RESO, 62, P_FENV_AMT, 118,
+    P_KEYTRK, 100, P_FTYPE, F_LP12, P_FD, 56, P_FS, 0, P_AA, 0, P_AS, 30, P_AR, 28, P_VOLUME, 115, P_REV_SIZE, 70,
+    P_REV_DAMP, 40, P_REV_PRE, 4, P_REV_MIX, 90, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -224,7 +229,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
-    {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
+    {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
