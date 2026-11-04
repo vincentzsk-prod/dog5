@@ -22,10 +22,10 @@ Closest to: **an MS-20 plop into a Fender spring tank**.
 - **The plop is still there, softer.** The resonant filter sweep is still audible by tone (measured: the first 23 ms of a stab are twice as bright as the next 67), but the first 20 ms is now only about 3.5 dB louder than the body, so the pop is softer than in the first version of this patch.
 - **The body survives the gate.** The filter now rests above the played notes instead of closing under them, and the amp holds (measured: the level falls under 4 dB inside the gate; the first version fell almost 17 dB and left a hum).
 - **The spring is the sound:** it ships at DRAIN 90. Measured, the spring's return is about 6 dB under the dry note over the stabs (6.1 dB), and by time window after a stab it is about 22 dB under the note in the first 20 ms, about 6 dB under in 20 to 100 ms, and **about 6 dB louder than the note in 100 to 250 ms**, which is natural for a spring:
-  it is what rings after the note stops. The tail takes about 1.1 s to fall 60 dB. Between stabs the spring sits about 16 dB under the stab.
+  it is what rings after the note stops. The tail takes about 1.1 s to fall 60 dB. The gap between stabs sits about 16 dB under the stab (measured -16.3 dB on variant E, the committed one; `../09-skeenhead.md`, round-2 table).
 - **Tight and stable:** one voice per note, one oscillator, no detune and no LFO. VINTAGE is at the default (30); I measured no wander on this patch, so I do not claim how steady it is.
 - **Chords:** polyphony is the default 5, so a two-note stab uses two voices; larger chords were not tried.
-- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (FLOP held), the kill switch (HEEL), the ALLEY echo, GROWL, CHEW. Turning DRAIN down for a drier stab is untested.
+- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (SEQ held), the kill switch (HEEL), the ALLEY echo, GROWL, CHEW. Turning DRAIN down for a drier stab is untested.
 - **Held notes:** it is a stab patch. A held note was not measured on this version.
 
 ## 5. Final values (for debugging, not for players)

@@ -26,7 +26,7 @@ Closest to: **a CS-80 played low and cold**.
   above 150 Hz): the weight stays dry and a cloud rings above it. Whether that is frozen or muddy is a matter of taste (untested by ear).
 - **Tape (CHEW):** an optional garnish for a dying-tape feel (hiss, wow, the odd dropout). It is **not** in the patch, and it costs noticeably more CPU than the rest (the variant with CHEW measured 2371
   host instr/sample against 1594 without). At the setting tried it gave about one dropout in a ten-second hold.
-- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (FLOP held) and the kill switch (HEEL). GROWL, ALLEY: 0 and untested.
+- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (SEQ held) and the kill switch (HEEL). GROWL, ALLEY: 0 and untested.
 
 ## 5. Final values (for debugging, not for players)
 

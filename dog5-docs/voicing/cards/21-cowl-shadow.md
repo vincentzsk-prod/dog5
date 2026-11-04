@@ -29,7 +29,7 @@ Closest to: **a CS-80 brass swell, stretched**.
   a key it will seem far too quiet; hold the note and it comes up to the bank level.
 - **Register:** it was voiced and measured on A2 only; other registers are untested.
 - **One note at a time:** unison, all five voices on the note you hold; chords are not available.
-- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (FLOP held), the kill switch (HEEL). It ships dry; a little DRAIN would add depth (untested).
+- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (SEQ held), the kill switch (HEEL). It ships dry; a little DRAIN would add depth (untested).
 
 ## 5. Final values (for debugging, not for players)
 
