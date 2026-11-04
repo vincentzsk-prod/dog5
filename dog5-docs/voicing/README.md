@@ -130,3 +130,19 @@ git archive <commit before> | tar -x -C build/voicing/base      # the firmware a
 python3 tests/voicing/identical.py build/voicing/base            # exit 0 = only the named slot differs
 build/voicing/dump_patch all                                     # and the 96-byte patch hashes, before and after
 ```
+
+## 7. Batch lessons from the pilot (03 Half-Life)
+
+* **Round budget:** one silent measured round (design decisions fixed by sweeps, not for ears) plus **two listening
+  rounds** per patch; **one plus one** for plain nearest-base re-voices. Half-Life, approved as is after its first listening round, took 1 + 1.
+  The silent round is the cheap, useful one; each listening round is the slow one. A voice card (`cards/`) is written once approved.
+* **Voice-stealing rule:** in DUAL every note is two voices, so **POLY must be at least 2× the notes played on chords**
+  (a fifth-and-octave stab = 3 notes = POLY 6; the default 5 played it with a hole, 5 voices not 6). Voice the chord phrase with the real chord size.
+* **LFO DELAY fades every LFO destination toward its centre**, not just the LFO's onset: until it has run, the LFO is held at
+  zero, so with AMP set the note sits at a fixed dip (`1 − AMP/256`, −4 dB at AMP 100) and the modulation grows in afterwards
+  (`5000 ms · (v/127)²`, then a ramp half as long). It is the engine's only note-age control; budget the dip into VOLUME.
+* **The sputter recipe** (Half-Life): LFO **SQUARE**, **~20 Hz** (RATE 119), **AMP 100**, **LFO DELAY ~112 ms** (19), AMP RELEASE ~62.
+  A staccato note of ~150–180 ms has a clean body and a chopped tail. SQUARE works; S&H and RANDOM did not (mostly under 5 dB of re-climb).
+  **Limitation: the chop follows note age, not gate close.** There is no release-triggered modulation, so a note held past ~170 ms
+  spits all the way through, and notes under ~100 ms catch only the start of it. A true release-only sputter needs an engine change.
+* Level-match last, with VOLUME; the kit's `half_life.py` is the template for a round (variants table, trim to reference, measure, write).
