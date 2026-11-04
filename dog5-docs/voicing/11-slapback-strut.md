@@ -118,7 +118,7 @@ Renders: `listen/voicing/batch-02a/round2/11-slapback-strut/` (listen branch; th
 * **It got duller before it got brighter.** The B pluck's tap was where its top lived: E (decay zero, CUTOFF +5 %) has 0.4 % of its energy above 400 Hz against B's 2.3 % (centroid 284 Hz against 480); F (CUTOFF +5 %, a little body) 1.6 %. To get *more* brightness than B in a note without the tap the cutoff has to go up more and the sub has to come down: H 3.4 %, G 5.0 %.
 * **Level and headroom:** a note that holds is more energy in the gate, so VOLUME falls: **B 122/127 (5 steps of headroom) -> E 93, F 98, G 102, H 92 (35 steps)**; peaks -10.8 -> -12 ... -13.4 dBFS. Phrase (b): B -20.2, the new ones -16.9 ... -17.6 (nearer the reference).
 * **The slap:** the first repeat stays where B was (**-6.3 dB -> -6.0 ... -6.2 dB** under the note's peak: the loudest possible, MIX 127). The second repeat is **-24 dB (E, F), -26 (H), -29 (G, B) under the first**: because the held note is a longer copy, FEEDBK 12 leaves the second repeat louder; H and G take FEEDBK to 8 and 6.
-  The whole thing ends 178-256 ms after the note (voice alone 18 ms); H 178, B 192, F 256 (F's echo keeps a little tail: its filter and amp releases are 1 ms but the settle is slower than H's).
+  The whole thing ends 178-256 ms after the note (voice alone 18 ms); H 178, B 192, F 256 (F's echo reaches -60 dB later than H's although the envelopes differ only in the settle time and sustain level; I did not find out why).
 
 ## The table (round 2; ">400 Hz" = % of energy above 400 Hz)
 
