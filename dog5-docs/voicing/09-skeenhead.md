@@ -2,7 +2,7 @@
 
 Nov 2026. Brief (Batch 2A, "weight and space"): *the reggae off-beat stab. Tight plucky square, a resonant filter plop, drenched in spring. The spring chirp is the sound.* An MS-20 plop into a
 Fender-style spring tank (SH-101 tightness, Prodigy rawness, a Space-Echo dub warmth in the tail). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the
-`listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/09-skeenhead/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
+`listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/09-skeenhead/`; the approved variant's renders are in `reference-renders/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
 **Status: APPROVED AS IS (Vincent, after listening to round 2): variant E (the body fix alone, spring unchanged), committed in this step** (H was committed first; the tree now holds E). "Hits the mark." B (round 1) and F, G, H (round 2) stay render-only. **Final round count: 2 listening + 2 silent measured rounds.** Voice card: `cards/09-skeenhead.md`.
 

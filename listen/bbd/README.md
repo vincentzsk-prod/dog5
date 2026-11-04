@@ -1,3 +1,5 @@
+> The audio files in this folder were removed from main in the housekeeping commit e40f5d5; they are in the git history before that commit, and can be regenerated with the Reproduce commands below.
+
 # ALLEY — listening kit
 
 ALLEY is the BBD delay, stage 2 of the Psych Chain (`firmware/src/obv_fx.h`): OberVave's ping-pong delay re-voiced as

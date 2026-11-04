@@ -1,7 +1,7 @@
 # Voicing log — 03 "Half-Life" (FACTORY[2], P1, the flagship)
 
 4 Nov 2026. Brief (presets §3): *unstable dual saws, heavy VINTAGE slop, VCA sputter on release; pure engine, FX macros
-at 0.* Method and kit: `README.md` here. Listening files, numbers and the variants table: `listen/voicing/03-half-life/`.
+at 0.* Method and kit: `README.md` here. Listening files, numbers and the variants table: `listen/voicing/03-half-life/` (WAVs of the rejected variants were removed from main in e40f5d5; the approved variant's renders are in `reference-renders/`).
 
 **Status: APPROVED AS IS (4 Nov 2026, Vincent, after listening to all six).** Variant B ("centre") is the committed patch,
 no round-2 changes; A, C, D, E, F stay render-only in `listen/voicing/03-half-life/`. His answers to the three open questions:

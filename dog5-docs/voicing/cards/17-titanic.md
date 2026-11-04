@@ -1,6 +1,6 @@
 # 17 · Titanic · Chapter III The Bakshi Tomes
 
-*Voiced Nov 2026, approved as is (variant B of Batch 2A). Renders: `listen/voicing/batch-02a/17-titanic/` on the `listen/batch-02a-weight-and-space` branch (B is this patch). Log: `../17-titanic.md`.*
+*Voiced Nov 2026, approved as is (variant B of Batch 2A). Renders: `reference-renders/17-titanic_B_*.wav` (B is this patch); the other variants and the held renders are in `listen/voicing/batch-02a/17-titanic/` on the `listen/batch-02a-weight-and-space` branch. Log: `../17-titanic.md`.*
 
 ## 2. What it sounds like
 

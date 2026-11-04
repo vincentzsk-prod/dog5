@@ -1,6 +1,6 @@
 # 11 · Slapback Strut · Chapter II THE TIDAL HEXES
 
-*Voiced Nov 2026, approved as is (variant G of Batch 2A round 2). Renders: `listen/voicing/batch-02a/round2/11-slapback-strut/` on the `listen/batch-02a-weight-and-space` branch (G is this patch). Log: `../11-slapback-strut.md`.*
+*Voiced Nov 2026, approved as is (variant G of Batch 2A round 2). Renders: `reference-renders/11-slapback-strut_G_*.wav` (G is this patch); the other variants and the held renders are in `listen/voicing/batch-02a/round2/11-slapback-strut/` on the `listen/batch-02a-weight-and-space` branch. Log: `../11-slapback-strut.md`.*
 
 ## 2. What it sounds like
 

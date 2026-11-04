@@ -1,6 +1,6 @@
 # 21 · Cowl Shadow · Chapter III The Bakshi Tomes
 
-*Voiced Nov 2026, approved as is (variant C of Batch 2A). Renders: `listen/voicing/batch-02a/21-cowl-shadow/` on the `listen/batch-02a-weight-and-space` branch (C is this patch). Log: `../21-cowl-shadow.md`.*
+*Voiced Nov 2026, approved as is (variant C of Batch 2A). Renders: `reference-renders/21-cowl-shadow_C_*.wav` (C is this patch); the other variants and the held renders are in `listen/voicing/batch-02a/21-cowl-shadow/` on the `listen/batch-02a-weight-and-space` branch. Log: `../21-cowl-shadow.md`.*
 
 ## 2. What it sounds like
 

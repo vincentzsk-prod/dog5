@@ -1,6 +1,6 @@
 # 30 · THE DØG · Chapter IV The Ancient Relics (the signature patch)
 
-*Voiced 4–5 Nov 2026, approved (variant H of round 2). Renders: `listen/voicing/batch-01a/30-the-dog/round2/` (H is this patch). Log: `../30-the-dog.md`.*
+*Voiced 4–5 Nov 2026, approved (variant H of round 2). Renders: `reference-renders/30-the-dog_H_*.wav` (H is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../30-the-dog.md`.*
 
 ## 2. What it sounds like
 

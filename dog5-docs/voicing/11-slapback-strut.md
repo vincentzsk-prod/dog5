@@ -2,7 +2,7 @@
 
 Nov 2026. Brief (Batch 2A, "weight and space"): *percussive surf bass. Single triangle, very fast decay, one loud ~80 ms free-time echo (ALLEY ~80 ms, FEEDBK low). This is why the delay runs in free ms.* A flatwound
 Precision Bass into a Space Echo (SH-101 tightness, Minimoog round low end, a Fender-style spring for the surf wash). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the
-`listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/11-slapback-strut/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
+`listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/11-slapback-strut/`; the approved variant's renders are in `reference-renders/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
 **Status: APPROVED AS IS (Vincent, after listening to round 2): variant G (crisp), committed in this step** (H was committed first; the tree now holds G). "Hits the mark perfectly." B (round 1) and E, F, H (round 2) stay render-only. **Final round count: 2 listening + 2 silent measured rounds.** Voice card: `cards/11-slapback-strut.md`.
 

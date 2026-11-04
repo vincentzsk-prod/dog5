@@ -1,3 +1,5 @@
+> The audio files in this folder were removed from main in the housekeeping commit e40f5d5; they are in the git history before that commit, and can be regenerated with `python3 tests/trick/slop_depths.py` (needs the host renders from `tests/trick/make_kit.py`'s inputs; see `listen/trick/README.md`).
+
 # SLOP ride: three depths to choose from
 
 This is the same held note and the same chord as `../slop_note.wav` and `../slop_chord.wav`. Each file plays 3 s

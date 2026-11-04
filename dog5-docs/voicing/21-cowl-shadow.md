@@ -2,7 +2,7 @@
 
 Nov 2026. Brief (Batch 2A, "weight and space"): *a brass wall that takes about 10 seconds to bloom. Five-voice unison, filter envelope sweeping very slowly, gate held open. The textbook slow
 patch.* A CS-80 brass swell stretched (Oberheim OB-Xa brass body, Jupiter-8 blare at the top of the swell, Korg Mono/Poly unison drift). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10
-Batch 2A). Listening files (on the `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/21-cowl-shadow/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
+Batch 2A). Listening files (on the `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/21-cowl-shadow/`; the approved variant's renders are in `reference-renders/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
 **Status: APPROVED AS IS (Vincent, after listening to Batch 2A): variant C (bloom in about 5 s), committed in this step** (B was committed first; the tree now holds C: FILTER ATTACK 127 -> 119, AMP ATTACK 96 -> 90, nothing else changed; VOLUME 79 still gives -18.0 dBFS). A, B, D stay render-only. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/21-cowl-shadow.md`.
 
