@@ -183,6 +183,13 @@ static const uint8_t PF_HALF_LIFE[] = {P_MODE, M_DUAL, P_UNI_DET, 60, P_POLY_N, 
 static const uint8_t PF_THE_DOG[] = {P_O2_SEMI, 12, P_CUTOFF, 100, P_RESO, 12, P_FENV_AMT, 86, P_FA, 10, P_FD, 58,
     P_FS, 35, P_FR, 50, P_AA, 4, P_AS, 127, P_AR, 48, P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 28, P_VINTAGE, 40,
     P_SPREAD, 50, P_VOLUME, 65, P_GRL_BIAS, 20, P_GROWL, 18, X};
+/* 04 V-Sync (voiced 4 Nov, dog5-docs/voicing/04-v-sync.md; PF_SYNC_LEAD stays as 20 Fire & Ice's and 26 BSyncA's): a MONO sync lead.
+ * OSC 2 a fifth up (+7 st) hard-synced to OSC 1 and swept +18 st by the filter envelope (ENV>O2 112, 219 ms), OSC 1's saw
+ * brought in under it (LEVEL 80), DRIVE 20, a 5 ms release that stops the voice dead, only a faint 1/16 slap (MIX 12),
+ * no spring. VOLUME 107 puts it on the bank reference (-18.0 dBFS RMS on the lead phrase, tests/voicing) */
+static const uint8_t PF_V_SYNC[] = {P_O1_LVL, 80, P_O2_LVL, 127, P_O2_SEMI, 31, P_SYNC, 1, P_ENV_O2, 112,
+    P_CUTOFF, 92, P_RESO, 24, P_FENV_AMT, 88, P_DRIVE, 20, P_FD, 78, P_FS, 28, P_FR, 30, P_AA, 0, P_AS, 127,
+    P_AR, 30, P_MODE, M_MONO, P_GLIDE, 20, P_VOLUME, 107, P_DLY_TIME, DD_16, P_DLY_FB, 18, P_DLY_MIX, 12, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -194,7 +201,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_SYNC_LEAD},
+    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
     {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},

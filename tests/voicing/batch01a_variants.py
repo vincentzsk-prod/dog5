@@ -21,7 +21,7 @@ FIFTH = {
 
 # ---- 04 V-Sync ------------------------------------------------------------------------------------------------------------------
 SYNC = {   # the original's O2 +7 st / SYNC / MONO kept; the sweep deepened, the master saw brought in under it, the tail cut
-    "O1_LVL": 50, "O2_LVL": 127, "ENV_O2": 112, "FD": 78, "FS": 28, "CUTOFF": 92, "RESO": 24, "FENV_AMT": 88,
+    "O1_LVL": 80, "O2_LVL": 127, "ENV_O2": 112, "FD": 78, "FS": 28, "CUTOFF": 92, "RESO": 24, "FENV_AMT": 88,
     "AA": 0, "AD": 70, "AS": 127, "AR": 30, "FR": 30, "DLY_TIME": 0, "DLY_MIX": 12, "DLY_FB": 18, "REV_MIX": 0, "REV_SIZE": 80, "DRIVE": 20,
 }
 
