@@ -31,8 +31,8 @@ Closest to: **Korg Mono/Poly** — its drifting, detuned saw chaos, with Minimoo
   with the octave) play in full. A fourth note in a chord, or a very busy run, steals voices from the notes before it: keep chords to three notes.
 - **Tricks that suit it:**
   - **ALGORITHM slop ride (SLOBBER):** the best one. The patch already drifts; the ride pushes it from seasick to
-    dying-tape-motor, at up to about three and a half times the patch's own slop. Expect the low voice to sag flat and the others to lean sharp at full ride (accepted character).
-  - **Tape Stop (FLOP held)** on the riff as an ending; it dives the whole sound.
+    dying-tape-motor, at up to about 3.8 times the patch's own slop. At full ride a single held note sits about 20 cents flat and a chord about 3 cents flat (accepted character).
+  - **Tape Stop (SEQ held)** on the riff as an ending; it dives the whole sound.
   - **Kill switch (HEEL)** for a dead stop mid-riff: the sound and the sputter stop at once.
   - **Macros (GROWL, ALLEY, DRAIN, CHEW):** all at 0 on purpose. Untested on this patch, so treat them as
     open: the dry chop is the sound, and a wash of ALLEY or DRAIN on the tail will bury the sputter.
