@@ -68,14 +68,14 @@ static const uint8_t PF_ARP_CHORD[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
     P_UNI_DET, 40, P_CUTOFF, 70, P_AA, 5, P_AR, 60, P_DLY_TIME, DD_8, P_DLY_FB, 30, P_DLY_MIX, 30, P_REV_MIX, 25, X};
 static const uint8_t PF_RANDOM_ARP[] = {P_ARP_MODE, A_RND, P_ARP_DIV, D_16T, P_ARP_OCT, 2, P_ARP_GATE, 30, P_O1_WAVE, W_PLS,
     P_O2_SEMI, 31, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70, P_FD, 40, P_FS, 0, P_AD, 50, P_AS, 0, P_AA, 1, P_DLY_TIME, DD_8T, P_DLY_FB, 50, P_DLY_MIX, 45, P_REV_MIX, 30, X};
-/* 31 Fi(l)fth (voiced 4 Nov, dog5-docs/voicing/31-fifth.md; was a MONO fifths lead): the chord stab. POLY (POLY 6), OSC 2 a fifth up
- * in every voice (+7 st, FINE 66), a filter-envelope pluck (ENV AMT 106, decay 29 ms, sustain 22) over an amp that
- * rings on (137 ms decay to sustain 70), DRIVE 20, and a short BBD slap (ALLEY 65 = 89 ms, FEEDBK 28,
- * MIX 36). No spring. VOLUME 113 puts it on the bank reference (-18.0 dBFS RMS, phrase b) */
+/* 31 Fi(l)fth (voiced 4 Nov, approved 5 Nov: dog5-docs/voicing/31-fifth.md; was a MONO fifths lead): the chord stab. DUAL, a detuned pair per note (DETUNE 36,
+ * ~7.8 cents apart, SPREAD 90), POLY 8 so a three-note chord has its six voices, OSC 2 a fifth up in every voice (+7 st, FINE 66), a filter-envelope pluck
+ * (ENV AMT 106, decay 29 ms, sustain 22) over an amp that rings on (137 ms decay to sustain 70), DRIVE 20, and a short BBD slap (ALLEY 65 = 89 ms, FEEDBK 28,
+ * MIX 36). No spring. VOLUME 92 puts it on the bank reference (-18.0 dBFS RMS, phrase b) */
 static const uint8_t PF_FIFTH[] = {P_O2_SEMI, 31, P_O2_FINE, 66, P_CUTOFF, 92, P_RESO, 22, P_FENV_AMT, 106,
-    P_DRIVE, 20, P_FA, 0, P_FD, 52, P_FS, 22, P_FR, 50, P_AA, 0, P_AD, 72, P_AS, 70, P_AR, 52, P_VINTAGE, 35,
-    P_SPREAD, 70, P_VOLUME, 113, P_DLY_FB, 28, P_DLY_TONE, 55, P_DLY_MIX, 36, P_POLY_N, 6, P_ALLEY, 65,
-    P_BBD_SPREAD, 60, X};
+    P_DRIVE, 20, P_FA, 0, P_FD, 52, P_FS, 22, P_FR, 50, P_AA, 0, P_AD, 72, P_AS, 70, P_AR, 52, P_MODE, M_DUAL,
+    P_UNI_DET, 36, P_VINTAGE, 35, P_SPREAD, 90, P_VOLUME, 92, P_DLY_FB, 28, P_DLY_TONE, 55, P_DLY_MIX, 36,
+    P_POLY_N, 8, P_ALLEY, 65, P_BBD_SPREAD, 60, X};
 static const uint8_t PF_VINTAGE_PAD[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF, 55, P_FENV_AMT, 94, P_FA, 70, P_AA, 60, P_AR, 90,
     P_FR, 90, P_RESO, 15, P_SPREAD, 120, P_REV_SIZE, 105, P_REV_MIX, 45, X};
 static const uint8_t PF_XMOD_GROWL[] = {P_MODE, M_MONO, P_XMOD, 90, P_O2_SEMI, 19, P_CUTOFF, 50, P_FENV_AMT, 114, P_FD, 60, P_FS, 30,
@@ -179,13 +179,14 @@ static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
 static const uint8_t PF_HALF_LIFE[] = {P_MODE, M_DUAL, P_UNI_DET, 60, P_POLY_N, 6, P_SPREAD, 110, P_VINTAGE, 90,
     P_O2_WAVE, W_SAW, P_O2_SEMI, 12, P_O2_LVL, 80, P_CUTOFF, 76, P_RESO, 30, P_FENV_AMT, 96, P_AR, 62,
     P_LFO_SHAPE, L_SQR, P_LFO_RATE, 119, P_LFO_DELAY, 19, P_LFO_AMP, 100, P_VOLUME, 112, X};
-/* 04 V-Sync (voiced 4 Nov, dog5-docs/voicing/04-v-sync.md; PF_SYNC_LEAD stays as 20 Fire & Ice's and 26 BSyncA's): a MONO sync lead.
- * OSC 2 a fifth up (+7 st) hard-synced to OSC 1 and swept +18 st by the filter envelope (ENV>O2 112, 219 ms), OSC 1's saw
- * brought in under it (LEVEL 80), DRIVE 20, a 5 ms release that stops the voice dead, only a faint 1/16 slap (MIX 12),
- * no spring. VOLUME 107 puts it on the bank reference (-18.0 dBFS RMS on the lead phrase, tests/voicing) */
+/* 04 V-Sync (voiced 4 Nov, approved 5 Nov: dog5-docs/voicing/04-v-sync.md; PF_SYNC_LEAD stays as 20 Fire & Ice's and 26 BSyncA's): a fat sync lead. UNISON, two
+ * voices detuned ~5.5 cents (DETUNE 22), each with OSC 2 a fifth up (+7 st) hard-synced to OSC 1 and swept +18 st by the filter envelope (ENV>O2 112, 219 ms),
+ * OSC 1's saw under it (LEVEL 80), DRIVE 20, a 5 ms release that stops the voice dead, only a faint 1/16 slap (MIX 12), no spring. VOLUME 91 puts it on the
+ * bank reference (-18.0 dBFS RMS on the lead phrase, tests/voicing) */
 static const uint8_t PF_V_SYNC[] = {P_O1_LVL, 80, P_O2_LVL, 127, P_O2_SEMI, 31, P_SYNC, 1, P_ENV_O2, 112,
     P_CUTOFF, 92, P_RESO, 24, P_FENV_AMT, 88, P_DRIVE, 20, P_FD, 78, P_FS, 28, P_FR, 30, P_AA, 0, P_AS, 127,
-    P_AR, 30, P_MODE, M_MONO, P_GLIDE, 20, P_VOLUME, 107, P_DLY_TIME, DD_16, P_DLY_FB, 18, P_DLY_MIX, 12, X};
+    P_AR, 30, P_MODE, M_UNISON, P_UNI_N, 2, P_UNI_DET, 22, P_GLIDE, 20, P_VOLUME, 91, P_DLY_TIME, DD_16,
+    P_DLY_FB, 18, P_DLY_MIX, 12, X};
 /* 30 THE D\xD8G (voiced 4 Nov, round 2 on 5 Nov: dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's and 21 Cowl Shadow's): the
  * signature low stack. UNISON, all 8 voices on one note, DETUNE 35 (the stack spans ~15 cents; round 1 had ~9, the drone ~78), a sub-octave saw under every
  * voice, the filter wide (CUTOFF 104, ENV AMT 88 snaps it open on the attack, KEY TRK 60, sustain 40), a 0.7 ms attack and a 21 ms release
