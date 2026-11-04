@@ -72,6 +72,14 @@ def _trim(exe, spec, params):
     return best
 
 
+def change(k, old, new, params):
+    """batch01a's echo-rule line, with DETUNE read in the patch's own mode (DUAL: the pair is that many cents APART; UNISON: the stack spans +-that)"""
+    if k == "UNI_DET" and params["MODE"] == 1:
+        pc = lambda v: (v * v // 64) * 100 / 256
+        return f"UNI_DET {old} -> {new} ({100 * (new - old) / 127:+.0f}%) (the DUAL pair {pc(old):.1f} -> {pc(new):.1f} cents apart)"
+    return B.change(k, old, new)
+
+
 # ---- measuring ----------------------------------------------------------------------------------------------------------
 def render_set(exe, spec, params, tag, orig=None, extra_for=None):
     """all phrases of the patch -> {phrase: wav}; orig=(base exe, program) renders through the base firmware's own program path"""
@@ -366,7 +374,7 @@ def main():
             params["VOLUME"] = vol
             wavs, m, dry = measure(exe, cg, spec, params, spec["dir"][:2] + key, quick, orig=(old, slot - 1) if key == "A" else None)
             m.update(tag=tag, desc=desc, volume=vol, params=params,
-                     changes=[B.change(k, ORIGINAL[k], v) for k, v in params.items() if v != ORIGINAL[k]])
+                     changes=[change(k, ORIGINAL[k], v, params) for k, v in params.items() if v != ORIGINAL[k]])
             R[key] = m
             if not quick:
                 os.makedirs(d, exist_ok=True)

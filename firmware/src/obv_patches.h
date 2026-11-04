@@ -40,7 +40,6 @@ static const uint8_t PF_SWEEP_PAD[] = {P_O2_FINE, 74, P_CUTOFF, 30, P_FENV_AMT, 
     P_AA, 90, P_AR, 105, P_RESO, 20, P_LFO_FLT, 15, P_LFO_RATE, 30, P_SPREAD, 110, P_VINTAGE, 60, P_CHO_MIX, 40, P_REV_SIZE, 110, P_REV_MIX, 45, X};
 static const uint8_t PF_BP_QUACK[] = {P_FTYPE, F_BP12, P_RESO, 70, P_CUTOFF, 50, P_FENV_AMT, 124, P_FD, 55, P_FS, 0, P_AD, 80,
     P_AS, 70, P_O2_WAVE, W_PLS, P_O2_PW, 30, P_AA, 1, X};
-static const uint8_t PF_DUAL_SAW[] = {P_MODE, M_DUAL, P_UNI_DET, 60, P_O2_WAVE, W_OFF, P_CUTOFF, 70, P_SPREAD, 110, X};
 static const uint8_t PF_RESO_ZAP[] = {P_MODE, M_MONO, P_RESO, 110, P_CUTOFF, 20, P_FENV_AMT, 127, P_FD, 40, P_FS, 0, P_AD, 40,
     P_AS, 0, P_FTYPE, F_LP12, P_O1_WAVE, W_PLS, P_NOISE, 20, P_AA, 1, P_AR, 30, X};
 static const uint8_t PF_NOISE_WASH[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70,
@@ -171,7 +170,7 @@ static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
     P_O2_FINE, 74, P_LFO_PWM, 35, P_LFO_RATE, 40, P_CUTOFF, 60, P_RESO, 20, P_FENV_AMT, 90, P_FA, 20, P_FD, 80, P_FS, 40,
     P_AA, 15, P_AR, 90, P_SPREAD, 120, P_CHO_MIX, 55, P_DLY_TIME, DD_4D, P_DLY_FB, 60, P_DLY_TONE, 35, P_DLY_MIX, 50,
     P_REV_SIZE, 120, P_REV_MIX, 60, X};
-/* 03 Half-Life (voiced 4 Nov, dog5-docs/voicing/03-half-life.md; PF_DUAL_SAW stays as 17 Titanic's): DUAL pair a few cents
+/* 03 Half-Life (voiced 4 Nov, dog5-docs/voicing/03-half-life.md; PF_DUAL_SAW, its old base, was 17 Titanic's until Batch 2A gave 17 its own PF_TITANIC): DUAL pair a few cents
  * either side of true over a sub-octave saw, VINTAGE 90 (the SLOP ride goes on top: 90 + 254 = 344 of 381), and the VCA's
  * LFO a 20 Hz SQUARE gate on AMP 100 that fades in over ~110 ms (LFO DELAY): a staccato note's body is clean and its
  * tail spits. POLY 6 so the three-note fifth-and-octave stab needs no stealing. FX macros all 0; VOLUME 112 puts
@@ -196,6 +195,14 @@ static const uint8_t PF_V_SYNC[] = {P_O1_LVL, 80, P_O2_LVL, 127, P_O2_SEMI, 31, 
 static const uint8_t PF_THE_DOG[] = {P_O1_LVL, 114, P_O2_LVL, 94, P_O2_SEMI, 12, P_CUTOFF, 104, P_RESO, 12,
     P_FENV_AMT, 88, P_KEYTRK, 60, P_DRIVE, 100, P_FA, 10, P_FD, 58, P_FR, 50, P_AA, 4, P_AS, 127, P_AR, 48,
     P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 35, P_VINTAGE, 40, P_SPREAD, 50, P_VOLUME, 56, X};
+/* 17 Titanic (voiced Nov 2026, dog5-docs/voicing/17-titanic.md; was PF_DUAL_SAW, this slot's alone): the chapter anchor. A DUAL pair (DETUNE 30, ~5.5 cents) of two
+ * saws a fifth apart (OSC 2 +7 st, both at full level), the bass compensated to the extreme: KEY TRK 12 (9 %), so the filter opens for low notes and closes for high ones
+ * (8.4 partials under the centroid on A1, 3.4 on A3). Cold: RESO 12, no drive, no effects, VINTAGE 40; a 54 ms attack and a long (~650 ms) release; the filter envelope
+ * only breathes (ENV AMT 84, sustain 70). POLY 6 (every note is two voices). VOLUME 93 puts it on the bank reference (-17.9 dBFS RMS on the steady part of the A1 hold,
+ * phrase f, tests/voicing; (b) reads -17.1). FX macros 0 */
+static const uint8_t PF_TITANIC[] = {P_O2_SEMI, 31, P_CUTOFF, 66, P_RESO, 12, P_FENV_AMT, 84, P_KEYTRK, 12, P_FA, 62,
+    P_FD, 90, P_FS, 70, P_FR, 85, P_AA, 60, P_AS, 127, P_AR, 92, P_MODE, M_DUAL, P_VINTAGE, 40, P_SPREAD, 110,
+    P_VOLUME, 93, P_POLY_N, 6, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -211,7 +218,7 @@ static const factory_t FACTORY[NFACT] = {
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
     {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
-    {"Titanic", PF_DUAL_SAW},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
+    {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
     {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
