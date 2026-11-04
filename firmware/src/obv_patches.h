@@ -17,8 +17,12 @@ static const uint8_t PF_NEON_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 50, P_O2_WAVE, 
     P_REV_SIZE, 118, P_REV_DAMP, 60, P_REV_PRE, 50, P_REV_MIX, 70, P_DLY_TIME, DD_4D, P_DLY_FB, 40, P_DLY_TONE, 30, P_DLY_MIX, 35, X};
 static const uint8_t PF_BRASS_STAB[] = {P_O2_FINE, 72, P_CUTOFF, 60, P_FENV_AMT, 114, P_FA, 30, P_FD, 75, P_FS, 30, P_FR, 50,
     P_AA, 12, P_AD, 60, P_AS, 90, P_AR, 45, P_RESO, 25, P_DRIVE, 20, X};
-static const uint8_t PF_POLY_BRASS[] = {P_O2_FINE, 71, P_CUTOFF, 55, P_FENV_AMT, 104, P_FA, 55, P_FD, 80, P_FS, 45, P_FR, 60,
-    P_AA, 40, P_AR, 55, P_LFO_PITCH, 20, P_LFO_DELAY, 60, P_LFO_RATE, 75, P_RESO, 15, X};
+/* 25 SAWTOOTH (voiced 4 Nov, dog5-docs/voicing/25-sawtooth.md; was PF_POLY_BRASS, this slot's alone): the stable, warm poly brass. POLY, two
+ * saws 5.5 cents apart, VINTAGE left at 30, a 24 dB filter swell (CUTOFF 56, ENV AMT 100, attack 117 ms, decay 378 ms to
+ * sustain 50), a fade-in vibrato, no GROWL (a touch measured -1 dB of peak for +570 instr/sample; D has the edge). No chop, no sub: where 03 Half-Life is unstable and chopped,
+ * this one holds still. VOLUME 97 puts it on the bank reference (-18.0 dBFS RMS, phrase b) */
+static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P_FENV_AMT, 100, P_FA, 70, P_FD, 85,
+    P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
 static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
     P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
 static const uint8_t PF_UNISON_LEAD[] = {P_MODE, M_UNISON, P_UNI_N, 6, P_UNI_DET, 50, P_O2_FINE, 67, P_CUTOFF, 85, P_RESO, 15,
@@ -207,6 +211,6 @@ static const factory_t FACTORY[NFACT] = {
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_DUAL_SAW},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
-    {"SAWTOOTH", PF_POLY_BRASS},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
+    {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
     {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
 };
