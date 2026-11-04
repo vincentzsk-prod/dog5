@@ -235,3 +235,17 @@ the *register tilt* (`x_register`: centroid in harmonics of the note per octave,
 **Proof for the batch** (`identical.py build/voicing/base 17,21,9,11`, base = `e2a7ad7`, the commit before Batch 2A): the patch bytes of the other 28 programs are equal and their audio is byte-identical on all 11 phrases (a, b, c, d, e, f, f2, g, h, x_stress, x_register).
 Each committed slot equals its variant B by `check_slot.py` (resolved bytes identical; audio bit-identical when both are loaded from INIT; from the boot patch the CUTOFF / RESO slew floor of §8 puts 21 and 09 20-38 dB apart, 17 and 11 are bit-identical either way).
 **Where each Batch 2A patch's own array came from:** 17 `PF_DUAL_SAW` (only Titanic used it; renamed `PF_TITANIC`), 09 `PF_CLAV_PLUCK` (only Skeenhead; renamed `PF_SKEENHEAD`), 21 and 11 got new arrays (`PF_DRONE_UNI` stays with 18 Roto-scopo, `PF_SUB_BASS` with 05 ZEAROX and 19 Blackwater).
+
+## 11. Batch 2A lessons (short)
+
+Approved: 17 Titanic B, 21 Cowl Shadow C (1 listening + 1 silent round each); 11 Slapback Strut G and 09 Skeenhead E (2 + 2 each). §10 has the kit and the engine facts.
+
+* **Diagnose before changing, with time-windowed measurements.** 09's spring read -4.2 dB re the dry note on average and looked fine; per window it was +0.8 dB at 20-100 ms and +15.7 dB at 100-250 ms: as loud as the note from 20 ms (`diag09.py`). One average hid it.
+* **Failure mode: the filter resting below the played notes.** A fast filter decay with a base cutoff under the notes' fundamentals shuts the filter within ~25 ms and leaves a quiet hum with no top ("the bottom of a well"); a second oscillator does not help, it goes through the same filter. Fix: the cutoff floor and the filter sustain.
+* **ALLEY TONE is inert on a bass echo.** The echo is a faithful copy of the note (its band split follows the dry note's), and the note has nothing near TONE's range (TONE 70 -> 127 moved the echo's centroid by 1 Hz). Clarity has to be built into the note.
+* **Removing a pluck's decay made the note duller, not brighter:** the filter tap carried the top (11: 0.4 % of the energy above 400 Hz with zero decay against 2.3 % with the pluck); the cutoff has to go up and the sub down to compensate.
+* **No triangle oscillator:** use a pulse through a key-tracking 12 dB low-pass and measure harmonics 3 / 5 / 7 against -19 / -28 / -34 dB (a triangle) and -9.5 / -14 / -17 (a square).
+* **A fast pluck cannot reach the level reference** (VOLUME stops at 127); a held, gated note can (11 went from VOLUME 122 to 102).
+* **Slow patches have two levels.** 21 C reads -18.0 dBFS in the bloomed state and -31.3 on phrase (b): a 13.3 dB gap that will surprise a player who taps a note after switching to it.
+* **The delay path leaves a constant -76 dBFS DC offset behind a driven voice** (inaudible); tail readings subtract it.
+* **INIT-loaded and boot-patch-loaded renders differ** by the CUTOFF / RESO slew floor (20-41 dB on some patches); compare both loaded from INIT (`check_slot.py` does both).
