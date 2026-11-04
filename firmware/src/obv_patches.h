@@ -209,13 +209,13 @@ static const uint8_t PF_TITANIC[] = {P_O2_SEMI, 31, P_CUTOFF, 66, P_RESO, 12, P_
 static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14, P_FENV_AMT, 118, P_KEYTRK, 127,
     P_FA, 119, P_FS, 127, P_FR, 110, P_AA, 90, P_AS, 127, P_AR, 108, P_MODE, M_UNISON, P_UNI_N, 5, P_UNI_DET, 40,
     P_VINTAGE, 45, P_SPREAD, 100, P_VOLUME, 79, X};
-/* 09 Skeenhead (voiced Nov 2026, dog5-docs/voicing/09-skeenhead.md; was PF_CLAV_PLUCK, this slot's alone): the reggae off-beat stab. One tight square (a 50 % pulse), a resonant 12 dB low-pass
- * (RESO 62) whose envelope falls in ~39 ms to a cutoff that rests near 115 Hz, under an A3 (KEY TRK 100) = the plop (the first 23 ms of a stab are 2.2x brighter than the next 67), a short pluck (amp decay
- * 117 ms to sustain 30, 4 ms release), drenched in spring: DRAIN 90, SIZE 70 (tail -60 dB at ~1.0 s), DAMP 40 (bright), PRE-DLY 4 ms so the chirp starts at once. The spring's return is
- * -4.2 dB under the dry stab. VOLUME 115 puts it on the bank reference: -18.1 dBFS RMS over the stabs of the skank phrase (g) with the spring on (peak -4.4) */
-static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_OFF, P_CUTOFF, 40, P_RESO, 62, P_FENV_AMT, 118,
-    P_KEYTRK, 100, P_FTYPE, F_LP12, P_FD, 56, P_FS, 0, P_AA, 0, P_AS, 30, P_AR, 28, P_VOLUME, 115, P_REV_SIZE, 70,
-    P_REV_DAMP, 40, P_REV_PRE, 4, P_REV_MIX, 90, X};
+/* 09 Skeenhead (voiced Nov 2026, round 2 = variant H: dog5-docs/voicing/09-skeenhead.md; was PF_CLAV_PLUCK, this slot's alone): the reggae off-beat stab. One 50 % pulse plus a second pulse an octave up at low level (definition), a
+ * resonant 12 dB low-pass (RESO 62) whose envelope still plops (FILTER DECAY 39 ms, first 23 ms of a stab 2.1x brighter than the next 67) but now RESTS above the notes (CUTOFF 46, FILTER SUSTAIN 40: round 1's filter shut below
+ * the notes in ~25 ms and left a hum), the amp holding 70 of 127 through the gate with a 2 ms release, a little per-voice DRIVE 30, VINTAGE 8 (tight, stable). The spring is dialled back to -9 dB re the dry stab with the same
+ * tone: DRAIN 66, SIZE 58, DAMP 40, PRE-DLY 0 (tail -60 dB at 0.86 s). VOLUME 96 puts it on the bank reference: -18.0 dBFS RMS over the stabs of the skank phrase (g) with the spring on (peak -6.7) */
+static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_LVL, 50, P_O2_SEMI, 36, P_CUTOFF, 46,
+    P_RESO, 62, P_FENV_AMT, 118, P_KEYTRK, 100, P_FTYPE, F_LP12, P_DRIVE, 30, P_FD, 56, P_AA, 0, P_AD, 62, P_AS, 70,
+    P_AR, 20, P_VINTAGE, 8, P_VOLUME, 96, P_REV_SIZE, 58, P_REV_DAMP, 40, P_REV_PRE, 0, P_REV_MIX, 66, X};
 /* 11 Slapback Strut (voiced Nov 2026, round 2 = variant H: dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 05 ZEAROX's and 19 Blackwater's): the percussive surf bass, tight and gated. MONO, one 44 %
  * pulse through a key-tracking 12 dB low-pass (CUTOFF 74, KEY TRK 110) with a little per-voice DRIVE 40 for the warm soft top; NO real decay: both envelopes settle in ~54 ms to a sustain just under full and
  * stop in 1 ms (a gated note with body, no tail); one loud mono slap: ALLEY 62 = 80 ms, FEEDBK 8, MIX 127 (the top), TONE 110, PINGPONG 0, so the repeat is a clean copy of the note with the first repeat

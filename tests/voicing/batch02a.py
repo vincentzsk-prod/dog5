@@ -115,6 +115,7 @@ def measure(exe, cg, spec, params, tag, quick, orig=None):
         m[ph].update(K.tone_metrics(wavs[ph], ph))
         m[ph]["bands"] = M.band_split_phrase(wavs[ph], ph)
     m["peak_all"] = max(m[ph]["peak"] for ph in spec["phrases"])
+    m["peak_phrase"] = max(spec["phrases"], key=lambda ph: m[ph]["peak"])
     m["clip"] = int(sum((np.abs(w) >= 32767).sum() for w in wavs.values()))
     m["step_db"] = {ph: float(20 * np.log10(np.abs(np.diff(wavs[ph], axis=0)).max() / 32767)) for ph in spec["phrases"]}
     m["level"] = level_of(spec, wavs)
@@ -162,6 +163,13 @@ def measure(exe, cg, spec, params, tag, quick, orig=None):
         # the first 1.5 s after the last stab is the tail the player hears; its level re the stab
         m["tail_1s_re_stab_db"] = M.rms_db(wavs[lp], 8420, 9420) - M.energy_db(wavs[lp][on_m])
         m["silence_before_return"] = M.rms_db(fx, 3250, 3252)
+        # round 2: the stab at 7250 ms (after the gap), the dry note and the spring return in 0-20 / 20-100 / 100-250 ms windows
+        t0, wins = 7250, []
+        for a, b in ((0, 20), (20, 100), (100, 250)):
+            bs = M.band_shares(dry, t0 + a, t0 + b, nfft=1024)
+            wins.append({"w": (a, b), "dry_db": M.rms_db(dry, t0 + a, t0 + b), "dry_cent": M.centroid(dry, t0 + a, t0 + b, nfft=1024), "dry_bands": bs,
+                         "spr_db": M.rms_db(fx, t0 + a, t0 + b), "spr_cent": M.centroid(fx, t0 + a, t0 + b, nfft=1024)})
+        m["win"] = wins
     elif kind == "echo":
         on_m = K.gate_mask(lp, len(dry))
         fx = M.fx_part(fxw, dry)
@@ -292,6 +300,13 @@ def tables(spec, R):
         row("spring's own band split % <60 / 60-150 / 150-400 / 400-1.2k / 1.2k+", lambda r: M.fmt_bands(r["fx_bands"]))
         row("pluck decay inside the gate (voice alone): level drop 10 ms → gate end (dB) · time to fall 10 dB (ms)", lambda r: f"{r['drop'][0]:.1f} · {f1(r['drop'][1], 0)}")
         row("pluck: centroid of the first 23 ms → next 67 ms of a stab (Hz, ratio), voice alone", lambda r: f"{r['snap'][0]:.0f} → {r['snap'][1]:.0f} (×{r['snap'][2]:.1f})")
+        if "win" in R[ks[0]]:
+            for i, wn in enumerate(("0-20", "20-100", "100-250")):
+                row(f"dry stab (A3 C4 at 7.25 s) {wn} ms: level dB · centroid Hz · band % <60/60-150/150-400/400-1.2k/1.2k+",
+                    lambda r, i=i: f"{r['win'][i]['dry_db']:.1f} · {r['win'][i]['dry_cent']:.0f} · {M.fmt_bands(r['win'][i]['dry_bands'])}")
+            row("spring re dry per window 0-20 / 20-100 / 100-250 ms (dB)", lambda r: " / ".join(f"{w['spr_db'] - w['dry_db']:+.1f}" for w in r["win"]))
+            row("spring centroid per window (Hz)", lambda r: " / ".join(f"{w['spr_cent']:.0f}" for w in r["win"]))
+            row("phrase whose peak is the highest (it limits the trim)", lambda r: r["peak_phrase"])
         row("check: the send in the first 2 ms of the first note (dBFS; - = silent, the dry path is not touched)", lambda r: f1(r["silence_before_return"]))
     if kind == "echo":
         row("dry notes (echo and spring off) RMS, note-on region dBFS", lambda r: f1(r["dry_rms"]))

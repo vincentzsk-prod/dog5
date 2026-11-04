@@ -4,7 +4,7 @@ Nov 2026. Brief (Batch 2A, "weight and space"): *the reggae off-beat stab. Tight
 Fender-style spring tank (SH-101 tightness, Prodigy rawness, a Space-Echo dub warmth in the tail). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the
 `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/09-skeenhead/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
-**Status: B (centre) COMMITTED as the recommended variant, awaiting Vincent's ears.** A, C, D are render-only. **Round count so far: 1 silent measured round + 0 listening rounds.** No voice card yet.
+**Status: ROUND 2 — H (blend) COMMITTED, awaiting Vincent's ears (see the end of this log).** Round 1's B was heard and rejected for the note (not for the effects). A, C, D and round 2's E, F, G are render-only. **Round count so far: 1 silent measured round + 0 listening rounds.** No voice card yet.
 
 ## 0. Before
 
@@ -148,3 +148,46 @@ the ORIGINAL (two narrow pulses), dry      0-20:  -26.1 dB  24.3 % | 20-100:  -4
 **Best explanation:** the plop shuts the filter below the notes within ~25 ms, leaving a quiet (-11 dB from the first 20 ms), dark, harmonic-free hum; the spring is fed by the bright first 20 ms, blooms to its peak 37 ms after the note's, is as loud as the note by 20 ms and louder after,
 and is 4.5 times brighter. So a bright wash with a hum underneath: distant, separate, at the bottom of a well. Fix the *note*: keep the filter above the notes' fundamentals through the gate (the floor and the sustain), so the body keeps harmonics and level (measured levers, dry,
 20-100 ms: FILTER SUSTAIN 40: **-19.4 dB and 7.9 % above 400 Hz** against -24.3 / 0.1 %; CUTOFF +12: -19.7 dB; no filter envelope: -19.3 dB). Then bring the spring down so it is 7-11 dB under the note in the body.
+
+## What I changed, and the variants (renders: `listen/voicing/batch-02a/round2/09-skeenhead/` on the listen branch; the full tables are in `README.md` / `numbers.md` there, on the voicing branch too)
+
+* **Note body (the diagnosis' fix):** CUTOFF 40 -> 46 (+5 %, the floor), FILTER SUSTAIN 0 -> 40 (the filter rests above the notes' fundamentals instead of closing under them), AMP SUSTAIN 30 -> 64 (70 in H: the amp holds through the gate; the amp fell 16.7 dB inside it in B, 3.7 dB now).
+  FILTER DECAY, RESO 62 and ENV AMT 118 are unchanged, so the plop sweep is the same (first 23 ms 1360 Hz against 657 Hz: x2.1, B x2.2).
+* **Spring (same tone: DAMP 40 unchanged; DRAIN down, SIZE shorter, PRE-DLY toward 0):** F DRAIN 90 -> 77, SIZE 70 -> 62, PRE-DLY 4 -> 2; G DRAIN 56, SIZE 50, PRE-DLY 0; H DRAIN 66, SIZE 58, PRE-DLY 0.
+* **Cleaner / tighter / stable (H only):** VINTAGE 30 -> 8, AMP RELEASE 28 -> 20 (4 -> 2 ms), AMP DECAY 70 -> 62, a second pulse an octave up (OSC 2 +12 st, LEVEL 50) for definition, filter DRIVE 0 -> 30. DETUNE is not in play (POLY, one note one voice).
+
+| | B anchor | E body | F spring1 | G spring2 | H blend |
+|---|---|---|---|---|---|
+| VOLUME · peak (any phrase, b_stabs highest) | 115 · -4.4 | 92 · -6.3 | 93 · -7.5 | 96 · -7.0 | 96 · -6.7 |
+| level (stabs, spring on) · dry stabs alone · phrase (b) | -18.2 · -19.6 · -18.7 | -17.9 · -19.0 · -17.4 | -18.1 · -18.8 · -17.8 | -17.9 · -18.3 · -17.7 | -18.0 · -18.4 · -17.4 |
+| dry stab level dB 0-20 / 20-100 / 100-250 ms | -13.3 / -24.3 / -43.5 | -16.4 / -19.9 / -34.6 | -16.2 / -19.8 / -34.4 | -15.7 / -19.2 / -33.8 | -16.6 / -18.7 / -33.7 |
+|   body fall: 20-100 re 0-20 (dB) | -11.0 | -3.5 | -3.5 | -3.5 | -2.0 |
+| dry centroid Hz 0-20 / 20-100 / 100-250 | 641 / 314 / 508 | 1329 / 663 / 576 | 1329 / 663 / 575 | 1329 / 663 / 573 | 1573 / 655 / 632 |
+| dry share above 400 Hz % 0-20 / 20-100 / 100-250 | 6.4 / 0.1 / 1.4 | 11.8 / 13.1 / 5.7 | 11.8 / 13.1 / 5.7 | 11.8 / 13.1 / 5.7 | 37.6 / 14.3 / 23.9 |
+| dry band split 20-100 ms % <60/60-150/150-400/400-1.2k/1.2k+ | 0 / 0 / 100 / 0 / 0 | 0 / 0 / 87 / 12 / 1 | 0 / 0 / 87 / 12 / 1 | 0 / 0 / 87 / 12 / 1 | 0 / 0 / 86 / 13 / 1 |
+| plop: centroid first 23 ms → next 67 ms | 689→318 (×2.2) | 1360→657 (×2.1) | 1359→656 (×2.1) | 1359→655 (×2.1) | 1350→644 (×2.1) |
+| amp fall inside the gate (dB) | 16.7 | 3.7 | 3.7 | 3.7 | 2.9 |
+| spring re dry, stab regions (B's definition) dB | -4.2 | -6.1 | -7.6 | -10.6 | -9.0 |
+| spring re dry per window 0-20 / 20-100 / 100-250 dB | -22.9 / +0.8 / +15.7 | -21.7 / -5.9 / +5.9 | -22.4 / -7.3 / +3.9 | -24.5 / -10.3 / +0.0 | -21.4 / -8.8 / +3.0 |
+| gap between stabs re stab (dB) | -18.3 | -16.3 | -18.7 | -23.1 | -20.2 |
+| tail to -20/-40/-60 dB (ms) | 318/704/994 | 466/840/1072 | 338/686/934 | 242/524/742 | 270/608/858 |
+| worst-case CPU | 1171 | 1172 | 1172 | 1172 | 1254 |
+
+**Level and the peak limit:** B was held at -4.4 dBFS by the -4 peak limit (the crest of its plucked stab, on the stabs phrase). The new variants have a much lower crest (the amp holds): the peaks are -6.3 ... -7.5 dBFS, so **the trim is set by the level reference, not by the peak**, and VOLUME comes down 115 -> 92-96.
+**The plop is as recognisable by tone** (x2.1) **but is less of a "pop" in level:** the first 20 ms is now only 2-3.5 dB above the body (B: 11 dB); the dry stab's very first moment is quieter against the rest.
+**The spring** (B's definition, energy over the stabs' note-on regions): -4.2 dB -> E -6.1 (spring unchanged, the note got louder), F -7.6, G -10.6, H -9.0; per window H is -21.4 / **-8.8** / +3.0 dB (B -22.9 / +0.8 / +15.7): under the note while the note sounds (20-100 ms),
+level with it just after the gate. The spring's tail: B 0.99 s -> E 1.07, F 0.93, G 0.74, H 0.86 s to -60 dB. CPU: H 1254 worst case (the second oscillator and the drive, +83), the others 1172, B 1171.
+
+## Recommendation: H
+
+In the vocabulary: *punchy and tight, with a body that holds through the gate; resonant plop kept; definition from the octave-up pulse and a touch of DRIVE; steady (VINTAGE 8) and dry-stopped (2 ms release); the spring same tone, tight, under the note.* It is the one meant to
+**cut through a reggae track**. Caveats from the numbers: H's first 20 ms is the brightest (37.6 % above 400 Hz: the octave-up pulse), which is edge, not warmth; if it is too edgy, E-to-G (no second pulse) are the same body without it. F is the mildest spring change, G the driest.
+
+## For Vincent's ears (questions)
+
+* **E against B_anchor:** is the note now a note (body in front of the spring)? If E is right the rest is the spring's amount.
+* **How far down can the spring go** (F -7.6, H -9.0, G -10.6 dB re dry) before the chirp is lost?
+* **H: definition or too much edge?** And is the plop still a plop with its pop softened (the first 20 ms 2 dB above the body)?
+
+## Round count (09)
+Round 1: 1 silent measured + 1 listening (rejected for the note). Round 2 so far: 1 silent measured (diagnosis + variants) + 0 listening.
