@@ -1,0 +1,10 @@
+# VOICING PHRASE (f): SLOW (Batch 2A, for the bloom/weight patches 17 Titanic and 21 Cowl Shadow).  ONE low note, A1 (MIDI 33, 55 Hz),
+# held 10 s, then released: 10 s of note and a 2 s release, 12 s from the first note on (the host script runs on to 18.5 s so a long release is measured to the end).  It judges (1) the BLOOM: brightness and level against time over the
+# hold (how long the filter/amp envelope takes to open, and where it ends up), (2) the steady weight under the hold (beat, wander, band
+# split), (3) the release.  A held note is the only honest bloom test: the engine has no drone latch, the bloom happens while the key is down.
+# Level: for the slow patches the bank reference is read over the STEADY PART of this hold, t = +6 s .. +10 s after note-on (the bloomed state),
+# see README section 10.  For an early release see (c): A2 held 2.4 s.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 33 108
+13000 midi 0x80 33 0
+18500 end

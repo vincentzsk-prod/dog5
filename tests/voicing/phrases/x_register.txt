@@ -1,0 +1,11 @@
+# VOICING PHRASE (x_register): REGISTER TILT, not for listening (Batch 2A, for the bass-comp of 17 Titanic).  The same note struck in three octaves, each
+# held 1.5 s with 1 s of silence after it: A1 (55 Hz), A2 (110 Hz), A3 (220 Hz), velocity 100.  The spectral centroid and level per octave say how much the
+# filter opens for low notes and closes for high ones (KEY TRK / CUTOFF), i.e. the "bass compensation".
+# Notes start at 3000 ms.  Bare events only.
+3000 midi 0x90 33 100
+4500 midi 0x80 33 0
+5500 midi 0x90 45 100
+7000 midi 0x80 45 0
+8000 midi 0x90 57 100
+9500 midi 0x80 57 0
+11000 end

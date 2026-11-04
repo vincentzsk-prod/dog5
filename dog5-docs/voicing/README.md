@@ -26,6 +26,12 @@ arp/delay-synced patches see the same tempo.
 | `d_lead.txt` | **(d) single-note lead** (Batch 1A, for mono leads): a legato run A3 C4 D4 E4 A4 (each note-on 50 ms *before* the previous note-off, 350 ms apart), the last A4 held 1 s, a staccato run (six 120 ms notes, 300 ms apart), one A3 held 800 ms | ≈ 7 s + tail | the sweep of one note, legato vs retrigger, the dead stop. **Replaces (b) as the level phrase for a mono lead** (V-Sync) |
 | `e_lowuni.txt` | **(e) low unison** (Batch 1A, for stacked basses): A1 (55 Hz) held 3 s, A0 (27.5 Hz) held 1.5 s, chopped roots (eighths, 130 ms gate: A1 A1 A2 A1 G1 A1 E1 A1), A2 held 800 ms | ≈ 10 s + tail | weight under 150 Hz, the width of the stack, the chop, headroom with eight voices on one note. **Replaces (b) as the level phrase for a unison bass** (THE DØG) |
 
+| `f_slow.txt` | **(f) slow, low** (Batch 2A, for 17 Titanic): A1 (55 Hz) held **10 s**, released, the host script runs to 18.5 s so the whole release is measured | 12 s of note + tail | the bloom/settling over a long hold (brightness and level against time), the steady weight, beat and wander, the release. **The level phrase of the slow patches** (§10) |
+| `f2_slowmid.txt` | **(f2) slow, mid** (Batch 2A, for 21 Cowl Shadow): the same hold an octave up, A2 (110 Hz) | the same | the same, where a brass wall reads as brass (at 55 Hz it is a rumble) |
+| `g_skank.txt` | **(g) skank** (Batch 2A, for 09 Skeenhead): off-beat two-note minor dyads at 120 BPM (250 ms after each beat), gate 110 ms, vel 96-108: four on A minor (A3 C4), two on D minor (D4 F4), **two empty off-beats (a 1.3 s gap)**, A minor twice, E minor (E4 G4) last, then 3.5 s of nothing | 11 stabs, 9 s + tail | the plop per stab, the chirp of the spring, how the tail sits between stabs (the gap), the tail length. **The level phrase of a spring stab patch** |
+| `h_surf.txt` | **(h) surf bass** (Batch 2A, for 11 Slapback Strut): single-note staccato eighths at 120 BPM, A1 (33) up to A2 (45) with C2 D2 E2 G2, gate 100 ms (40 % of a step, so an ~80 ms echo is a separate slap), vel 98-112, two bars, a 750 ms rest, one last A1, 2.5 s of nothing | 17 notes, 8 s + tail | the pluck, the roundness of one oscillator, how loud and how long the slap is. **The level phrase of an echo bass** |
+| `x_register.txt` | **(x) register tilt**, measurement only (Batch 2A): the same velocity on A1, A2, A3, each held 1.5 s | 8 s | how many partials the filter lets through per octave (KEY TRK / CUTOFF): the bass compensation of 17 |
+
 Anything new goes in the same folder with a header comment saying what it judges, and gets one line in
 `PHRASE_FILES` (voicekit.py).
 
@@ -36,6 +42,8 @@ python3 tests/voicing/voicekit.py bank            # RMS / K-RMS / peak of all 32
 python3 tests/voicing/half_life.py                # the 03 Half-Life round (variants -> listen/voicing/03-half-life/ + README)
 python3 tests/voicing/batch01a.py [--only SLOT] [--quick]   # Batch 1A (30, 31, 04, 25): variants -> listen/voicing/batch-01a/<NN-name>/
 python3 tests/voicing/batch01a.py --emit SLOT KEY # the C array (overrides over the defaults) of a variant, ready for obv_patches.h
+python3 tests/voicing/batch02a.py [--only SLOT] [--quick]   # Batch 2A (17, 21, 9, 11): variants -> listen/voicing/batch-02a/<NN-name>/ (WAVs only on the listen branch)
+python3 tests/voicing/batch02a.py --emit SLOT KEY # the C array of a Batch 2A variant, ready for obv_patches.h
 build/voicing/dump_patch 3                        # slot 3 resolved (defaults + overrides), "*" = differs from the default
 build/voicing/dump_patch all                      # slot, name, hash of the 96 patch bytes (the byte-identical check)
 ```
@@ -189,3 +197,35 @@ Approved 5 Nov 2026: 30 THE DØG (H, 2 listening + 2 silent rounds), 31 Fi(l)fth
 * **DUAL needs POLY ≥ 2 × the notes:** verified for 31 C with the host's `expect voices` (`tests/voicing/dual_voices_31.txt`): a three-note chord gates 6 voices, a fourth note 8.
 * **The flagship (30) deliberately sits at −16.5 dBFS RMS** (+1.5 dB over the −18.0 reference, the top of the tolerance band, peak −7.3): presence was its brief. It is **not a precedent**: match the others to −18.0.
 * **Proof for the whole batch** (`identical.py build/voicing/base 30,31,4,25`, base = the commit before Batch 1A): only slots 30, 31, 4 and 25 changed; the other 28 programs are byte-identical on all six phrases and their 96-byte patch hashes are equal.
+
+## 10. Batch 2A — weight and space (17 Titanic, 21 Cowl Shadow, 09 Skeenhead, 11 Slapback Strut)
+
+The kit is `tests/voicing/batch02a.py` (driver), `batch02a_metrics.py` (the measures) and `batch02a_variants.py` (the variant tables and texts), the same method as 1A (§8): a variant is a full
+parameter list over INIT, A is rendered through the base program path, VOLUME is trimmed last. **Two-branch rule (new):** code, docs, logs, cards and the small README/numbers tables go on the
+`voicing/` branch that is merged; **every listening WAV lives only on the never-merged `listen/` branch** (`listen/voicing/batch-02a/` and nothing else), so the merged history does not grow.
+
+**How the level is read, per kind of patch** (the reference stays -18.0 dBFS RMS, ±1.5 dB, peak ≤ -4):
+
+| kind | patches | level reading | why |
+|---|---|---|---|
+| slow | 17, 21 | RMS over **+6 s .. +10 s** after note-on of the 10 s hold (phrase f: A1; f2: A2) = **the bloomed, steady state**; the whole-hold RMS, the first second and phrase (b) are reported next to it | a swell's whole-hold RMS counts its dark start; the steady state is what the player stands in. Phrase (b) is a poor yardstick for a bloom (short notes are the dark start): 21 reads 13-21 dB under its steady level on (b) |
+| spring stab | 09 | RMS over the **note-on region** (11 stabs x 110 ms) of phrase g, **spring included, tail excluded** | the reference is a note-on-region reading everywhere; the tail after note-off is measured separately. The spring raises the reading by about 1.5 dB over the dry stabs alone (both are in the table) |
+| echo bass | 11 | RMS over the note-on region of phrase h (17 notes x 100 ms), **echo included where it falls inside a gate, tails excluded**; the echo is also read on its own | same as above |
+
+**The spring and the echo as the effects' own contribution:** the FX stages are parallel sends added onto the dry output, so `wet - dry` (the same script with `DLY_MIX 0, REV_MIX 0, CHEW 0, GROWL 0`) is
+exactly what they return. The tables report it re the dry note (dB), per band, its centroid, and a check that the send adds nothing before its own delay. The delay's repeats and the spring's tail are
+read as "release to -20 / -40 / -60 dB" against the level of the last note before the key-up.
+
+**Measures new in 2A:** the *bloom* (per second of the hold: level, centroid, % above 1.2 kHz; the centroid is judged on a log axis, 10 % / 90 % of the climb from the first window to the plateau, linear between windows),
+the *register tilt* (`x_register`: centroid in harmonics of the note per octave, and level), *dropouts* (deepest dip of the 10 ms envelope below the median, count of dips ≥ 6 dB), the *pluck* (centroid of the first 23 ms against the next 67 ms; level drop inside the gate; time to fall 10 dB), the
+*triangle probe* (the harmonics 3 / 5 / 7 of a held A2 re the fundamental against an ideal triangle -19.1 / -28.0 / -34.2 dB and a square -9.5 / -14.0 / -16.9 dB), the *DRAIN probe* (B with the spring at three settings).
+
+**Engine facts found in 2A (existing controls only; nothing was coded):**
+
+* **There is no triangle oscillator** (waves: saw, pulse, saw+pulse; the LFO has the only triangle). The nearest is a 50 % pulse through a key-tracking 12 dB low-pass with the cutoff at about 1.7 x the note: 11's harmonics 3 / 5 / 7 measure -17 / -29 / -38 dB against a triangle's -19 / -28 / -34.
+* **The longest envelope time is 10 s** (ATTACK 127); there is no drone latch. A bloom happens while the key is down; an early release fades the note from wherever the filter got to. Brightness reaches 90 % of its climb at about 7 s with a 10 s filter attack (21 B), because the last part of the climb is above the harmonics left to reveal.
+* **A fast pluck cannot reach the reference level.** With the amp falling more than ~17 dB inside a 100 ms gate (10 dB in under ~44 ms) -18.0 RMS needs VOLUME above 127 (1B lesson, now with a number). 11 takes the fastest decay the level allows and puts the snap in the filter.
+* **DRAIN on a bass is audible, not absent:** the tank is fed through a *one-pole* 150 Hz high-pass (-9 dB at 55 Hz, not a wall), so it still rings the note's body; what it lacks is boom below ~60 Hz. Numbers in 11's and 17's READMEs (DRAIN probe).
+* **Spring and echo are in series** (echo into the spring): with both on, the spring rings the repeat too.
+* **ALLEY's first repeat is a whole copy of the note** (as long as the note, 100 ms here); FEEDBK 12 puts the second repeat 27 dB under the first (a single slap), 40 puts it 17 dB under. PINGPONG 0 puts the repeat centred (0.71 on each side), 127 puts the first repeat on the left only.
+* **MONO/UNISON do not re-fire the envelopes on legato** (11 is MONO: play it detached; 21 is a unison: a legato second note slides and does not restart the bloom).

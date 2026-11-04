@@ -1,0 +1,43 @@
+# VOICING PHRASE (g): SKANK (Batch 2A, for 09 Skeenhead and any spring-drenched stab).  Off-beat two-note minor chords at 120 BPM (500 ms a beat,
+# every stab on the "and": 250 ms after the beat), gate 110 ms, velocities 96-108.  Bar 1: four A-minor dyads (A3 C4); bar 2: two D-minor dyads (D4 F4)
+# then TWO EMPTY OFF-BEATS (a 1.5 s gap: the spring tail has to be audible on its own); bar 3: A minor twice, an E-minor dyad (E4 G4) as the last stab,
+# then 3.5 s of nothing for the tail.  Judges: the plop (filter pluck) per stab, the chirp of the spring, how the tail sits between stabs, the
+# tail length.  Level: RMS over the note-on region (the 11 stabs x 110 ms; tails excluded), the spring's contribution is reported separately.
+# Notes start at 3250 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3250 midi 0x90 57 100
+3250 midi 0x90 60 100
+3360 midi 0x80 57 0
+3360 midi 0x80 60 0
+3750 midi 0x90 57 98
+3750 midi 0x90 60 98
+3860 midi 0x80 57 0
+3860 midi 0x80 60 0
+4250 midi 0x90 57 102
+4250 midi 0x90 60 102
+4360 midi 0x80 57 0
+4360 midi 0x80 60 0
+4750 midi 0x90 57 96
+4750 midi 0x90 60 96
+4860 midi 0x80 57 0
+4860 midi 0x80 60 0
+5250 midi 0x90 62 106
+5250 midi 0x90 65 106
+5360 midi 0x80 62 0
+5360 midi 0x80 65 0
+5750 midi 0x90 62 100
+5750 midi 0x90 65 100
+5860 midi 0x80 62 0
+5860 midi 0x80 65 0
+7250 midi 0x90 57 104
+7250 midi 0x90 60 104
+7360 midi 0x80 57 0
+7360 midi 0x80 60 0
+7750 midi 0x90 57 100
+7750 midi 0x90 60 100
+7860 midi 0x80 57 0
+7860 midi 0x80 60 0
+8250 midi 0x90 64 108
+8250 midi 0x90 67 108
+8360 midi 0x80 64 0
+8360 midi 0x80 67 0
+12000 end
