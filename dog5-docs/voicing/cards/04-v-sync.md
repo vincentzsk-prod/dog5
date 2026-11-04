@@ -30,7 +30,7 @@ Closest to: **a Pro-One sync lead**.
   - **Tape Stop (SEQ held)** on a held note as a dive. Untested on this patch.
   - **GROWL (adding it live):** more edge on top of the filter DRIVE the patch already has; untested here, and GROWL below about 28 does little.
   - **DRAIN:** at 0 on purpose (no spring); a wash will blur the rip.
-- **Level:** a synced oscillator is a quiet source, so the patch's own volume sits well above the default to bring it to the bank's level; there is some, not a lot, of master headroom above it.
+- **Level:** it is set to the bank's level on its lead phrase. Its own volume is a little *below* the default (about 1.6 dB), because the two-voice stack is louder than the one-voice version (which needed about 3 dB more).
 
 ## 5. Final values (for debugging, not for players)
 
