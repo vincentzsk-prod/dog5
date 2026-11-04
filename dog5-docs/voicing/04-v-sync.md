@@ -98,7 +98,7 @@ Not varied but flagged uncertain: the slave interval (+7 st, as the original), t
   spring state also starts at another moment. Variant A is therefore rendered through the base firmware's own program path (it *is* the shipping original); B–D (and the
   committed slot, whose audio matched variant B bit for bit here) run INIT + parameters. Measured error of the INIT path vs the program path for the originals: −27 … −43 dB.
 * **GROWL leaves a constant DC offset after the note** (the 10 Hz DC blocker's integer rounding sticks: −44 … −53 dBFS, mono more than stacks). Inaudible, an engine trait
-  (left alone, no engine changes); the release-time columns subtract it.
+  (left alone, no engine changes); the release-time columns subtract it. In this batch only the variants with GROWL on (30 D, 04 C, 25 D) have it.
 * **PF_SYNC_LEAD is shared with 20 Fire & Ice and 26 BSyncA**: V-Sync got its own array, so their bytes and renders are untouched (proved below).
 
 ## Proofs (4 Nov)

@@ -7,7 +7,7 @@ SHORT = {"a_riff": "riff", "b_stabs": "stabs", "c_held": "held", "d_lead": "lead
 # ---- 30 THE DOG: unison stack, low register -----------------------------------------------------------------------------
 DOG = {   # the shared moves: a punchy low stack instead of the drone it was (slot 18 / 21's array)
     "UNI_N": 8, "O2_SEMI": 12, "O2_LVL": 100, "O1_LVL": 110, "RESO": 12, "FA": 10, "FD": 58, "FS": 35, "AA": 4, "AD": 70, "AS": 127,
-    "AR": 48, "FR": 50, "LFO_FLT": 0, "SPREAD": 50, "REV_MIX": 0, "GROWL": 18, "GRL_BIAS": 20,
+    "AR": 48, "FR": 50, "LFO_FLT": 0, "SPREAD": 50, "REV_MIX": 0,
     "UNI_DET": 28, "VINTAGE": 40, "CUTOFF": 100, "FENV_AMT": 86,
     "LFO_RATE": 70, "REV_SIZE": 80, "REV_DAMP": 60,     # (the drone's leftovers, inert with LFO FILTER 0 and DRAIN 0: back to the defaults)
 }
@@ -28,7 +28,7 @@ SYNC = {   # the original's O2 +7 st / SYNC / MONO kept; the sweep deepened, the
 # ---- 25 SAWTOOTH --------------------------------------------------------------------------------------------------------------
 BRASS = {
     "O2_FINE": 71, "CUTOFF": 56, "RESO": 15, "FENV_AMT": 100, "FA": 70, "FD": 85, "FS": 50, "FR": 60, "AA": 50, "AR": 55,
-    "VINTAGE": 30, "GROWL": 6, "GRL_BIAS": 20,
+    "VINTAGE": 30,                       # (GROWL stays 0: a touch of 6 measured -1.0 dB peak, -7 Hz centroid for +570 instr/sample always on)
 }
 
 import numpy as np
@@ -75,9 +75,9 @@ PATCHES = [
          held_name="A1 held 3 s", env_name="A1 held 3 s", load="8 voices on one note, held",
          variants=[
              ("A", "original", "the nearest-base patch as it stood (the drone array it shares with 18 and 21)", {}),
-             ("B", "centre", "the brief's first reading: 8-voice stack, +-4.7 cents, sub saw, filter open, a touch of GROWL", DOG),
+             ("B", "centre", "the brief's first reading: 8-voice stack, +-4.7 cents, sub saw, filter open with an envelope snap, no GROWL (measured inert at 18)", DOG),
              ("C", "wide", "B along the width axis: a looser, wider stack (more detune, more slop)", {**DOG, "UNI_DET": 44, "VINTAGE": 65, "SPREAD": 70}),
-             ("D", "nasty", "B along the bite axis: filter wide open, more resonance, more GROWL", {**DOG, "CUTOFF": 127, "RESO": 26, "GROWL": 42}),
+             ("D", "nasty", "B along the bite axis: filter wide open, more resonance, more GROWL", {**DOG, "CUTOFF": 127, "RESO": 26, "GROWL": 42, "GRL_BIAS": 20}),
          ]),
     dict(slot=31, dir="31-fifth", name="Fi(l)fth", cname="FIFTH", level_name="FIFTH-BASED STABS", recommend="B centre", why=lambda R: _why31(R),
          listen=LISTEN31, notes=NOTES31, level="b_stabs", short=SHORT,
@@ -107,7 +107,7 @@ PATCHES = [
              ("A", "original", "the nearest-base patch as it stood (the poly brass)", {}),
              ("B", "centre", "the brief's first reading: two saws a few cents apart, a ~90 ms filter swell, stable", BRASS),
              ("C", "slow", "B along the swell axis: a slower, lazier swell", {**BRASS, "FA": 84, "AA": 64, "CUTOFF": 50, "FENV_AMT": 112}),
-             ("D", "bright", "B along the bite axis: brighter, edgier brass", {**BRASS, "CUTOFF": 70, "FENV_AMT": 100, "RESO": 22, "GROWL": 14}),
+             ("D", "bright", "B along the bite axis: brighter, edgier brass (and the one with GROWL, which costs CPU)", {**BRASS, "CUTOFF": 70, "FENV_AMT": 100, "RESO": 22, "GROWL": 28, "GRL_BIAS": 30}),
          ]),
 ]
 
@@ -152,5 +152,5 @@ def _why25(R):
     return (f"stable, warm brass: two saws a few cents apart (law {law(B['params'])[1]:+.1f} cents), the filter swells to its brightest "
             f"{B['held_env']['cent_peak']:.0f} Hz at {B['held_env']['t_cent_peak_ms']:.0f} ms and settles to {B['held_env']['cent_body']:.0f} Hz, VINTAGE 30 "
             f"(wander s.d. {np.mean([v[1] for v in B['vlog'].values()]):.1f} cents), no chop. C is the lazy swell (peak at {C['held_env']['t_cent_peak_ms']:.0f} ms), "
-            f"D the brighter edge ({D['b_stabs']['centroid']:.0f} Hz centroid). B's touch of GROWL is most of its CPU ({_cost(B)}; GROWL 0 would be about "
-            f"{_cost(A)}).")
+            f"D the brighter, edgier one ({D['b_stabs']['centroid']:.0f} Hz centroid, GROWL 28, {_cost(D)}). B keeps GROWL at 0 on purpose "
+            f"(CPU {_cost(B)}): a touch measured −1.0 dB of peak and −7 Hz of centroid for +570 instr/sample, always on; the FX-held macro adds it live.")

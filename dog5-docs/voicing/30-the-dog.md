@@ -18,7 +18,7 @@ No voice card yet (written after approval). **Round count so far: 1 silent measu
   a fast attack and a short release.
 * **Control limits foreseen.** UNISON is eight voices on *one* note, monophonic (the stack is the chord); the only sub is OSC 2 at −12 st (−24 st would be 13.75 Hz at A0, below what a PA
   reproduces); the DETUNE law is quadratic (`DETUNE²/64` Q8 st each side, so 28 is ±4.7 cents and one step near there is ~0.4 cents) with the voices spread evenly; SPREAD pans the
-  stack (there is no mono-sum bass/treble split, so SPREAD stays modest); no velocity-to-detune; 8 voices + GROWL is the most CPU in this batch (device unmeasured).
+  stack (there is no mono-sum bass/treble split, so SPREAD stays modest); no velocity-to-detune; eight voices is the most CPU in this batch (device unmeasured), and GROWL adds ~580 host instr/sample that run even when nothing sounds.
 
 ## Final parameter list (what the tree holds now)
 
@@ -45,8 +45,6 @@ No voice card yet (written after approval). **Round count so far: 1 silent measu
 | 42 | VINTAGE | **40** | 80 |  |
 | 43 | SPREAD | **50** | 127 |  |
 | 45 | VOLUME | **65** | 100 |  |
-| 52 | GRL_BIAS | **20** | 40 |  |
-| 54 | GROWL | **18** | 0 |  |
 | 59 | REV_SIZE | **80** | 120 |  |
 | 60 | REV_DAMP | **60** | 80 |  |
 | 62 | REV_MIX | **0** | 50 |  |
@@ -56,48 +54,49 @@ Resolved by `build/voicing/dump_patch 30`; the committed bytes equal variant B's
 
 ## Level
 
-Level phrase **(e) LOW UNISON (A0-A2 roots held and chopped)**: RMS **-18.1 dBFS** over the note-on region (K-weighted -20.9), VOLUME 65
-(was 100). Bank reference −18.0 ±1.5. Read the bank's own way on phrase (b): **-18.4 dBFS** (difference -0.3 dB).
-Peak, any phrase: **-7.5 dBFS** (limit −4). The original read -14.9 on its level phrase (-22.7 on (b)), peak -2.8.
-Riff / stabs / held: -19.3 / -18.4 / -18.1.
+Level phrase **(e) LOW UNISON (A0-A2 roots held and chopped)**: RMS **-17.9 dBFS** over the note-on region (K-weighted -20.9), VOLUME 65
+(was 100). Bank reference −18.0 ±1.5. Read the bank's own way on phrase (b): **-18.4 dBFS** (difference -0.5 dB).
+Peak, any phrase: **-6.2 dBFS** (limit −4). The original read -14.9 on its level phrase (-22.7 on (b)), peak -2.8.
+Riff / stabs / held: -19.2 / -18.4 / -18.1.
 
 ## Character notes (what to expect, from the numbers)
 
-* **Weight:** 84 % of the low-unison phrase's energy is under 150 Hz (the drone: 97 %), 41 % on the bank's stabs phrase; centroid 717 Hz
+* **Weight:** 85 % of the low-unison phrase's energy is under 150 Hz (the drone: 97 %), 41 % on the bank's stabs phrase; centroid 713 Hz
   (drone 102): the top is open, not a pure sub.
 * **Stack and slop:** by the DETUNE law the eight voices spread over 9.4 cents (step 1.3); with VINTAGE 40 each card also sits
   a fixed few cents off and wanders (s.d. 1.2–1.9 cents), so the *wander* is the same size as the designed spread:
   it reads as one thick voice that breathes, not as eight distinct pitches. Measured beating is 0.42 Hz at that analysis's floor (it cannot tell B from C); C spreads 23.4 cents.
-* **Attack and chop:** the filter envelope opens each note (1247 Hz in the first frames, 719 Hz in the body, +3.9 dB over the body); amp attack 0.7 ms; release 26 ms to −20 dB,
+* **Attack and chop:** the filter envelope opens each note (1224 Hz in the first frames, 725 Hz in the body, +4.0 dB over the body); amp attack 0.7 ms; release 26 ms to −20 dB,
   62 ms to −60 dB — the chopped roots stop clean (no click: step -48 dBFS at the release against -27 in the body).
-* **Headroom:** peak -7.5 dBFS with eight voices on VOLUME 65 (the drone peaked -2.8 at 100): room for GROWL / CHEW / a hot MASTER, and for the SLOBBER ride.
-* Cost (host instr/sample, relative; **not a device number**: check the GLOBAL page's render time, budget 5800 µs, aim < 2900): worst case 2210 (idle 682 + load 1528), the original 2588 (idle 589 + load 1999).
+* **Headroom:** peak -6.2 dBFS with eight voices on VOLUME 65 (the drone peaked -2.8 at 100): room for GROWL / CHEW / a hot MASTER, and for the SLOBBER ride.
+* Cost (host instr/sample, relative; **not a device number**: check the GLOBAL page's render time, budget 5800 µs, aim < 2900): worst case 1616 (idle 104 + load 1512), the original 2588 (idle 589 + load 1999).
 
 ## The axes chosen, and why
 
 1. **Width (DETUNE with VINTAGE)** — "slight detune" is a matter of degree and the engine's law is quadratic. B = DETUNE 28 / VINTAGE 40 (≈ ±4.7 cents), C = 44 / 65 (±12 cents,
    wander s.d. 2.0–3.1 cents, snap down to +2.0 dB). B is the tight reading.
-2. **Bite (CUTOFF with RESO and GROWL)** — D opens the filter all the way (CUTOFF 127), RESO 12 → 26, GROWL 18 → 42: centroid 1220 Hz, the biggest brightness of the four, same weight (low share 84 %).
+2. **Bite (CUTOFF with RESO and GROWL)** — D opens the filter all the way (CUTOFF 127), RESO 12 → 26, GROWL 0 → 42 (BIAS 20): centroid 1220 Hz, the biggest brightness of the four, same weight (low share 84 %).
 
-Not varied but flagged uncertain: the sub's level (OSC 2 LEVEL 100 = OSC 1 − 1 dB), the filter-envelope snap (ENV AMT 86, decay 46 ms, sustain 35), SPREAD 50.
+Not varied but flagged uncertain: the sub's level (OSC 2 LEVEL 100 = OSC 1 at 110 minus 1.6 dB: the level knob is a square law), the filter-envelope snap (ENV AMT 86, decay 46 ms, sustain 35), SPREAD 50.
 
 ## Rounds
 
 * **Round 0 (silent, measured, not for ears):** a sweep of about 20 host renders on the low-unison and riff phrases to fix the design: DETUNE 16–46 with VINTAGE 22–65; CUTOFF 95 / 110 / 127;
-  GROWL 0 / 18 / 40; OSC 2 LEVEL 60 / 100 (60 loses 1.8 dB and 2 (phrase e) to 9 (riff) points of low share); UNISON 6 vs 8 voices (6 loses 1.7 dB). Findings that fixed the design: the stack at VOLUME 100 peaks near −3 dBFS
-  (so VOLUME lands at 65); GROWL costs ~3 dB of peak at equal RMS (it compresses: kept as "a touch"); the filter envelope with a low sustain gives the snap; the drone's tail and spring are the first things to go.
+  GROWL 0 / 18 / 30 / 42 (measured on B afterwards); OSC 2 LEVEL 60 / 100 (60 loses 1.8 dB and 2 (phrase e) to 9 (riff) points of low share); UNISON 6 vs 8 voices (6 loses 1.7 dB). Findings that fixed the design: the stack at VOLUME 100 peaks near −3 dBFS
+  (so VOLUME lands at 65); the filter envelope with a low sustain gives the snap; the drone's tail and spring are the first things to go. **GROWL 18 is inert here** (peak 0.25 dB lower, centroid +4 Hz) and costs ~580 host instr/sample always on, so B has none; GROWL 42 compresses (peak −1.6 dB) and darkens (centroid −78 Hz), which is why D's bite comes from the open filter and RESO, with GROWL as the optional edge.
 * **Round 1 (for ears)** — four variants A–D. Total so far: 1 silent + 0 listening. Budget: 1 more listening round.
 
 ## Surprises and things hard with existing controls
 
-* **Phrase (b) is the wrong test for this patch**: a unison plays only the top note of a chord; the level is read on (e) and (b) is in the table (-18.4 vs -18.1).
+* **Phrase (b) is the wrong test for this patch**: a unison plays only the top note of a chord; the level is read on (e) and (b) is in the table (-18.4 vs -17.9).
 * **A variant's audio is not bit-exact against its program-load render for every patch.** CUTOFF / RESO slew in with `x += (target − x) >> 6`, which stops
   up to 63/256 st short when it approaches from below, so the same patch lands a fraction of a semitone apart depending on the patch it came from; a DRAIN patch's
   spring state also starts at another moment. Variant A is therefore rendered through the base firmware's own program path (it *is* the shipping original); B–D (and the
   committed slot, whose audio matched variant B bit for bit here) run INIT + parameters. Measured error of the INIT path vs the program path for the originals: −27 … −43 dB.
 * **GROWL leaves a constant DC offset after the note** (the 10 Hz DC blocker's integer rounding sticks: −44 … −53 dBFS, mono more than stacks). Inaudible, an engine trait
-  (left alone, no engine changes); the release-time columns subtract it.
+  (left alone, no engine changes); the release-time columns subtract it. In this batch only the variants with GROWL on (30 D, 04 C, 25 D) have it.
 * **18 Roto-scopo and 21 Cowl Shadow keep `PF_DRONE_UNI`**: THE DØG got its own array, so their bytes and renders are untouched (proved below).
+* **GROWL's low settings are inaudible by the numbers and not free.** On this patch 0 / 18 / 30 / 42 read peak −8.6 / −8.3 / −9.1 / −10.2 dBFS and centroid 713 / 717 / 676 / 635 Hz (the clip's pre-low-pass closes as GROWL rises): it compresses and darkens rather than brightens. Whether D's 42 *sounds* nastier is for the ears.
 * **No real sub-bass control.** The "floor" is OSC 2 at −12 st, and at A0 the fundamental is 27.5 Hz; most of the felt weight is the saw's lower harmonics. Nothing in the engine can add a true sub-octave sine.
 * Phrase (e)'s level includes an A0 note whose fundamental sits below small speakers: the RMS counts it, the ears on a laptop will not hear it.
 
