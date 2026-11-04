@@ -1,0 +1,11 @@
+# VOICING PHRASE (c): ONE HELD NOTE RELEASED.  A2 (MIDI 45, 110 Hz) held 2.4 s, then 2.6 s for the tail (read: release
+# timing and sputter; the pitch wander and the detune beating are read over its held part), then two short notes (A3
+# 120 ms, A2 150 ms) to hear what the sputter does to a note that never gets to sustain.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 45 100
+5400 midi 0x80 45 0
+8000 midi 0x90 57 100
+8120 midi 0x80 57 0
+9200 midi 0x90 45 100
+9350 midi 0x80 45 0
+11550 end

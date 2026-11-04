@@ -1,0 +1,41 @@
+# VOICING PHRASE (b): FIFTH-BASED CHORD STABS.  Seven stabs on a 120 BPM eighth grid (steps 0 3 6 8 10 12 14 of a 16-step
+# bar pair), gate 180 ms, velocities 95-112.  Chords: E2+B2 | E2+B2+E3 | G2+D3 | A2+E3 | A2+E3+A3 | D2+A2 | E2+B2+E3
+# (MIDI 40/47/52, 43/50, 45/52/57, 38/45): fifths, three of them with the octave on top (3 notes: a DUAL patch needs 6
+# cards for those, so a short POLY window steals -- on purpose, part of the test).
+# THE LOUDNESS REFERENCE IS READ HERE: RMS over the note-on region (note-on .. note-off of the stabs), plus peak.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 40 110
+3000 midi 0x90 47 110
+3180 midi 0x80 40 0
+3180 midi 0x80 47 0
+3750 midi 0x90 40 100
+3750 midi 0x90 47 100
+3750 midi 0x90 52 100
+3930 midi 0x80 40 0
+3930 midi 0x80 47 0
+3930 midi 0x80 52 0
+4500 midi 0x90 43 105
+4500 midi 0x90 50 105
+4680 midi 0x80 43 0
+4680 midi 0x80 50 0
+5000 midi 0x90 45 110
+5000 midi 0x90 52 110
+5180 midi 0x80 45 0
+5180 midi 0x80 52 0
+5500 midi 0x90 45 95
+5500 midi 0x90 52 95
+5500 midi 0x90 57 95
+5680 midi 0x80 45 0
+5680 midi 0x80 52 0
+5680 midi 0x80 57 0
+6000 midi 0x90 38 105
+6000 midi 0x90 45 105
+6180 midi 0x80 38 0
+6180 midi 0x80 45 0
+6500 midi 0x90 40 112
+6500 midi 0x90 47 112
+6500 midi 0x90 52 112
+6680 midi 0x80 40 0
+6680 midi 0x80 47 0
+6680 midi 0x80 52 0
+8280 end

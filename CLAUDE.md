@@ -321,6 +321,9 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
 - `DOG-5-art-direction.md` + `DOG-5-chapter-specs.md` — procedural engines, dials, dirty-area budget, strobe
   clamps, per-patch rows (⚠️ ignore the reaper/orb/Fifth-Seal framing — the mechanics are canon, the
   packaging is the dog now, per the character brief; Moonshine is magenta not purple).
+- `voicing/README.md` (+ `voicing/03-half-life.md`, one log per voiced patch) — the by-ear voicing kit: audition phrases
+  (`tests/voicing/phrases/`), the **bank reference level (−18.0 dBFS RMS on the stabs phrase)**, the VINTAGE-in-cents table,
+  the measurement tools (`tests/voicing/`), renders in `listen/voicing/<slot>-<name>/`. Read before voicing any patch.
 - `CLAUDE.obervave.md` — the base project's original notes (where things are in the code; still useful).
 
 **ARCHIVE — historical, do NOT build from (`dog5-docs/_archive/`):**

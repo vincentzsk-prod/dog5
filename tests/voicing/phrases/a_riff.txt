@@ -1,0 +1,34 @@
+# VOICING PHRASE (a): LOW CHOPPED RIFF.  Two bars of eighth notes at 120 BPM (250 ms a step), A1 root (MIDI 33, 55 Hz) up to
+# A2, minor third / flat seventh / fourth, two rests, gate 150 ms (60 %), velocities 90-112 with accents on the beats.
+# It judges: weight in the low register, the chop (what the gate does to the tail), release sputter on short notes.
+# Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.  Notes start at 3000 ms (the
+# splash takes 2.4 s).  Note-on to note-off intervals are the "note-on region" the loudness reference is read over.
+3000 midi 0x90 33 112
+3150 midi 0x80 33 0
+3250 midi 0x90 33 90
+3400 midi 0x80 33 0
+3500 midi 0x90 45 100
+3650 midi 0x80 45 0
+3750 midi 0x90 33 90
+3900 midi 0x80 33 0
+4000 midi 0x90 36 104
+4150 midi 0x80 36 0
+4500 midi 0x90 31 100
+4650 midi 0x80 31 0
+4750 midi 0x90 33 90
+4900 midi 0x80 33 0
+5000 midi 0x90 33 112
+5150 midi 0x80 33 0
+5250 midi 0x90 45 100
+5400 midi 0x80 45 0
+5500 midi 0x90 33 90
+5650 midi 0x80 33 0
+6000 midi 0x90 38 104
+6150 midi 0x80 38 0
+6250 midi 0x90 36 100
+6400 midi 0x80 36 0
+6500 midi 0x90 31 96
+6650 midi 0x80 31 0
+6750 midi 0x90 33 108
+6900 midi 0x80 33 0
+8500 end
