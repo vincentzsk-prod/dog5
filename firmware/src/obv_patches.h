@@ -186,7 +186,7 @@ static const uint8_t PF_V_SYNC[] = {P_O1_LVL, 80, P_O2_LVL, 127, P_O2_SEMI, 31, 
     P_CUTOFF, 92, P_RESO, 24, P_FENV_AMT, 88, P_DRIVE, 20, P_FD, 78, P_FS, 28, P_FR, 30, P_AA, 0, P_AS, 127,
     P_AR, 30, P_MODE, M_UNISON, P_UNI_N, 2, P_UNI_DET, 22, P_GLIDE, 20, P_VOLUME, 91, P_DLY_TIME, DD_16,
     P_DLY_FB, 18, P_DLY_MIX, 12, X};
-/* 30 THE D\xD8G (voiced 4 Nov, round 2 on 5 Nov: dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's and 21 Cowl Shadow's): the
+/* 30 THE D\xD8G (voiced 4 Nov, round 2 on 5 Nov: dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's; 21 Cowl Shadow has its own since Batch 2A): the
  * signature low stack. UNISON, all 8 voices on one note, DETUNE 35 (the stack spans ~15 cents; round 1 had ~9, the drone ~78), a sub-octave saw under every
  * voice, the filter wide (CUTOFF 104, ENV AMT 88 snaps it open on the attack, KEY TRK 60, sustain 40), a 0.7 ms attack and a 21 ms release
  * for a punchy chop, SPREAD 50 so the bass stays put in a mono PA, per-voice DRIVE 100 (FILTER+ page: warmth and weight without compression or
@@ -203,6 +203,14 @@ static const uint8_t PF_THE_DOG[] = {P_O1_LVL, 114, P_O2_LVL, 94, P_O2_SEMI, 12,
 static const uint8_t PF_TITANIC[] = {P_O2_SEMI, 31, P_CUTOFF, 66, P_RESO, 12, P_FENV_AMT, 84, P_KEYTRK, 12, P_FA, 62,
     P_FD, 90, P_FS, 70, P_FR, 85, P_AA, 60, P_AS, 127, P_AR, 92, P_MODE, M_DUAL, P_VINTAGE, 40, P_SPREAD, 110,
     P_VOLUME, 93, P_POLY_N, 6, X};
+/* 21 Cowl Shadow (voiced Nov 2026, dog5-docs/voicing/21-cowl-shadow.md; PF_DRONE_UNI stays as 18 Roto-scopo's): a brass wall that takes about 10 s to bloom. UNISON, 5 voices of two
+ * saws on the same pitch (DETUNE 40: the stack spans +-9.8 cents), a dark start (CUTOFF 40) and the filter envelope's longest attack (ATTACK 127 = 10 s, ENV AMT 118, KEY TRK 127 so the bloom
+ * is the same at any pitch), both sustains full (the gate held open), a 0.9 s amp attack. Played and held, the centroid climbs 2.5 octaves in about 8 s (10 % of the climb at 2.8 s, 90 % at
+ * 7.1 s, on A2); let go early it is a dark short note that fades (no latch in the engine: the bloom happens while the key is down), after a long hold the filter closes with the level
+ * (RELEASES 2.7 / 2.3 s). Dry, no LFO, no spring. VOLUME 79 puts it on the bank reference: -18.1 dBFS RMS over +6..+10 s of the A2 hold (phrase f2) */
+static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14, P_FENV_AMT, 118, P_KEYTRK, 127,
+    P_FA, 127, P_FS, 127, P_FR, 110, P_AA, 96, P_AS, 127, P_AR, 108, P_MODE, M_UNISON, P_UNI_N, 5, P_UNI_DET, 40,
+    P_VINTAGE, 45, P_SPREAD, 100, P_VOLUME, 79, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -219,7 +227,7 @@ static const factory_t FACTORY[NFACT] = {
     {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
-    {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
+    {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
     {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
 };

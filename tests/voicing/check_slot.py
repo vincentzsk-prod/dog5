@@ -26,12 +26,17 @@ def main():
     diff = {k: (cur[k], res[k]) for k in res if cur.get(k) != res[k]}
     print(f"slot {slot:02d}: resolved bytes vs variant {key}:", "IDENTICAL" if not diff else f"DIFFER {diff}")
     exe = K.build_host()
-    for ph in spec["phrases"]:
-        a, _ = K.render(exe, ph, program=slot - 1, tag="chk_a")
-        b, _ = K.render(exe, ph, params=res, tag="chk_b")
-        same = bool((a == b).all())
-        err = None if same else float(10 * np.log10(max(((a - b) ** 2).mean(), 1e-9) / (a ** 2).mean()))
-        print(f"  {ph:11s}", "bit-identical" if same else f"differs by {err:.1f} dB (error re signal)")
+    # the slot is loaded from the boot patch (CUTOFF / RESO slew in from wherever it was: a floor of up to 63/256 st); the variant is built over INIT.  Both from INIT
+    # first (program 33 at 2000 ms) remove that: then the two should match bit for bit
+    for label, extra in (("from boot", ()), ("both from INIT", ("2000 midi 0xC0 32 0",))):
+        out = []
+        for ph in spec["phrases"]:
+            a, _ = K.render(exe, ph, program=slot - 1, extra=extra, tag="chk_a")
+            b, _ = K.render(exe, ph, params=res, extra=extra, tag="chk_b")
+            same = bool((a == b).all())
+            err = None if same else float(10 * np.log10(max(((a - b) ** 2).mean(), 1e-9) / (a ** 2).mean()))
+            out.append(f"{ph} " + ("bit-identical" if same else f"differs {err:.1f} dB"))
+        print(f"  audio, program-load path vs variant path, {label}: " + "; ".join(out))
     sys.exit(1 if diff else 0)
 
 
