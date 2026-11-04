@@ -201,13 +201,13 @@ static const uint8_t PF_THE_DOG[] = {P_O1_LVL, 114, P_O2_LVL, 94, P_O2_SEMI, 12,
 static const uint8_t PF_TITANIC[] = {P_O2_SEMI, 31, P_CUTOFF, 66, P_RESO, 12, P_FENV_AMT, 84, P_KEYTRK, 12, P_FA, 62,
     P_FD, 90, P_FS, 70, P_FR, 85, P_AA, 60, P_AS, 127, P_AR, 92, P_MODE, M_DUAL, P_VINTAGE, 40, P_SPREAD, 110,
     P_VOLUME, 93, P_POLY_N, 6, X};
-/* 21 Cowl Shadow (voiced Nov 2026, dog5-docs/voicing/21-cowl-shadow.md; PF_DRONE_UNI stays as 18 Roto-scopo's): a brass wall that takes about 10 s to bloom. UNISON, 5 voices of two
- * saws on the same pitch (DETUNE 40: the stack spans +-9.8 cents), a dark start (CUTOFF 40) and the filter envelope's longest attack (ATTACK 127 = 10 s, ENV AMT 118, KEY TRK 127 so the bloom
- * is the same at any pitch), both sustains full (the gate held open), a 0.9 s amp attack. Played and held, the centroid climbs 2.5 octaves in about 8 s (10 % of the climb at 2.8 s, 90 % at
- * 7.1 s, on A2); let go early it is a dark short note that fades (no latch in the engine: the bloom happens while the key is down), after a long hold the filter closes with the level
- * (RELEASES 2.7 / 2.3 s). Dry, no LFO, no spring. VOLUME 79 puts it on the bank reference: -18.1 dBFS RMS over +6..+10 s of the A2 hold (phrase f2) */
+/* 21 Cowl Shadow (voiced Nov 2026, approved variant C: dog5-docs/voicing/21-cowl-shadow.md; PF_DRONE_UNI stays as 18 Roto-scopo's): a brass wall that blooms in about 5 s. UNISON, 5 voices of two
+ * saws on the same pitch (DETUNE 40: the stack spans +-9.8 cents), a dark start (CUTOFF 40) and a 5.3 s filter attack (ATTACK 119, ENV AMT 118, KEY TRK 127 so the bloom is the same at any
+ * pitch), both sustains full (the gate held open), a 0.6 s amp attack. Held, the centroid climbs 3.1 octaves on A2 (10 % of the climb at 0.8 s, 90 % at 4.1 s); let go early it is a dark short
+ * note that fades (no latch in the engine: the bloom happens while the key is down); after a long hold the filter closes with the level (RELEASES 2.7 / 2.3 s). Dry, no LFO, no spring.
+ * VOLUME 79 puts it on the bank reference: -18.0 dBFS RMS over +6..+10 s of the A2 hold (phrase f2) */
 static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14, P_FENV_AMT, 118, P_KEYTRK, 127,
-    P_FA, 127, P_FS, 127, P_FR, 110, P_AA, 96, P_AS, 127, P_AR, 108, P_MODE, M_UNISON, P_UNI_N, 5, P_UNI_DET, 40,
+    P_FA, 119, P_FS, 127, P_FR, 110, P_AA, 90, P_AS, 127, P_AR, 108, P_MODE, M_UNISON, P_UNI_N, 5, P_UNI_DET, 40,
     P_VINTAGE, 45, P_SPREAD, 100, P_VOLUME, 79, X};
 /* 09 Skeenhead (voiced Nov 2026, dog5-docs/voicing/09-skeenhead.md; was PF_CLAV_PLUCK, this slot's alone): the reggae off-beat stab. One tight square (a 50 % pulse), a resonant 12 dB low-pass
  * (RESO 62) whose envelope falls in ~39 ms to a cutoff that rests near 115 Hz, under an A3 (KEY TRK 100) = the plop (the first 23 ms of a stab are 2.2x brighter than the next 67), a short pluck (amp decay

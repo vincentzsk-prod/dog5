@@ -4,8 +4,7 @@ Nov 2026. Brief (Batch 2A, "weight and space"): *a brass wall that takes about 1
 patch.* A CS-80 brass swell stretched (Oberheim OB-Xa brass body, Jupiter-8 blare at the top of the swell, Korg Mono/Poly unison drift). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10
 Batch 2A). Listening files (on the `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/21-cowl-shadow/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
-**Status: B (centre) COMMITTED as the recommended variant, awaiting Vincent's ears.** A, C, D are render-only. **Round count so far: 1 silent measured round (variant-table passes, incl. a sweep of
-CUTOFF / ENV AMT pairs that left the bloom shape unchanged) + 0 listening rounds.** No voice card yet.
+**Status: APPROVED AS IS (Vincent, after listening to Batch 2A): variant C (bloom in about 5 s), committed in this step** (B was committed first; the tree now holds C: FILTER ATTACK 127 -> 119, AMP ATTACK 96 -> 90, nothing else changed; VOLUME 79 still gives -18.0 dBFS). A, B, D stay render-only. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/21-cowl-shadow.md`.
 
 ## 0. Before
 
@@ -94,4 +93,11 @@ The first second is 97 % in 60-150 Hz (the fundamental alone, very quiet): a dar
 
 ## Round count
 
-1 silent measured round, 0 listening rounds.
+1 silent measured round + 1 listening round (approved).
+
+## Committed variant C (what the tree holds now) — measured numbers
+
+FILTER ATTACK 127 -> **119** (5.3 s), AMP ATTACK 96 -> **90** (0.6 s); everything else as in B's table above. Resolved bytes equal variant C (`check_slot.py 21 C`); audio bit-identical when both are loaded from INIT.
+Level **-18.0 dBFS** on the bloomed state (+6..+10 s of the A2 hold), VOLUME 79; **phrase (b) -31.3 dBFS** (difference -13.3 dB; K-weighted -31.8); peak -6.8; worst-case CPU **1359** host instr/sample (idle 104 + load 1255).
+Bloom: 231 Hz at the start -> 2020 Hz (3.1 octaves), 10 % / 90 % of the climb at 0.8 s / 4.1 s, first second -21.6 dB. Early release (A2 held 2.4 s): centroid 410 Hz at the key-up (the bloomed state 2020), tail -20 / -40 dB at 0.84 / 2.0 s.
+After a 10 s hold: -20 / -40 / -60 dB at 1.2 / 2.2 / 3.8 s. Other 31 programs byte-identical to before this step (identical.py).

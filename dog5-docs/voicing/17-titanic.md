@@ -5,8 +5,7 @@ weight. Tape dropouts (CHEW) optional garnish.* A CS-80 played low and cold (Moo
 (§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/17-titanic/`; `README.md` and `numbers.md`
 there are the full tables and are on the voicing branch too.
 
-**Status: B (centre) COMMITTED as the recommended variant, awaiting Vincent's ears.** A, C, D are render-only. **Round count so far: 1 silent measured round (several quick passes of the
-variant table) + 0 listening rounds.** No voice card yet (written after approval).
+**Status: APPROVED AS IS (Vincent, after listening to Batch 2A): variant B, as committed.** C and D stay render-only. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/17-titanic.md`.
 
 ## 0. Before
 
