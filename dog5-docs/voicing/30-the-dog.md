@@ -3,12 +3,13 @@
 4 Nov 2026. Brief (Batch 1A, the attack set): *every voice stacked on one note (unison), slight detune, filter wide open, low register, floor-shaking bass.* Minimoog-in-unison weight with a Taurus floor, SH-101 punch, a little MS-20 bite. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
 files, the numbers and the variants table: `listen/voicing/batch-01a/30-the-dog/` (`README.md` there is the full table).
 
-**Status: ROUND 2 DONE (silent measured round); AWAITING LISTENING ROUND 2.** Round 1: Vincent listened to B on 4 Nov and kept it as the starting point
-(punch and slight dryness are right; the stack and bottom end read thin; wants it a bit wider but clearly under C, a little brighter and warmer, driven a bit harder
-but not fuzzy, and "a LOT of presence"). Round 2 (5 Nov) is in `listen/voicing/batch-01a/30-the-dog/round2/` (B re-rendered as the anchor, E fuller+wider, F warm drive,
-G the edge of fuzzy, H presence; README there has every table). **H is committed as slot 30** (the others are render-only); B's round-1 list is in this file's history and in
-`listen/voicing/batch-01a/30-the-dog/results.json`. No voice card yet.
-**Round count: 2 silent measured rounds + 1 listening round done (round 1); listening round 2 pending.** Sections below the Round 2 block are the round-1 record.
+**Status: APPROVED (Vincent, 5 Nov 2026, after listening to round 2): variant H, exactly as committed.** No further changes to slot 30. A, C, D (round 1) and B, E, F, G (round 2) stay render-only in
+`listen/voicing/batch-01a/30-the-dog/` and `.../round2/` (H is `round2/H_presence_*`). Round 1: Vincent kept B as the starting point (punch and slight dryness right; the stack and bottom end read thin; wanted it a bit wider
+but clearly under C, a little brighter and warmer, driven a bit harder but not fuzzy, and "a LOT of presence"); round 2 answered that and H was approved.
+**Final round count: 2 listening rounds + 2 silent measured rounds.** Voice card: `cards/30-the-dog.md`.
+
+**Level note — not a precedent.** H deliberately sits at **−16.5 dBFS RMS** on its level phrase (+1.5 dB over the −18.0 bank reference, the top of the ±1.5 dB tolerance band; (b) reads −17.0), peak −7.3 dBFS
+(limit −4), because this is the flagship and presence was the brief. Future batches should not treat the top of the band as a default: match to −18.0 unless a patch's brief, approved by Vincent, says otherwise.
 
 ## ROUND 2 (5 Nov)
 
