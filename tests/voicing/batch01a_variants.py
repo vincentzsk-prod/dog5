@@ -9,6 +9,7 @@ DOG = {   # the shared moves: a punchy low stack instead of the drone it was (sl
     "UNI_N": 8, "O2_SEMI": 12, "O2_LVL": 100, "O1_LVL": 110, "RESO": 12, "FA": 10, "FD": 58, "FS": 35, "AA": 4, "AD": 70, "AS": 127,
     "AR": 48, "FR": 50, "LFO_FLT": 0, "SPREAD": 50, "REV_MIX": 0, "GROWL": 18, "GRL_BIAS": 20,
     "UNI_DET": 28, "VINTAGE": 40, "CUTOFF": 100, "FENV_AMT": 86,
+    "LFO_RATE": 70, "REV_SIZE": 80, "REV_DAMP": 60,     # (the drone's leftovers, inert with LFO FILTER 0 and DRAIN 0: back to the defaults)
 }
 
 # ---- 31 Fi(l)fth: the fifth in every voice ---------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ FIFTH = {
 # ---- 04 V-Sync ------------------------------------------------------------------------------------------------------------------
 SYNC = {   # the original's O2 +7 st / SYNC / MONO kept; the sweep deepened, the master saw brought in under it, the tail cut
     "O1_LVL": 50, "O2_LVL": 127, "ENV_O2": 112, "FD": 78, "FS": 28, "CUTOFF": 92, "RESO": 24, "FENV_AMT": 88,
-    "AA": 0, "AD": 70, "AS": 127, "AR": 30, "FR": 30, "DLY_TIME": 0, "DLY_MIX": 12, "DLY_FB": 18, "REV_MIX": 0, "DRIVE": 20,
+    "AA": 0, "AD": 70, "AS": 127, "AR": 30, "FR": 30, "DLY_TIME": 0, "DLY_MIX": 12, "DLY_FB": 18, "REV_MIX": 0, "REV_SIZE": 80, "DRIVE": 20,
 }
 
 # ---- 25 SAWTOOTH --------------------------------------------------------------------------------------------------------------

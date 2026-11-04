@@ -169,6 +169,14 @@ static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
 static const uint8_t PF_HALF_LIFE[] = {P_MODE, M_DUAL, P_UNI_DET, 60, P_POLY_N, 6, P_SPREAD, 110, P_VINTAGE, 90,
     P_O2_WAVE, W_SAW, P_O2_SEMI, 12, P_O2_LVL, 80, P_CUTOFF, 76, P_RESO, 30, P_FENV_AMT, 96, P_AR, 62,
     P_LFO_SHAPE, L_SQR, P_LFO_RATE, 119, P_LFO_DELAY, 19, P_LFO_AMP, 100, P_VOLUME, 112, X};
+/* 30 THE D\xD8G (voiced 4 Nov, dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's and 21 Cowl Shadow's): the signature
+ * low stack. UNISON, all 8 voices on one note, DETUNE 28 (the stack spans ~9 cents, the drone's was ~78), a sub-octave saw under every
+ * voice, the filter wide (CUTOFF 100, ENV AMT 86 snaps it open on the attack and settles), a 0.7 ms attack and a 21 ms
+ * release for a punchy chop, SPREAD 50 so the bass stays put in a mono PA, a touch of GROWL for weight, no spring. VOLUME 65 puts it
+ * on the bank reference (-18.0 dBFS RMS on the low-unison phrase, tests/voicing) */
+static const uint8_t PF_THE_DOG[] = {P_O2_SEMI, 12, P_CUTOFF, 100, P_RESO, 12, P_FENV_AMT, 86, P_FA, 10, P_FD, 58,
+    P_FS, 35, P_FR, 50, P_AA, 4, P_AS, 127, P_AR, 48, P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 28, P_VINTAGE, 40,
+    P_SPREAD, 50, P_VOLUME, 65, P_GRL_BIAS, 20, P_GROWL, 18, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -187,5 +195,5 @@ static const factory_t FACTORY[NFACT] = {
     {"Titanic", PF_DUAL_SAW},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_POLY_BRASS},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
-    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_DRONE_UNI},     {"Fi(l)fth", PF_FIFTHS_LEAD},  {"Init bruv?", PF_INIT},
+    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTHS_LEAD},  {"Init bruv?", PF_INIT},
 };

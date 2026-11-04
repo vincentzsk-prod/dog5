@@ -118,7 +118,7 @@ def emit(name, params):
     SYMD = {"W_OFF": 0, "W_SAW": 1, "W_PLS": 2, "W_BOTH": 3, "M_POLY": 0, "M_DUAL": 1, "M_UNISON": 2, "M_MONO": 3, "F_LP12": 0, "F_HP12": 1,
             "F_BP12": 2, "F_NOTCH": 3, "F_LP24": 4, "F_SEM": 5, "L_TRI": 0, "L_SAW": 1, "L_RAMP": 2, "L_SQR": 3, "L_SH": 4, "L_RND": 5,
             "LP_SYNC": 0, "LP_FREE": 1, "LP_SPREAD": 2, "TO_O1": 0, "TO_O2": 1, "TO_BOTH": 2, "DD_16": 0, "DD_8T": 1, "DD_8": 2, "DD_8D": 3,
-            "DD_4": 4, "DD_4D": 5, "DD_2": 6}
+            "DD_4": 4, "DD_4D": 5, "DD_2": 6, "A_OFF": 0, "D_16": 3}
     items = []
     for k, i in sorted(K.PARAM_IDS.items(), key=lambda kv: kv[1]):
         if k not in params:
