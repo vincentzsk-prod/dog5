@@ -1,0 +1,41 @@
+# VOICING PHRASE (h): SURF BASS (Batch 2A, for 11 Slapback Strut).  Single-note staccato eighths at 120 BPM (250 ms a step), A1 (33) up to A2 (45),
+# gate 100 ms (40 % of a step, so a free-time echo of ~80 ms is a separate slap, not smeared into the note), velocities 98-112.  Two bars of
+# eight: A1 A1 A2 A1 C2 A1 D2 E2 | A1 A1 A2 A1 G2 E2 D2 C2, a 750 ms rest, then one last A1 and 2.5 s of nothing for the echo tail.
+# Judges: the pluck, the roundness of the single oscillator, how loud and how long the slap is, what the spring does (or does not do) under 150 Hz.
+# Level: RMS over the note-on region (17 notes x 100 ms; echoes and tails excluded), the echo reported separately.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 33 104
+3100 midi 0x80 33 0
+3250 midi 0x90 33 98
+3350 midi 0x80 33 0
+3500 midi 0x90 45 110
+3600 midi 0x80 45 0
+3750 midi 0x90 33 100
+3850 midi 0x80 33 0
+4000 midi 0x90 36 106
+4100 midi 0x80 36 0
+4250 midi 0x90 33 100
+4350 midi 0x80 33 0
+4500 midi 0x90 38 108
+4600 midi 0x80 38 0
+4750 midi 0x90 40 112
+4850 midi 0x80 40 0
+5000 midi 0x90 33 104
+5100 midi 0x80 33 0
+5250 midi 0x90 33 98
+5350 midi 0x80 33 0
+5500 midi 0x90 45 110
+5600 midi 0x80 45 0
+5750 midi 0x90 33 100
+5850 midi 0x80 33 0
+6000 midi 0x90 43 106
+6100 midi 0x80 43 0
+6250 midi 0x90 40 108
+6350 midi 0x80 40 0
+6500 midi 0x90 38 108
+6600 midi 0x80 38 0
+6750 midi 0x90 36 112
+6850 midi 0x80 36 0
+8350 midi 0x90 33 108
+8450 midi 0x80 33 0
+11000 end
