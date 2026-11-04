@@ -23,6 +23,9 @@ arp/delay-synced patches see the same tempo.
 | `b_stabs.txt` | **(b) fifth-based stabs**: root + fifth (+ octave) on the eighth grid (E2+B2, E2+B2+E3, G2+D3, A2+E3, A2+E3+A3, D2+A2, E2+B2+E3), 7 stabs, gate 180 ms, velocities 95–112 | 7 stabs, 4 s + tail | chord body, voice stealing (3-note stabs need 6 cards in DUAL), brightness, **the loudness reference is read here** |
 | `c_held.txt` | **(c) one held note released**: A2 (MIDI 45, 110 Hz) held 2.4 s, 2.6 s tail, then A3 for 120 ms and A2 for 150 ms | ≈ 8.8 s | slop and detune beating over the held part, release timing and sputter, what the tail does to a short note |
 
+| `d_lead.txt` | **(d) single-note lead** (Batch 1A, for mono leads): a legato run A3 C4 D4 E4 A4 (each note-on 50 ms *before* the previous note-off, 350 ms apart), the last A4 held 1 s, a staccato run (six 120 ms notes, 300 ms apart), one A3 held 800 ms | ≈ 7 s + tail | the sweep of one note, legato vs retrigger, the dead stop. **Replaces (b) as the level phrase for a mono lead** (V-Sync) |
+| `e_lowuni.txt` | **(e) low unison** (Batch 1A, for stacked basses): A1 (55 Hz) held 3 s, A0 (27.5 Hz) held 1.5 s, chopped roots (eighths, 130 ms gate: A1 A1 A2 A1 G1 A1 E1 A1), A2 held 800 ms | ≈ 10 s + tail | weight under 150 Hz, the width of the stack, the chop, headroom with eight voices on one note. **Replaces (b) as the level phrase for a unison bass** (THE DØG) |
+
 Anything new goes in the same folder with a header comment saying what it judges, and gets one line in
 `PHRASE_FILES` (voicekit.py).
 
@@ -31,6 +34,8 @@ Anything new goes in the same folder with a header comment saying what it judges
 ```
 python3 tests/voicing/voicekit.py bank            # RMS / K-RMS / peak of all 32 factory slots on phrase (b)
 python3 tests/voicing/half_life.py                # the 03 Half-Life round (variants -> listen/voicing/03-half-life/ + README)
+python3 tests/voicing/batch01a.py [--only SLOT] [--quick]   # Batch 1A (30, 31, 04, 25): variants -> listen/voicing/batch-01a/<NN-name>/
+python3 tests/voicing/batch01a.py --emit SLOT KEY # the C array (overrides over the defaults) of a variant, ready for obv_patches.h
 build/voicing/dump_patch 3                        # slot 3 resolved (defaults + overrides), "*" = differs from the default
 build/voicing/dump_patch all                      # slot, name, hash of the 96 patch bytes (the byte-identical check)
 ```
@@ -127,7 +132,7 @@ sputters on release" is made from a gate-chop LFO that fades in around the time 
 ```
 git archive <commit before> | tar -x -C build/voicing/base      # the firmware as it was
 # build both host apps, render all 32 slots on phrase (b) with each, compare byte for byte:
-python3 tests/voicing/identical.py build/voicing/base            # exit 0 = only the named slot differs
+python3 tests/voicing/identical.py build/voicing/base 30,31,4,25  # exit 0 = only the named slots differ (default: slot 3)
 build/voicing/dump_patch all                                     # and the 96-byte patch hashes, before and after
 ```
 
@@ -146,3 +151,41 @@ build/voicing/dump_patch all                                     # and the 96-by
   **Limitation: the chop follows note age, not gate close.** There is no release-triggered modulation, so a note held past ~170 ms
   spits all the way through, and notes under ~100 ms catch only the start of it. A true release-only sputter needs an engine change.
 * Level-match last, with VOLUME; the kit's `half_life.py` is the template for a round (variants table, trim to reference, measure, write).
+
+## 8. Batch lessons from 1A (30 THE DØG, 31 Fi(l)fth, 04 V-Sync, 25 SAWTOOTH)
+
+* **The batch kit is data, not code:** `tests/voicing/batch01a_variants.py` holds each patch's variant table (changes over the original, which `batch01a.py`
+  reads from the base tree's own resolver, so it can never drift), the phrases it is judged on and its texts; `batch01a.py` trims VOLUME to the reference on the patch's
+  *level phrase*, measures, writes the WAVs, `README.md`, `numbers.md`, `results.json`. A new batch is a new table.
+* **A level phrase per patch:** (b) for chord patches, (d) for a mono lead, (e) for a unison bass; (b) is always reported next to it, with the difference.
+* **A variant's audio is not bit-exact against the program-load render.** `CUTOFF` / `RESO` slew in with `x += (target − x) >> 6`, which stops up to 63/256 st
+  *short* when approaching from below (a floor), so the same patch lands a fraction of a semitone apart depending on where it came from; a DRAIN patch's spring
+  also starts at another moment. Measured error −27 … −43 dB. The kit therefore renders **A through the base program path** and B–D over INIT; the *committed* slot
+  and its variant matched bit for bit in all four patches (cutoff approached from the same side). The pilot's "bit-identical" check held because Half-Life has no spring.
+* **GROWL costs ~580 host instr/sample whether or not anything sounds** (an always-on stage): the "cost under load" column is marginal (it subtracts the same script
+  without notes), so the table also shows *idle* and *worst case = idle + load*. Low GROWL is nearly inert by the numbers (a touch of 6 on the brass: −1.0 dB of peak,
+  −7 Hz of centroid; 18 on the unison stack: 0.25 dB, +4 Hz; higher GROWL compresses and darkens, because its pre-clip low-pass closes), so Batch 1A leaves it at 0 where it
+  could not be heard to earn its cost, and keeps it on only in the variants whose point it is.
+* **GROWL leaves a small constant DC offset after the note** (the 10 Hz DC blocker's integer rounding sticks: −44 … −53 dBFS, more in MONO). Inaudible; it hides a release's
+  last 40 dB, so the kit's release columns subtract the constant the tail settles on.
+* **MONO and UNISON do not re-fire the envelopes on a legato note** (a key still held: slide, no retrigger), so a sync sweep or a filter snap happens on *detached* notes only.
+* **The level knobs are square laws** (`LEVEL²/128`): OSC 1 at 50 against OSC 2 at 127 is 16 dB down (inaudible as "fat"), at 80 it is 8 dB down. Judge a balance in dB, not in knob steps.
+* **A fast amp pluck cannot reach the bank reference:** a stab whose amp dies in the 180 ms gate has a ~17 dB crest, and −18 RMS would need VOLUME above 127. Put the pluck in the
+  *filter* envelope and let the amp keep a body.
+
+## 9. Batch 1A lessons (short)
+
+Approved 5 Nov 2026: 30 THE DØG (H, 2 listening + 2 silent rounds), 31 Fi(l)fth (C), 04 V-Sync (D), 25 SAWTOOTH (B) (1 + 1 each). §8 has the kit detail.
+
+* **Per-voice DRIVE (FILTER+ page) beats GROWL for warmth and presence.** GROWL is inert below about 28, compresses past about 40 (crest 9.5 → 7.0 dB at 55, fuzz at 70), and costs ~+595 host instr/sample whenever it is on;
+  DRIVE adds harmonic density with no compression, takes a dB or two off the top (warm), and costs ~+100. BIAS exists only inside GROWL and raises peaks, not presence.
+* **Diagnose "thin" with the band split** (<60, 60–150, 150–400, 400–1.2k, 1.2k+ Hz as % of energy, `tests/voicing/dog_metrics.py`). Energy under 60 Hz is inaudible on small speakers: B had 57 % there, so it measured
+  "85 % under 150 Hz" and still read thin. And no oscillator / filter lever moves the split more than ~±1.5 dB at equal level; width, level and drive are what change the feel.
+* **Measure the attack snap over the whole hold, not the last 110 ms:** a beating stack moves the short-window body level by ±2 dB with the beat phase. Read the chopped roots too, and the attack-to-body brightness ratio.
+* **Level knobs are square laws** (`LEVEL²/128`): a balance is in dB, not knob steps (OSC 1 at 50 against OSC 2 at 127 is 16 dB down, inaudible).
+* **Legato does not re-fire the envelopes in MONO / UNISON:** a sync sweep or filter snap happens on detached notes only (04 V-Sync's card says play it staccato).
+* **Variant renders are not bit-exact against program-load renders on spring patches** (the spring's state starts at another moment; CUTOFF / RESO slew rounding): render the original through the base program path; the committed
+  slot and its approved variant matched bit for bit in all four patches.
+* **DUAL needs POLY ≥ 2 × the notes:** verified for 31 C with the host's `expect voices` (`tests/voicing/dual_voices_31.txt`): a three-note chord gates 6 voices, a fourth note 8.
+* **The flagship (30) deliberately sits at −16.5 dBFS RMS** (+1.5 dB over the −18.0 reference, the top of the tolerance band, peak −7.3): presence was its brief. It is **not a precedent**: match the others to −18.0.
+* **Proof for the whole batch** (`identical.py build/voicing/base 30,31,4,25`, base = the commit before Batch 1A): only slots 30, 31, 4 and 25 changed; the other 28 programs are byte-identical on all six phrases and their 96-byte patch hashes are equal.

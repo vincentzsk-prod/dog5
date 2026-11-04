@@ -17,8 +17,12 @@ static const uint8_t PF_NEON_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 50, P_O2_WAVE, 
     P_REV_SIZE, 118, P_REV_DAMP, 60, P_REV_PRE, 50, P_REV_MIX, 70, P_DLY_TIME, DD_4D, P_DLY_FB, 40, P_DLY_TONE, 30, P_DLY_MIX, 35, X};
 static const uint8_t PF_BRASS_STAB[] = {P_O2_FINE, 72, P_CUTOFF, 60, P_FENV_AMT, 114, P_FA, 30, P_FD, 75, P_FS, 30, P_FR, 50,
     P_AA, 12, P_AD, 60, P_AS, 90, P_AR, 45, P_RESO, 25, P_DRIVE, 20, X};
-static const uint8_t PF_POLY_BRASS[] = {P_O2_FINE, 71, P_CUTOFF, 55, P_FENV_AMT, 104, P_FA, 55, P_FD, 80, P_FS, 45, P_FR, 60,
-    P_AA, 40, P_AR, 55, P_LFO_PITCH, 20, P_LFO_DELAY, 60, P_LFO_RATE, 75, P_RESO, 15, X};
+/* 25 SAWTOOTH (voiced 4 Nov, dog5-docs/voicing/25-sawtooth.md; was PF_POLY_BRASS, this slot's alone): the stable, warm poly brass. POLY, two
+ * saws 5.5 cents apart, VINTAGE left at 30, a 24 dB filter swell (CUTOFF 56, ENV AMT 100, attack 117 ms, decay 378 ms to
+ * sustain 50), a fade-in vibrato, no GROWL (a touch measured -1 dB of peak for +570 instr/sample; D has the edge). No chop, no sub: where 03 Half-Life is unstable and chopped,
+ * this one holds still. VOLUME 97 puts it on the bank reference (-18.0 dBFS RMS, phrase b) */
+static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P_FENV_AMT, 100, P_FA, 70, P_FD, 85,
+    P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
 static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
     P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
 static const uint8_t PF_UNISON_LEAD[] = {P_MODE, M_UNISON, P_UNI_N, 6, P_UNI_DET, 50, P_O2_FINE, 67, P_CUTOFF, 85, P_RESO, 15,
@@ -64,8 +68,14 @@ static const uint8_t PF_ARP_CHORD[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
     P_UNI_DET, 40, P_CUTOFF, 70, P_AA, 5, P_AR, 60, P_DLY_TIME, DD_8, P_DLY_FB, 30, P_DLY_MIX, 30, P_REV_MIX, 25, X};
 static const uint8_t PF_RANDOM_ARP[] = {P_ARP_MODE, A_RND, P_ARP_DIV, D_16T, P_ARP_OCT, 2, P_ARP_GATE, 30, P_O1_WAVE, W_PLS,
     P_O2_SEMI, 31, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70, P_FD, 40, P_FS, 0, P_AD, 50, P_AS, 0, P_AA, 1, P_DLY_TIME, DD_8T, P_DLY_FB, 50, P_DLY_MIX, 45, P_REV_MIX, 30, X};
-static const uint8_t PF_FIFTHS_LEAD[] = {P_MODE, M_MONO, P_O2_SEMI, 31, P_CUTOFF, 85, P_RESO, 15, P_GLIDE, 15, P_DRIVE, 25,
-    P_LFO_PITCH, 10, P_LFO_DELAY, 60, P_AA, 2, P_AR, 40, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_MIX, 20, X};
+/* 31 Fi(l)fth (voiced 4 Nov, approved 5 Nov: dog5-docs/voicing/31-fifth.md; was a MONO fifths lead): the chord stab. DUAL, a detuned pair per note (DETUNE 36,
+ * ~7.8 cents apart, SPREAD 90), POLY 8 so a three-note chord has its six voices, OSC 2 a fifth up in every voice (+7 st, FINE 66), a filter-envelope pluck
+ * (ENV AMT 106, decay 29 ms, sustain 22) over an amp that rings on (137 ms decay to sustain 70), DRIVE 20, and a short BBD slap (ALLEY 65 = 89 ms, FEEDBK 28,
+ * MIX 36). No spring. VOLUME 92 puts it on the bank reference (-18.0 dBFS RMS, phrase b) */
+static const uint8_t PF_FIFTH[] = {P_O2_SEMI, 31, P_O2_FINE, 66, P_CUTOFF, 92, P_RESO, 22, P_FENV_AMT, 106,
+    P_DRIVE, 20, P_FA, 0, P_FD, 52, P_FS, 22, P_FR, 50, P_AA, 0, P_AD, 72, P_AS, 70, P_AR, 52, P_MODE, M_DUAL,
+    P_UNI_DET, 36, P_VINTAGE, 35, P_SPREAD, 90, P_VOLUME, 92, P_DLY_FB, 28, P_DLY_TONE, 55, P_DLY_MIX, 36,
+    P_POLY_N, 8, P_ALLEY, 65, P_BBD_SPREAD, 60, X};
 static const uint8_t PF_VINTAGE_PAD[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF, 55, P_FENV_AMT, 94, P_FA, 70, P_AA, 60, P_AR, 90,
     P_FR, 90, P_RESO, 15, P_SPREAD, 120, P_REV_SIZE, 105, P_REV_MIX, 45, X};
 static const uint8_t PF_XMOD_GROWL[] = {P_MODE, M_MONO, P_XMOD, 90, P_O2_SEMI, 19, P_CUTOFF, 50, P_FENV_AMT, 114, P_FD, 60, P_FS, 30,
@@ -169,6 +179,23 @@ static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
 static const uint8_t PF_HALF_LIFE[] = {P_MODE, M_DUAL, P_UNI_DET, 60, P_POLY_N, 6, P_SPREAD, 110, P_VINTAGE, 90,
     P_O2_WAVE, W_SAW, P_O2_SEMI, 12, P_O2_LVL, 80, P_CUTOFF, 76, P_RESO, 30, P_FENV_AMT, 96, P_AR, 62,
     P_LFO_SHAPE, L_SQR, P_LFO_RATE, 119, P_LFO_DELAY, 19, P_LFO_AMP, 100, P_VOLUME, 112, X};
+/* 04 V-Sync (voiced 4 Nov, approved 5 Nov: dog5-docs/voicing/04-v-sync.md; PF_SYNC_LEAD stays as 20 Fire & Ice's and 26 BSyncA's): a fat sync lead. UNISON, two
+ * voices detuned ~5.5 cents (DETUNE 22), each with OSC 2 a fifth up (+7 st) hard-synced to OSC 1 and swept +18 st by the filter envelope (ENV>O2 112, 219 ms),
+ * OSC 1's saw under it (LEVEL 80), DRIVE 20, a 5 ms release that stops the voice dead, only a faint 1/16 slap (MIX 12), no spring. VOLUME 91 puts it on the
+ * bank reference (-18.0 dBFS RMS on the lead phrase, tests/voicing) */
+static const uint8_t PF_V_SYNC[] = {P_O1_LVL, 80, P_O2_LVL, 127, P_O2_SEMI, 31, P_SYNC, 1, P_ENV_O2, 112,
+    P_CUTOFF, 92, P_RESO, 24, P_FENV_AMT, 88, P_DRIVE, 20, P_FD, 78, P_FS, 28, P_FR, 30, P_AA, 0, P_AS, 127,
+    P_AR, 30, P_MODE, M_UNISON, P_UNI_N, 2, P_UNI_DET, 22, P_GLIDE, 20, P_VOLUME, 91, P_DLY_TIME, DD_16,
+    P_DLY_FB, 18, P_DLY_MIX, 12, X};
+/* 30 THE D\xD8G (voiced 4 Nov, round 2 on 5 Nov: dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's and 21 Cowl Shadow's): the
+ * signature low stack. UNISON, all 8 voices on one note, DETUNE 35 (the stack spans ~15 cents; round 1 had ~9, the drone ~78), a sub-octave saw under every
+ * voice, the filter wide (CUTOFF 104, ENV AMT 88 snaps it open on the attack, KEY TRK 60, sustain 40), a 0.7 ms attack and a 21 ms release
+ * for a punchy chop, SPREAD 50 so the bass stays put in a mono PA, per-voice DRIVE 100 (FILTER+ page: warmth and weight without compression or
+ * the CPU of GROWL, which stays 0), no spring. VOLUME 56 puts it at the TOP of the loudness band, -16.5 dBFS RMS on the low-unison phrase
+ * (+1.5 dB over the -18.0 bank reference: the flagship's presence), peak -7.3 */
+static const uint8_t PF_THE_DOG[] = {P_O1_LVL, 114, P_O2_LVL, 94, P_O2_SEMI, 12, P_CUTOFF, 104, P_RESO, 12,
+    P_FENV_AMT, 88, P_KEYTRK, 60, P_DRIVE, 100, P_FA, 10, P_FD, 58, P_FR, 50, P_AA, 4, P_AS, 127, P_AR, 48,
+    P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 35, P_VINTAGE, 40, P_SPREAD, 50, P_VOLUME, 56, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -180,12 +207,12 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_SYNC_LEAD},
+    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
     {"Skeenhead", PF_CLAV_PLUCK},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_DUAL_SAW},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
-    {"SAWTOOTH", PF_POLY_BRASS},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
-    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_DRONE_UNI},     {"Fi(l)fth", PF_FIFTHS_LEAD},  {"Init bruv?", PF_INIT},
+    {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
+    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
 };

@@ -1,0 +1,32 @@
+# VOICING PHRASE (d): SINGLE-NOTE LEAD, A3-A4.  For monophonic leads (04 V-Sync).  Four parts: (1) a LEGATO run -- each
+# note-on comes 50 ms BEFORE the previous note-off, so MONO/UNISON glide/slide without retriggering (A3 C4 D4 E4 A4, 350 ms
+# apart); (2) the last A4 held 1 s (the whole filter/pitch sweep of one note, then the release); (3) a STACCATO run (six 120 ms
+# notes, 300 ms apart: the sweep starts over every note); (4) one A3 held 800 ms and let go: the dead-stop test.
+# Judges: attack bite of a sweep, legato vs retrigger, the release (dead stop or tail), the delay/reverb behind a lone line.
+# Level: for a mono lead this replaces phrase (b) -- RMS over the note-on region, read the same way.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 105
+3350 midi 0x90 60 100
+3400 midi 0x80 57 0
+3700 midi 0x90 62 104
+3750 midi 0x80 60 0
+4050 midi 0x90 64 100
+4100 midi 0x80 62 0
+4400 midi 0x90 69 110
+4450 midi 0x80 64 0
+5400 midi 0x80 69 0
+5900 midi 0x90 57 100
+6020 midi 0x80 57 0
+6200 midi 0x90 60 95
+6320 midi 0x80 60 0
+6500 midi 0x90 64 105
+6620 midi 0x80 64 0
+6800 midi 0x90 62 98
+6920 midi 0x80 62 0
+7100 midi 0x90 67 108
+7220 midi 0x80 67 0
+7400 midi 0x90 69 112
+7520 midi 0x80 69 0
+8000 midi 0x90 57 108
+8800 midi 0x80 57 0
+10000 end

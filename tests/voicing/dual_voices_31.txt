@@ -1,0 +1,13 @@
+# 31 Fi(l)fth (DUAL, POLY 8): a three-note chord must have all its voices (2 per note = 6); a fourth note (8) fits too; the run exits 1 on a miss.
+2600 midi 0xC0 30 0
+3000 midi 0x90 40 100
+3000 midi 0x90 47 100
+3000 midi 0x90 52 100
+3300 expect voices 6
+3400 midi 0x90 57 100
+3700 expect voices 8
+3800 midi 0x80 40 0
+3800 midi 0x80 47 0
+3800 midi 0x80 52 0
+3800 midi 0x80 57 0
+4500 end
