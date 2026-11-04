@@ -216,6 +216,14 @@ static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14
 static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_OFF, P_CUTOFF, 40, P_RESO, 62, P_FENV_AMT, 118,
     P_KEYTRK, 100, P_FTYPE, F_LP12, P_FD, 56, P_FS, 0, P_AA, 0, P_AS, 30, P_AR, 28, P_VOLUME, 115, P_REV_SIZE, 70,
     P_REV_DAMP, 40, P_REV_PRE, 4, P_REV_MIX, 90, X};
+/* 11 Slapback Strut (voiced Nov 2026, dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 05 ZEAROX's and 19 Blackwater's): the percussive surf bass. MONO, one 50 % pulse (the engine has no
+ * triangle: LP12 with KEY TRK 127 keeps the cutoff ~1.7x the note, so harmonics 3 / 5 / 7 sit at -17 / -29 / -38 dB against a triangle's -19 / -28 / -34), a filter pluck (ENV AMT 96, 39 ms)
+ * and an amp that falls 16.5 dB inside a 100 ms gate (10 dB in 46 ms: the fastest decay the bank level allows); one loud mono slap: ALLEY 62 = 80 ms, FEEDBK 12 (the second repeat is
+ * 29 dB under the first), MIX 127 (the top: the first repeat is -6.3 dB re the note's peak), PINGPONG 0 so it sits in the middle. Dry (no spring). VOLUME 122 puts it on the bank reference:
+ * -18.0 dBFS RMS over the note-on region of the surf riff (phrase h), echo included */
+static const uint8_t PF_SLAPBACK_STRUT[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 127, P_O2_WAVE, W_OFF, P_CUTOFF, 63,
+    P_RESO, 16, P_FENV_AMT, 96, P_KEYTRK, 127, P_FTYPE, F_LP12, P_FD, 56, P_FS, 0, P_AA, 0, P_AD, 72, P_AS, 0,
+    P_AR, 24, P_MODE, M_MONO, P_GLIDE, 5, P_VOLUME, 122, P_DLY_FB, 12, P_DLY_MIX, 127, P_ALLEY, 62, P_BBD_SPREAD, 0, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -229,7 +237,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
-    {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SUB_BASS},{"Kelp Tangle", PF_HOLLOW_PAD},
+    {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
