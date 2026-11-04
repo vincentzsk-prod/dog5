@@ -64,8 +64,14 @@ static const uint8_t PF_ARP_CHORD[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP
     P_UNI_DET, 40, P_CUTOFF, 70, P_AA, 5, P_AR, 60, P_DLY_TIME, DD_8, P_DLY_FB, 30, P_DLY_MIX, 30, P_REV_MIX, 25, X};
 static const uint8_t PF_RANDOM_ARP[] = {P_ARP_MODE, A_RND, P_ARP_DIV, D_16T, P_ARP_OCT, 2, P_ARP_GATE, 30, P_O1_WAVE, W_PLS,
     P_O2_SEMI, 31, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70, P_FD, 40, P_FS, 0, P_AD, 50, P_AS, 0, P_AA, 1, P_DLY_TIME, DD_8T, P_DLY_FB, 50, P_DLY_MIX, 45, P_REV_MIX, 30, X};
-static const uint8_t PF_FIFTHS_LEAD[] = {P_MODE, M_MONO, P_O2_SEMI, 31, P_CUTOFF, 85, P_RESO, 15, P_GLIDE, 15, P_DRIVE, 25,
-    P_LFO_PITCH, 10, P_LFO_DELAY, 60, P_AA, 2, P_AR, 40, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_MIX, 20, X};
+/* 31 Fi(l)fth (voiced 4 Nov, dog5-docs/voicing/31-fifth.md; was a MONO fifths lead): the chord stab. POLY (POLY 6), OSC 2 a fifth up
+ * in every voice (+7 st, FINE 66), a filter-envelope pluck (ENV AMT 106, decay 29 ms, sustain 22) over an amp that
+ * rings on (137 ms decay to sustain 70), DRIVE 20, and a short BBD slap (ALLEY 65 = 89 ms, FEEDBK 28,
+ * MIX 36). No spring. VOLUME 113 puts it on the bank reference (-18.0 dBFS RMS, phrase b) */
+static const uint8_t PF_FIFTH[] = {P_O2_SEMI, 31, P_O2_FINE, 66, P_CUTOFF, 92, P_RESO, 22, P_FENV_AMT, 106,
+    P_DRIVE, 20, P_FA, 0, P_FD, 52, P_FS, 22, P_FR, 50, P_AA, 0, P_AD, 72, P_AS, 70, P_AR, 52, P_VINTAGE, 35,
+    P_SPREAD, 70, P_VOLUME, 113, P_DLY_FB, 28, P_DLY_TONE, 55, P_DLY_MIX, 36, P_POLY_N, 6, P_ALLEY, 65,
+    P_BBD_SPREAD, 60, X};
 static const uint8_t PF_VINTAGE_PAD[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF, 55, P_FENV_AMT, 94, P_FA, 70, P_AA, 60, P_AR, 90,
     P_FR, 90, P_RESO, 15, P_SPREAD, 120, P_REV_SIZE, 105, P_REV_MIX, 45, X};
 static const uint8_t PF_XMOD_GROWL[] = {P_MODE, M_MONO, P_XMOD, 90, P_O2_SEMI, 19, P_CUTOFF, 50, P_FENV_AMT, 114, P_FD, 60, P_FS, 30,
@@ -195,5 +201,5 @@ static const factory_t FACTORY[NFACT] = {
     {"Titanic", PF_DUAL_SAW},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_DRONE_UNI},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_POLY_BRASS},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
-    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTHS_LEAD},  {"Init bruv?", PF_INIT},
+    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
 };
