@@ -58,8 +58,8 @@ Every patch in the bank is matched to one level, so that switching programs live
 * *K-weighted RMS* — the same RMS after BS.1770 K-weighting (shelf + 38 Hz high-pass). Informational: a bass-heavy
   patch reads louder in plain RMS than it sounds; if the two disagree by more than ~1.5 dB, Vincent's ears decide.
 
-**BANK REFERENCE LEVEL: see §5 (set by the first voiced patch, 03 Half-Life).** A later patch is matched within
-≈ 1.5 dB of it, by `VOLUME` (a square law: `gain = VOLUME²/4096·…`, about 0.17 dB a step at 100; 100 is the default,
+**BANK REFERENCE LEVEL: −18.0 dBFS RMS on phrase (b)'s note-on region (peak ≤ −4 dBFS) — §5.** A later patch is matched
+within ≈ 1.5 dB of it, by `VOLUME` (a square law: `gain = VOLUME²/4096·…`, about 0.17 dB a step at 100; 100 is the default,
 127 is +4.1 dB) and *last*, after the tone is right. Peaks stay under −4 dBFS so GROWL/CHEW and the master have room. The
 Psych Chain macros are loudness-held by design (CLAUDE.md §6), so a patch measured with them at 0 stays near its level
 with them up; patches whose whole point is the chain (05 ZEAROX, 06 zzuFuzz, 14 Reef Break …) are measured with
@@ -84,9 +84,43 @@ Break, a noise burst; 23 Crypt Dust, a wash) to −11.7 (24 SAWTOOTH, peak 0.0).
 | flutter | s.d. (dB) of the held body's 10 ms level — what the VCA LFO does before the release |
 | cost | host instructions per sample on phrase (b) under callgrind (`tests/perf_callgrind.sh`'s yardstick, a *relative* number: dog5-docs/PERF-BASELINE.md) |
 
-## 5. Current reference
+## 5. The reference, and engine facts every batch reuses
 
-*(filled in by the 03 Half-Life round — see `03-half-life.md`)*
+**BANK REFERENCE LEVEL = −18.0 dBFS RMS** (phrase (b), note-on region, MASTER up) — set by 03 Half-Life, 4 Nov 2026.
+Tolerance for every other patch: ±1.5 dB (aim ±0.5; VOLUME's step is 0.17 dB). Peak (whole render) ≤ −4 dBFS; Half-Life
+peaks at −6.0. K-weighted RMS is reported next to it, not matched (Half-Life: −18.7).
+
+Why −18: the untouched bank sat anywhere from −44 to −11.7 (median ≈ −21), so no value is "already right"; −18 is where
+the flagship's original sat (−17.6, so it hardly moves), it leaves 12+ dB between the loud-playing level and full scale
+for GROWL/CHEW and a hot MASTER, and VOLUME has room both ways (100 is the default, 127 is +4.1 dB, 60 is −8.5 dB).
+Level-match **last**, with VOLUME, after the tone is right; never with the oscillator levels (they are the tone).
+
+**VINTAGE in cents** (the engine's own log, `tests/voicing/slop_table.py`; a note held 13 s, DUAL = two cards; the card
+offsets are fixed per card, the wander is a random walk with a ≈ 0.7 s time constant):
+
+| VINTAGE (patch + ride) | engine value | static offset of the two cards (cents) | wander s.d. | wander range |
+|---|---|---|---|---|
+| 30 (the default) | 30 | −2.1 / +0.5 | 1.4 / 1.5 | −6..+4 / −6..+7 |
+| 55 | 55 | −3.6 / +1.6 | 2.5 / 2.8 | −10..+7 / −10..+13 |
+| 90 | 90 | −5.9 / +2.6 | 4.0 / 4.6 | −17..+12 / −18..+22 |
+| 100 | 100 | −6.2 / +3.0 | 4.5 / 5.1 | −18..+14 / −20..+24 |
+| 127 (the knob's top) | 127 | −7.7 / +3.6 | 5.7 / 6.5 | −23..+18 / −25..+30 |
+| 90 + the SLOP ride at 127 | 344 | −19.9 / +10.9 | 15.7 / 17.5 | −62..+49 / −66..+84 |
+| 127 + the ride at 127 | 381 | −22.1 / +11.9 | 17.3 / 19.4 | −69..+54 / −73..+93 |
+
+**The ride adds up to 254, not 127** (`SLOP_SCALE_X2 4`: the encoder's 0..127 doubled, CLAUDE.md §5, chosen by ear 3 Nov),
+and the sum is allowed to 381 (`SLOP_MAX`), so no VINTAGE value from 0 to 127 ever clips the ride: headroom is about how
+much the ride *multiplies* the patch's own slop (patch 90: ×3.8; 127: ×3.0; 55: ×5.6), not about a clamp. The patch's
+own slop tops out at a 6 cent s.d.; the "dying tape motor" territory is the ride's.
+
+**The VCA / release, as the engine does it** (`obv_engine.h`): the amp envelope is an analog RC fall, the release time
+(0.5 ms · 20000^(v/127), the *5 %* point; the voice is freed at −78 dB, about 2.6× that) is scaled per card by VINTAGE (±12 %
+at 127, ×3 at the ride's top), and the VCA also takes the LFO: `AMP` (LFO → amp) multiplies the voice by
+`1 − AMP/128 · (1 − lfo)/2`, so SQUARE at AMP 127 is a hard gate and a shorter depth is a dip. **LFO DELAY is a per-note
+fade-in of every LFO destination** (`5000 ms · (v/127)²`, then a ramp half as long again): until it has run, the LFO is
+held at its centre, so with AMP set the note first sits at a fixed `1 − AMP/256` (−3 dB at AMP 80) and the chop grows in
+after. That is the only note-age control the engine has — **there is no release-triggered modulation**; a "VCA that
+sputters on release" is made from a gate-chop LFO that fades in around the time a staccato note lets go (03-half-life.md).
 
 ## 6. The "other 31 are untouched" proof
 

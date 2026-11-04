@@ -1,0 +1,13 @@
+# VOICING PHRASE (x): CPU STRESS, not for listening.  A three-note fifth-and-octave chord (E2 B2 E3) held 3 s, then an
+# A3 added for 1.5 s (a fourth note: a DUAL patch wants 8 cards).  voicekit.callgrind_loaded() runs it under callgrind next to the
+# same script without the notes, and the difference per sounding sample is the "cost under load" column (host
+# instructions per sample, a relative yardstick: dog5-docs/PERF-BASELINE.md).
+3000 midi 0x90 40 100
+3000 midi 0x90 47 100
+3000 midi 0x90 52 100
+6000 midi 0x90 57 100
+7500 midi 0x80 57 0
+7500 midi 0x80 40 0
+7500 midi 0x80 47 0
+7500 midi 0x80 52 0
+9000 end

@@ -31,7 +31,8 @@ T_PARAMS = T_SELECT + 10                        # ms: the parameters, after the 
                                                 # is read by the main loop: a "param" in the same ms would be overwritten)
 T_CUT = 2.9                                     # s: the WAVs start here (100 ms before the first note)
 INIT_PROGRAM = 32                               # program change data byte: slot 33 = INIT, all defaults
-PHRASE_FILES = {"a_riff": "a_riff.txt", "b_stabs": "b_stabs.txt", "c_held": "c_held.txt"}
+PHRASE_FILES = {"a_riff": "a_riff.txt", "b_stabs": "b_stabs.txt", "c_held": "c_held.txt", "x_stress": "x_stress.txt"}
+AUDITION = ("a_riff", "b_stabs", "c_held")      # the three phrases every variant is rendered on (x_stress is CPU only)
 
 
 def param_ids(src=None):
@@ -61,7 +62,7 @@ def phrase_text(phrase):
         return f.read()
 
 
-def compose(phrase, program=None, params=None, extra=()):
+def compose(phrase, program=None, params=None, extra=(), notes=True):
     """the host script: program select (+ parameters over INIT), extra lines (e.g. vlog), then the phrase"""
     lines = []
     if params is None:
@@ -72,6 +73,8 @@ def compose(phrase, program=None, params=None, extra=()):
             lines.append(f"{T_PARAMS} param {PARAM_IDS[k]} {v}")
     body = [l for l in phrase_text(phrase).splitlines() if l.strip()]
     ev = [l for l in body if not l.startswith("#")]
+    if not notes:
+        ev = [l for l in ev if " midi " not in l]
     ev += list(extra)
     ev.sort(key=lambda l: int(l.split()[0]) if not l.endswith(" end") else 10 ** 9)
     return "\n".join(lines + ev) + "\n"
@@ -182,19 +185,23 @@ def tone_metrics(a, phrase, nfft=2048):
 
 
 # ---- envelope, release, sputter -----------------------------------------------------------------------------------
-def env_db(a, hop_ms=2.0):
-    """stereo power envelope in dBFS, one value per hop (2 ms)"""
-    h = int(FS * hop_ms / 1000)
-    n = len(a) // h
-    p = (a[:n * h] ** 2).reshape(n, h, 2).mean((1, 2))
-    return 10 * np.log10(np.maximum(p, 1e-12) / 32767 ** 2), hop_ms / 1000
+def env_db(a, hop_ms=2.0, win_ms=1000 / 110):
+    """stereo power envelope in dBFS: the power over a sliding window of win_ms (default one period of A2, 9.09 ms, so a
+    110 Hz saw's own cycle does not ripple the reading) every hop_ms (2 ms)"""
+    h, w = int(FS * hop_ms / 1000), int(round(FS * win_ms / 1000))
+    p = (a ** 2).mean(1)
+    c = np.concatenate([[0.0], np.cumsum(p)])
+    idx = np.arange(0, len(p) - w, h)
+    pw = (c[idx + w] - c[idx]) / w
+    return 10 * np.log10(np.maximum(pw, 1e-12) / 32767 ** 2), hop_ms / 1000
 
 
 def release_metrics(a, off_ms, hop_ms=2.0, pre_ms=150, win_ms=900):
     """release and sputter of the note let go at off_ms.  Level before = RMS over the 150 ms before the release.  Times
     in ms after note-off: first and last time the envelope is above (before - 20 / 40 / 60 dB); SPAN = last - first
     crossing of -40 dB (a smooth tail has span 0, a sputtering one is open and shut inside it); RE-RISES = how often the
-    envelope climbs 6 dB or more out of a dip inside the tail (a smooth fall has none)"""
+    envelope climbs 6 dB or more out of a dip inside the tail (a smooth fall has none); CLIMB = the total upward travel
+    (dB) of the envelope along the tail down to -50 dB, the one-number sputter index (a smooth tail: ~0)"""
     e, dt = env_db(a, hop_ms)
     i0 = int(off_ms / hop_ms)
     pre = 10 * np.log10(np.mean(10 ** (e[i0 - int(pre_ms / hop_ms):i0] / 10)))
@@ -218,12 +225,14 @@ def release_metrics(a, off_ms, hop_ms=2.0, pre_ms=150, win_ms=900):
             if v < mn: mn = v
             elif v - mn >= 6: rising, mx, rises = True, v, rises + 1
     out["rerises"] = rises
+    live = tail[:max(int(np.nonzero(tail > pre - 50)[0].max()) + 1, 2)] if (tail > pre - 50).any() else tail[:2]
+    out["climb_db"] = float(np.maximum(np.diff(live), 0).sum())   # total upward travel of the tail above -50 dB: 0 = smooth
     return out
 
 
 def body_flutter(a, t0_ms, t1_ms, hop_ms=10.0):
     """level flicker of a held body: the s.d. of the 10 ms RMS in dB over [t0, t1] after the settling (the amp LFO's work)"""
-    e, _ = env_db(a, hop_ms)
+    e, _ = env_db(a, hop_ms, 2 * 1000 / 110)
     seg = e[int(t0_ms / hop_ms):int(t1_ms / hop_ms)]
     return float(seg.std()), float(seg.max() - seg.min())
 
@@ -264,16 +273,29 @@ def vlog_parse(stdout):
                                                stdout)}
 
 
-def callgrind_ipS(src_dir, script_path, tag):
-    """host instructions per sample (callgrind, deterministic; the same yardstick as tests/perf_callgrind.sh)"""
-    exe = build_host(src_dir, os.path.join(BUILD, "obervave-cg"), ("-DOBV_CALLGRIND",))
+def callgrind_exe(src_dir=ROOT):
+    return build_host(src_dir, os.path.join(BUILD, "obervave-cg"), ("-DOBV_CALLGRIND",))
+
+
+def callgrind_ips(cg_exe, phrase, program=None, params=None, tag="cg", notes=True):
+    """total host instructions / frames collected for a script under callgrind (deterministic, a relative yardstick)"""
+    sp = os.path.join(BUILD, "cg-" + tag + ".txt")
+    with open(sp, "w") as f:
+        f.write(compose(phrase, program, params, notes=notes))
     r = subprocess.run(["valgrind", "--tool=callgrind", "--collect-atstart=no", "--combine-dumps=yes",
-                        f"--callgrind-out-file={BUILD}/cg-{tag}.out", exe, os.path.join(BUILD, "cg-" + tag), script_path],
+                        f"--callgrind-out-file={BUILD}/cg-{tag}.out", cg_exe, os.path.join(BUILD, "cg-" + tag), sp],
                        cwd=ROOT, capture_output=True, text=True, errors="replace")
     txt = r.stdout + r.stderr
-    fr = int(re.search(r"callgrind frames (\d+)", txt)[1])
-    ir = int(re.search(r"Collected : (\d+)", txt)[1])
-    return ir / fr
+    return int(re.search(r"Collected : (\d+)", txt)[1]), int(re.search(r"callgrind frames (\d+)", txt)[1])
+
+
+def cost(cg_exe, program=None, params=None, tag="cg"):
+    """(avg host instr/sample over phrase (b) as played, instr/sample while the stress chord sounds: the stress script's
+    instructions minus the same script's without its notes, over the 4.65 s the notes sound (3 s + 1.5 s + the tails))"""
+    ir, fr = callgrind_ips(cg_exe, "b_stabs", program, params, tag + "b")
+    on, _ = callgrind_ips(cg_exe, "x_stress", program, params, tag + "x")
+    off, _ = callgrind_ips(cg_exe, "x_stress", program, params, tag + "y", notes=False)
+    return ir / fr, (on - off) / (4.65 * FS)
 
 
 def main():
