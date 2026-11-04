@@ -3,7 +3,10 @@
 4 Nov 2026. Brief (presets §3): *unstable dual saws, heavy VINTAGE slop, VCA sputter on release; pure engine, FX macros
 at 0.* Method and kit: `README.md` here. Listening files, numbers and the variants table: `listen/voicing/03-half-life/`.
 
-**Status: round 1 delivered, waiting for ears.** The committed patch is variant B ("centre"); C–F are render-only.
+**Status: APPROVED AS IS (4 Nov 2026, Vincent, after listening to all six).** Variant B ("centre") is the committed patch,
+no round-2 changes; A, C, D, E, F stay render-only in `listen/voicing/03-half-life/`. His answers to the three open questions:
+the chop reads as a **sputter, not a tremolo**; the **sub-octave is exactly right**; **815 Hz is neither too bright nor too polite**.
+**Final round count: 1 silent measured round + 1 listening round, approved as is.** Voice card: `cards/03-half-life.md`.
 
 ## Final parameter list (what the tree holds now)
 
@@ -84,8 +87,7 @@ stage armed by the gate going off), which this round does not make.
   AMP 80–120 × release 56 / 62 / 68 × PHASE FREE / SPREAD, read on the 120 / 150 ms notes' tails: SQUARE gave a climb of 17–60 dB every note, S&H / RANDOM 0–14 dB, note to note unpredictable; DELAY 19 puts full depth at the 170 ms mark, just as the 150–180 ms notes let go; AR 62 keeps the tail at the
   original's length with the chop in it); the filter (CUTOFF 70 -> 76 -> 82, RESO 20 -> 30 -> 40, ENV AMT 90 -> 96 -> 100:
   centroid 531 / 669 / 888 / 917 Hz; 76 / 30 / 96 chosen ≈ 815).
-* **Round 1 (for ears): this delivery** — six variants. One listening round so far; expect a round 2 on whatever the
-  ears say about the three common uncertainties above.
+* **Round 1 (for ears)** — six variants; B approved as is, so there was no round 2. Total: 1 silent + 1 listening.
 
 For planning the other 31: the silent round was the cheap, useful one (the chop would have been built wrong without
 it); each listening round is the slow one. Budget **1 silent + 2 listening rounds per patch**, 1 + 1 for the
