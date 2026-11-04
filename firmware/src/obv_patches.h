@@ -216,14 +216,14 @@ static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14
 static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_OFF, P_CUTOFF, 40, P_RESO, 62, P_FENV_AMT, 118,
     P_KEYTRK, 100, P_FTYPE, F_LP12, P_FD, 56, P_FS, 0, P_AA, 0, P_AS, 30, P_AR, 28, P_VOLUME, 115, P_REV_SIZE, 70,
     P_REV_DAMP, 40, P_REV_PRE, 4, P_REV_MIX, 90, X};
-/* 11 Slapback Strut (voiced Nov 2026, dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 05 ZEAROX's and 19 Blackwater's): the percussive surf bass. MONO, one 50 % pulse (the engine has no
- * triangle: LP12 with KEY TRK 127 keeps the cutoff ~1.7x the note, so harmonics 3 / 5 / 7 sit at -17 / -29 / -38 dB against a triangle's -19 / -28 / -34), a filter pluck (ENV AMT 96, 39 ms)
- * and an amp that falls 16.5 dB inside a 100 ms gate (10 dB in 46 ms: the fastest decay the bank level allows); one loud mono slap: ALLEY 62 = 80 ms, FEEDBK 12 (the second repeat is
- * 29 dB under the first), MIX 127 (the top: the first repeat is -6.3 dB re the note's peak), PINGPONG 0 so it sits in the middle. Dry (no spring). VOLUME 122 puts it on the bank reference:
- * -18.0 dBFS RMS over the note-on region of the surf riff (phrase h), echo included */
-static const uint8_t PF_SLAPBACK_STRUT[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 127, P_O2_WAVE, W_OFF, P_CUTOFF, 63,
-    P_RESO, 16, P_FENV_AMT, 96, P_KEYTRK, 127, P_FTYPE, F_LP12, P_FD, 56, P_FS, 0, P_AA, 0, P_AD, 72, P_AS, 0,
-    P_AR, 24, P_MODE, M_MONO, P_GLIDE, 5, P_VOLUME, 122, P_DLY_FB, 12, P_DLY_MIX, 127, P_ALLEY, 62, P_BBD_SPREAD, 0, X};
+/* 11 Slapback Strut (voiced Nov 2026, round 2 = variant H: dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 05 ZEAROX's and 19 Blackwater's): the percussive surf bass, tight and gated. MONO, one 44 %
+ * pulse through a key-tracking 12 dB low-pass (CUTOFF 74, KEY TRK 110) with a little per-voice DRIVE 40 for the warm soft top; NO real decay: both envelopes settle in ~54 ms to a sustain just under full and
+ * stop in 1 ms (a gated note with body, no tail); one loud mono slap: ALLEY 62 = 80 ms, FEEDBK 8, MIX 127 (the top), TONE 110, PINGPONG 0, so the repeat is a clean copy of the note with the first repeat
+ * -6.2 dB under the note's peak. Dry (no spring). VOLUME 92 puts it on the bank reference: -18.0 dBFS RMS over the note-on region of the surf riff (phrase h), echo included */
+static const uint8_t PF_SLAPBACK_STRUT[] = {P_O1_WAVE, W_PLS, P_O1_PW, 44, P_O1_LVL, 127, P_O2_WAVE, W_OFF,
+    P_CUTOFF, 74, P_RESO, 16, P_FENV_AMT, 76, P_KEYTRK, 110, P_FTYPE, F_LP12, P_DRIVE, 40, P_FA, 0, P_FD, 60,
+    P_FS, 112, P_FR, 10, P_AA, 0, P_AD, 60, P_AS, 112, P_AR, 10, P_MODE, M_MONO, P_GLIDE, 5, P_VOLUME, 92,
+    P_DLY_FB, 8, P_DLY_TONE, 110, P_DLY_MIX, 127, P_ALLEY, 62, P_BBD_SPREAD, 0, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 

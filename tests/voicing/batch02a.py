@@ -169,10 +169,18 @@ def measure(exe, cg, spec, params, tag, quick, orig=None):
         m["echo"] = M.echo_return(fxw, dry, 8350, 8450)
         m["fx_re_dry_db"] = M.energy_db(fx[int(3.2 * K.FS):int(11.9 * K.FS)]) - M.energy_db(dry[int(3.2 * K.FS):int(11.9 * K.FS)])
         m["fx_bands"] = M.band_shares(fx, 3200, 11900)
-        m["rel"] = M.tail_times(wavs[lp], 8450, 100, 3000)
+        # the delay path can leave a constant (-76 dBFS) DC offset behind a driven voice: the tail is read with the constant at the end of the render removed
+        dc = wavs[lp][-2646:].mean(0)
+        m["dc_dbfs"] = float(20 * np.log10(max(np.abs(dc).max(), 1e-3) / 32767))
+        m["rel"] = M.tail_times(wavs[lp], 8450, 100, 2500, dc=dc)
         m["rel_dry"] = M.tail_times(dry, 8450, 100, 600)
         m["silence_before_return"] = M.rms_db(fx, 8350, 8352)
         m["tri"] = triangle_probe(exe, params)
+        m["dry_bands"] = M.band_shares(dry, 3200, 10900)                           # the dry notes over the same stretch as the echo (3.2 .. 10.9 s)
+        m["dry_cent"] = M.centroid(dry, 3200, 10900)
+        m["echo_cent"] = M.centroid(fx, 3200, 10900)                               # the echo (wet - dry) over the phrase
+        m["echo_hi"] = m["fx_bands"]["400-1.2k"] + m["fx_bands"]["1.2k+"]
+        m["dry_hi"] = m["dry_bands"]["400-1.2k"] + m["dry_bands"]["1.2k+"]
     m["cost"] = None
     if not quick:
         cb, cl = K.cost(cg, params=params, tag=tag)
@@ -292,6 +300,10 @@ def tables(spec, R):
         row("  second repeat re the first (dB)", lambda r: f1(r["echo"]["repeat2_re_first_db"]))
         row("FX return over the whole phrase, re the dry notes (dB)", lambda r: f1(r["fx_re_dry_db"]))
         row("FX return band split % <60 / 60-150 / 150-400 / 400-1.2k / 1.2k+", lambda r: M.fmt_bands(r["fx_bands"]))
+        if "echo_cent" in R[ks[0]]:
+            row("ECHO CLARITY: centroid Hz of the echo · of the dry notes · echo / dry", lambda r: f"{r['echo_cent']:.0f} · {r['dry_cent']:.0f} · ×{r['echo_cent'] / r['dry_cent']:.2f}")
+            row("  band split of the dry notes % <60 / 60-150 / 150-400 / 400-1.2k / 1.2k+", lambda r: M.fmt_bands(r["dry_bands"]))
+            row("  share above 400 Hz %: echo · dry", lambda r: f"{r['echo_hi']:.1f} · {r['dry_hi']:.1f}")
         row("tail after the last note, −20 / −40 / −60 dB (ms), with FX", lambda r: f"{f1(r['rel']['t20'], 0)} / {f1(r['rel']['t40'], 0)} / {f1(r['rel']['t60'], 0)}")
         row("  voice alone", lambda r: f"{f1(r['rel_dry']['t20'], 0)} / {f1(r['rel_dry']['t40'], 0)} / {f1(r['rel_dry']['t60'], 0)}")
         row("oscillator through the filter at rest: harmonics 3 / 5 / 7 re 1 (dB)  [triangle −19.1 / −28.0 / −34.2; square −9.5 / −14.0 / −16.9]",
@@ -373,33 +385,40 @@ def main():
     if "--emit" in sys.argv:
         slot, key = int(sys.argv[sys.argv.index("--emit") + 1]), sys.argv[sys.argv.index("--emit") + 2]
         spec = [p for p in PATCHES if p["slot"] == slot][0]
-        res = json.load(open(os.path.join(OUT, spec["dir"], "results.json")))
+        res = json.load(open(os.path.join(OUT, "round2" if "--round2" in sys.argv else "", spec["dir"], "results.json")))
         print(B.emit(spec["cname"], res["variants"][key]["params"]))
         return
     args = [x for x in sys.argv[1:] if not x.startswith("--")]
+    r2 = "--round2" in sys.argv                  # round 2: variants over the committed patch (base tree = the commit before the step), anchor key B, output in round2/
+    specs = PATCHES
+    out_root = OUT
+    anchor = "A"
+    if r2:
+        from batch02a_round2 import PATCHES_R2
+        specs, out_root, anchor = PATCHES_R2, os.path.join(OUT, "round2"), "B"
     quick = "--quick" in sys.argv
     only = int(sys.argv[sys.argv.index("--only") + 1]) if "--only" in sys.argv else None
     if only is not None:
         args = [x for x in args if x != str(only)]
-    base = os.path.abspath(args[0] if args else os.path.join(K.BUILD, "base"))
+    base = os.path.abspath(args[0] if args else os.path.join(K.BUILD, "base_r2" if r2 else "base"))
     exe = K.build_host()
     cg = None if quick else K.callgrind_exe()
     old = K.build_host(base, os.path.join(K.BUILD, "obervave_base"))
-    for spec in PATCHES:
+    for spec in specs:
         slot = spec["slot"]
         if only is not None and slot != only:
             continue
         ORIGINAL = B.resolve(base, slot)
-        d = os.path.join(OUT, spec["dir"])
+        d = os.path.join(out_root, spec["dir"])
         R = {}
         for key, tag, desc, ch in spec["variants"]:
             params = {**ORIGINAL, **ch}
-            if key == "A":
+            if key == anchor:
                 vol = params["VOLUME"]
             else:
                 vol, _ = trim_volume(exe, spec, params)
             params["VOLUME"] = vol
-            wavs, m, dry = measure(exe, cg, spec, params, spec["dir"][:2] + key, quick, orig=(old, slot - 1) if key == "A" else None)
+            wavs, m, dry = measure(exe, cg, spec, params, spec["dir"][:2] + key, quick, orig=(old, slot - 1) if key == anchor else None)
             m.update(tag=tag, desc=desc, volume=vol, params=params,
                      changes=[change(k, ORIGINAL[k], v, params) for k, v in params.items() if v != ORIGINAL[k]])
             R[key] = m
@@ -419,12 +438,12 @@ def main():
             if spec["kind"] == "echo":
                 e = m["echo"]
                 line += f"  snap {m['snap'][0]:.0f}->{m['snap'][1]:.0f} drop {m['drop'][0]:.1f}dB t10 {f1(m['drop'][1],0)}ms"
-                line += f"  echo {e['echo_re_note_db']:+.1f}dB @ {e['echo_t_ms']:.0f}ms rep2 {f1(e['repeat2_re_first_db'])} tail60 {f1(m['rel']['t60'], 0)} tri {' '.join(f'{x:.0f}' for x in m['tri'][1:])}"
+                line += f"  echo {e['echo_re_note_db']:+.1f}dB @ {e['echo_t_ms']:.0f}ms rep2 {f1(e['repeat2_re_first_db'])} tail60 {f1(m['rel']['t60'], 0)} | dry cent {m['dry_cent']:.0f} hi {m['dry_hi']:.1f}% echo cent {m['echo_cent']:.0f} hi {m['echo_hi']:.1f}% <150 {m['fx_bands']['<60'] + m['fx_bands']['60-150']:.0f}% tri {' '.join(f'{x:.0f}' for x in m['tri'][1:])}"
             print(line)
         if quick:
             continue
         rec = spec["recommend"][0]
-        probe = drain_probe(exe, spec, R[rec]["params"]) if spec.get("drain_probe") else None
+        probe = drain_probe(exe, spec, R[rec]["params"]) if spec.get("drain_probe") and not r2 else None
         with open(os.path.join(d, "results.json"), "w") as f:
             json.dump({"variants": {k: dict(r) for k, r in R.items()}, "drain_probe": probe}, f, indent=1, default=float)
         with open(os.path.join(d, "README.md"), "w") as f:

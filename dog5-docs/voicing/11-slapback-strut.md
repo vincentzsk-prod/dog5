@@ -4,7 +4,7 @@ Nov 2026. Brief (Batch 2A, "weight and space"): *percussive surf bass. Single tr
 Precision Bass into a Space Echo (SH-101 tightness, Minimoog round low end, a Fender-style spring for the surf wash). Method and kit: `README.md` here (§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the
 `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/11-slapback-strut/`; `README.md` and `numbers.md` there are the full tables and are on the voicing branch too.
 
-**Status: B (centre) COMMITTED as the recommended variant, awaiting Vincent's ears.** A, C, D are render-only. **Round count so far: 1 silent measured round (incl. a sweep of the decay against the reachable level)
+**Status: ROUND 2 — H (blend) COMMITTED, awaiting Vincent's ears (see the end of this log).** Round 1 (B) was committed first; Vincent's feedback follows below. A, C, D and round 2's E, F, G are render-only. **Round count so far: 1 silent measured round (incl. a sweep of the decay against the reachable level)
 + 0 listening rounds.** No voice card yet.
 
 ## 0. Before
@@ -97,3 +97,60 @@ The return is mostly low because the dry note is (96 % under 150 Hz); relative t
 ## Round count
 
 1 silent measured round, 0 listening rounds.
+
+
+---
+# ROUND 2 (after Vincent's listening to Batch 2A)
+
+His feedback (synth-talk): *"A touch more warmth: the soft top without going dull, and a touch more brightness. The lower frequencies are dulling the slapback, and we need the slapback SUPER crisp and clear. So NO decay on any envelope, or at the very least minimal: just enough to give the note body, but not give it a tail. A slight bit more tight."*
+Renders: `listen/voicing/batch-02a/round2/11-slapback-strut/` (listen branch; the full tables are in `README.md` / `numbers.md` there, on the voicing branch too). The base is the committed B; B is re-rendered as the anchor.
+
+## Translation, and what I did
+
+* **Warmth / brightness:** a little per-voice filter DRIVE (FILTER+ knob 1, not GROWL): 0 -> 30 / 40; CUTOFF up (E, F +5 % as asked; G +15 %, H +9 %, with KEY TRK lowered for H and G).
+* **Crisp slapback:** the echo is a faithful copy of the note (its band split and the note's agree to a point), so *the crispness has to be in the note*. ALLEY's TONE does almost nothing here: TONE 70 -> 127 moved the echo's centroid by 1 Hz (the note has nothing near the TONE filter's range). What does move it:
+  the note's harmonics (CUTOFF, KEY TRK 127 -> lower, DRIVE, a narrower pulse) and the removal of the sub (a narrower pulse takes 6-10 points off the share under 150 Hz). I kept ALLEY 62 (80 ms) and FEEDBK low (6-12).
+* **No decay:** E: both DECAYs 0, both SUSTAINs full, RELEASEs the shortest (0.5 ms), ATTACKs 0. F: a 36 ms settle to a sustain at 79 %, 1 ms releases. H: a 54 ms settle to 88 %, 1 ms releases.
+
+## What no-decay does (the character and the level)
+
+* **The pluck becomes a gate.** B fell 16.5 dB inside the gate (10 dB in 46 ms) and had a tap on the front (359 Hz in the first 23 ms against 241 Hz after); E, F, G, H fall 0 - 0.8 dB and the first 23 ms equal the next 67: the note starts at once, holds with body for the gate and stops in about a millisecond. No click from the 0.5 ms release (the largest sample step is lower than B's: -40 ... -26 dBFS against -20).
+* **It got duller before it got brighter.** The B pluck's tap was where its top lived: E (decay zero, CUTOFF +5 %) has 0.4 % of its energy above 400 Hz against B's 2.3 % (centroid 284 Hz against 480); F (CUTOFF +5 %, a little body) 1.6 %. To get *more* brightness than B in a note without the tap the cutoff has to go up more and the sub has to come down: H 3.4 %, G 5.0 %.
+* **Level and headroom:** a note that holds is more energy in the gate, so VOLUME falls: **B 122/127 (5 steps of headroom) -> E 93, F 98, G 102, H 92 (35 steps)**; peaks -10.8 -> -12 ... -13.4 dBFS. Phrase (b): B -20.2, the new ones -16.9 ... -17.6 (nearer the reference).
+* **The slap:** the first repeat stays where B was (**-6.3 dB -> -6.0 ... -6.2 dB** under the note's peak: the loudest possible, MIX 127). The second repeat is **-24 dB (E, F), -26 (H), -29 (G, B) under the first**: because the held note is a longer copy, FEEDBK 12 leaves the second repeat louder; H and G take FEEDBK to 8 and 6.
+  The whole thing ends 178-256 ms after the note (voice alone 18 ms); H 178, B 192, F 256 (F's echo keeps a little tail: its filter and amp releases are 1 ms but the settle is slower than H's).
+
+## The table (round 2; ">400 Hz" = % of energy above 400 Hz)
+
+| | B anchor | E nodecay | F minimal | G crisp | H blend |
+|---|---|---|---|---|---|
+| VOLUME (headroom to 127) | 122 (5) | 93 (34) | 98 (29) | 102 (25) | 92 (35) |
+| level (riff, echo incl.) / (b) | -18.0 / -20.2 | -17.9 / -16.9 | -18.0 / -17.3 | -18.0 / -17.6 | -18.0 / -17.4 |
+| peak any phrase | -10.8 | -12.7 | -13.4 | -11.9 | -13.0 |
+| dry notes band split % <60/60-150/150-400/400-1.2k/1.2k+ | 34 / 53 / 10 / 2 / 0 | 31 / 63 / 5 / 0 / 0 | 30 / 58 / 11 / 2 / 0 | 34 / 44 / 17 / 4 / 1 | 31 / 54 / 12 / 3 / 0 |
+| echo band split % | 36 / 52 / 10 / 2 / 0 | 32 / 62 / 5 / 0 / 0 | 31 / 57 / 11 / 2 / 0 | 34 / 44 / 17 / 4 / 1 | 32 / 53 / 12 / 3 / 0 |
+| centroid Hz: dry · echo | 480 · 413 | 284 · 239 | 343 · 302 | 568 · 499 | 406 · 365 |
+| share above 400 Hz %: dry · echo | 2.3 · 2.4 | 0.4 · 0.4 | 1.6 · 1.6 | 5.0 · 5.0 | 3.4 · 3.4 |
+| first repeat re note peak · second re first (dB) | -6.3 · -29 | -6.1 · -24 | -6.2 · -24 | -6.0 · -29 | -6.2 · -26 |
+| pluck: drop in gate dB · centroid first 23 ms → next 67 ms | 16.5 · 359→241 | -0.0 · 249→249 | 0.8 · 420→404 | 0.7 · 720→708 | 0.5 · 536→521 |
+| harmonics 3/5/7 re 1 (dB) | -17 / -29 / -38 | -14 / -24 / -32 | -14 / -24 / -32 | -11 / -15 / -22 | -27 / -21 / -25 |
+| tail to -20/-40/-60 dB (ms) | 92/148/192 | 96/178/186 | 96/178/256 | 96/112/180 | 96/112/178 |
+| voice alone to -60 dB (ms) | 20 | 18 | 18 | 18 | 18 |
+| largest sample step dBFS (h) | -20 | -40 | -35 | -26 | -32 |
+| worst-case CPU | 553 | 572 | 572 | 569 | 568 |
+
+Changes before -> after (over the committed B) are in `round2/11-slapback-strut/README.md`. Short version: **E** CUTOFF 63 -> 69 (+5 %), ENV AMT 96 -> 64 (centre: 0), DRIVE 0 -> 30, FILTER A/D/R 20/56/60 -> 0/0/0, FILTER SUSTAIN 0 -> 127, AMP DECAY 72 -> 0, AMP SUSTAIN 0 -> 127, AMP RELEASE 24 -> 0, VOLUME 122 -> 93.
+**F** as E but ENV AMT 76, both DECAYs 55 (36 ms), both SUSTAINs 100, both RELEASEs 10 (1 ms), VOLUME 98. **G** = F + PULSE WIDTH 64 -> 32, CUTOFF 82, KEY TRK 90, DRIVE 40, TONE 127, FEEDBK 6, VOLUME 102. **H** = F + PULSE WIDTH 44, CUTOFF 74, KEY TRK 110, DRIVE 40, TONE 110, FEEDBK 8, both DECAYs 60 (54 ms), both SUSTAINs 112, VOLUME 92.
+
+## Recommendation: H
+
+In the vocabulary: *tight, gated, a warm-ish soft top with a little DRIVE, more harmonics and less sub than B, a clean one-copy slap.* H is brighter than B at the top (3.4 % against 2.3 % above 400 Hz) with the echo 3 points less bass-heavy (85 % against 88 % under 150 Hz) and a 54 ms settle of body; the harmonics 3 / 5 / 7 at -27 / -21 / -25 dB (B -17 / -29 / -38) mean the 44 % pulse has a hollower third and a stronger fifth than a triangle: a rounder-than-square, more *reedy* tone than B's (I have not heard it; this is a measurement).
+F is the milder one (1.6 %); G is the crispest (5.0 %, the echo 78 % under 150 Hz) but nearly a square at -11 / -15 / -22 dB (buzzy risk); E is the literal zero-decay reading (duller than B at its CUTOFF).
+**Not asked, flagged:** H raises CUTOFF by 9 % (not 5 %) because the tap that carried B's top is gone; H's third harmonic is low (-27 dB) because of the pulse width; both are one knob each (PULSE WIDTH 64 puts it back).
+
+## Questions for Vincent's ears
+* H against B_anchor: **is the slap crisp enough, is the top soft but not dull?** If not crisp enough: G (watch the buzz). If too bright: F.
+* **Is a note with no pluck at all what you meant** (it is a gated tone now), or do you want the 36 ms tap back (F's FILTER ENV AMT up)?
+
+## Round count (11)
+Round 1: 1 silent measured + 1 listening. Round 2 so far: 1 silent measured + 0 listening.
