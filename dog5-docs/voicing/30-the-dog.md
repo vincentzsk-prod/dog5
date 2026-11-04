@@ -104,4 +104,4 @@ Not varied but flagged uncertain: the sub's level (OSC 2 LEVEL 100 = OSC 1 at 11
 
 * the original list over INIT vs the base firmware's own slot 30: error −27 dB on (b) — not bit-exact (see above; the spring is on); variant A is rendered through the base program path;
 * committed slot 30 == variant B: resolved bytes equal; audio bit-exact on a / b / c / e;
-* PROOF_OTHERS
+* the other 28 programs byte-identical: `python3 tests/voicing/identical.py build/voicing/base 30,31,4,25` — 28 of 28 other slots render the same samples on all six phrases (a riff, b stabs, c held, the CPU stress chord, d lead, e low unison) with the firmware before (`git archive 8439b24`) and after, and the 28 other patches' 96-byte hashes are equal (`dump_patch all`); only `firmware/src/obv_patches.h` changed.
