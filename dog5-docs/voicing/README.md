@@ -28,7 +28,7 @@ arp/delay-synced patches see the same tempo.
 
 | `f_slow.txt` | **(f) slow, low** (Batch 2A, for 17 Titanic): A1 (55 Hz) held **10 s**, released, the host script runs to 18.5 s so the whole release is measured | 12 s of note + tail | the bloom/settling over a long hold (brightness and level against time), the steady weight, beat and wander, the release. **The level phrase of the slow patches** (§10) |
 | `f2_slowmid.txt` | **(f2) slow, mid** (Batch 2A, for 21 Cowl Shadow): the same hold an octave up, A2 (110 Hz) | the same | the same, where a brass wall reads as brass (at 55 Hz it is a rumble) |
-| `g_skank.txt` | **(g) skank** (Batch 2A, for 09 Skeenhead): off-beat two-note minor dyads at 120 BPM (250 ms after each beat), gate 110 ms, vel 96-108: four on A minor (A3 C4), two on D minor (D4 F4), **two empty off-beats (a 1.3 s gap)**, A minor twice, E minor (E4 G4) last, then 3.5 s of nothing | 11 stabs, 9 s + tail | the plop per stab, the chirp of the spring, how the tail sits between stabs (the gap), the tail length. **The level phrase of a spring stab patch** |
+| `g_skank.txt` | **(g) skank** (Batch 2A, for 09 Skeenhead): off-beat two-note minor dyads at 120 BPM (250 ms after each beat), gate 110 ms, vel 96-108: four on A minor (A3 C4), two on D minor (D4 F4), **two empty off-beats (the stabs either side are 1.5 s apart)**, A minor twice, E minor (E4 G4) last, then 3.5 s of nothing | 11 stabs, 9 s + tail | the plop per stab, the chirp of the spring, how the tail sits between stabs (the gap), the tail length. **The level phrase of a spring stab patch** |
 | `h_surf.txt` | **(h) surf bass** (Batch 2A, for 11 Slapback Strut): single-note staccato eighths at 120 BPM, A1 (33) up to A2 (45) with C2 D2 E2 G2, gate 100 ms (40 % of a step, so an ~80 ms echo is a separate slap), vel 98-112, two bars, a 750 ms rest, one last A1, 2.5 s of nothing | 17 notes, 8 s + tail | the pluck, the roundness of one oscillator, how loud and how long the slap is. **The level phrase of an echo bass** |
 | `x_register.txt` | **(x) register tilt**, measurement only (Batch 2A): the same velocity on A1, A2, A3, each held 1.5 s | 8 s | how many partials the filter lets through per octave (KEY TRK / CUTOFF): the bass compensation of 17 |
 
@@ -44,6 +44,8 @@ python3 tests/voicing/batch01a.py [--only SLOT] [--quick]   # Batch 1A (30, 31, 
 python3 tests/voicing/batch01a.py --emit SLOT KEY # the C array (overrides over the defaults) of a variant, ready for obv_patches.h
 python3 tests/voicing/batch02a.py [--only SLOT] [--quick]   # Batch 2A (17, 21, 9, 11): variants -> listen/voicing/batch-02a/<NN-name>/ (WAVs only on the listen branch)
 python3 tests/voicing/batch02a.py --emit SLOT KEY # the C array of a Batch 2A variant, ready for obv_patches.h
+python3 tests/voicing/batch02a.py --index         # listen/voicing/batch-02a/README.md from the four results.json files
+python3 tests/voicing/check_slot.py SLOT KEY      # the committed slot against its variant: resolved bytes, and the audio from the boot patch and from INIT
 build/voicing/dump_patch 3                        # slot 3 resolved (defaults + overrides), "*" = differs from the default
 build/voicing/dump_patch all                      # slot, name, hash of the 96 patch bytes (the byte-identical check)
 ```
@@ -229,3 +231,7 @@ the *register tilt* (`x_register`: centroid in harmonics of the note per octave,
 * **Spring and echo are in series** (echo into the spring): with both on, the spring rings the repeat too.
 * **ALLEY's first repeat is a whole copy of the note** (as long as the note, 100 ms here); FEEDBK 12 puts the second repeat 27 dB under the first (a single slap), 40 puts it 17 dB under. PINGPONG 0 puts the repeat centred (0.71 on each side), 127 puts the first repeat on the left only.
 * **MONO/UNISON do not re-fire the envelopes on legato** (11 is MONO: play it detached; 21 is a unison: a legato second note slides and does not restart the bloom).
+
+**Proof for the batch** (`identical.py build/voicing/base 17,21,9,11`, base = `e2a7ad7`, the commit before Batch 2A): the patch bytes of the other 28 programs are equal and their audio is byte-identical on all 11 phrases (a, b, c, d, e, f, f2, g, h, x_stress, x_register).
+Each committed slot equals its variant B by `check_slot.py` (resolved bytes identical; audio bit-identical when both are loaded from INIT; from the boot patch the CUTOFF / RESO slew floor of §8 puts 21 and 09 20-38 dB apart, 17 and 11 are bit-identical either way).
+**Where each Batch 2A patch's own array came from:** 17 `PF_DUAL_SAW` (only Titanic used it; renamed `PF_TITANIC`), 09 `PF_CLAV_PLUCK` (only Skeenhead; renamed `PF_SKEENHEAD`), 21 and 11 got new arrays (`PF_DRONE_UNI` stays with 18 Roto-scopo, `PF_SUB_BASS` with 05 ZEAROX and 19 Blackwater).
