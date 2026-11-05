@@ -235,6 +235,12 @@ static const uint8_t PF_CEMENT_GRIND[] = {P_O1_WAVE, W_PLS, P_O1_PW, 46, P_O2_WA
     P_O2_LVL, 104, P_O2_FINE, 74, P_CUTOFF, 60, P_RESO, 62, P_FENV_AMT, 96, P_FTYPE, F_LP12, P_DRIVE, 78, P_FA, 0,
     P_FD, 58, P_FS, 45, P_FR, 40, P_AA, 1, P_AS, 127, P_AR, 20, P_LFO_RATE, 100, P_LFO_PHASE, LP_SYNC,
     P_LFO_PWM, 100, P_MODE, M_MONO, P_GLIDE, 12, P_VOLUME, 86, X};
+/* 06 zzuFuzz (voiced Nov 2026, Batch 3A variant B: dog5-docs/voicing/06-zzufuzz.md; was PF_FAT_BASS, which 01 Red Pill and 27 R3V3RT shared and 27 keeps): the player's fuzz, a wall. POLY (6 voices: a three-note power chord plays whole), every voice two saws 9 cents apart at full level,
+ * per-voice DRIVE 100 into GROWL 76 (BIAS 45, TONE 55), the filter open (LP24, CUTOFF 88, RESO 80: the filter only sings from about RESO 124) with a short snap (ENV AMT 120, decay 46 ms to sustain 40), AMP ATTACK 20 (2.4 ms, measured 2.0 ms 10-90 %), AMP SUSTAIN 127
+ * (the held note loses 0.1 dB in 3 s; crest 2.3 dB), AMP RELEASE 70 (-60 dB at 274 ms). Dry: ALLEY, DRAIN, CHEW 0. VOLUME 77: -17.9 dBFS RMS over the note-on region of the wall phrase (k), peak -12.4; phrase (b) reads -16.0 */
+static const uint8_t PF_ZZUFUZZ[] = {P_O1_LVL, 118, P_O2_PW, 50, P_O2_LVL, 118, P_O2_FINE, 76, P_CUTOFF, 88,
+    P_RESO, 80, P_FENV_AMT, 120, P_DRIVE, 100, P_FA, 2, P_FD, 58, P_FR, 40, P_AA, 20, P_AD, 75, P_AS, 127, P_AR, 70,
+    P_VINTAGE, 60, P_SPREAD, 70, P_VOLUME, 77, P_GRL_BIAS, 45, P_GRL_TONE, 55, P_GROWL, 76, P_POLY_N, 6, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -247,7 +253,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
-    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
+    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
