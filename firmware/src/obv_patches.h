@@ -48,6 +48,13 @@ static const uint8_t PF_SQUARE_LEAD[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_
     P_GLIDE, 30, P_LFO_PITCH, 8, P_LFO_DELAY, 50, P_DRIVE, 30, P_AA, 3, P_AR, 40, P_DLY_TIME, DD_8, P_DLY_FB, 35, P_DLY_MIX, 30, X};
 static const uint8_t PF_SUB_BASS[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_SEMI, 12, P_O2_LVL, 60, P_CUTOFF, 35, P_RESO, 10,
     P_FENV_AMT, 84, P_FD, 50, P_FS, 20, P_AA, 1, P_AD, 60, P_AR, 20, P_GLIDE, 5, X};
+/* 05 ZEAROX (voiced Nov 2026, dog5-docs/voicing/05-zearox.md; PF_SUB_BASS stays as 19 Blackwater's): the blown-out lo-fi kick. MONO: OSC 1 pulse = the sub at the note's pitch, OSC 2 saw an octave UP = the body, swept down by the
+ * filter envelope (ENV>O2 110: +17 st at the strike, falling over 46 ms), NOISE 50 through the same fast filter envelope = the click, a drum amp (decay 299 ms, sustain 0), GROWL 104 / BIAS 72 / TONE 64 and CHEW 127 (HISS 0:
+ * the only noise is the voice's own, which stops with the note). VOLUME 122 puts it on the bank reference: -18.0 dBFS RMS over the kick phrase (m), peak -10.3 */
+static const uint8_t PF_ZEAROX[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 90, P_NOISE, 50, P_O2_LVL, 127, P_O2_SEMI, 36,
+    P_ENV_O2, 110, P_CUTOFF, 65, P_RESO, 10, P_FENV_AMT, 120, P_KEYTRK, 20, P_FA, 0, P_FD, 58, P_FS, 0, P_AA, 0,
+    P_AD, 82, P_AS, 0, P_AR, 30, P_MODE, M_MONO, P_VOLUME, 122, P_GRL_BIAS, 72, P_GRL_TONE, 64, P_GROWL, 104,
+    P_CHEW, 127, P_TP_HISS, 0, X};
 static const uint8_t PF_SOFT_KEYS[] = {P_O1_LVL, 90, P_O2_WAVE, W_PLS, P_O2_PW, 30, P_O2_LVL, 60, P_O2_SEMI, 36, P_CUTOFF, 60,
     P_FENV_AMT, 99, P_FD, 70, P_FS, 20, P_AA, 3, P_AD, 90, P_AS, 60, P_AR, 60, P_VEL_FLT, 80, P_VEL_AMP, 90, P_RESO, 10, P_CHO_MIX, 30, P_REV_SIZE, 80, P_REV_MIX, 30, X};
 static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, P_O2_SEMI, 29, P_ENV_O2, 89, P_CUTOFF, 65,
@@ -211,7 +218,7 @@ static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14
 static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_OFF, P_CUTOFF, 46, P_RESO, 62, P_FENV_AMT, 118,
     P_KEYTRK, 100, P_FTYPE, F_LP12, P_FD, 56, P_AA, 0, P_AS, 64, P_AR, 28, P_VOLUME, 92, P_REV_SIZE, 70,
     P_REV_DAMP, 40, P_REV_PRE, 4, P_REV_MIX, 90, X};
-/* 11 Slapback Strut (voiced Nov 2026, approved round 2 variant G: dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 05 ZEAROX's and 19 Blackwater's): the surf bass, a GATED note with a crisp slap. MONO, one narrow
+/* 11 Slapback Strut (voiced Nov 2026, approved round 2 variant G: dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 19 Blackwater's): the surf bass, a GATED note with a crisp slap. MONO, one narrow
  * pulse (PW 32 %; the engine has no triangle) through a key-tracking 12 dB low-pass (CUTOFF 82, KEY TRK 90) with per-voice DRIVE 40; no real decay (a 36 ms settle to a sustain at 79 %, 1 ms releases): the note starts at once, holds
  * its body for the gate and stops in ~1 ms; one clean mono slap: ALLEY 62 = 80 ms, FEEDBK 6, MIX 127 (the top), TONE 127, PINGPONG 0: the first repeat -6.0 dB under the note's peak, the second 29 dB under the first. Dry (no spring).
  * VOLUME 102 puts it on the bank reference: -18.0 dBFS RMS over the note-on region of the surf riff (phrase h), echo included */
@@ -264,7 +271,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
-    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_WIRE_BITE},
+    {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
