@@ -223,6 +223,13 @@ static const uint8_t PF_SLAPBACK_STRUT[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O1_
     P_CUTOFF, 82, P_RESO, 16, P_FENV_AMT, 76, P_KEYTRK, 90, P_FTYPE, F_LP12, P_DRIVE, 40, P_FA, 0, P_FD, 55,
     P_FS, 100, P_FR, 10, P_AA, 0, P_AD, 55, P_AR, 10, P_MODE, M_MONO, P_GLIDE, 5, P_VOLUME, 102, P_DLY_FB, 6,
     P_DLY_TONE, 127, P_DLY_MIX, 127, P_ALLEY, 62, P_BBD_SPREAD, 0, X};
+/* 01 Red Pill (voiced Nov 2026, Batch 3A variant B: dog5-docs/voicing/01-red-pill.md; was PF_FAT_BASS, which 06 zzuFuzz and 27 R3V3RT shared and 27 keeps): the nervous, spitting bass under a vocal. MONO, two saws at one pitch 7.8 cents
+ * apart, TIGHT (VINTAGE 10, no LFO, no glide), a resonant 24 dB low-pass (CUTOFF 92, KEY TRK 100, RESO 58) whose envelope falls in 29 ms (the spit), per-voice DRIVE 88 for the grit; relatively dry: a mono slap at 80 ms (ALLEY 62, FEEDBK 10, MIX 30) and a short
+ * spring (DRAIN 30, SIZE 40), under the dry note in every time window (worst -11.7 dB re the note, 100-250 ms). VOLUME 89: -17.9 dBFS RMS over the note-on region of the spit riff (phrase i), peak -10.8 on the stabs */
+static const uint8_t PF_RED_PILL[] = {P_O2_PW, 50, P_O2_LVL, 104, P_O2_FINE, 74, P_CUTOFF, 92, P_RESO, 58,
+    P_FENV_AMT, 104, P_KEYTRK, 100, P_DRIVE, 88, P_FA, 0, P_FD, 52, P_FS, 30, P_FR, 40, P_AA, 0, P_AS, 127, P_AR, 26,
+    P_MODE, M_MONO, P_VINTAGE, 10, P_SPREAD, 40, P_VOLUME, 89, P_DLY_FB, 10, P_DLY_TONE, 60, P_DLY_MIX, 30,
+    P_REV_SIZE, 40, P_REV_DAMP, 70, P_REV_MIX, 30, P_ALLEY, 62, P_BBD_SPREAD, 0, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -234,7 +241,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
+    {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
