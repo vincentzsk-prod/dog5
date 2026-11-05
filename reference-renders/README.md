@@ -37,5 +37,5 @@ Notes:
 - 30 THE DØG has only the two round-2 phrases (low unison, stabs).
 - 09 Skeenhead: its log calls the skank phrase its "stabs" level reading (-17.9); the file named `_stabs` is phrase (b) (-17.4 per `results.json`).
 - 21 Cowl Shadow's stabs phrase is far below reference (-31 dB): it is a slow bloom pad, not a stab patch; its level phrase is slowmid.
-- Sources: 03, 04, 25, 30, 31 from `listen/voicing/` on main; 17, 21, 09, 11 from the `listen/batch-02a-weight-and-space` branch (`listen/voicing/batch-02a/...`), copied with `git show`; that branch was not merged.
+- Sources: 03, 04, 25, 30, 31 were copied from `listen/voicing/` on main (the originals were then removed from main as duplicates); 17, 21, 09, 11 from the `listen/batch-02a-weight-and-space` branch (`listen/voicing/batch-02a/...`), copied with `git show`; that branch was not merged.
 - Regenerate: the `tests/voicing/*.py` round scripts (see `dog5-docs/voicing/README.md`); some need the pre-change base tree.

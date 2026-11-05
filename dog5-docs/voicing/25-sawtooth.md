@@ -1,7 +1,7 @@
 # Voicing log — 25 "SAWTOOTH" (FACTORY[24], Batch 1A, the iconic poly brass)
 
 4 Nov 2026. Brief (Batch 1A, the attack set): *dual saws, slight detune, a classic 24 dB filter-envelope swell; stable, warm and brassy, related to but clearly distinct from 03 Half-Life.* A Prophet-5 brass swell, with OB-Xa brass, Jupiter-8 brightness, Memorymoog thickness and a hint of Polysix wobble. Rebuilt by ear: nothing from any factory data. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
-files, the numbers and the variants table: `listen/voicing/batch-01a/25-sawtooth/` (`README.md` there is the full table) (WAVs of the rejected variants were removed from main in e40f5d5; the approved variant's renders are in `reference-renders/`).
+files, the numbers and the variants table: `listen/voicing/batch-01a/25-sawtooth/` (`README.md` there is the full table) (the WAVs were removed from main in e40f5d5 and the follow-up commit; the approved variant's renders are in `reference-renders/` only).
 
 **Status: APPROVED AS IS (Vincent, 5 Nov 2026, after listening to Batch 1A): variant B, already committed.** The other variants stay render-only in `listen/voicing/batch-01a/25-sawtooth/`.
 **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/25-sawtooth.md`.

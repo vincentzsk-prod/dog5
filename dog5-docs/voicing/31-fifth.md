@@ -1,7 +1,7 @@
 # Voicing log — 31 "Fi(l)fth" (FACTORY[30], Batch 1A, the aggressive chord stab)
 
 4 Nov 2026. Brief (Batch 1A, the attack set): *the archetypal aggressive chord stab: OSC A + B a fifth apart (OSC 2 SEMI +7), fast decay, a short delay.* A Prophet-5 stab through a Space Echo, with Juno pluck and a little MS-20 bite. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
-files, the numbers and the variants table: `listen/voicing/batch-01a/31-fifth/` (`README.md` there is the full table) (WAVs of the rejected variants were removed from main in e40f5d5; the approved variant's renders are in `reference-renders/`).
+files, the numbers and the variants table: `listen/voicing/batch-01a/31-fifth/` (`README.md` there is the full table) (the WAVs were removed from main in e40f5d5 and the follow-up commit; the approved variant's renders are in `reference-renders/` only).
 
 **Status: APPROVED AS IS (Vincent, 5 Nov 2026, after listening to Batch 1A): variant **C (dual)**. C is the DUAL stab: a detuned pair per note, fatter and heavier on CPU than the single-voice B. It is the committed patch; the other variants stay render-only in
 `listen/voicing/batch-01a/31-fifth/`. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/31-fifth.md`.

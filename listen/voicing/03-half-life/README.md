@@ -1,4 +1,4 @@
-> The rejected variants' audio files in this folder were removed from main in the housekeeping commit e40f5d5; they are in the git history before that commit. The approved variant (B) is in `reference-renders/` (its WAVs also remain here). The renders can be regenerated with the round script named in `dog5-docs/voicing/README.md` (some need the pre-change base tree). The README below is generated; it still lists the removed files.
+> The audio files in this folder were removed from main in the housekeeping commits e40f5d5 (rejected variants) and the follow-up that removed the duplicates of the approved variant (B); they are in the git history. The approved variant's renders are in `reference-renders/` (`03-half-life_B_*.wav`). The only audio file left in this folder is the approved variant's `B_centre_held.wav` (a held-note render not copied to `reference-renders/`). They can be regenerated with the round script named in `dog5-docs/voicing/README.md` (some need the pre-change base tree). The README below is generated; it still lists the removed files.
 
 # 03 Half-Life — voicing round 1 (render-only variants A–F; B is committed)
 

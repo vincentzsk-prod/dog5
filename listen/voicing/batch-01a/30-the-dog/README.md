@@ -1,4 +1,4 @@
-> The rejected variants' audio files in this folder were removed from main in the housekeeping commit e40f5d5; they are in the git history before that commit. The approved variant (H, round 2) is in `reference-renders/` (its WAVs also remain in `round2/`). The renders can be regenerated with the round script named in `dog5-docs/voicing/README.md` (some need the pre-change base tree). The README below is generated; it still lists the removed files.
+> The audio files in this folder were removed from main in the housekeeping commits e40f5d5 (rejected variants) and the follow-up that removed the duplicates of the approved variant (H); they are in the git history. The approved variant's renders are in `reference-renders/` (`30-the-dog_H_*.wav`). No audio files are left in this folder. They can be regenerated with the round script named in `dog5-docs/voicing/README.md` (some need the pre-change base tree). The README below is generated; it still lists the removed files.
 
 # 30 THE DØG — voicing round (Batch 1A, the attack set)
 
