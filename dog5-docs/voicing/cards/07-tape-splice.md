@@ -28,7 +28,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **Chopped:** a 60 ms note is 40 dB down 14 ms after the key goes up and 60 dB down at 18 ms; after the 2.4 s held note it is 60 dB down at 36 ms.
 - **Level:** matched to the bank reference on the splice phrase (−18.1 dBFS RMS, peak −12.9); phrase (b) reads −17.6 with a peak of −12.5.
 - **Costs, honestly:** about 2177 host instr/sample worst case (the original: 1384); CHEW accounts for about 770 of it. The device build was not run and the render time on the device is not measured.
-- **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, ALLEY, DRAIN, ENV>O2. Using OSC 2 LEVEL 0 as a silent modulator is also untested.
+- **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, ALLEY, DRAIN, ENV>O2. OSC 2 LEVEL 0 still modulates through X-MOD (measured on this patch's held A2: the render with X-MOD 100 differs from X-MOD 0 by 3.1 dB re the signal); how that sounds is untested.
 
 ## 5. Final values (for debugging, not for players)
 

@@ -52,13 +52,13 @@ static const uint8_t PF_TREM_CHOP[] = {P_O1_LVL, 127, P_O2_LVL, 127, P_O2_FINE, 
     P_MODE, M_DUAL, P_VINTAGE, 60, P_VOLUME, 84, P_DLY_TIME, DD_8, P_DLY_FB, 35, P_POLY_N, 6, X};
 static const uint8_t PF_SUB_BASS[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_SEMI, 12, P_O2_LVL, 60, P_CUTOFF, 35, P_RESO, 10,
     P_FENV_AMT, 84, P_FD, 50, P_FS, 20, P_AA, 1, P_AD, 60, P_AR, 20, P_GLIDE, 5, X};
-/* 05 ZEAROX (voiced Nov 2026, dog5-docs/voicing/05-zearox.md; PF_SUB_BASS stays as 19 Blackwater's): the blown-out lo-fi kick. MONO: OSC 1 pulse = the sub at the note's pitch, OSC 2 saw an octave UP = the body, swept down by the
- * filter envelope (ENV>O2 110: +17 st at the strike, falling over 46 ms), NOISE 50 through the same fast filter envelope = the click, a drum amp (decay 299 ms, sustain 0), GROWL 104 / BIAS 72 / TONE 64 and CHEW 127 (HISS 0:
- * the only noise is the voice's own, which stops with the note). VOLUME 122 puts it on the bank reference: -18.0 dBFS RMS over the kick phrase (m), peak -10.3 */
-static const uint8_t PF_ZEAROX[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 90, P_NOISE, 50, P_O2_LVL, 127, P_O2_SEMI, 36,
-    P_ENV_O2, 110, P_CUTOFF, 65, P_RESO, 10, P_FENV_AMT, 120, P_KEYTRK, 20, P_FA, 0, P_FD, 58, P_FS, 0, P_AA, 0,
-    P_AD, 82, P_AS, 0, P_AR, 30, P_MODE, M_MONO, P_VOLUME, 122, P_GRL_BIAS, 72, P_GRL_TONE, 64, P_GROWL, 104,
-    P_CHEW, 127, P_TP_HISS, 0, X};
+/* 05 ZEAROX (round 2, voiced Nov 2026, variant D: dog5-docs/voicing/05-zearox.md; PF_SUB_BASS stays as 19 Blackwater's): the pixelated, hard black-and-white kick. MONO, ONE square (OSC 2 pulse, an octave up from the key, swept down by the
+ * filter envelope: ENV>O2 110 = +17 st falling over 11 ms), an open 12 dB filter (CUTOFF 105, RESO 0), attack 0, DECAY 76 (187 ms) to sustain 0, 2 ms release, a random stepped pitch LFO (S&H, 21 Hz, +-4.7 st) as the glitch.
+ * No tape (CHEW 0, HISS 0, DROPS 0), no GROWL. VOLUME 123 puts it on the bank reference: -18.1 dBFS RMS over the kick phrase (m), peak -10.7; worst case 1337 host instr/sample */
+static const uint8_t PF_ZEAROX[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 40, P_O2_WAVE, W_PLS, P_O2_LVL, 127, P_O2_SEMI, 36,
+    P_ENV_O2, 110, P_O2_FINE, 68, P_CUTOFF, 105, P_RESO, 0, P_FENV_AMT, 64, P_KEYTRK, 0, P_FTYPE, F_LP12, P_FA, 0,
+    P_FD, 40, P_FS, 0, P_AA, 0, P_AD, 76, P_AS, 0, P_AR, 20, P_LFO_SHAPE, L_SH, P_LFO_RATE, 120, P_LFO_PITCH, 80,
+    P_MODE, M_MONO, P_VOLUME, 123, P_TP_HISS, 0, P_TP_DROPS, 0, X};
 static const uint8_t PF_SOFT_KEYS[] = {P_O1_LVL, 90, P_O2_WAVE, W_PLS, P_O2_PW, 30, P_O2_LVL, 60, P_O2_SEMI, 36, P_CUTOFF, 60,
     P_FENV_AMT, 99, P_FD, 70, P_FS, 20, P_AA, 3, P_AD, 90, P_AS, 60, P_AR, 60, P_VEL_FLT, 80, P_VEL_AMP, 90, P_RESO, 10, P_CHO_MIX, 30, P_REV_SIZE, 80, P_REV_MIX, 30, X};
 static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, P_O2_SEMI, 29, P_ENV_O2, 89, P_CUTOFF, 65,
