@@ -43,6 +43,12 @@ Format: 16-bit stereo, 44.1 kHz. Level = RMS over the note-on region, peak = sam
 | `08-wire-bite_D_wire.wav` | 08 wire-bite | D (zap) | (l) wire: high held note, bites | -17.9 | -8.9 | **LEVEL phrase** (reference -18.0) |
 | `08-wire-bite_D_stabs.wav` | 08 wire-bite | D (zap) | (b) chord stabs | -18.2 | -9.0 | comparison |
 | `08-wire-bite_D_riff.wav` | 08 wire-bite | D (zap) | (a) riff | -18.9 | -9.6 | comparison |
+| `07-tape-splice_B_splice.wav` | 07 tape-splice | B (centre) | (n) splice: staccato, held A2, short A3s | -18.1 | -12.9 | **LEVEL phrase** (reference -18.0) |
+| `07-tape-splice_B_stabs.wav` | 07 tape-splice | B (centre) | (b) chord stabs | -17.6 | -12.5 | comparison |
+| `07-tape-splice_B_riff.wav` | 07 tape-splice | B (centre) | (a) riff | -16.8 | -13.0 | comparison |
+| `15-trem-chop_D_chop.wav` | 15 trem-chop | D (smeared) | (o) chop: held A3, riff, chord | -17.9 | -6.2 | **LEVEL phrase** (reference -18.0; off parts of the chop included) |
+| `15-trem-chop_D_stabs.wav` | 15 trem-chop | D (smeared) | (b) chord stabs | -15.4 | -6.2 | comparison (reads 2.5 dB over the level phrase) |
+| `15-trem-chop_D_riff.wav` | 15 trem-chop | D (smeared) | (a) riff | -19.3 | -11.1 | comparison |
 
 Notes:
 - Where the stabs phrase is the level phrase (03, 25, 31) only stabs + riff are kept; elsewhere level phrase + stabs + riff. Held-note renders were not kept.
@@ -52,3 +58,4 @@ Notes:
 - Sources: 03, 04, 25, 30, 31 were copied from `listen/voicing/` on main (the originals were then removed from main as duplicates); 17, 21, 09, 11 from the `listen/batch-02a-weight-and-space` branch (`listen/voicing/batch-02a/...`), copied with `git show`; that branch was not merged.
 - Regenerate: the `tests/voicing/*.py` round scripts (see `dog5-docs/voicing/README.md`); some need the pre-change base tree.
 - 01 Red Pill, 02 Cement Grind, 06 zzuFuzz, 08 Wire Bite (Batch 3A, approved 5 Nov 2026: 01 C, 02 D, 06 C, 08 D): copied byte for byte from the `listen/batch-03a-chapter1-fat-and-driven` branch (`listen/voicing/batch-03a/...`) with `git show`; the held-note renders were not kept. 06's stabs phrase reads -16.1 (about 2 dB over its level phrase; the cause was not isolated); 08's level is read on the wire phrase.
+- 07 Tape Splice B and 15 Trem Chop D (Batch 3B, approved as rendered after listening): copied byte for byte from the `listen/batch-03b-chapter1-wreck-and-chop` branch (`listen/voicing/batch-03b/...`); the held-note renders were not kept. Levels from the variants' `results.json`; the peaks are the whole phrase. 15 D is DUAL (every note two voices), so its chord phrase plays all three notes.

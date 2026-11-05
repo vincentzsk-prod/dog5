@@ -44,12 +44,12 @@ static const uint8_t PF_NOISE_WASH[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAV
     P_LFO_FLT, 60, P_LFO_RATE, 20, P_AA, 100, P_AR, 110, P_FA, 60, P_FENV_AMT, 64, P_REV_SIZE, 127, P_REV_DAMP, 40, P_REV_MIX, 60, X};
 static const uint8_t PF_HOLLOW_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 20, P_O2_WAVE, W_PLS, P_O2_PW, 108, P_O2_FINE, 76, P_FTYPE, F_NOTCH,
     P_CUTOFF, 70, P_LFO_PWM, 40, P_LFO_RATE, 40, P_LFO_PHASE, LP_SPREAD, P_AA, 70, P_AR, 100, P_FENV_AMT, 64, P_SPREAD, 100, P_REV_SIZE, 100, P_REV_MIX, 40, X};
-/* 15 Trem Chop (voiced Nov 2026, dog5-docs/voicing/15-trem-chop.md; was PF_SQUARE_LEAD, this slot's alone): the broken strobe. MONO, two bright saws 3.9 cents apart through an open 24 dB low-pass, the amp chopped by a SQUARE
- * LFO (RATE 101 = 8.1 Hz, AMP 127: full level / -42 dB, the edge is one 16-sample block) with LFO PHASE SYNC (each detached note starts the chop ON). LFO PITCH 8 was inert (below 12 the law (d*d)>>7 is 0) and is 0; the delay is off (MIX 0).
- * VOLUME 108 puts it on the bank reference: -18.0 dBFS RMS over the chop phrase (o), off parts included */
+/* 15 Trem Chop (voiced Nov 2026, approved variant D: dog5-docs/voicing/15-trem-chop.md; was PF_SQUARE_LEAD, this slot's alone): the broken strobe. DUAL, POLY 6 (every note is two voices), two bright saws 3.9 cents apart through an open
+ * 24 dB low-pass, the amp chopped by a SQUARE LFO (RATE 101 = 8.1 Hz, AMP 127: full level / -42 dB, the edge of one voice is one 16-sample block) with LFO PHASE SPREAD (card x 45 degrees: the two voices of a note chop an eighth of a cycle apart).
+ * LFO PITCH 8 was inert (below 12 the law (d*d)>>7 is 0) and is 0; the delay is off (MIX 0). VOLUME 84 puts it on the bank reference: -17.9 dBFS RMS over the chop phrase (o), off parts included (peak -6.2) */
 static const uint8_t PF_TREM_CHOP[] = {P_O1_LVL, 127, P_O2_LVL, 127, P_O2_FINE, 69, P_CUTOFF, 95, P_DRIVE, 60,
-    P_AA, 3, P_AS, 127, P_AR, 40, P_LFO_SHAPE, L_SQR, P_LFO_RATE, 101, P_LFO_PHASE, LP_SYNC, P_LFO_AMP, 127,
-    P_MODE, M_MONO, P_VINTAGE, 60, P_VOLUME, 108, P_DLY_TIME, DD_8, P_DLY_FB, 35, X};
+    P_AA, 3, P_AS, 127, P_AR, 40, P_LFO_SHAPE, L_SQR, P_LFO_RATE, 101, P_LFO_PHASE, LP_SPREAD, P_LFO_AMP, 127,
+    P_MODE, M_DUAL, P_VINTAGE, 60, P_VOLUME, 84, P_DLY_TIME, DD_8, P_DLY_FB, 35, P_POLY_N, 6, X};
 static const uint8_t PF_SUB_BASS[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_SEMI, 12, P_O2_LVL, 60, P_CUTOFF, 35, P_RESO, 10,
     P_FENV_AMT, 84, P_FD, 50, P_FS, 20, P_AA, 1, P_AD, 60, P_AR, 20, P_GLIDE, 5, X};
 /* 05 ZEAROX (voiced Nov 2026, dog5-docs/voicing/05-zearox.md; PF_SUB_BASS stays as 19 Blackwater's): the blown-out lo-fi kick. MONO: OSC 1 pulse = the sub at the note's pitch, OSC 2 saw an octave UP = the body, swept down by the
