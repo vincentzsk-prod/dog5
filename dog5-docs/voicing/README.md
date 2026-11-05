@@ -33,6 +33,10 @@ arp/delay-synced patches see the same tempo.
 | `g_skank.txt` | **(g) skank** (Batch 2A, for 09 Skeenhead): off-beat two-note minor dyads at 120 BPM (250 ms after each beat), gate 110 ms, vel 96-108: four on A minor (A3 C4), two on D minor (D4 F4), **two empty off-beats (the stabs either side are 1.5 s apart)**, A minor twice, E minor (E4 G4) last, then 3.5 s of nothing | 11 stabs, 9 s + tail | the plop per stab, the chirp of the spring, how the tail sits between stabs (the gap), the tail length. **The level phrase of a spring stab patch** |
 | `h_surf.txt` | **(h) surf bass** (Batch 2A, for 11 Slapback Strut): single-note staccato eighths at 120 BPM, A1 (33) up to A2 (45) with C2 D2 E2 G2, gate 100 ms (40 % of a step, so an ~80 ms echo is a separate slap), vel 98-112, two bars, a 750 ms rest, one last A1, 2.5 s of nothing | 17 notes, 8 s + tail | the pluck, the roundness of one oscillator, how loud and how long the slap is. **The level phrase of an echo bass** |
 | `x_register.txt` | **(x) register tilt**, measurement only (Batch 2A): the same velocity on A1, A2, A3, each held 1.5 s | 8 s | how many partials the filter lets through per octave (KEY TRK / CUTOFF): the bass compensation of 17 |
+| `i_spit.txt` | **(i) spit** (Batch 3A, for 01 Red Pill): a nervous riff of sixteenths at 120 BPM (125 ms), A1 (55 Hz) with C2 D2 E2, gate 80 ms, five rests; then three ISOLATED notes with 1.2 s+ of silence after each: A1 gate 150 ms (6000 ms), D2 gate 150 ms (7500), A1 gate 300 ms (9000) | 11.4 s | the spit and grit of a low line, and the **wet return per time window** on the isolated notes (0-20 / 20-100 / 100-250 ms). **The level phrase of 01** |
+| `j_grind.txt` | **(j) grind** (Batch 3A, for 02 Cement Grind): eight quarter notes at 120 BPM with a long gate (400 ms: a 6-9 Hz PWM swings 2-3 times inside each), A2 (110 Hz) with C3 D3 E3 G2; A2 HELD 2.4 s at 7200 ms (where the PWM is read); three chops A3 A2 E3 (150 ms) | 13 s | the PWM (rate, depth, whether it is obvious on the riff), thickness, bite. **The level phrase of 02** |
+| `k_wall.txt` | **(k) wall** (Batch 3A, for 06 zzuFuzz): A2 held 3 s (sustain against time), a held power chord A2+E3+A3 1.5 s, three 300 ms power-chord stabs 800 ms apart (E2+B2+E3, G2+D3+G3, D2+A2+D3), one low A1 held 1.2 s; rests of 0.5-1 s after the note and the chord | 14.5 s | **sustain and the tail** of a fuzz, the size of the wall on chords (three notes: a DUAL patch needs POLY >= 6). **The level phrase of 06** |
+| `l_wire.txt` | **(l) wire** (Batch 3A, for 08 Wire Bite): A4 (440 Hz) held 3.5 s (drift, stack and the zap of the start), eight bites on a 250 ms grid (E5 A4 C5 A4 D5 A4 E5 A4, gate 110 ms), A3 held 700 ms; detached notes only | 12.8 s | the high register: drift, zap, chop. **The level phrase of 08** |
 
 Anything new goes in the same folder with a header comment saying what it judges, and gets one line in
 `PHRASE_FILES` (voicekit.py).
@@ -47,6 +51,8 @@ python3 tests/voicing/batch01a.py --emit SLOT KEY # the C array (overrides over 
 python3 tests/voicing/batch02a.py [--only SLOT] [--quick]   # Batch 2A (17, 21, 9, 11): variants -> listen/voicing/batch-02a/<NN-name>/ (WAVs only on the listen branch)
 python3 tests/voicing/batch02a.py --emit SLOT KEY # the C array of a Batch 2A variant, ready for obv_patches.h
 python3 tests/voicing/batch02a.py --index         # listen/voicing/batch-02a/README.md from the four results.json files
+python3 tests/voicing/batch03a.py [--only SLOT] [--quick] [--no-cost]   # Batch 3A (1, 2, 6, 8): variants -> listen/voicing/batch-03a/<NN-name>/ (tables on voicing/, WAVs only on the listen branch)
+python3 tests/voicing/batch03a.py --emit SLOT KEY # the C array of a Batch 3A variant
 python3 tests/voicing/check_slot.py SLOT KEY      # the committed slot against its variant: resolved bytes, and the audio from the boot patch and from INIT
 build/voicing/dump_patch 3                        # slot 3 resolved (defaults + overrides), "*" = differs from the default
 build/voicing/dump_patch all                      # slot, name, hash of the 96 patch bytes (the byte-identical check)
@@ -251,3 +257,35 @@ Approved: 17 Titanic B, 21 Cowl Shadow C (1 listening + 1 silent round each); 11
 * **Slow patches have two levels.** 21 C reads -18.0 dBFS in the bloomed state and -31.3 on phrase (b): a 13.3 dB gap that will surprise a player who taps a note after switching to it.
 * **The delay path leaves a constant -76 dBFS DC offset behind a driven voice** (inaudible); tail readings subtract it.
 * **INIT-loaded and boot-patch-loaded renders differ** by the CUTOFF / RESO slew floor (20-41 dB on some patches); compare both loaded from INIT (`check_slot.py` does both).
+
+## 12. Batch 3A — the fat and driven set (01 Red Pill, 02 Cement Grind, 06 zzuFuzz, 08 Wire Bite)
+
+The kit is `tests/voicing/batch03a.py` (driver), `batch03a_metrics.py` (the new measures) and `batch03a_variants.py` (the variant tables and texts): the same method as 2A (§10), with four new phrases
+(i, j, k, l, §1), a level phrase per patch (reported next to phrase (b)), and, new, a **probe** section: the recommended variant with one knob stepped (DRIVE, GROWL, TONE, BIAS), as numbers.
+Two branches, as in 2A: code, logs, cards and the small tables on `voicing/batch-03a-chapter1-fat-and-driven` (merged); every WAV on the never-merged `listen/batch-03a-chapter1-fat-and-driven`.
+
+**Measures new in 3A (definitions):**
+
+| measure | definition |
+|---|---|
+| crest factor | peak / RMS in dB over the note-on region (square wave 0 dB, sine 3 dB, saw 4.8 dB; a fuzz wall reads 2-3 dB on a held note) |
+| attack probe | a note on A5 (1.1 ms period, so a millisecond attack is resolvable) struck from silence; the stereo RMS over one period, trailing, hop 0.25 ms; ms from the key-down (first sample above -60 dB of the plateau) to 10 % and 90 % of the plateau (the mean level 200-400 ms later), and the level re the plateau at 2 / 5 / 10 / 20 / 50 ms. Run on the patch as it is and with GROWL and the sends off ("voice") |
+| wet return per window | the sends' own return = the render minus the same render with DLY_MIX and DRAIN at 0 (GROWL / CHEW stay, they are in the voice), RMS in the 0-20 / 20-100 / 100-250 ms after a note-on, in dB re the dry note's RMS in the same window. The dry is read as it falls, so the last window of a 150 ms note compares the return with a note that has already ended: it is the tight one. Three isolated notes (phrase i) |
+| PWM | over the steady part of a held note (+400 ms to the key-up) the energy of four bands (150-400, 400-1.2k, 1.2k-3k, 3k+) and of the whole level in 23 ms frames (hop 5.8 ms): depth = 95th - 5th percentile in dB, rate = the strongest component between 0.8 and 20 Hz. Also over the riff (300 ms of each 400 ms note, depth only) |
+| zap | the energy above 1.2 kHz in the first 40 ms re the same band in the body (+150..300 ms of a held note; +40..100 ms of a 110 ms bite), dB; and the centroid of the first 23 ms against the next 67 |
+| drift | the engine's own log (`vlog`) of each voice card over a held note, exact: static offset, wander s.d. and range in cents; plus the LFO law below |
+| self-oscillation probe | the oscillators off, only noise feeds the filter, two renders with the noise 12 dB apart (NOISE 24 and 12); a linear filter answers 12 dB apart, a singing one answers with far less. At the patch's own RESO and at 100 / 115 / 120 / 124 / 127 |
+| tail | -20 / -40 / -60 dB after the key-up, the DC the render settles on (read in the quiet stretch before the next note) subtracted; with the sends and with the voice alone |
+
+**Engine facts found in 3A (existing controls only; nothing was coded):**
+
+* **LFO PITCH, LFO PWM and LFO FILTER are square laws, `(d*d) >> 7`, integer:** LFO PITCH below 12 is 0 (**the original Wire Bite's LFO PITCH 10 did nothing**); the pitch LFO's peak is `(d*d>>7) * 9.4` cents (12-15: 9, 16-19: 19, 20-22: 28, 23-25: 38, 32: 75). LFO PWM is ±`(d*d>>7) * 0.195` points of pulse width (100: ±15 points, 127: ±25).
+* **A PWM that crosses 50 % doubles its rate:** a pulse of width w and of 100-w sound alike, so a sweep through 50 % cycles twice per LFO period (02 measured 15 Hz at LFO RATE 100 with PW 36 and PWM 127). Keep the base off 50 % by more than the depth so the sweep is one-directional; the depth in the 150-400 band saturates at about 12 dB p-p.
+* **LFO PHASE SYNC restarts the LFO with each detached note** (the first key of a chord): every note starts its PWM identically, which reads as intention.
+* **The per-voice DRIVE is before the filter** (voices -> DRIVE -> filter): it adds harmonic density and compresses (01: crest 8.9 -> 4.8 dB, DRIVE 0 -> 88) and the low-pass then takes the edge back (centroid 650 -> 622 Hz). GROWL is after the filter and is the one that adds edge (GROWL 0 -> 55 on 06: crest 10.3 -> 6.4 dB, held-note crest 5.8 -> 3.7 dB).
+* **06: the sustain is the envelope's, the squash is GROWL's.** At AMP SUSTAIN 127 the held note already loses only 0.2 dB in 3 s at GROWL 0; GROWL 55-100 flattens the waveform (held crest 5.8 -> 3.7 -> 1.5 dB) and the loudness trim keeps the level; BIAS 15 -> 80 only lifts the peak 0.8 dB (crest 5.3 -> 6.1, centroid unchanged) while TONE 25 -> 90 moves the centroid 1251 -> 2051 Hz at the same level (probe tables in 06's README).
+* **GROWL's loudness trim reads the output stage, so VOLUME changes how a note from silence starts:** with the patch at its trimmed VOLUME 77 the strike is -0.7 dB at 2 ms re its plateau; the same patch tuned at VOLUME 100 started -4 dB under it and took 25 ms to reach 90 % (seen while tuning, not tabled).
+* **The audio estimate of a six-voice stack's pitch wander cannot resolve it:** the stack's own beating moves the centroid of its fundamental band by about 8 cents s.d. (VINTAGE 0, no LFO), more than the 4-5 cents of wander VINTAGE 127 puts on each voice. Use the engine's log (exact) and the LFO law.
+* **A unison's attack from silence reads slow (13 ms to 90 % of the plateau on 08) and it is the stack, not the envelope:** the same patch with UNI_N 1 or 2 reads 1.2-1.5 ms (AMP ATTACK 2 = 0.5 ms); six detuned voices beat, so the level moves a couple of dB and the 90 % crossing lands where the beat does.
+* **The SVF at LP24 does not sing before RESO ~124 on these patches** (06: 12.0 dB linear to RESO 115, 11.8 at 120, 3.3 at 124, 0.3 at 127): RESO up to about 120 is safe on a fuzz.
+* **Shared arrays:** 01 Red Pill and 06 zzuFuzz both used `PF_FAT_BASS` (with 27 R3V3RT, which keeps it); each got its own, `PF_RED_PILL` and `PF_ZZUFUZZ`. `PF_WOBBLE_BASS` (only 02) became `PF_CEMENT_GRIND` and `PF_UNISON_LEAD` (only 08) became `PF_WIRE_BITE`.

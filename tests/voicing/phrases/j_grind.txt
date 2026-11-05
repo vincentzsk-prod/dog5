@@ -1,0 +1,30 @@
+# VOICING PHRASE (j): GRIND (Batch 3A, for 02 Cement Grind).  A low-mid riff that makes a fast PWM audible: eight quarter notes at 120 BPM with a LONG
+# gate (400 ms, so a 6-9 Hz PWM completes 2-3 swings inside every note), A2 (45, 110 Hz) with C3 D3 E3 and G2, vel 98-112; then A2 HELD 2.4 s at 7200 ms
+# (the PWM rate and depth are read here, over the steady part), then three short chops A3 A2 E3 (gate 150 ms).
+# Judges: the PWM (rate, depth, whether it is obvious on the riff), the thickness, the bite of the filter, the drive crunch, the skid at the note start.
+# Level: RMS over the note-on region.  Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 45 104
+3400 midi 0x80 45 0
+3500 midi 0x90 45 98
+3900 midi 0x80 45 0
+4000 midi 0x90 48 108
+4400 midi 0x80 48 0
+4500 midi 0x90 45 100
+4900 midi 0x80 45 0
+5000 midi 0x90 50 110
+5400 midi 0x80 50 0
+5500 midi 0x90 45 98
+5900 midi 0x80 45 0
+6000 midi 0x90 52 112
+6400 midi 0x80 52 0
+6500 midi 0x90 43 104
+6900 midi 0x80 43 0
+7200 midi 0x90 45 106
+9600 midi 0x80 45 0
+10000 midi 0x90 57 100
+10150 midi 0x80 57 0
+10250 midi 0x90 45 104
+10400 midi 0x80 45 0
+10500 midi 0x90 52 108
+10650 midi 0x80 52 0
+13000 end
