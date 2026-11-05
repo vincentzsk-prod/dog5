@@ -25,8 +25,6 @@ static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P
     P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
 static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
     P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
-static const uint8_t PF_UNISON_LEAD[] = {P_MODE, M_UNISON, P_UNI_N, 6, P_UNI_DET, 50, P_O2_FINE, 67, P_CUTOFF, 85, P_RESO, 15,
-    P_FA, 10, P_AA, 5, P_GLIDE, 25, P_LFO_PITCH, 10, P_LFO_DELAY, 70, P_SPREAD, 100, P_AR, 50, P_DLY_TIME, DD_4, P_DLY_FB, 35, P_DLY_MIX, 30, P_REV_MIX, 25, X};
 static const uint8_t PF_PWM_STRINGS[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_PW, 40, P_O2_FINE, 73, P_LFO_PWM, 60,
     P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD, P_AA, 60, P_AR, 90, P_FA, 50, P_CUTOFF, 75, P_FENV_AMT, 74, P_RESO, 5,
     P_SPREAD, 100, P_VINTAGE, 50, P_LFO_PITCH, 3, P_REV_SIZE, 100, P_REV_MIX, 35, X};
@@ -241,6 +239,14 @@ static const uint8_t PF_CEMENT_GRIND[] = {P_O1_WAVE, W_PLS, P_O1_PW, 46, P_O2_WA
 static const uint8_t PF_ZZUFUZZ[] = {P_O1_LVL, 118, P_O2_PW, 50, P_O2_LVL, 118, P_O2_FINE, 76, P_CUTOFF, 88,
     P_RESO, 80, P_FENV_AMT, 120, P_DRIVE, 100, P_FA, 2, P_FD, 58, P_FR, 40, P_AA, 20, P_AD, 75, P_AS, 127, P_AR, 70,
     P_VINTAGE, 60, P_SPREAD, 70, P_VOLUME, 77, P_GRL_BIAS, 45, P_GRL_TONE, 55, P_GROWL, 76, P_POLY_N, 6, X};
+/* 08 Wire Bite (voiced Nov 2026, Batch 3A variant B: dog5-docs/voicing/08-wire-bite.md; was PF_UNISON_LEAD, this slot's alone): the anxious drone that bites. A 6-voice UNISON in the high register: OSC 1 a narrow pulse (PW 17 %), OSC 2 a 50 % pulse an octave up,
+ * through a resonant 12 dB low-pass (CUTOFF 80, RESO 60) whose envelope falls in 15 ms to a low sustain: the zap at every note start. Drifting: VINTAGE 127 (the six voices wander 3.8-5.7 cents s.d. each, static offsets -9 to +7 cents) and a smooth-random pitch LFO
+ * (LFO RATE 34 = 0.28 Hz, PITCH 16 = +-19 cents, PHASE SPREAD). Dry (the original's delay and spring are off, DLY_FB / DLY_TIME are leftovers at DLY MIX 0): chopped, -40 dB 18 ms after a bite. VOLUME 58: -18.1 dBFS RMS over the note-on region of the wire phrase (l), peak -9.3 */
+static const uint8_t PF_WIRE_BITE[] = {P_O1_WAVE, W_PLS, P_O1_PW, 22, P_O1_LVL, 108, P_O2_WAVE, W_PLS, P_O2_PW, 50,
+    P_O2_SEMI, 36, P_O2_FINE, 67, P_RESO, 60, P_FENV_AMT, 120, P_KEYTRK, 70, P_FTYPE, F_LP12, P_DRIVE, 40, P_FA, 0,
+    P_FD, 44, P_FS, 20, P_FR, 30, P_AA, 2, P_AS, 127, P_AR, 14, P_LFO_SHAPE, L_RND, P_LFO_RATE, 34,
+    P_LFO_PHASE, LP_SPREAD, P_LFO_PITCH, 16, P_MODE, M_UNISON, P_UNI_N, 6, P_UNI_DET, 50, P_VINTAGE, 127,
+    P_SPREAD, 100, P_VOLUME, 58, P_DLY_TIME, DD_4, P_DLY_FB, 35, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -253,7 +259,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
-    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
+    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
