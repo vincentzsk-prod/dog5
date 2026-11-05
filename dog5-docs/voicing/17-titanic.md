@@ -2,7 +2,7 @@
 
 Nov 2026. Brief (Batch 2A, "weight and space"): *the chapter anchor. Dual saws a fifth apart, extreme bass-comp on the filter, low where the engine opens up. Freezing, desolate
 weight. Tape dropouts (CHEW) optional garnish.* A CS-80 played low and cold (Moog Taurus floor, Memorymoog thickness, Prophet-5 dual saws a fifth apart). Method and kit: `README.md` here
-(§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/17-titanic/`; `README.md` and `numbers.md`
+(§1 phrases, §3 loudness, §10 Batch 2A). Listening files (on the `listen/batch-02a-weight-and-space` branch only): `listen/voicing/batch-02a/17-titanic/`; the approved variant's renders are in `reference-renders/`; `README.md` and `numbers.md`
 there are the full tables and are on the voicing branch too.
 
 **Status: APPROVED AS IS (Vincent, after listening to Batch 2A): variant B, as committed.** C and D stay render-only. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/17-titanic.md`.

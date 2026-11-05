@@ -606,7 +606,7 @@ static void voice_render(voice_t *v, int32_t *out)
 /* ---- STOP (PLAY/STOP, HEEL): the kill switch, after everything (the Psych Chain's master gate). ctl_kill set: the
  * whole output fades to nothing over KILL_FADE samples (5.8 ms, a straight line: never a hard zero, never a click),
  * then everything that could still sound is cleared, not muted: the voices (envelopes, filters), the held keys and
- * the arp, the queued notes, and every effect's lines and states (GROWL, ALLEY, DRAIN, CHEW). While it is down the
+ * the arp, the queued notes, and every effect's lines and states (GROWL, ALLEY, DRAIN, CHEW) and the TAPE STOP buffer (obv_deck.h). While it is down the
  * engine does nothing (the notes that come are dropped) and sends silence; let go, it starts from that silence and the
  * gate opens over the same 5.8 ms. Not engaged, the gate is skipped: the output bit for bit as before */
 static void deck_process(int32_t *s, uint32_t n);   /* (obv_deck.h, TAPE STOP: after everything, before the gate) */

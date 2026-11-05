@@ -1,6 +1,6 @@
 # 17 · Titanic · Chapter III The Bakshi Tomes
 
-*Voiced Nov 2026, approved as is (variant B of Batch 2A). Renders: `listen/voicing/batch-02a/17-titanic/` on the `listen/batch-02a-weight-and-space` branch (B is this patch). Log: `../17-titanic.md`.*
+*Voiced Nov 2026, approved as is (variant B of Batch 2A). Renders: `reference-renders/17-titanic_B_*.wav` (B is this patch); the other variants and the held renders are in `listen/voicing/batch-02a/17-titanic/` on the `listen/batch-02a-weight-and-space` branch. Log: `../17-titanic.md`.*
 
 ## 2. What it sounds like
 
@@ -26,7 +26,7 @@ Closest to: **a CS-80 played low and cold**.
   above 150 Hz): the weight stays dry and a cloud rings above it. Whether that is frozen or muddy is a matter of taste (untested by ear).
 - **Tape (CHEW):** an optional garnish for a dying-tape feel (hiss, wow, the odd dropout). It is **not** in the patch, and it costs noticeably more CPU than the rest (the variant with CHEW measured 2371
   host instr/sample against 1594 without). At the setting tried it gave about one dropout in a ten-second hold.
-- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (FLOP held) and the kill switch (HEEL). GROWL, ALLEY: 0 and untested.
+- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (SEQ held) and the kill switch (HEEL). GROWL, ALLEY: 0 and untested.
 
 ## 5. Final values (for debugging, not for players)
 

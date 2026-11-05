@@ -1,6 +1,6 @@
 # 21 · Cowl Shadow · Chapter III The Bakshi Tomes
 
-*Voiced Nov 2026, approved as is (variant C of Batch 2A). Renders: `listen/voicing/batch-02a/21-cowl-shadow/` on the `listen/batch-02a-weight-and-space` branch (C is this patch). Log: `../21-cowl-shadow.md`.*
+*Voiced Nov 2026, approved as is (variant C of Batch 2A). Renders: `reference-renders/21-cowl-shadow_C_*.wav` (C is this patch); the other variants and the held renders are in `listen/voicing/batch-02a/21-cowl-shadow/` on the `listen/batch-02a-weight-and-space` branch. Log: `../21-cowl-shadow.md`.*
 
 ## 2. What it sounds like
 
@@ -29,7 +29,7 @@ Closest to: **a CS-80 brass swell, stretched**.
   a key it will seem far too quiet; hold the note and it comes up to the bank level.
 - **Register:** it was voiced and measured on A2 only; other registers are untested.
 - **One note at a time:** unison, all five voices on the note you hold; chords are not available.
-- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (FLOP held), the kill switch (HEEL). It ships dry; a little DRAIN would add depth (untested).
+- **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (SEQ held), the kill switch (HEEL). It ships dry; a little DRAIN would add depth (untested).
 
 ## 5. Final values (for debugging, not for players)
 

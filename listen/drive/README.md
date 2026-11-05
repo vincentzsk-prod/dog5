@@ -1,3 +1,5 @@
+> The audio files in this folder were removed from main in the housekeeping commit e40f5d5; they are in the git history before that commit, and can be regenerated with the Reproduce commands below.
+
 # GROWL — listening kit
 
 GROWL is the preamp drive, stage 1 of the Psych Chain (`firmware/src/obv_drive.h`). Everything here was rendered by the

@@ -1,6 +1,6 @@
 # 03 · Half-Life · Chapter I Wasteland
 
-*Voiced 4 Nov 2026, approved as is. Renders: `listen/voicing/03-half-life/` (B is this patch). Log: `../03-half-life.md`.*
+*Voiced 4 Nov 2026, approved as is. Renders: `reference-renders/03-half-life_B_*.wav` (B is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../03-half-life.md`.*
 
 ## 2. What it sounds like
 

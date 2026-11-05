@@ -1,3 +1,5 @@
+> The audio files in this folder were removed from main in the housekeeping commit e40f5d5, except the three one-off references `tapestop_bass_APPROVED_per_voice.wav`, `tapestop_chord_APPROVED_per_voice.wav` and `kill_fullchain_REF.wav` (renders of an older build; they cannot be regenerated from HEAD and `tests/trick/tapestop_ab.py` compares against them). The others are in the git history before that commit and can be regenerated with `python3 tests/trick/make_kit.py` (see the Reproduce commands in this README).
+
 # The live tricks: listening kit
 
 Three performance controls on the buttons and the encoder that the deleted sequencer left free. All three are

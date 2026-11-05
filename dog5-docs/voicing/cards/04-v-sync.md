@@ -1,6 +1,6 @@
 # 04 · V-Sync · Chapter I Wasteland
 
-*Voiced 4–5 Nov 2026, approved as is (variant D, the fat two-voice lead). Renders: `listen/voicing/batch-01a/04-v-sync/` (D is this patch). Log: `../04-v-sync.md`.*
+*Voiced 4–5 Nov 2026, approved as is (variant D, the fat two-voice lead). Renders: `reference-renders/04-v-sync_D_*.wav` (D is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../04-v-sync.md`.*
 
 ## 2. What it sounds like
 

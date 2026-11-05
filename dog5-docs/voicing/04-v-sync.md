@@ -1,7 +1,7 @@
 # Voicing log — 04 "V-Sync" (FACTORY[3], Batch 1A, the tearing sync lead)
 
 4 Nov 2026. Brief (Batch 1A, the attack set): *tearing hard-sync lead: OSC 2 synced and swept by the filter envelope, alias-tolerant so it rips, fat enough to cut through a drum machine, dead-stop on release.* A Pro-One sync lead, with Prophet-5 fatness, ARP Odyssey nasal bite and Prodigy rawness. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
-files, the numbers and the variants table: `listen/voicing/batch-01a/04-v-sync/` (`README.md` there is the full table).
+files, the numbers and the variants table: `listen/voicing/batch-01a/04-v-sync/` (`README.md` there is the full table) (the WAVs were removed from main in e40f5d5 and the follow-up commit; the approved variant's renders are in `reference-renders/` only).
 
 **Status: APPROVED AS IS (Vincent, 5 Nov 2026, after listening to Batch 1A): variant **D (fat)**. D doubles the synced voice (UNISON, 2 voices, a few cents apart) for fatness. It is the committed patch; the other variants stay render-only in
 `listen/voicing/batch-01a/04-v-sync/`. **Final round count: 1 listening round + 1 silent measured round.** Voice card: `cards/04-v-sync.md`.

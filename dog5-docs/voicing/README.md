@@ -3,7 +3,9 @@
 How the factory patches are voiced *by ear, backed by numbers*. Nobody on the build side can hear: every claim is
 a measurement from the host build (`tests/host.c` runs the firmware's own integer code, so the renders are what the
 engine makes, minus the device's DAC), and every voicing round ends with WAVs for Vincent's ears. Per-patch logs live
-next to this file (`03-half-life.md`, …); the renders in `listen/voicing/<slot>-<name>/`.
+next to this file (`03-half-life.md`, …); the approved-variant renders in `reference-renders/` (rejected variants: git history before e40f5d5, or a `listen/` branch).
+
+**WAV rule:** listening WAVs and rejected-variant renders go ONLY on a separate never-merged `listen/<batch>` branch; main holds only `reference-renders/` (approved variants).
 
 Rules that hold for every batch (CLAUDE.md §2, §13): **edit only the patch's own parameter values** (no engine code, no
 new parameters, no layout change); gear names appear in docs and logs only ("inspired by"), never in a patch name or
@@ -204,7 +206,7 @@ Approved 5 Nov 2026: 30 THE DØG (H, 2 listening + 2 silent rounds), 31 Fi(l)fth
 
 The kit is `tests/voicing/batch02a.py` (driver), `batch02a_metrics.py` (the measures) and `batch02a_variants.py` (the variant tables and texts), the same method as 1A (§8): a variant is a full
 parameter list over INIT, A is rendered through the base program path, VOLUME is trimmed last. **Two-branch rule (new):** code, docs, logs, cards and the small README/numbers tables go on the
-`voicing/` branch that is merged; **every listening WAV lives only on the never-merged `listen/` branch** (`listen/voicing/batch-02a/` and nothing else), so the merged history does not grow.
+`voicing/` branch that is merged; **every listening WAV lives only on the never-merged `listen/` branch** (`listen/voicing/batch-02a/` and nothing else), so the merged history does not grow; the one exception on main is `reference-renders/` (approved variants only).
 
 **How the level is read, per kind of patch** (the reference stays -18.0 dBFS RMS, ±1.5 dB, peak ≤ -4):
 

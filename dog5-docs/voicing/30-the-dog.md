@@ -1,7 +1,7 @@
 # Voicing log — 30 "THE DØG" (FACTORY[29], Batch 1A, the signature patch)
 
 4 Nov 2026. Brief (Batch 1A, the attack set): *every voice stacked on one note (unison), slight detune, filter wide open, low register, floor-shaking bass.* Minimoog-in-unison weight with a Taurus floor, SH-101 punch, a little MS-20 bite. Method and kit: `README.md` here (§1 phrases, §3 loudness, §7 lessons). Listening
-files, the numbers and the variants table: `listen/voicing/batch-01a/30-the-dog/` (`README.md` there is the full table).
+files, the numbers and the variants table: `listen/voicing/batch-01a/30-the-dog/` (`README.md` there is the full table) (the WAVs were removed from main in e40f5d5 and the follow-up commit; the approved variant's renders are in `reference-renders/` only).
 
 **Status: APPROVED (Vincent, 5 Nov 2026, after listening to round 2): variant H, exactly as committed.** No further changes to slot 30. A, C, D (round 1) and B, E, F, G (round 2) stay render-only in
 `listen/voicing/batch-01a/30-the-dog/` and `.../round2/` (H is `round2/H_presence_*`). Round 1: Vincent kept B as the starting point (punch and slight dryness right; the stack and bottom end read thin; wanted it a bit wider
