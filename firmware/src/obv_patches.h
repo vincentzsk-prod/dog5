@@ -56,8 +56,6 @@ static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, 
     P_FENV_AMT, 104, P_FA, 20, P_FD, 70, P_FS, 40, P_AA, 10, P_AR, 50, X};
 static const uint8_t PF_DRONE_UNI[] = {P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 80, P_O2_SEMI, 12, P_CUTOFF, 45, P_FENV_AMT, 79,
     P_FA, 100, P_AA, 100, P_AR, 110, P_LFO_FLT, 20, P_LFO_RATE, 25, P_RESO, 10, P_VINTAGE, 80, P_SPREAD, 127, P_REV_SIZE, 120, P_REV_DAMP, 80, P_REV_MIX, 50, X};
-static const uint8_t PF_WOBBLE_BASS[] = {P_MODE, M_MONO, P_O2_SEMI, 12, P_CUTOFF, 35, P_RESO, 50, P_LFO_FLT, 70, P_LFO_RATE, 45,
-    P_DRIVE, 50, P_AA, 2, P_AS, 127, P_AR, 20, P_FS, 100, P_FENV_AMT, 64, X};
 static const uint8_t PF_ARP_PLUCK[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_ARP_OCT, 3, P_ARP_GATE, 40, P_O2_WAVE, W_PLS,
     P_O2_PW, 40, P_O2_SEMI, 36, P_CUTOFF, 60, P_FENV_AMT, 114, P_FD, 40, P_FS, 0, P_AD, 45, P_AS, 0, P_AR, 50, P_RESO, 30,
     P_SPREAD, 100, P_AA, 1, P_DLY_TIME, DD_8D, P_DLY_FB, 45, P_DLY_TONE, 50, P_DLY_MIX, 45, P_REV_SIZE, 90, P_REV_MIX, 28, X};
@@ -230,6 +228,13 @@ static const uint8_t PF_RED_PILL[] = {P_O2_PW, 50, P_O2_LVL, 104, P_O2_FINE, 74,
     P_FENV_AMT, 104, P_KEYTRK, 100, P_DRIVE, 88, P_FA, 0, P_FD, 52, P_FS, 30, P_FR, 40, P_AA, 0, P_AS, 127, P_AR, 26,
     P_MODE, M_MONO, P_VINTAGE, 10, P_SPREAD, 40, P_VOLUME, 89, P_DLY_FB, 10, P_DLY_TONE, 60, P_DLY_MIX, 30,
     P_REV_SIZE, 40, P_REV_DAMP, 70, P_REV_MIX, 30, P_ALLEY, 62, P_BBD_SPREAD, 0, X};
+/* 02 Cement Grind (voiced Nov 2026, Batch 3A variant B: dog5-docs/voicing/02-cement-grind.md; was PF_WOBBLE_BASS, this slot's alone): the low-mid grinder. MONO, two PULSE oscillators (PW 36 %, 7.8 cents apart) with a FAST PWM:
+ * a triangle LFO at 7.7 Hz (LFO RATE 100) on the pulse width, +-15 points (LFO PWM 100), restarting with each detached note (PHASE SYNC); measured on the held A2 the 150-400 Hz band moves 12 dB peak to peak at 7.7 Hz (7.6 dB at 400-1.2k, 4 dB of level).
+ * A biting 12 dB low-pass (CUTOFF 60, RESO 62, filter decay 46 ms), per-voice DRIVE 78 for the crunch, a 12-step GLIDE for the skid. VOLUME 86: -18.1 dBFS RMS over the note-on region of the grind riff (phrase j), peak -14.8 */
+static const uint8_t PF_CEMENT_GRIND[] = {P_O1_WAVE, W_PLS, P_O1_PW, 46, P_O2_WAVE, W_PLS, P_O2_PW, 46,
+    P_O2_LVL, 104, P_O2_FINE, 74, P_CUTOFF, 60, P_RESO, 62, P_FENV_AMT, 96, P_FTYPE, F_LP12, P_DRIVE, 78, P_FA, 0,
+    P_FD, 58, P_FS, 45, P_FR, 40, P_AA, 1, P_AS, 127, P_AR, 20, P_LFO_RATE, 100, P_LFO_PHASE, LP_SYNC,
+    P_LFO_PWM, 100, P_MODE, M_MONO, P_GLIDE, 12, P_VOLUME, 86, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -241,7 +246,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
+    {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
