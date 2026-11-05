@@ -3,11 +3,12 @@
 5 Nov 2026. Brief (Batch 3B, Chapter I): *a fat square with an X-mod pitch wobble, chopped by the gate, with tape degrade adding splice jitter. Nervous and glitching, broken, unreliable; fast release, short gates.*
 Closest to: a Mono/Poly cross-mod square through a worn tape echo (Mono/Poly fat/drifting, Prophet-5 wobble/nervous, RE-201 wobble/lo-fi, SH-101 punchy). Method and kit: `README.md` here (§1 phrases, §3 loudness, §14 Batch 3B).
 
-## RECOMMENDED: variant B (centre) — committed as the patch, awaiting Vincent's listening
+## APPROVED: variant B (centre) — committed as the patch
 
-**Status: round 1 rendered, not yet heard.** Variant B is committed as `PF_TAPE_SPLICE` in `firmware/src/obv_patches.h` (equals variant B byte for byte: `tests/voicing/check_slot.py 7 B 3b`); A, C, D are render-only. **Round count so far: 1 silent measured round (variants fixed by sweeps of the existing controls, not for ears) + 1 listening round pending.** No voice card and no reference-renders yet (after approval). WAVs: the never-merged `listen/batch-03b-chapter1-wreck-and-chop` branch, `listen/voicing/batch-03b/07-tape-splice/`.
+**Status: APPROVED by Vincent after listening, as rendered: variant B (centre).** Committed 5 Nov 2026 (the array `PF_TAPE_SPLICE` in `firmware/src/obv_patches.h` equals variant B byte for byte: `tests/voicing/check_slot.py 7 B 3b`; from INIT both paths are bit-identical, from the boot patch the slew floor puts them -14.7 .. -23.8 dB apart). **Final round count: 1 silent measured round + 1 listening round (approved at the first listening).**
+Voice card: `cards/07-tape-splice.md`; renders: `reference-renders/07-tape-splice_B_*.wav` (splice = level phrase, stabs, riff).
 
-* **Axes chosen:** X-MOD depth, the pitch LFO and the tape together against how glitchy / jittery it gets (B centre, C glitchy, D gentle); probes for X-MOD, CHEW and DROPS alone.
+* **Axes chosen:** (unchanged by the approval) X-MOD depth, the pitch LFO and the tape together against how glitchy / jittery it gets (B centre, C glitchy, D gentle); probes for X-MOD, CHEW and DROPS alone.
 * **Final values (variant B), each change before -> after (the original is the nearest-base patch as it stood):**
 
 * O1_WAVE SAW -> PULSE
