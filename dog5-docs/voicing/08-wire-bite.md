@@ -3,7 +3,50 @@
 5 Nov 2026. Brief (Batch 3A, Chapter I): *an anxious, thick drone that bites. The anxiety comes from a HIGHER frequency register, with a lot of ZAP from pulse: biting into a live electric wire. Emphasis on FAT but MEDIUM-TO-HIGH brightness. The DRIFTING is also key: a live wire being bitten into (unstable, wandering, nervous).
 Unison/stacked detuned source; chopped on release; slop adds the spit.* Closest to: a Mono/Poly in unison with MS-20 bite (Mono/Poly fat/drifting, Minimoog thick, MS-20 the bite, Jupiter-4 fat/wobble, early Prophet-5 drift). Method and kit: `README.md` here (§1 phrases, §3 loudness, §12 Batch 3A).
 
-**Status: RECOMMENDED B (centre), committed as the patch; awaiting Vincent's listening.** Round count so far: 1 silent measured round (tuning sweeps and the variants, no ears) + 1 listening round pending. Branches: code, logs, tables on `voicing/batch-03a-chapter1-fat-and-driven`; all WAVs only on `listen/batch-03a-chapter1-fat-and-driven` (`listen/voicing/batch-03a/08-wire-bite/`). Full tables: `listen/voicing/batch-03a/08-wire-bite/README.md` and `numbers.md` (on the voicing branch too).
+
+## APPROVED: variant D (zap) — committed as the patch
+
+**Status: APPROVED by Vincent after listening, "all as rendered": variant D (zap).** Committed 5 Nov 2026 (the array `PF_WIRE_BITE` in `firmware/src/obv_patches.h` equals variant D byte for byte: `tests/voicing/check_slot.py 8 D 3a`).
+The recommendation in this log's first draft was B; the sections below describe the round as rendered (B was the recommendation, the approved variant is in the variants table). **Final round count: 1 silent measured round + 1 listening round (approved at the first listening).**
+Voice card: `cards/08-wire-bite.md`; renders: `reference-renders/08-wire-bite_D_*.wav`.
+
+* **Axes chosen:** the register / brightness axis (second oscillator +19 st, PW 14 %, CUTOFF 90, RESO 66, ENV AMT 124), drift unchanged from B (VINTAGE 127, pitch LFO +-19 cents).
+* **Final values (variant D), each change before -> after (the original is the nearest-base patch as it stood):**
+
+* O1_WAVE SAW -> PULSE
+* O1_PW 64 -> 18 (-36%)
+* O1_LVL 110 -> 108 (-2%)
+* O2_WAVE SAW -> PULSE
+* O2_PW 64 -> 50 (-11%)
+* O2_SEMI +0 -> +19 st
+* CUTOFF 85 -> 90 (+4%) (1760 Hz -> 2349 Hz)
+* RESO 15 -> 66 (+40%)
+* FENV_AMT 90 -> 124 (centre 64: +26 -> +60, +27% of range)
+* KEYTRK 64 -> 70 (+5%)
+* FTYPE LP24 -> LP12
+* DRIVE 0 -> 40 (+31%)
+* FA 10 -> 0 (-8%) (1 ms -> 0 ms)
+* FD 70 -> 40 (-24%) (117 ms -> 11 ms)
+* FS 40 -> 20 (-16%)
+* FR 60 -> 30 (-24%) (54 ms -> 5 ms)
+* AA 5 -> 2 (-2%) (1 ms -> 1 ms)
+* AS 100 -> 127 (+21%)
+* AR 50 -> 14 (-28%) (25 ms -> 1 ms)
+* LFO_SHAPE TRI -> RANDOM
+* LFO_RATE 70 -> 34 (-28%) (1.7 Hz -> 0.3 Hz)
+* LFO_DELAY 70 -> 0 (-55%) (1519 ms -> 0 ms)
+* LFO_PHASE FREE -> SPREAD
+* LFO_PITCH 10 -> 16 (+5%)
+* GLIDE 25 -> 0 (-20%)
+* VINTAGE 30 -> 127 (+76%)
+* VOLUME 100 -> 58 (-33%)
+* DLY_MIX 30 -> 0 (-24%)
+* REV_MIX 25 -> 0 (-20%)
+
+* **Level:** VOLUME 58; **-17.9 dBFS RMS** on the level phrase (l_wire); phrase (b) -18.2 (-0.4 dB), K-weighted (b) -17.8; peak -8.9 dBFS; crest 9.0 dB on the level phrase; worst-case CPU 1298 host instr/sample (idle 104 + load 1194).
+* **Measured on the approved variant:** zap, top above 1.2 kHz re the body: -2.0 dB on the held A4 and +0.5 dB on the first bite (centroid 4295 -> 3845 Hz first 23 ms -> next 67 ms): **the brightness (centroid 3855 Hz on the wire phrase) reduces the measured burst; B measured +4.6 dB. The brighter D was approved by ear.** Drift (engine log, held A4): static offsets -9.3 to +7.2 cents, wander 3.8-5.7 cents s.d. per voice, pitch LFO +-19 cents at 0.28 Hz; chopped: 18 ms to -40 dB after a 110 ms bite.
+* **Device build:** not run (no JieLi toolchain in this environment); the change is parameter arrays only.
+* **Other programs:** the boot-matched check (base tree plus only the new slot 1, `make_mid.py` + `identical.py ... 2,6,8`) is in the README, section 12; slot 1 is the boot patch, see there.
 
 ## 0. Before
 
@@ -15,7 +58,7 @@ Unison/stacked detuned source; chopped on release; slop adds the spit.* Closest 
 * **Control limits foreseen (and found):** the audio can't show the drift in cents (a six-voice stack's own beating moves its fundamental band's centroid ~8 cents s.d. with VINTAGE 0 and no LFO): the engine's own log and the LFO law are the numbers. A unison plays one note (chords: the last note). UNISON does not re-fire the envelopes on legato, so the zap
   is a detached-note sound. The one LFO is global: its random shape at SPREAD phases puts each voice at another point of the same random line. A brighter cutoff *shrinks* the zap (the burst is measured against the body), so "zappier" and "brighter" pull apart: D shows it.
 
-## Final values (variant B, `PF_WIRE_BITE`), each change before -> after
+## Variant B values (the first-draft recommendation, as rendered; NOT the approved variant), each change before -> after
 
 * O1_WAVE SAW -> PULSE
 * O1_PW 64 -> 22 (-33%)

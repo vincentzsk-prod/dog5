@@ -3,7 +3,52 @@
 5 Nov 2026. Brief (Batch 3A, Chapter I): *a nervous, spitting bass that sits under a vocal. Fat detuned saws, low and resonant. TIGHT AND STABLE: minimal slop or movement (VINTAGE low, no LFO wobble). GRITTY and DRIVEN, warm with MEDIUM brightness, not harsh or piercing.
 RELATIVELY DRY, but a slight wetness (spring and/or echo) enough to elevate the presence; the wet must never dominate the note.* Closest to: an MS-20 bass through a RAT (MS-20 nasty/biting/resonant, Minimoog fat/thick, SH-101 tight/punchy, ProCo RAT gritty/crunchy). Method and kit: `README.md` here (§1 phrases, §3 loudness, §12 Batch 3A).
 
-**Status: RECOMMENDED B (centre), committed as the patch; awaiting Vincent's listening.** Round count so far: 1 silent measured round (tuning sweeps and the variants, no ears) + 1 listening round pending. Branches: code, logs, tables on `voicing/batch-03a-chapter1-fat-and-driven`; all WAVs only on `listen/batch-03a-chapter1-fat-and-driven` (`listen/voicing/batch-03a/01-red-pill/`). Full tables: `listen/voicing/batch-03a/01-red-pill/README.md` and `numbers.md` (on the voicing branch too).
+
+## APPROVED: variant C (grit) — committed as the patch
+
+**Status: APPROVED by Vincent after listening, "all as rendered": variant C (grit).** Committed 5 Nov 2026 (the array `PF_RED_PILL` in `firmware/src/obv_patches.h` equals variant C byte for byte: `tests/voicing/check_slot.py 1 C 3a`).
+The recommendation in this log's first draft was B; the sections below describe the round as rendered (B was the recommendation, the approved variant is in the variants table). **Final round count: 1 silent measured round + 1 listening round (approved at the first listening).**
+Voice card: `cards/01-red-pill.md`; renders: `reference-renders/01-red-pill_C_*.wav`.
+
+* **Axes chosen:** the grit axis (C: DRIVE 110 plus a GROWL 46 step, BIAS 30 / TONE 55) with the wet turned down (slap MIX 16, DRAIN 18); the wet axis stayed slight.
+* **Final values (variant C), each change before -> after (the original is the nearest-base patch as it stood):**
+
+* O2_WAVE PULSE -> SAW
+* O2_LVL 100 -> 104 (+3%)
+* O2_SEMI -12 -> +0 st
+* O2_FINE 70 -> 74 (centre 64: +6 -> +10, +3% of range) (+4.7 cents -> +7.8 cents)
+* CUTOFF 40 -> 92 (+41%) (131 Hz -> 2637 Hz)
+* RESO 30 -> 58 (+22%)
+* FENV_AMT 109 -> 104 (centre 64: +45 -> +40, -4% of range)
+* KEYTRK 64 -> 100 (+28%)
+* DRIVE 40 -> 110 (+55%)
+* FA 20 -> 0 (-16%) (2 ms -> 0 ms)
+* FD 60 -> 52 (-6%) (54 ms -> 29 ms)
+* FS 10 -> 30 (+16%)
+* FR 60 -> 40 (-16%) (54 ms -> 11 ms)
+* AA 2 -> 0 (-2%) (1 ms -> 0 ms)
+* AS 100 -> 127 (+21%)
+* AR 30 -> 26 (-3%) (5 ms -> 4 ms)
+* GLIDE 10 -> 0 (-8%)
+* VINTAGE 30 -> 10 (-16%)
+* SPREAD 60 -> 40 (-16%)
+* VOLUME 100 -> 87 (-10%)
+* GRL_BIAS 40 -> 30 (-8%)
+* GRL_TONE 50 -> 55 (+4%)
+* GROWL 0 -> 46 (+36%)
+* DLY_FB 50 -> 10 (-31%)
+* DLY_TONE 70 -> 60 (-8%)
+* DLY_MIX 0 -> 16 (+13%)
+* REV_SIZE 80 -> 40 (-31%)
+* REV_DAMP 60 -> 70 (+8%)
+* REV_MIX 0 -> 18 (+14%)
+* ALLEY 0 -> 62 (+49%) (SYNC -> 80 ms)
+* BBD_SPREAD 127 -> 0 (-100%)
+
+* **Level:** VOLUME 87; **-18.0 dBFS RMS** on the level phrase (i_spit); phrase (b) -18.0 (+0.0 dB), K-weighted (b) -18.1; peak -12.8 dBFS; crest 4.6 dB on the level phrase; worst-case CPU 1640 host instr/sample (idle 1424 + load 215).
+* **Measured on the approved variant:** wet return re the dry note, loudest of the three isolated notes: -43.6 / -25.0 / -16.5 dB in the 0-20 / 20-100 / 100-250 ms windows; whole-phrase return -20.5 dB. Tail after the key-up of a 300 ms note: -20 / -40 / -60 dB at 24 / 214 / 436 ms with the wet (voice alone: 24 / 48 / 54 ms). Wander s.d. 0.3 cents (held A2). Centroid 625 Hz on the spit riff, 1295 Hz on the stabs. GROWL 46 costs about +593 instr/sample over B. Slot 1 is the boot patch (README section 12).
+* **Device build:** not run (no JieLi toolchain in this environment); the change is parameter arrays only.
+* **Other programs:** the boot-matched check (base tree plus only the new slot 1, `make_mid.py` + `identical.py ... 2,6,8`) is in the README, section 12; slot 1 is the boot patch, see there.
 
 ## 0. Before
 
@@ -16,7 +61,7 @@ RELATIVELY DRY, but a slight wetness (spring and/or echo) enough to elevate the 
   from GROWL (after the filter), which costs about +593 instr/sample whenever it is on; the echo is a faithful copy of the note (ALLEY TONE is inert on a bass echo), so the presence comes from its level and time; MONO does not re-fire the envelopes on a legato note
   (the spit is a detached-note sound).
 
-## Final values (variant B, `PF_RED_PILL`), each change before -> after
+## Variant B values (the first-draft recommendation, as rendered; NOT the approved variant), each change before -> after
 
 * O2_WAVE PULSE -> SAW
 * O2_LVL 100 -> 104 (+3%)

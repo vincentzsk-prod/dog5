@@ -31,6 +31,18 @@ Format: 16-bit stereo, 44.1 kHz. Level = RMS over the note-on region, peak = sam
 | `11-slapback-strut_G_surf.wav` | 11 slapback-strut | G (crisp) | (h) surf bass | -18.0 | -12.0 | **LEVEL phrase** (reference -18.0) |
 | `11-slapback-strut_G_stabs.wav` | 11 slapback-strut | G (crisp) | (b) chord stabs | -17.6 | -11.9 | comparison |
 | `11-slapback-strut_G_riff.wav` | 11 slapback-strut | G (crisp) | (a) riff | -17.9 | -12.2 | comparison |
+| `01-red-pill_C_spit.wav` | 01 red-pill | C (grit) | (i) spit riff | -18.0 | -13.4 | **LEVEL phrase** (reference -18.0) |
+| `01-red-pill_C_stabs.wav` | 01 red-pill | C (grit) | (b) chord stabs | -18.0 | -12.8 | comparison |
+| `01-red-pill_C_riff.wav` | 01 red-pill | C (grit) | (a) riff | -18.1 | -13.4 | comparison |
+| `02-cement-grind_D_grind.wav` | 02 cement-grind | D (wobble) | (j) grind riff | -17.9 | -14.7 | **LEVEL phrase** (reference -18.0) |
+| `02-cement-grind_D_stabs.wav` | 02 cement-grind | D (wobble) | (b) chord stabs | -18.0 | -14.6 | comparison |
+| `02-cement-grind_D_riff.wav` | 02 cement-grind | D (wobble) | (a) riff | -18.0 | -14.9 | comparison |
+| `06-zzufuzz_C_wall.wav` | 06 zzufuzz | C (fiercer) | (k) wall: held note, power chords | -18.1 | -12.8 | **LEVEL phrase** (reference -18.0) |
+| `06-zzufuzz_C_stabs.wav` | 06 zzufuzz | C (fiercer) | (b) chord stabs | -16.1 | -12.8 | comparison |
+| `06-zzufuzz_C_riff.wav` | 06 zzufuzz | C (fiercer) | (a) riff | -21.3 | -17.0 | comparison |
+| `08-wire-bite_D_wire.wav` | 08 wire-bite | D (zap) | (l) wire: high held note, bites | -17.9 | -8.9 | **LEVEL phrase** (reference -18.0) |
+| `08-wire-bite_D_stabs.wav` | 08 wire-bite | D (zap) | (b) chord stabs | -18.2 | -9.0 | comparison |
+| `08-wire-bite_D_riff.wav` | 08 wire-bite | D (zap) | (a) riff | -18.9 | -9.6 | comparison |
 
 Notes:
 - Where the stabs phrase is the level phrase (03, 25, 31) only stabs + riff are kept; elsewhere level phrase + stabs + riff. Held-note renders were not kept.
@@ -39,3 +51,4 @@ Notes:
 - 21 Cowl Shadow's stabs phrase is far below reference (-31 dB): it is a slow bloom pad, not a stab patch; its level phrase is slowmid.
 - Sources: 03, 04, 25, 30, 31 were copied from `listen/voicing/` on main (the originals were then removed from main as duplicates); 17, 21, 09, 11 from the `listen/batch-02a-weight-and-space` branch (`listen/voicing/batch-02a/...`), copied with `git show`; that branch was not merged.
 - Regenerate: the `tests/voicing/*.py` round scripts (see `dog5-docs/voicing/README.md`); some need the pre-change base tree.
+- 01 Red Pill, 02 Cement Grind, 06 zzuFuzz, 08 Wire Bite (Batch 3A, approved 5 Nov 2026: 01 C, 02 D, 06 C, 08 D): copied byte for byte from the `listen/batch-03a-chapter1-fat-and-driven` branch (`listen/voicing/batch-03a/...`) with `git show`; the held-note renders were not kept. 06's stabs phrase reads -16.1 (about 2 dB over its level phrase) because the chords hit the clip harder; 08's level is read on the wire phrase.

@@ -4,7 +4,47 @@
 (watch for self-oscillation, say what you chose). NO slapback, delay or reverb: dry, NOT springy or boingy (ALLEY, DRAIN, CHEW all 0). Instant bloom: a very slight attack, MINIMAL but NOT zero (report it in ms). The fat dual-oscillator source fed hard into Drive.* Closest to: a Mono/Poly into a Big Muff
 (Big Muff fuzzy/thick wall, Fuzz Face fuzzy/spitting, Univox Super-Fuzz voltage-starved/spitting, Fuzz War the benchmark, Mono/Poly the source fat/drifting, Concertmate MG-1 voltage-starved/lo-fi). Method and kit: `README.md` here (§1 phrases, §3 loudness, §12 Batch 3A).
 
-**Status: RECOMMENDED B (centre), committed as the patch; awaiting Vincent's listening.** Round count so far: 1 silent measured round (tuning sweeps and the variants, no ears) + 1 listening round pending. Branches: code, logs, tables on `voicing/batch-03a-chapter1-fat-and-driven`; all WAVs only on `listen/batch-03a-chapter1-fat-and-driven` (`listen/voicing/batch-03a/06-zzufuzz/`). Full tables: `listen/voicing/batch-03a/06-zzufuzz/README.md` and `numbers.md` (on the voicing branch too).
+
+## APPROVED: variant C (fiercer) — committed as the patch
+
+**Status: APPROVED by Vincent after listening, "all as rendered": variant C (fiercer).** Committed 5 Nov 2026 (the array `PF_ZZUFUZZ` in `firmware/src/obv_patches.h` equals variant C byte for byte: `tests/voicing/check_slot.py 6 C 3a`).
+The recommendation in this log's first draft was B; the sections below describe the round as rendered (B was the recommendation, the approved variant is in the variants table). **Final round count: 1 silent measured round + 1 listening round (approved at the first listening).**
+Voice card: `cards/06-zzufuzz.md`; renders: `reference-renders/06-zzufuzz_C_*.wav`.
+
+* **Axes chosen:** the fuzz-intensity axis, fiercer (GROWL 104, BIAS 72, TONE 64) on the POLY two-saw source; the wall-size axis (DUAL) was not taken.
+* **Final values (variant C), each change before -> after (the original is the nearest-base patch as it stood):**
+
+* O1_LVL 110 -> 118 (+6%)
+* O2_WAVE PULSE -> SAW
+* O2_LVL 100 -> 118 (+14%)
+* O2_SEMI -12 -> +0 st
+* O2_FINE 70 -> 76 (centre 64: +6 -> +12, +5% of range) (+4.7 cents -> +9.4 cents)
+* CUTOFF 40 -> 88 (+38%) (131 Hz -> 2093 Hz)
+* RESO 30 -> 80 (+39%)
+* FENV_AMT 109 -> 120 (centre 64: +45 -> +56, +9% of range)
+* DRIVE 40 -> 100 (+47%)
+* FA 20 -> 2 (-14%) (2 ms -> 1 ms)
+* FD 60 -> 58 (-2%) (54 ms -> 46 ms)
+* FS 10 -> 40 (+24%)
+* FR 60 -> 40 (-16%) (54 ms -> 11 ms)
+* AA 2 -> 20 (+14%) (1 ms -> 2 ms)
+* AD 70 -> 75 (+4%) (117 ms -> 173 ms)
+* AS 100 -> 127 (+21%)
+* AR 30 -> 70 (+31%) (5 ms -> 117 ms)
+* MODE MONO -> POLY
+* GLIDE 10 -> 0 (-8%)
+* VINTAGE 30 -> 60 (+24%)
+* SPREAD 60 -> 70 (+8%)
+* VOLUME 100 -> 77 (-18%)
+* GRL_BIAS 40 -> 72 (+25%)
+* GRL_TONE 50 -> 64 (+11%)
+* GROWL 0 -> 104 (+82%)
+* POLY_N 5 -> 6 voices
+
+* **Level:** VOLUME 77; **-18.1 dBFS RMS** on the level phrase (k_wall); phrase (b) -16.1 (+2.0 dB), K-weighted (b) -16.4; peak -12.8 dBFS; crest 5.2 dB on the level phrase; worst-case CPU 1414 host instr/sample (idle 683 + load 731).
+* **Measured on the approved variant:** held A2 crest 1.7 dB (power chord 3.2); the 3 s hold loses 0.0 dB; voice-alone attack 10-90 % 2.0 ms (AMP ATTACK 20 = 2.4 ms), as rendered 1.0 ms, level -0.3 dB at 2 ms re plateau (from silence, at VOLUME 77); tail -60 dB at 278 ms after the 3 s note, 314 ms after the held chord; self-oscillation probe linear (12.0 dB) to RESO 115, 11.8 at 120, singing from 124 (3.3); centroid 2058 Hz. **Phrase (b) reads -16.1, about 2 dB hot against the level phrase** (matched on the wall phrase; a compressed signal, the chords hit the clip harder). GROWL 104 costs about +595 instr/sample whenever on; VOLUME changes how a note from silence starts (GROWL's loudness trim reads the output stage).
+* **Device build:** not run (no JieLi toolchain in this environment); the change is parameter arrays only.
+* **Other programs:** the boot-matched check (base tree plus only the new slot 1, `make_mid.py` + `identical.py ... 2,6,8`) is in the README, section 12; slot 1 is the boot patch, see there.
 
 ## 0. Before
 
@@ -23,7 +63,7 @@
 * **The axes I judged most uncertain:** (1) **the fuzz intensity** (GROWL / BIAS / TONE: B 76 / 45 / 55, C 104 / 72 / 64) against sustain, and (2) **the size of the wall** (POLY with two saws a voice against DUAL, four saws a note).
 * **Control limits foreseen (and found):** no gate or octave-up fuzz (existing controls only); GROWL's trim means the patch holds its loudness whatever GROWL is, so the knob changes the sound, not the level; a three-note chord needs POLY >= 6 in DUAL; the fuzz is dry by brief so the only "tail" is the amp release.
 
-## Final values (variant B, `PF_ZZUFUZZ`), each change before -> after
+## Variant B values (the first-draft recommendation, as rendered; NOT the approved variant), each change before -> after
 
 * O1_LVL 110 -> 118 (+6%)
 * O2_WAVE PULSE -> SAW

@@ -145,5 +145,5 @@ Listen for: the fast sweep of the pulse widths (B at 7.7 Hz against C's slower 4
 | 127 | -17.7 | -14.6 | 2.9 | 519 | 11 / 48 / 31 / 9 / 0 |
 
 *Notes.* The PWM is read on the held A2 (7.2-9.6 s of phrase j) from the energy of five bands in 20 ms frames (depth = 95th minus 5th percentile in dB, rate = strongest component 0.8-20 Hz of that series); the nominal LFO rate is in the table (RATE 100 = 7.7 Hz) and the measured rate matches it.
-Deeper or lower-base settings were tried (LFO PWM 127 with PW 34-36: the depth does not grow past about 12 dB in the 150-400 band, and the sweep crosses 50 % so the timbre cycles at twice the LFO rate, 15 Hz): B keeps the sweep one-directional, 21-51 %. The pitch of the pair moves with the VINTAGE offset of card 0 only (MONO).
+Deeper or lower-base settings were tried (LFO PWM 127 with PW 34-36: the depth does not grow past about 12 dB in the 150-400 band, and the sweep crosses 50 % so the timbre cycles at twice the LFO rate, 15 Hz): B's sweep runs 21-51 % (just past 50 % at the top of each swing, the measured rate still equals the LFO's). The pitch of the pair moves with the VINTAGE offset of card 0 only (MONO).
 MONO does not re-fire the envelopes on legato (the riff is detached; LFO PHASE SYNC restarts the PWM with each detached note). Variant A is rendered through the base program path.
