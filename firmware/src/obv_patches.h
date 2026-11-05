@@ -239,7 +239,7 @@ static const uint8_t PF_CEMENT_GRIND[] = {P_O1_WAVE, W_PLS, P_O1_PW, 46, P_O2_WA
 /* 06 zzuFuzz (voiced Nov 2026, approved Batch 3A variant C: dog5-docs/voicing/06-zzufuzz.md; was PF_FAT_BASS, which 01 Red Pill and 27 R3V3RT shared and 27 keeps): the player's fuzz, a wall. POLY (6 voices: a three-note power chord plays whole), every voice two saws
  * 9 cents apart at full level, per-voice DRIVE 100 into GROWL 104 (BIAS 72, TONE 64; ~+595 instr/sample), the filter open (LP24, CUTOFF 88, RESO 80: it only sings from about RESO 124) with a short snap (ENV AMT 120, decay 46 ms to sustain 40), AMP ATTACK 20 (2.4 ms,
  * measured 2.0 ms 10-90 % on the voice alone), AMP SUSTAIN 127 (the held note loses 0.0 dB in 3 s; crest 1.7 dB), AMP RELEASE 70 (-60 dB at 278 ms). Dry: ALLEY, DRAIN, CHEW 0. VOLUME 77: -18.1 dBFS RMS over the note-on region of the wall phrase (k), peak -12.8;
- * phrase (b) reads -16.1 (the chords hit the clip harder). VOLUME changes how a note from silence starts (GROWL's loudness trim reads the output stage) */
+ * phrase (b) reads -16.1 (cause not isolated). VOLUME changes how a note from silence starts (GROWL's loudness trim reads the output stage) */
 static const uint8_t PF_ZZUFUZZ[] = {P_O1_LVL, 118, P_O2_PW, 50, P_O2_LVL, 118, P_O2_FINE, 76, P_CUTOFF, 88,
     P_RESO, 80, P_FENV_AMT, 120, P_DRIVE, 100, P_FA, 2, P_FD, 58, P_FR, 40, P_AA, 20, P_AD, 75, P_AS, 127, P_AR, 70,
     P_VINTAGE, 60, P_SPREAD, 70, P_VOLUME, 77, P_GRL_BIAS, 72, P_GRL_TONE, 64, P_GROWL, 104, P_POLY_N, 6, X};

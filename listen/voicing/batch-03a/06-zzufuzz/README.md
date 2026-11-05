@@ -170,6 +170,6 @@ Listen for: the size of the wall (B against D's DUAL), the sustain, whether C's 
 | 45 | -17.9 | -12.4 | 5.5 | 1656 | 14 / 29 / 37 / 16 / 4 | 2.3 | +0.1 |
 | 80 | -17.9 | -11.8 | 6.1 | 1663 | 14 / 29 / 37 / 16 / 4 | 2.6 | +0.1 |
 
-*Notes.* Level is read on the note-on region of the wall phrase (phrase k) and is a heavily compressed signal: the crest factor of the held note is 2.3 dB (a square is 0 dB, a sine 3), so RMS and peak sit close together and the patch sounds louder than its RMS says, next to a patch with a 9 dB crest at the same RMS;
+*Notes.* Level is read on the note-on region of the wall phrase (phrase k) and is a heavily compressed signal: the crest factor of the held note is 2.3 dB (a square is 0 dB, a sine 3), so RMS and peak sit close together;
 phrase (b), with its three-note chords, reads about 2 dB hotter than the wall phrase, outside the +-1.5 dB band. GROWL leaves the loudness nearly where it was (its static law and slow trim) so it is the VOLUME that is trimmed. The attack probe strikes a high note (A5, 1.1 ms period) from silence so that the millisecond-scale attack is resolvable; the fuzz stage's loudness trim
 makes a note from silence start a little under its plateau. TONE moves the centroid (1251 -> 2051 Hz for 25 -> 90), BIAS only the peak (+0.8 dB for 15 -> 80): the probe tables. Existing controls only: no gate, no octave-up fuzz. Variant A is rendered through the base program path.

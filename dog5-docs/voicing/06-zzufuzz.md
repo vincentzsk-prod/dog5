@@ -42,7 +42,7 @@ Voice card: `cards/06-zzufuzz.md`; renders: `reference-renders/06-zzufuzz_C_*.wa
 * POLY_N 5 -> 6 voices
 
 * **Level:** VOLUME 77; **-18.1 dBFS RMS** on the level phrase (k_wall); phrase (b) -16.1 (+2.0 dB), K-weighted (b) -16.4; peak -12.8 dBFS; crest 5.2 dB on the level phrase; worst-case CPU 1414 host instr/sample (idle 683 + load 731).
-* **Measured on the approved variant:** held A2 crest 1.7 dB (power chord 3.2); the 3 s hold loses 0.0 dB; voice-alone attack 10-90 % 2.0 ms (AMP ATTACK 20 = 2.4 ms), as rendered 1.0 ms, level -0.3 dB at 2 ms re plateau (from silence, at VOLUME 77); tail -60 dB at 278 ms after the 3 s note, 314 ms after the held chord; self-oscillation probe linear (12.0 dB) to RESO 115, 11.8 at 120, singing from 124 (3.3); centroid 2058 Hz. **Phrase (b) reads -16.1, about 2 dB hot against the level phrase** (matched on the wall phrase; a compressed signal, the chords hit the clip harder). GROWL 104 costs about +595 instr/sample whenever on; VOLUME changes how a note from silence starts (GROWL's loudness trim reads the output stage).
+* **Measured on the approved variant:** held A2 crest 1.7 dB (power chord 3.2); the 3 s hold loses 0.0 dB; voice-alone attack 10-90 % 2.0 ms (AMP ATTACK 20 = 2.4 ms), as rendered 1.0 ms, level -0.3 dB at 2 ms re plateau (from silence, at VOLUME 77); tail -60 dB at 278 ms after the 3 s note, 314 ms after the held chord; self-oscillation probe linear (12.0 dB) to RESO 115, 11.8 at 120, singing from 124 (3.3); centroid 2058 Hz. **Phrase (b) reads -16.1, about 2 dB hot against the level phrase** (matched on the wall phrase; the cause of the difference was not isolated; the signal is compressed). GROWL 104 costs about +595 instr/sample whenever on; VOLUME changes how a note from silence starts (GROWL's loudness trim reads the output stage).
 * **Device build:** not run (no JieLi toolchain in this environment); the change is parameter arrays only.
 * **Other programs:** the boot-matched check (base tree plus only the new slot 1, `make_mid.py` + `identical.py ... 2,6,8`) is in the README, section 12; slot 1 is the boot patch, see there.
 
@@ -96,7 +96,7 @@ Voice card: `cards/06-zzufuzz.md`; renders: `reference-renders/06-zzufuzz_C_*.wa
 
 **-17.9 dBFS RMS over the note-on region of the wall phrase (phrase k)**; phrase (b) -16.0 (difference +1.9 dB: the chords of (b) read hotter than the wall phrase, whose notes are mostly single or held; outside the +-1.5 dB band), K-weighted -16.4.
 **Peak -12.4 dBFS** (on the wall phrase). VOLUME 100 -> 77. **Crest factor: 5.5 dB over the wall phrase, 2.3 dB on the held A2, 3.6 dB on the held power chord** (a square wave 0 dB, a sine 3 dB; the original's held note: 5.0).
-The signal is compressed to a near-constant amplitude, so RMS and peak sit 5.5 dB apart and the patch will sound louder than the same RMS on a patch with a 9 dB crest. If it sits too loud next to the bank in practice, VOLUME is the lever (0.17 dB a step).
+The signal is compressed to a near-constant amplitude, so RMS and peak sit 5.5 dB apart (a crest of 1.7 dB on the held note). If it sits too loud next to the bank in practice, VOLUME is the lever (0.17 dB a step).
 
 ## The attack, in ms (the brief asks for it)
 

@@ -148,6 +148,6 @@ It is a bite, not a laser: a bigger burst needs a lower resting cutoff, which ta
 
 ## Open for the ears
 
-* Is it "anxious", or too steady / too seasick? Drift is the key word: C doubles the LFO if B is too tame; the SLOBBER ride (untested here) adds up to 254 to VINTAGE live.
+* Is it "anxious", or too steady / too seasick? Drift is the key word: C doubles the LFO if B is too tame; the SLOBBER ride (untested here) multiplies the patch's own slop, about 3.0 times at VINTAGE 127 (README section 5).
 * Is the bite a zap, or a buzz? (The zap is a +4.6 dB burst of top: modest by the numbers.)
 * Dry is my reading of "chopped on release": the original's echo and spring are off. If a little space is wanted, DRAIN is the least invasive (the tail hides the chop).
