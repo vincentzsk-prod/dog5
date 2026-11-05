@@ -25,8 +25,6 @@ static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P
     P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
 static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
     P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
-static const uint8_t PF_UNISON_LEAD[] = {P_MODE, M_UNISON, P_UNI_N, 6, P_UNI_DET, 50, P_O2_FINE, 67, P_CUTOFF, 85, P_RESO, 15,
-    P_FA, 10, P_AA, 5, P_GLIDE, 25, P_LFO_PITCH, 10, P_LFO_DELAY, 70, P_SPREAD, 100, P_AR, 50, P_DLY_TIME, DD_4, P_DLY_FB, 35, P_DLY_MIX, 30, P_REV_MIX, 25, X};
 static const uint8_t PF_PWM_STRINGS[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_PW, 40, P_O2_FINE, 73, P_LFO_PWM, 60,
     P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD, P_AA, 60, P_AR, 90, P_FA, 50, P_CUTOFF, 75, P_FENV_AMT, 74, P_RESO, 5,
     P_SPREAD, 100, P_VINTAGE, 50, P_LFO_PITCH, 3, P_REV_SIZE, 100, P_REV_MIX, 35, X};
@@ -56,8 +54,6 @@ static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, 
     P_FENV_AMT, 104, P_FA, 20, P_FD, 70, P_FS, 40, P_AA, 10, P_AR, 50, X};
 static const uint8_t PF_DRONE_UNI[] = {P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 80, P_O2_SEMI, 12, P_CUTOFF, 45, P_FENV_AMT, 79,
     P_FA, 100, P_AA, 100, P_AR, 110, P_LFO_FLT, 20, P_LFO_RATE, 25, P_RESO, 10, P_VINTAGE, 80, P_SPREAD, 127, P_REV_SIZE, 120, P_REV_DAMP, 80, P_REV_MIX, 50, X};
-static const uint8_t PF_WOBBLE_BASS[] = {P_MODE, M_MONO, P_O2_SEMI, 12, P_CUTOFF, 35, P_RESO, 50, P_LFO_FLT, 70, P_LFO_RATE, 45,
-    P_DRIVE, 50, P_AA, 2, P_AS, 127, P_AR, 20, P_FS, 100, P_FENV_AMT, 64, X};
 static const uint8_t PF_ARP_PLUCK[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_ARP_OCT, 3, P_ARP_GATE, 40, P_O2_WAVE, W_PLS,
     P_O2_PW, 40, P_O2_SEMI, 36, P_CUTOFF, 60, P_FENV_AMT, 114, P_FD, 40, P_FS, 0, P_AD, 45, P_AS, 0, P_AR, 50, P_RESO, 30,
     P_SPREAD, 100, P_AA, 1, P_DLY_TIME, DD_8D, P_DLY_FB, 45, P_DLY_TONE, 50, P_DLY_MIX, 45, P_REV_SIZE, 90, P_REV_MIX, 28, X};
@@ -223,6 +219,39 @@ static const uint8_t PF_SLAPBACK_STRUT[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O1_
     P_CUTOFF, 82, P_RESO, 16, P_FENV_AMT, 76, P_KEYTRK, 90, P_FTYPE, F_LP12, P_DRIVE, 40, P_FA, 0, P_FD, 55,
     P_FS, 100, P_FR, 10, P_AA, 0, P_AD, 55, P_AR, 10, P_MODE, M_MONO, P_GLIDE, 5, P_VOLUME, 102, P_DLY_FB, 6,
     P_DLY_TONE, 127, P_DLY_MIX, 127, P_ALLEY, 62, P_BBD_SPREAD, 0, X};
+/* 01 Red Pill (voiced Nov 2026, approved Batch 3A variant C: dog5-docs/voicing/01-red-pill.md; was PF_FAT_BASS, which 06 zzuFuzz and 27 R3V3RT shared and 27 keeps): the nervous, spitting bass under a vocal. MONO, two saws at one pitch 7.8 cents
+ * apart, TIGHT (VINTAGE 10, no LFO, no glide), a resonant 24 dB low-pass (CUTOFF 92, KEY TRK 100, RESO 58) whose envelope falls in 29 ms (the spit), grit from per-voice DRIVE 110 and a GROWL 46 step (BIAS 30, TONE 55; GROWL costs ~+595 instr/sample);
+ * relatively dry: a mono slap at 80 ms (ALLEY 62, FEEDBK 10, MIX 16) and a short spring (DRAIN 18, SIZE 40), worst return -43.6 / -25.0 / -16.5 dB re the dry note in the 0-20 / 20-100 / 100-250 ms windows. VOLUME 87: -18.0 dBFS RMS over the
+ * note-on region of the spit riff (phrase i), peak -12.8 (phrase b -18.0). Slot 1 is the boot patch */
+static const uint8_t PF_RED_PILL[] = {P_O2_PW, 50, P_O2_LVL, 104, P_O2_FINE, 74, P_CUTOFF, 92, P_RESO, 58,
+    P_FENV_AMT, 104, P_KEYTRK, 100, P_DRIVE, 110, P_FA, 0, P_FD, 52, P_FS, 30, P_FR, 40, P_AA, 0, P_AS, 127,
+    P_AR, 26, P_MODE, M_MONO, P_VINTAGE, 10, P_SPREAD, 40, P_VOLUME, 87, P_GRL_BIAS, 30, P_GRL_TONE, 55, P_GROWL, 46,
+    P_DLY_FB, 10, P_DLY_TONE, 60, P_DLY_MIX, 16, P_REV_SIZE, 40, P_REV_DAMP, 70, P_REV_MIX, 18, P_ALLEY, 62,
+    P_BBD_SPREAD, 0, X};
+/* 02 Cement Grind (voiced Nov 2026, approved Batch 3A variant D: dog5-docs/voicing/02-cement-grind.md; was PF_WOBBLE_BASS, this slot's alone): the low-mid grinder. MONO, two PULSE oscillators (PW 36 %, 7.8 cents apart) with a FAST PWM:
+ * a triangle LFO at 11.5 Hz (LFO RATE 108) on the pulse width, +-18 points (LFO PWM 110), restarting with each detached note (PHASE SYNC), and the same LFO wobbling the filter (LFO FILTER 28): the one LFO serves both, so the original 0.5 Hz filter wobble is gone.
+ * Measured on the held A2: 150-400 Hz band 11.9 dB peak to peak, 400-1.2k 6.7 dB, 4.1 dB of level. A biting 12 dB low-pass (CUTOFF 60, RESO 62, filter decay 46 ms), per-voice DRIVE 78, GLIDE 12 for the skid.
+ * VOLUME 87: -17.9 dBFS RMS over the note-on region of the grind riff (phrase j), peak -14.6 */
+static const uint8_t PF_CEMENT_GRIND[] = {P_O1_WAVE, W_PLS, P_O1_PW, 46, P_O2_WAVE, W_PLS, P_O2_PW, 46,
+    P_O2_LVL, 104, P_O2_FINE, 74, P_CUTOFF, 60, P_RESO, 62, P_FENV_AMT, 96, P_FTYPE, F_LP12, P_DRIVE, 78, P_FA, 0,
+    P_FD, 58, P_FS, 45, P_FR, 40, P_AA, 1, P_AS, 127, P_AR, 20, P_LFO_RATE, 108, P_LFO_PHASE, LP_SYNC,
+    P_LFO_PWM, 110, P_LFO_FLT, 28, P_MODE, M_MONO, P_GLIDE, 12, P_VOLUME, 87, X};
+/* 06 zzuFuzz (voiced Nov 2026, approved Batch 3A variant C: dog5-docs/voicing/06-zzufuzz.md; was PF_FAT_BASS, which 01 Red Pill and 27 R3V3RT shared and 27 keeps): the player's fuzz, a wall. POLY (6 voices: a three-note power chord plays whole), every voice two saws
+ * 9 cents apart at full level, per-voice DRIVE 100 into GROWL 104 (BIAS 72, TONE 64; ~+595 instr/sample), the filter open (LP24, CUTOFF 88, RESO 80: it only sings from about RESO 124) with a short snap (ENV AMT 120, decay 46 ms to sustain 40), AMP ATTACK 20 (2.4 ms,
+ * measured 2.0 ms 10-90 % on the voice alone), AMP SUSTAIN 127 (the held note loses 0.0 dB in 3 s; crest 1.7 dB), AMP RELEASE 70 (-60 dB at 278 ms). Dry: ALLEY, DRAIN, CHEW 0. VOLUME 77: -18.1 dBFS RMS over the note-on region of the wall phrase (k), peak -12.8;
+ * phrase (b) reads -16.1 (cause not isolated). VOLUME changes how a note from silence starts (GROWL's loudness trim reads the output stage) */
+static const uint8_t PF_ZZUFUZZ[] = {P_O1_LVL, 118, P_O2_PW, 50, P_O2_LVL, 118, P_O2_FINE, 76, P_CUTOFF, 88,
+    P_RESO, 80, P_FENV_AMT, 120, P_DRIVE, 100, P_FA, 2, P_FD, 58, P_FR, 40, P_AA, 20, P_AD, 75, P_AS, 127, P_AR, 70,
+    P_VINTAGE, 60, P_SPREAD, 70, P_VOLUME, 77, P_GRL_BIAS, 72, P_GRL_TONE, 64, P_GROWL, 104, P_POLY_N, 6, X};
+/* 08 Wire Bite (voiced Nov 2026, approved Batch 3A variant D: dog5-docs/voicing/08-wire-bite.md; was PF_UNISON_LEAD, this slot's alone): the anxious drone that bites. A 6-voice UNISON in the high register: OSC 1 a narrow pulse (PW 14 %), OSC 2 a 50 % pulse
+ * 19 semitones up, through a resonant 12 dB low-pass (CUTOFF 90, RESO 66, ENV AMT 124, decay 40 = 11 ms to a low sustain). Bright (centroid 3855 Hz on the wire phrase), which reduces the measured zap (top burst -2.0 dB on the held A4, +0.5 dB on a bite; approved by ear).
+ * Drifting: VINTAGE 127 (the six voices wander 3.8-5.7 cents s.d. each, static offsets -9 to +7 cents) and a smooth-random pitch LFO (LFO RATE 34 = 0.28 Hz, PITCH 16 = +-19 cents, PHASE SPREAD). Dry (DLY_TIME / FEEDBK are leftovers at DLY MIX 0):
+ * chopped, -40 dB 18 ms after a bite. VOLUME 58: -17.9 dBFS RMS over the note-on region of the wire phrase (l), peak -8.9 */
+static const uint8_t PF_WIRE_BITE[] = {P_O1_WAVE, W_PLS, P_O1_PW, 18, P_O1_LVL, 108, P_O2_WAVE, W_PLS, P_O2_PW, 50,
+    P_O2_SEMI, 43, P_O2_FINE, 67, P_CUTOFF, 90, P_RESO, 66, P_FENV_AMT, 124, P_KEYTRK, 70, P_FTYPE, F_LP12,
+    P_DRIVE, 40, P_FA, 0, P_FD, 40, P_FS, 20, P_FR, 30, P_AA, 2, P_AS, 127, P_AR, 14, P_LFO_SHAPE, L_RND,
+    P_LFO_RATE, 34, P_LFO_PHASE, LP_SPREAD, P_LFO_PITCH, 16, P_MODE, M_UNISON, P_UNI_N, 6, P_UNI_DET, 50,
+    P_VINTAGE, 127, P_SPREAD, 100, P_VOLUME, 58, P_DLY_TIME, DD_4, P_DLY_FB, 35, X};
 static const uint8_t PF_INIT[] = {X};
 #undef X
 
@@ -234,8 +263,8 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
-    {"Red Pill", PF_FAT_BASS},      {"Cement Grind", PF_WOBBLE_BASS}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
-    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_FAT_BASS},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_UNISON_LEAD},
+    {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
+    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},

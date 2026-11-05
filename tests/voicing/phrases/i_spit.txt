@@ -1,0 +1,34 @@
+# VOICING PHRASE (i): SPIT (Batch 3A, for 01 Red Pill).  A low nervous riff, then three ISOLATED notes with a 1.2 s+ rest after each, so the wet
+# return (spring / echo) can be read per time window against the dry note.  Bars 1-2: sixteenths at 120 BPM (125 ms), A1 (33, 55 Hz) with C2 D2 E2,
+# gate 80 ms, velocities 96-112, five rests.  Then at 6000 ms A1 (gate 150 ms, the riff's length), at 7500 ms D2 (gate 150 ms), at 9000 ms A1 (gate 300 ms, a held bass note).
+# Judges: the spit (attack and chop), the grit, the weight under a vocal, and the wet return per window (0-20 / 20-100 / 100-250 ms after the note-on).
+# Level: RMS over the note-on region.  Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 33 104
+3080 midi 0x80 33 0
+3250 midi 0x90 33 98
+3330 midi 0x80 33 0
+3375 midi 0x90 33 102
+3455 midi 0x80 33 0
+3500 midi 0x90 36 108
+3580 midi 0x80 36 0
+3750 midi 0x90 33 100
+3830 midi 0x80 33 0
+4000 midi 0x90 33 106
+4080 midi 0x80 33 0
+4125 midi 0x90 33 96
+4205 midi 0x80 33 0
+4375 midi 0x90 38 110
+4455 midi 0x80 38 0
+4500 midi 0x90 33 102
+4580 midi 0x80 33 0
+4750 midi 0x90 40 112
+4830 midi 0x80 40 0
+4875 midi 0x90 33 100
+4955 midi 0x80 33 0
+6000 midi 0x90 33 104
+6150 midi 0x80 33 0
+7500 midi 0x90 38 104
+7650 midi 0x80 38 0
+9000 midi 0x90 33 104
+9300 midi 0x80 33 0
+11400 end

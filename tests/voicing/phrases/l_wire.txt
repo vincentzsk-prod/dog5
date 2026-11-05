@@ -1,0 +1,25 @@
+# VOICING PHRASE (l): WIRE (Batch 3A, for 08 Wire Bite).  The HIGH register: A4 (69, 440 Hz) HELD 3.5 s (the drift, the stack and the zap of the start are
+# read here), then eight bites on a 250 ms grid at 7200 ms (E5 A4 C5 A4 D5 A4 E5 A4, gate 110 ms, vel 100-110: the chop, the release), then A3 (57) held 700 ms.
+# Detached notes only (a UNISON/MONO patch does not re-fire its envelopes on legato).
+# Level: RMS over the note-on region.  Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 69 104
+6500 midi 0x80 69 0
+7200 midi 0x90 76 100
+7310 midi 0x80 76 0
+7450 midi 0x90 69 105
+7560 midi 0x80 69 0
+7700 midi 0x90 72 110
+7810 midi 0x80 72 0
+7950 midi 0x90 69 100
+8060 midi 0x80 69 0
+8200 midi 0x90 74 105
+8310 midi 0x80 74 0
+8450 midi 0x90 69 110
+8560 midi 0x80 69 0
+8700 midi 0x90 76 100
+8810 midi 0x80 76 0
+8950 midi 0x90 69 105
+9060 midi 0x80 69 0
+9600 midi 0x90 57 104
+10300 midi 0x80 57 0
+12800 end

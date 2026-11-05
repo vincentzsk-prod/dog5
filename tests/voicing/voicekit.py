@@ -33,7 +33,8 @@ T_CUT = 2.9                                     # s: the WAVs start here (100 ms
 INIT_PROGRAM = 32                               # program change data byte: slot 33 = INIT, all defaults
 PHRASE_FILES = {"a_riff": "a_riff.txt", "b_stabs": "b_stabs.txt", "c_held": "c_held.txt", "x_stress": "x_stress.txt",
                 "d_lead": "d_lead.txt", "e_lowuni": "e_lowuni.txt", "f_slow": "f_slow.txt", "f2_slowmid": "f2_slowmid.txt", "g_skank": "g_skank.txt",
-                "h_surf": "h_surf.txt", "x_register": "x_register.txt"}
+                "h_surf": "h_surf.txt", "x_register": "x_register.txt",
+                "i_spit": "i_spit.txt", "j_grind": "j_grind.txt", "k_wall": "k_wall.txt", "l_wire": "l_wire.txt"}
 AUDITION = ("a_riff", "b_stabs", "c_held")      # the three phrases every variant is rendered on (x_stress is CPU only)
 
 
