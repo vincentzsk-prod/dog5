@@ -78,8 +78,12 @@ static const uint8_t PF_FIFTH[] = {P_O2_SEMI, 31, P_O2_FINE, 66, P_CUTOFF, 92, P
     P_POLY_N, 8, P_ALLEY, 65, P_BBD_SPREAD, 60, X};
 static const uint8_t PF_VINTAGE_PAD[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF, 55, P_FENV_AMT, 94, P_FA, 70, P_AA, 60, P_AR, 90,
     P_FR, 90, P_RESO, 15, P_SPREAD, 120, P_REV_SIZE, 105, P_REV_MIX, 45, X};
-static const uint8_t PF_XMOD_GROWL[] = {P_MODE, M_MONO, P_XMOD, 90, P_O2_SEMI, 19, P_CUTOFF, 50, P_FENV_AMT, 114, P_FD, 60, P_FS, 30,
-    P_DRIVE, 40, P_AA, 2, P_AR, 40, X};
+/* 07 Tape Splice (voiced Nov 2026, dog5-docs/voicing/07-tape-splice.md; was PF_XMOD_GROWL, this slot's alone): nervous and broken. MONO, two square pulses 3.1 cents apart, OSC 2 -> OSC 1 cross-mod (X-MOD 70), a smooth-random pitch LFO
+ * on both oscillators (RATE 94 = 5.7 Hz, PITCH 16 = +-19 cents), a 4 ms release so short notes chop, and CHEW 80 as the splice (HISS 0, DROPS 90: the tape stage delays each note 2.4 ms +-0.6).
+ * VOLUME 104 puts it on the bank reference: -18.1 dBFS RMS over the splice phrase (n) */
+static const uint8_t PF_TAPE_SPLICE[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_XMOD, 70, P_O2_FINE, 68, P_CUTOFF, 60,
+    P_FENV_AMT, 114, P_DRIVE, 40, P_FD, 60, P_FS, 60, P_AA, 2, P_AR, 25, P_LFO_SHAPE, L_RND, P_LFO_RATE, 94,
+    P_LFO_PITCH, 16, P_MODE, M_MONO, P_VOLUME, 104, P_CHEW, 80, P_TP_HISS, 0, P_TP_DROPS, 90, X};
 static const uint8_t PF_PERC_HIT[] = {P_O2_SEMI, 48, P_NOISE, 60, P_CUTOFF, 90, P_FENV_AMT, 124, P_FD, 25, P_FS, 0, P_AD, 30, P_AS, 0,
     P_AR, 25, P_FTYPE, F_LP12, P_RESO, 30, P_AA, 1, P_REV_SIZE, 90, P_REV_MIX, 40, X};
 /* 33-64 (1.5): a second set in the same spirit: arpeggios, brass, pads, keys, basses, leads, effects */
@@ -271,7 +275,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
-    {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_WIRE_BITE},
+    {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
