@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A fat square with a wobble in its pitch, chopped short. Two square waves a hair apart, one frequency-modulating the other so the tone carries extra energy below the note, and a fast random pitch wobble of a few cents either way. Notes stop quickly when you let go, and a tape stage on the end delays every note by a couple of milliseconds. It is dry: no echo, no spring.
+A fat square with a wobble in its pitch, chopped short. Two square waves a hair apart, one frequency-modulating the other so the tone carries extra energy below the note, and a random pitch wobble (9.6 cents standard deviation on the held A2, the LFO depth up to ±19 cents). Notes stop quickly when you let go, and a tape stage on the end delays every note by a couple of milliseconds. It is dry: no echo, no spring.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
@@ -23,7 +23,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **It is MONO, so legato does not re-fire the envelopes:** a key held while the next goes down slides to the new note and the envelopes do not restart. Play it detached. A chord plays one note (the last).
 - **Where the wobble comes from:** the random pitch LFO (5.7 Hz, a new target about every 176 ms, up to ±19 cents). Measured on the held A2 the pitch track has a standard deviation of 9.6 cents (28 cents from 5th to 95th percentile); without the tape (CHEW 0) it is 8.9.
 - **What X-MOD does:** it adds sidebands and energy below the note, and it does not move the measured pitch. On the held A2 the share of energy under 60 Hz is 2 % at X-MOD 70 (0 % at 0 and 40, 10 % at 100, 18 % at 127); the cause of that low-end energy was not isolated (it suggests FM sidebands). The pitch track's spread showed no order across X-MOD 0 to 127.
-- **The tape's timing:** CHEW 80 delays a note's start by about +2.4 ms on average, with a spread of 0.59 ms between notes (+1.2 to +3.2 ms over twelve notes), and the end of a note by +3.0 ms ± 1.6. As timing the delay is nearly inaudible (the owner's listening, not a measurement).
+- **The tape's timing:** CHEW 80 delays a note's start by about +2.4 ms on average, with a spread of 0.59 ms between notes (+1.2 to +3.2 ms over twelve notes), and the end of a note by +3.0 ms ± 1.6.
 - **Dropouts:** none measured on the held A2 at CHEW 80 (no dip of 6 dB or more; the deepest was 5 dB over 2.1 s). A separate 12-second hold counted dips of 6 dB or more: 0 at CHEW 0, 4 at CHEW 30 and 60 (deepest 6 dB), 8 at CHEW 100 (deepest 11 dB) and 15 at CHEW 127 (deepest 20 dB); the 4 dips at CHEW 60 also appeared with DROPS 0, so they were not isolated as dropouts.
 - **Chopped:** a 60 ms note is 40 dB down 14 ms after the key goes up and 60 dB down at 18 ms; after the 2.4 s held note it is 60 dB down at 36 ms.
 - **Level:** matched to the bank reference on the splice phrase (−18.1 dBFS RMS, peak −12.9); phrase (b) reads −17.6 with a peak of −12.5.

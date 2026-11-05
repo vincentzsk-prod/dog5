@@ -45,7 +45,7 @@ static const uint8_t PF_NOISE_WASH[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAV
 static const uint8_t PF_HOLLOW_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 20, P_O2_WAVE, W_PLS, P_O2_PW, 108, P_O2_FINE, 76, P_FTYPE, F_NOTCH,
     P_CUTOFF, 70, P_LFO_PWM, 40, P_LFO_RATE, 40, P_LFO_PHASE, LP_SPREAD, P_AA, 70, P_AR, 100, P_FENV_AMT, 64, P_SPREAD, 100, P_REV_SIZE, 100, P_REV_MIX, 40, X};
 /* 15 Trem Chop (voiced Nov 2026, approved variant D: dog5-docs/voicing/15-trem-chop.md; was PF_SQUARE_LEAD, this slot's alone): the broken strobe. DUAL, POLY 6 (every note is two voices), two bright saws 3.9 cents apart through an open
- * 24 dB low-pass, the amp chopped by a SQUARE LFO (RATE 101 = 8.1 Hz, AMP 127: full level / -42 dB, the edge of one voice is one 16-sample block) with LFO PHASE SPREAD (card x 45 degrees: the two voices of a note chop an eighth of a cycle apart).
+ * 24 dB low-pass, the amp chopped by a SQUARE LFO (RATE 101 = 8.1 Hz, AMP 127: full level / -42 dB, the edge of one voice is one 16-sample block) with LFO PHASE SPREAD (45 degrees per voice: the two voices of a note chop an eighth of a cycle apart).
  * LFO PITCH 8 was inert (below 12 the law (d*d)>>7 is 0) and is 0; the delay is off (MIX 0). VOLUME 84 puts it on the bank reference: -17.9 dBFS RMS over the chop phrase (o), off parts included (peak -6.2) */
 static const uint8_t PF_TREM_CHOP[] = {P_O1_LVL, 127, P_O2_LVL, 127, P_O2_FINE, 69, P_CUTOFF, 95, P_DRIVE, 60,
     P_AA, 3, P_AS, 127, P_AR, 40, P_LFO_SHAPE, L_SQR, P_LFO_RATE, 101, P_LFO_PHASE, LP_SPREAD, P_LFO_AMP, 127,

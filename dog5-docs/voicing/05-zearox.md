@@ -3,6 +3,15 @@
 5 Nov 2026. Brief (Batch 3B, Chapter I): *a blown-out, lo-fi kick substitute. A cranked sub with noise over the top, pushed through maximum tape degrade; it overloads on every downbeat, each note hits like a blown speaker. The kick feel must be carried by the click and the mid-range body (60-1.2k Hz), the true sub a bonus: under 60 Hz is inaudible on small speakers. The noise should be gated with the note as far as existing controls allow.*
 Closest to: an 808-style kick smashed onto a blown-out cassette 4-track (TR-808 kick sub/thump, SH-101 sub/thick, Portastudio lo-fi/noisy, ProCo RAT crunchy/driven). Method and kit: `README.md` here (§1 phrases, §3 loudness, §14 Batch 3B).
 
+## APPROVED: variant D (light), round 2 — committed as the patch
+
+**Status: APPROVED by Vincent after listening, as rendered: variant D (light) of round 2.** Round 1 (B blown recommended, A-D rendered) was rejected after listening ("way too messy and muddy"); the round-2 direction and diagnosis are below. The array `PF_ZEAROX` in `firmware/src/obv_patches.h` equals round-2 variant D byte for byte (`tests/voicing/check_slot.py 5 D 3b-r2`: resolved bytes identical; audio bit-identical when both paths load from INIT; from the boot patch the renders differ by 1.9-2.9 dB re the signal because the S&H pitch LFO follows the engine's random state: not bit-comparable from boot).
+**Final round count: round 1 = 1 silent measured round + 1 listening round (rejected); round 2 = 1 silent measured round + 1 listening round (approved at the first listening).**
+Voice card: `cards/05-zearox.md`; renders: `reference-renders/05-zearox_D_{kick,stabs,riff}.wav` (kick = level phrase m).
+
+* **Axes chosen (round 2):** where the glitch comes from (07 C's tape and random LFO -> a stepped S&H pitch LFO), how hard the signal is clipped (two-level share 43-54 % in A and B, 96 % in D), how tight the kick is (AD 76, the tightest that reaches the reference at VOLUME 123 of 127).
+* **Final values:** the "Final values (variant D)" list in the round-2 section below; level -18.1 dBFS on phrase m, (b) -19.1, peak -10.7, crest 7.3 dB, worst-case CPU 1337 host instr/sample.
+
 ## ROUND 2 (5 Nov 2026): variant D (light) is the recommendation and is committed; ROUND 1 is REJECTED
 
 **Status: round 2 rendered, not yet heard.** Vincent after listening to round 1: *"I really don't like B. It sounds way too messy and muddy. I imagined something almost pixelated and gritty, blown out in that sense. What came out was one big mess. C is the closest. I want it glitchy blown out, not muddy blown out. The saw wave needs to be replaced with a square wave. Drop the attack to 0. Drop the tape completely. Think xerox machine photocopies reduced to pure black and white: that is where my glitchy imagination came from. It also can't be the heaviest patch ... What I was describing in 05 was present in 07 Tape Splice option C (glitchy). We can take 07 C and make that 05 ZEAROX."*

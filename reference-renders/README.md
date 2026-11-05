@@ -49,6 +49,9 @@ Format: 16-bit stereo, 44.1 kHz. Level = RMS over the note-on region, peak = sam
 | `15-trem-chop_D_chop.wav` | 15 trem-chop | D (smeared) | (o) chop: held A3, riff, chord | -17.9 | -6.2 | **LEVEL phrase** (reference -18.0; off parts of the chop included) |
 | `15-trem-chop_D_stabs.wav` | 15 trem-chop | D (smeared) | (b) chord stabs | -15.4 | -6.2 | comparison (reads 2.5 dB over the level phrase) |
 | `15-trem-chop_D_riff.wav` | 15 trem-chop | D (smeared) | (a) riff | -19.3 | -11.1 | comparison |
+| `05-zearox_D_kick.wav` | 05 zearox | D (light, round 2) | (m) kick: 3 isolated hits A0 A1 A2, then 4 a bar | -18.1 | -10.7 | **LEVEL phrase** (reference -18.0) |
+| `05-zearox_D_stabs.wav` | 05 zearox | D (light, round 2) | (b) chord stabs | -19.1 | -10.7 | comparison |
+| `05-zearox_D_riff.wav` | 05 zearox | D (light, round 2) | (a) riff | -18.4 | -10.7 | comparison |
 
 Notes:
 - Where the stabs phrase is the level phrase (03, 25, 31) only stabs + riff are kept; elsewhere level phrase + stabs + riff. Held-note renders were not kept.
@@ -59,3 +62,4 @@ Notes:
 - Regenerate: the `tests/voicing/*.py` round scripts (see `dog5-docs/voicing/README.md`); some need the pre-change base tree.
 - 01 Red Pill, 02 Cement Grind, 06 zzuFuzz, 08 Wire Bite (Batch 3A, approved 5 Nov 2026: 01 C, 02 D, 06 C, 08 D): copied byte for byte from the `listen/batch-03a-chapter1-fat-and-driven` branch (`listen/voicing/batch-03a/...`) with `git show`; the held-note renders were not kept. 06's stabs phrase reads -16.1 (about 2 dB over its level phrase; the cause was not isolated); 08's level is read on the wire phrase.
 - 07 Tape Splice B and 15 Trem Chop D (Batch 3B, approved as rendered after listening): copied byte for byte from the `listen/batch-03b-chapter1-wreck-and-chop` branch (`listen/voicing/batch-03b/...`); the held-note renders were not kept. Levels from the variants' `results.json`; the peaks are the whole phrase. 15 D is DUAL (every note two voices), so its chord phrase plays all three notes.
+- 05 ZEAROX D (round 2 of Batch 3B, approved as rendered after listening; round 1's variants were rejected and have no reference renders): copied byte for byte from the `listen/batch-03b-chapter1-wreck-and-chop` branch (`listen/voicing/batch-03b/round2/05-zearox/`); the held-note render was not kept. Levels from the variant's `results.json`; the peaks are the whole phrase.
