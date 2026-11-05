@@ -1,0 +1,38 @@
+# VOICING PHRASE (n): SPLICE (Batch 3B, for 07 Tape Splice).  Twelve staccato sixteenths at 120 BPM (125 ms a step), gate 60 ms, A2 (45) with C3 D3 E3 G3 (48 50 52 55) and
+# E3 D3 at the end, vel 100-110; then A2 (110 Hz) HELD 2.4 s from 6000 ms (the X-mod wobble and the tape's wander over a long note, then the release and 1.1 s of tail), then
+# three short A3 (57) of 80 ms at 9500 / 9800 / 10100 ms.  Detached notes only (MONO: legato does not re-fire the envelopes).
+# Judges: the chop (fast release, short gates), the pitch wobble of the cross-mod over a held note, the jitter of the tape stage at the note edges.
+# Level: RMS over the note-on region.  Notes start at 3000 ms; bare events only.
+3000 midi 0x90 45 100
+3060 midi 0x80 45 0
+3125 midi 0x90 45 105
+3185 midi 0x80 45 0
+3250 midi 0x90 48 110
+3310 midi 0x80 48 0
+3375 midi 0x90 45 100
+3435 midi 0x80 45 0
+3500 midi 0x90 50 105
+3560 midi 0x80 50 0
+3625 midi 0x90 45 110
+3685 midi 0x80 45 0
+3750 midi 0x90 52 100
+3810 midi 0x80 52 0
+3875 midi 0x90 45 105
+3935 midi 0x80 45 0
+4000 midi 0x90 55 110
+4060 midi 0x80 55 0
+4125 midi 0x90 45 100
+4185 midi 0x80 45 0
+4250 midi 0x90 52 105
+4310 midi 0x80 52 0
+4375 midi 0x90 50 110
+4435 midi 0x80 50 0
+6000 midi 0x90 45 100
+8400 midi 0x80 45 0
+9500 midi 0x90 57 104
+9580 midi 0x80 57 0
+9800 midi 0x90 57 100
+9880 midi 0x80 57 0
+10100 midi 0x90 57 108
+10180 midi 0x80 57 0
+11500 end

@@ -1,0 +1,26 @@
+# VOICING PHRASE (o): CHOP (Batch 3B, for 15 Trem Chop).  A3 (220 Hz) HELD 2.4 s from 3000 ms (the chop alone: rate, depth and edges over many cycles), a 0.6 s rest, then a six-note
+# riff with long gates (A3 C4 E4 D4 C4 A3, 600 ms a step, gate 500 ms: several LFO cycles inside each note), then the chord A3 + E4 + A4 held 1.2 s from 10000 ms (a MONO patch plays
+# its last note; a POLY / DUAL patch plays all three), 1.3 s of tail.
+# Judges: the chop's rate, depth and edge hardness over a long note, whether it restarts with each note (LFO PHASE), the chord.
+# Level: RMS over the note-on region INCLUDING the off parts of the chop.  Notes start at 3000 ms; bare events only.
+3000 midi 0x90 57 100
+5400 midi 0x80 57 0
+6000 midi 0x90 57 100
+6500 midi 0x80 57 0
+6600 midi 0x90 60 104
+7100 midi 0x80 60 0
+7200 midi 0x90 64 108
+7700 midi 0x80 64 0
+7800 midi 0x90 62 100
+8300 midi 0x80 62 0
+8400 midi 0x90 60 104
+8900 midi 0x80 60 0
+9000 midi 0x90 57 108
+9500 midi 0x80 57 0
+10000 midi 0x90 57 100
+10000 midi 0x90 64 100
+10000 midi 0x90 69 100
+11200 midi 0x80 57 0
+11200 midi 0x80 64 0
+11200 midi 0x80 69 0
+12500 end
