@@ -1,6 +1,6 @@
 # Voicing log: 18 "Roto-scopo" (FACTORY[17], Batch 5A, Chapter III, the drones)
 
-## ROUND 1: rendered, not yet heard. Variant B is committed as the patch (own array); A, C, D are render-only.
+## APPROVED 6 Nov 2026 after one listening round: variant D (Vincent: "sounds awesome"). Committed as the patch (own array); the other three stay render-only on the listen branch. Card: `cards/18-roto-scopo.md`.
 
 Full tables for all four variants (level, peaks, CPU, every change before -> after, the measures below): `listen/voicing/batch-05a/18-roto-scopo/README.md` and `results.json`; the WAVs are on the never-merged `listen/batch-05a-chapter3-drones` branch only.
 
@@ -11,23 +11,23 @@ Variants:
 * **C (steps)**: B with SAMPLE & HOLD in place of the smooth random, and faster (0.62 Hz = RATE 50: the cutoff jumps to a new random value every ~1.6 s). VOLUME 72, held level -18.07 dBFS RMS over +5..+14 s, K-RMS -21.1, peak -8.8 (all phrases), worst-case CPU 1901 host instr/sample.
 * **D (slow-deep)**: B slower (0.11 Hz) and deeper (+-24 st), CUTOFF 66, RESO 115 (just under self-oscillation), VINTAGE 127. VOLUME 72, held level -17.94 dBFS RMS over +5..+14 s, K-RMS -20.7, peak -8.0 (all phrases), worst-case CPU 1897 host instr/sample.
 
-**Committed (B), each change before -> after against the patch as it stood:**
+**Committed (D), each change before -> after against the patch as it stood:**
 
 * O1_WAVE SAW -> PULSE
 * O2_WAVE SAW -> PULSE
 * O2_LVL 100 -> 85 (-12%)
-* CUTOFF 45 -> 62 (+13%) (175 Hz -> 466 Hz)
-* RESO 10 -> 100 (+71%)
+* CUTOFF 45 -> 66 (+17%) (175 Hz -> 587 Hz)
+* RESO 10 -> 115 (+83%)
 * FENV_AMT 79 -> 64 (centre 64: +15 -> +0, -12% of range)
 * FTYPE LP24 -> LP12
 * LFO_SHAPE TRI -> RANDOM
-* LFO_RATE 25 -> 30 (+4%) (0.18 Hz -> 0.23 Hz)
-* LFO_FLT 20 -> 70 (+39%) (+-1.1 -> +-14.4 st at the filter)
+* LFO_RATE 25 -> 15 (-8%) (0.18 Hz -> 0.11 Hz)
+* LFO_FLT 20 -> 90 (+55%) (+-1.1 -> +-23.9 st at the filter)
 * UNI_N 8 -> 3 voices
 * UNI_DET 80 -> 14 (-52%) (+-39.1 cents -> +-1.2 cents)
-* VINTAGE 80 -> 114 (+27%)
+* VINTAGE 80 -> 127 (+37%)
 * REV_MIX 50 -> 0 (-39%)
-* VOLUME 100 -> 73
+* VOLUME 100 -> 72
 
 **What this patch cannot do in this engine:**
 
@@ -35,4 +35,4 @@ Variants:
 * **UNISON is one note at a time.** A three-key chord plays its last key only (the cards gated after a 3-key chord: 3 = one group of three); a chord needs POLY or DUAL (not in this brief).
 * There is no drone latch: the drone lasts as long as the key is down.
 
-Status: not approved; no card, no `reference-renders/` until Vincent picks.
+Status: approved; card written; renders in `reference-renders/18-roto-scopo_D_*.wav`.

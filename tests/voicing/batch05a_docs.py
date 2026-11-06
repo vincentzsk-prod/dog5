@@ -29,33 +29,38 @@ CANNOT = {
     22: ["**ENV>O2 routes the FILTER envelope to OSC 2's pitch only** (`obv_engine.h`: `p2 += fenv x (ENV>O2 - 64) x 97 >> 15`, Q8 semitones, i.e. (ENV>O2 - 64) x 24/63 semitones at the envelope's top; measured -675 cents for 46, -1209 for 32 against -6.86 / -12.19 st). "
          "It cannot bend OSC 1 and it cannot use the amp envelope. So the stack that melts is OSC 2 alone, with OSC 1 off; with both oscillators on, only OSC 2 would sink and the two would part.",
          "**An inverted envelope bends the pitch the wrong way for a collapse** if the envelope falls: a negative ENV>O2 with a decaying filter envelope starts low and RISES to the note. The melt here uses a RISING filter envelope (FA = the melt time) with negative ENV AMT and ENV>O2, so cutoff and pitch both sink while the key is down.",
-         "**The key-up undoes the melt in the tail:** the filter envelope releases, so pitch and brightness climb back while the note fades, even at the slowest filter release (FR 127): B's pitch reads -634 cents in the first 0.4 s of the tail, -549 at 0.5 s and -472 at 1.0 s (the tail is 40 dB down by 0.94 s), the centroid 242 -> 724 -> 2529 Hz over the same three windows. "
-         "Not isolated: whether it is audible at those levels (an untested perceptual question); a shorter AR makes it shorter (B's tail is 60 dB down at 1.43 s).",
+         "**The key-up undoes the melt in the tail:** the filter envelope releases, so pitch and brightness climb back while the note fades, even at the slowest filter release (FR 127): D's pitch reads -639 cents in the first 0.4 s of the tail, -549 at 0.5 s and -469 at 1.0 s (the tail is 40 dB down at 0.93 s), the centroid 238 -> 826 -> 2469 Hz over the same three windows (B: -634 / -549 / -472 and 242 -> 724 -> 2529). "
+         "Not isolated: whether it is audible at those levels (an untested perceptual question); a shorter AR makes it shorter (D's tail is 60 dB down at 1.29 s).",
          "UNISON is one note at a time (a chord plays its last key: B and C); D is DUAL, where three keys melt together.",
          "One shared LFO is unused here; no Poly-Mod; no drone latch."],
 }
 
 
+COMMITTED = {18: ("D", "Vincent: \"sounds awesome\""), 22: ("D", "Vincent: \"sounds incredible\"")}      # round 2: the approved takes (19 was dropped, see 19-micro-mist.md)
+
+
 def write(spec, kind):
     R = json.load(open(os.path.join(OUT, spec["dir"], "results.json")))
     orig = B.resolve(BASE, spec["slot"])
-    m = R["B"]
+    ck, why = COMMITTED[spec["slot"]]
+    m = R[ck]
     L = [f"# Voicing log: {spec['slot']:02d} \"{spec['name']}\" (FACTORY[{spec['slot'] - 1}], Batch 5A, Chapter III, the drones)", "",
-         "## ROUND 1: rendered, not yet heard. Variant B is committed as the patch (own array); A, C, D are render-only.", "",
+         f"## APPROVED 6 Nov 2026 after one listening round: variant {ck} ({why}). Committed as the patch (own array); the other three stay render-only on the listen branch. Card: `cards/{spec['slot']:02d}-{spec['dir'].split('-', 1)[1]}.md`.", "",
          f"Full tables for all four variants (level, peaks, CPU, every change before -> after, the measures below): `listen/voicing/batch-05a/{spec['dir']}/README.md` and `results.json`; the WAVs are on the never-merged `listen/batch-05a-chapter3-drones` branch only.", "",
          "Variants:", ""]
     for k in "ABCD":
         r = R[k]
         c = r["cost"]
         L.append(f"* **{k} ({r['tag']})**: {r['desc']}. VOLUME {r['volume']}, held level {r['level']:.2f} dBFS RMS over +{spec['win'][0] / 1000:.0f}..+{spec['win'][1] / 1000:.0f} s, K-RMS {r['krms']:.1f}, peak {r['peak_all']:.1f} (all phrases), worst-case CPU {c['idle'] + c['load']:.0f} host instr/sample.")
-    L += ["", f"**Committed (B), each change before -> after against the patch as it stood:**", ""] + [f"* {c}" for c in changes(orig, m["params"])] + [f"* VOLUME {orig['VOLUME']} -> {m['volume']}", ""]
-    L += ["**What this patch cannot do in this engine:**", ""] + [f"* {t}" for t in CANNOT[spec["slot"]]] + ["", "Status: not approved; no card, no `reference-renders/` until Vincent picks."]
+    L += ["", f"**Committed ({ck}), each change before -> after against the patch as it stood:**", ""] + [f"* {c}" for c in changes(orig, m["params"])] + [f"* VOLUME {orig['VOLUME']} -> {m['volume']}", ""]
+    L += ["**What this patch cannot do in this engine:**", ""] + [f"* {t}" for t in CANNOT[spec["slot"]]] + ["", f"Status: approved; card written; renders in `reference-renders/{spec['slot']:02d}-{spec['dir'].split('-', 1)[1]}_{ck}_*.wav`."]
     open(os.path.join(DOCS, f"{spec['slot']:02d}-{spec['dir'].split('-', 1)[1]}.md"), "w").write("\n".join(L) + "\n")
 
 
 def main():
     for spec in PATCHES:
-        write(spec, None)
+        if spec["slot"] in COMMITTED:
+            write(spec, None)
 
 
 if __name__ == "__main__":

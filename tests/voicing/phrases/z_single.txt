@@ -1,0 +1,5 @@
+# VOICING PHRASE (z single) (Batch 5A round 2, 19 Micro-mist): one single note near the top of the register, A4 (MIDI 69, 440 Hz), held 6 s from 3000 ms, released at 9000 ms, run to 14 s. For the peak of a lone upper note and the strike / settled tone of one voice.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 69 100
+9000 midi 0x80 69 0
+14000 end
