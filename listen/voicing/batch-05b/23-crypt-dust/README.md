@@ -1,5 +1,7 @@
 # 23 Crypt Dust: Batch 5B round 1 (rendered, not yet heard)
 
+> **Round 1 is history for 23: B (heavy tape, the committed variant of round 1) was not picked and is superseded; Vincent liked the underlying sound of C and D and found far too much noise. Round 2 (C2, C3, D2, D3, `round2/README.md`) re-voices from C and D. This material stays as the record.**
+
 | var | tag | VOLUME | level | K-RMS | (b) RMS | peak (all phrases) | clip | CPU worst (idle+load) |
 |---|---|---|---|---|---|---|---|---|
 | A | original | 100 | -31.12 | -28.91 | -44.13 | -16.11 | 0 | 2009 |

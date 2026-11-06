@@ -10,7 +10,7 @@ A soft-attack chord in the mid-to-upper register: a saw with a slightly sharp sq
 
 - **Hologram Microcosm** — *the Haze, Glide and Tunnel of its Granules and Micro Loop banks; Wash, Wet, Drifting.* Wash: the L/R correlation falls from 0.79 dry to 0.43 with the echo and spring (measured). Wet: the tail takes 5788 ms to fall 60 dB (measured). Drifting: not measured (the LFO does nothing at these values). The patch is not a granular looper (see section 4).
 - **Yamaha CS-80** — *the Blade Runner pad voice; Soft, Swelling.* Soft: a 150 ms tap reads 8.7 dB under the held level because of the slow attack (AA 80, 256 ms nominal), measured. Swelling: the chord's level rises from −20.1 dBFS over the first second to −17.9 over the second (measured, a 2.2 dB rise); a longer swell was not measured.
-- **Roland Jupiter-8** — *the glassy top; Bright, Beating.* Bright: centroid 2300 Hz with 39 % of the energy over 1.2 kHz in the settled hold (measured; no comparison with the original was made). Beating: the A3 band swings only 0.4 dB at 3.7 Hz (measured, weak).
+- **Roland Jupiter-8** — *the bright top; Bright, Beating.* Bright: centroid 2300 Hz with 39 % of the energy over 1.2 kHz in the settled hold (measured; no comparison with the original was made). Beating: the A3 band swings only 0.4 dB at 3.7 Hz (measured, weak).
 
 Closest to: **a CS-80 pad dissolved in a Microcosm Haze wash**.
 
