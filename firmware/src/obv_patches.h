@@ -111,8 +111,13 @@ static const uint8_t PF_VINTAGE_PAD[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF
 static const uint8_t PF_TAPE_SPLICE[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_XMOD, 70, P_O2_FINE, 68, P_CUTOFF, 60,
     P_FENV_AMT, 114, P_DRIVE, 40, P_FD, 60, P_FS, 60, P_AA, 2, P_AR, 25, P_LFO_SHAPE, L_RND, P_LFO_RATE, 94,
     P_LFO_PITCH, 16, P_MODE, M_MONO, P_VOLUME, 104, P_CHEW, 80, P_TP_HISS, 0, P_TP_DROPS, 90, X};
-static const uint8_t PF_PERC_HIT[] = {P_O2_SEMI, 48, P_NOISE, 60, P_CUTOFF, 90, P_FENV_AMT, 124, P_FD, 25, P_FS, 0, P_AD, 30, P_AS, 0,
-    P_AR, 25, P_FTYPE, F_LP12, P_RESO, 30, P_AA, 1, P_REV_SIZE, 90, P_REV_MIX, 40, X};
+/* 14 Reef Break (voiced Nov 2026, Batch 4B variant B, recommended: dog5-docs/voicing/14-reef-break.md; was PF_PERC_HIT, this slot's alone): a noise burst over a square sub with a cymbal-like ring-out and a long echo. POLY 5, NOISE 127 over a square (O1, LEVEL 80) and a square an octave up (O2, LEVEL 45); ONE 12 dB
+ * HIGH-pass (CUTOFF 100 = 4186 Hz at C4) whose cutoff is pushed far down at the strike by a negative ENV AMT (0 = -97 semitones) and climbs back as the filter envelope falls (FD 100): the sub and the lows go first, the top of the noise rings longest; AA 0, AD = AR = 92 (the 4k+ band 20 / 40 dB down at 482 / 932 ms); a BBD echo
+ * (ALLEY 106 = 361 ms, FEEDBK 96, MIX 90), no spring. VOLUME 118: -19.9 dBFS RMS over the 300 ms gates of the crash phrase (u), own-phrase peak -4.3 / -4.6 (two seeds), the peak limiting the level */
+static const uint8_t PF_REEF_BREAK[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 80, P_NOISE, 127, P_O2_WAVE, W_PLS, P_O2_LVL, 45,
+    P_O2_SEMI, 36, P_O2_FINE, 64, P_CUTOFF, 100, P_RESO, 10, P_FENV_AMT, 0, P_KEYTRK, 0, P_FTYPE, F_HP12, P_FA, 0,
+    P_FD, 100, P_FS, 0, P_AA, 0, P_AD, 92, P_AS, 0, P_AR, 92, P_VOLUME, 118, P_DLY_FB, 96, P_DLY_MIX, 90,
+    P_REV_SIZE, 90, P_ALLEY, 106, X};
 /* 33-64 (1.5): a second set in the same spirit: arpeggios, brass, pads, keys, basses, leads, effects */
 static const uint8_t PF_NIGHT_DRIVE[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 2, P_ARP_GATE, 55, P_O1_WAVE, W_BOTH, P_O1_PW, 45,
     P_O2_FINE, 72, P_O2_LVL, 90, P_CUTOFF, 52, P_RESO, 38, P_FENV_AMT, 104, P_FA, 0, P_FD, 48, P_FS, 15, P_AA, 1, P_AD, 60, P_AS, 40,
@@ -304,7 +309,7 @@ static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_ATLANTIC_SWELL},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_KELP_TANGLE},
-    {"Ghost Board", PF_GHOST_BOARD},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
+    {"Ghost Board", PF_GHOST_BOARD},{"Reef Break", PF_REEF_BREAK},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
