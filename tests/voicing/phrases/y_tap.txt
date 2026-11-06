@@ -1,0 +1,9 @@
+# VOICING PHRASE (y tap) (Batch 5A): what a SHORT TAP does to a drone: A1 150 ms (3000 ms), A2 150 ms (6000 ms), A3 150 ms (9000 ms), each followed by 2.85 s of nothing (the release and the tail are heard).
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 33 100
+3150 midi 0x80 33 0
+6000 midi 0x90 45 100
+6150 midi 0x80 45 0
+9000 midi 0x90 57 100
+9150 midi 0x80 57 0
+13000 end

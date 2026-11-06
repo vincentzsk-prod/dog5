@@ -1,0 +1,5 @@
+# VOICING PHRASE (v mid) (Batch 5A, for 22 Melting Orb; also 18 and 19): the same hold an octave up, A2 (MIDI 45, 110 Hz), 15 s, the melt of 22 is read over its first 8 s.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 45 108
+18000 midi 0x80 45 0
+22500 end

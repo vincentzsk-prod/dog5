@@ -1,0 +1,9 @@
+# VOICING PHRASE (w mid) (Batch 5A): a HELD CHORD of three keys, A2 + E3 + A3 (45, 52, 57), 8 s from 3000 ms, then released; the mid drone chord (22). Tail to 14 s.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 45 100
+3000 midi 0x90 52 100
+3000 midi 0x90 57 100
+11000 midi 0x80 45 0
+11000 midi 0x80 52 0
+11000 midi 0x80 57 0
+14500 end
