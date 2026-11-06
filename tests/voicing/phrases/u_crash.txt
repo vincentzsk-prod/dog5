@@ -1,0 +1,28 @@
+# VOICING PHRASE (u): CRASH (Batch 4B, for 14 Reef Break).  Single hits with generous gaps (tail and echo separable), one low and one mid hit, and a rhythmic figure at three spacings.
+# One LOW hit A1 (55 Hz) at 3000 ms, 3.5 s gap, one MID hit A2 (110 Hz) at 6500 ms, 3.5 s gap, then A1 hits 1000 ms apart (10000, 11000, 12000), 600 ms apart (13500, 14100, 14700) and 400 ms
+# apart (16200, 16600, 17000), then 3.5 s of nothing.  Every gate is 300 ms (the burst and the first part of the decay), velocity 108.  Judges: the burst and its attack, the cymbal-like decay, the sub, the echo against the next hit.
+# Level: RMS over the note-on region = the 300 ms gates (11 hits: the burst and the first ~250 ms of the decay, echo included; the release, the decay after the gate and the tails excluded).
+# Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 33 108
+3300 midi 0x80 33 0
+6500 midi 0x90 45 108
+6800 midi 0x80 45 0
+10000 midi 0x90 33 108
+10300 midi 0x80 33 0
+11000 midi 0x90 33 108
+11300 midi 0x80 33 0
+12000 midi 0x90 33 108
+12300 midi 0x80 33 0
+13500 midi 0x90 33 108
+13800 midi 0x80 33 0
+14100 midi 0x90 33 108
+14400 midi 0x80 33 0
+14700 midi 0x90 33 108
+15000 midi 0x80 33 0
+16200 midi 0x90 33 108
+16500 midi 0x80 33 0
+16600 midi 0x90 33 108
+16900 midi 0x80 33 0
+17000 midi 0x90 33 108
+17300 midi 0x80 33 0
+20500 end
