@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A dry, punchy unison bass: every voice stacked on one note, fat and thick, loosened just enough that the stack breathes without ever going seasick. It is warm
+A dry, punchy unison bass: every voice stacked on a single note, fat and thick, loosened just enough that the stack breathes without ever going seasick. It is warm
 with a driven edge that stops short of fuzz, and each note is chopped hard on release: no spring, no echo, no tail, only the silence after the hit. This is the
 flagship, the DØG-5 signature, and it has presence: it sits forward and fills the room.
 

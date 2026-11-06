@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A broken-strobe tremolo: a bright saw chopped on and off by a hard square-shaped LFO, not a gentle sine. Every note is two voices, and the two voices chop an eighth of a cycle apart, so the chop has an off part, a half-level part and a full part instead of a clean on/off. It is dry: no echo, no spring, no tape.
+A broken-strobe tremolo: a bright saw chopped on and off by a hard square-shaped LFO, not a gentle sine. Every note is a pair of voices, and the voices of the pair chop slightly out of step, so the chop has an off part, a reduced-level part and a full part instead of a clean on/off. It is dry: no echo, no spring, no tape.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

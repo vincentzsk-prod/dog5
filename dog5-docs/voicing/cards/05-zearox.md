@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A kick substitute made of one square wave. The pitch drops fast over the first 11 ms, and a random stepped pitch LFO at about 21 Hz moves it to a new random value every 47 ms or so, so a 150 ms hit gets about 3 random pitch steps of up to ±4.7 semitones (a longer note gets more). The wave stays almost entirely at its two extreme levels, there is no attack, and the hit stops quickly when you let go. It is dry: no tape, no drive stage, no echo, no spring.
+A kick substitute made of a single square wave. The pitch drops fast at the very start, and a fast random stepped pitch LFO moves it to a new random value again and again, so each hit gets a few random pitch steps (a longer note gets more). The wave stays almost entirely at its extreme levels, there is no attack, and the hit stops quickly when you let go. It is dry: no tape, no drive stage, no echo, no spring.
 
 The owner's own description of the intent: pixelated, gritty, blown out, like a photocopy reduced to pure black and white. That is the intent, not a measurement.
 

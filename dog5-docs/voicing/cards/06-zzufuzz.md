@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-The fuzz weapon: a huge, thick wall. Two fat saws on every voice are pushed hard into the drive until the sound is flat and relentless, and it simply does not die while you hold the key. The strike is quick and snappy, the filter and its resonance are wide open, and when you let go there is a short tail rather than a ring. It is completely dry: no echo, no spring, nothing springy or boingy. A power chord stays whole.
+The fuzz weapon: a huge, thick wall. A pair of fat saws on every voice are pushed hard into the drive until the sound is flat and relentless, and it simply does not die while you hold the key. The strike is quick and snappy, the filter and its resonance are wide open, and when you let go there is a short tail rather than a ring. It is completely dry: no echo, no spring, nothing springy or boingy. A power chord stays whole.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

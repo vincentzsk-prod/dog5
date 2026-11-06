@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-An anxious, thick drone that bites, like touching a live wire. Six stacked pulse waves in the high register, with a second layer an octave and a fifth above, run through a resonant filter that zaps at the start of every note. It is fat and bright, medium-to-high, and it never sits still: the voices wander on their own and the whole stack leans and jitters in pitch. It is dry and each note is chopped off the moment you let go.
+An anxious, thick drone that bites, like touching a live wire. A stack of pulse waves in the high register, with an upper layer an octave and a fifth above, run through a resonant filter that zaps at the start of every note. It is fat and bright, medium-to-high, and it never sits still: the voices wander on their own and the whole stack leans and jitters in pitch. It is dry and each note is chopped off the moment you let go.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

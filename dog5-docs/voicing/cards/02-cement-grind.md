@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A low-mid grinder built from two fat pulse waves whose widths sweep quickly, so every note shudders and churns on purpose: a clear, fast pulse-width wobble you can hear on the riff, not a shimmer. The filter bites, it is pushed into a moderate crunch, and each note starts with a little skid and a snap. It is thick and dry, and it hits hard.
+A low-mid grinder built from a pair of fat pulse waves whose widths sweep quickly, so every note shudders and churns on purpose: a clear, fast pulse-width wobble you can hear on the riff, not a shimmer. The filter bites, it is pushed into a moderate crunch, and each note starts with a little skid and a snap. It is thick and dry, and it hits hard.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
