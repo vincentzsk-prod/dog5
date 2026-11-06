@@ -12,7 +12,7 @@ Level = RMS over +4 s .. +10 s of the held A3 C#4 E4 triad (phrase z_chord), ref
 
 ## Parameter changes against the original (A)
 
-**B lurch** (slow lurch: LFO 0.31 Hz, +-4.4 st (PITCH 80), FEEDBK 100, echo 266 ms)
+**B lurch** (slow lurch: LFO 0.31 Hz, +-4.7 st (PITCH 80), FEEDBK 100, echo 266 ms)
 
 * O1_PW 50 -> 32 (-14%)
 * O2_WAVE SAW+PLS -> PULSE
@@ -64,7 +64,7 @@ Level = RMS over +4 s .. +10 s of the held A3 C#4 E4 triad (phrase z_chord), ref
 * REV_MIX 70 -> 45 (-20%)
 * ALLEY 0 -> 79 (+62%) (SYNC -> 144 ms)
 
-**D seasick** (middle rate and the deepest: LFO 1.1 Hz, +-7.0 st (PITCH 100), FEEDBK 110, echo 266 ms)
+**D seasick** (middle rate and the deepest: LFO 1.1 Hz, +-7.3 st (PITCH 100), FEEDBK 110, echo 266 ms)
 
 * O1_PW 50 -> 32 (-14%)
 * O2_WAVE SAW+PLS -> PULSE
@@ -179,13 +179,3 @@ The octave-up copy (OSC 2, PULSE 25 %, +12 st) puts energy on the EVEN harmonics
 | 45 | -19.4 | 580 | 0 | 78 | 22 | 0.3 | 272 |
 | 70 | -19.1 | 601 | 0 | 74 | 26 | 0.4 | 185 |
 | 100 | -18.6 | 636 | 1 | 64 | 35 | 0.7 | 85 |
-
-## FEEDBK headroom of D (the held triad 30 s and the 12 repeated chords; `python3 tests/voicing/fb24_probe.py`)
-
-| FEEDBK | long hold peak per 4 s window 0..28 s (dBFS) | growth (24-28 s window minus the 4-8 s window) | clipped samples | repeated chords: peak of chord 1 / best later | growth |
-|---|---|---|---|---|---|
-| 110 | -6.2 -5.1 -5.5 -5.0 -5.4 -5.6 -6.3 | -1.2 | 0 | -9.7 / -6.9 | +2.8 |
-| 114 | -6.0 -5.0 -5.2 -4.7 -5.1 -5.4 -6.1 | -1.1 | 0 | -9.7 / -6.7 | +3.0 |
-| 118 | -5.4 -4.5 -4.7 -4.0 -4.3 -4.6 -5.6 | -1.1 | 0 | -9.7 / -6.1 | +3.6 |
-| 122 | -4.8 -2.6 -3.7 -2.1 -2.7 -3.5 -3.8 | -1.1 | 0 | -9.7 / -4.1 | +5.6 |
-| 127 | -2.6 -0.5 -0.7 -0.4 -0.6 -0.7 0.0 | +0.5 | 1 | -9.7 / -0.8 | +8.9 |

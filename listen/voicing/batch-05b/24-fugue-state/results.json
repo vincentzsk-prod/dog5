@@ -1188,7 +1188,7 @@
    "BBD_SPREAD": 127
   },
   "tag": "lurch",
-  "desc": "slow lurch: LFO 0.31 Hz, +-4.4 st (PITCH 80), FEEDBK 100, echo 266 ms"
+  "desc": "slow lurch: LFO 0.31 Hz, +-4.7 st (PITCH 80), FEEDBK 100, echo 266 ms"
  },
  "C": {
   "level": -17.91185568180136,
@@ -2494,7 +2494,7 @@
    "BBD_SPREAD": 127
   },
   "tag": "seasick",
-  "desc": "middle rate and the deepest: LFO 1.1 Hz, +-7.0 st (PITCH 100), FEEDBK 110, echo 266 ms"
+  "desc": "middle rate and the deepest: LFO 1.1 Hz, +-7.3 st (PITCH 100), FEEDBK 110, echo 266 ms"
  },
  "A*": {
   "volume": 65,

@@ -88,7 +88,7 @@ def write23(R, orig):
         m = R[k]
         for nm in ("as", "chew0"):
             t = m["tape"][nm]
-            L.append(f"| {k} {nm} | {m['chew'] if nm == 'as' else 0} | {f(t['sd'])} | {f(t['p5'])} .. {f(t['p95'])} | {f(t['rate'], 2) if t['sd'] else 'n/a'} | {t['dips']['count']} / {t['dips']['deepest']:.1f} | {t['dips']['level_sd']:.2f} | {t['floor']['14']:.1f} | {t['floor']['15']:.1f} | {t['cent']:.0f} | {t['hf']:.1f} |")
+            L.append(f"| {k} {nm} | {m['chew'] if nm == 'as' else 0} | {f(t['sd'])} | {f(t['p5'])} .. {f(t['p95'])} | {f(t['rate'], 2) if (t['sd'] or 0) > 0.05 else 'n/a'} | {t['dips']['count']} / {t['dips']['deepest']:.1f} | {t['dips']['level_sd']:.2f} | {t['floor']['14']:.1f} | {t['floor']['15']:.1f} | {t['cent']:.0f} | {t['hf']:.1f} |")
     L += ["", "## The LFO and the echo (D)", "", "| var | LFO Hz | shape | AMP dip dB | FILTER excursion st | level s.d. of the dry held chord dB | echo ms / FEEDBK | echo return -40 dB after the note (ms) | repeats above -40 dB |", "|---|---|---|---|---|---|---|---|---|"]
     for k in "BCD":
         m = R[k]; l = m["lfo"]; e = m["echo"]

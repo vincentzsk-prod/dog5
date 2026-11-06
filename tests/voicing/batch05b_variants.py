@@ -14,7 +14,7 @@ V20 = {
 
 # ---- 23 Crypt Dust: the tape ladder (heavy -> moderate -> none) -------------------------------------------------------------------------------------------------------------------
 # a thin pulse (OSC 1, PW 12 %) under the noise, both through the BP12 (key tracking at its default); no GROWL
-DUST = dict(POLY_N=2, O1_WAVE=2, O1_PW=15, O1_LVL=127, NOISE=127, CUTOFF=72, RESO=50, AA=60, AR=110, GROWL=0)
+DUST = dict(POLY_N=2, O1_WAVE=2, O1_PW=15, O1_LVL=127, NOISE=127, CUTOFF=72, RESO=50, GROWL=0)
 V23 = {
     "B": ("heavy", "the brief as written: heavy tape wow (CHEW 100, WOW/FLT 16 = mostly wow), DROPS 90, HISS 64 (CHEW's own)", dict(**DUST, CHEW=100, TP_WOWFLT=16, TP_DROPS=90, TP_HISS=64)),
     "C": ("half", "about half of B's CHEW (50), the rest of the tape settings as B", dict(**DUST, CHEW=50, TP_WOWFLT=16, TP_DROPS=90, TP_HISS=64)),
@@ -27,7 +27,7 @@ FUGUE = dict(MODE=0, POLY_N=5, O1_WAVE=2, O1_PW=32, O1_LVL=110, O2_WAVE=2, O2_PW
              LFO_SHAPE=0, LFO_PHASE=2, LFO_PWM=0, LFO_FLT=0, LFO_AMP=0, LFO_PITCH_TO=2, LFO_DELAY=0, AA=85, AD=100, AS=127, AR=110, VINTAGE=60, SPREAD=120,
              REV_MIX=45, REV_SIZE=100, REV_DAMP=60, REV_PRE=30, BBD_SPREAD=127, DLY_TONE=45, DLY_TIME=5)
 V24 = {
-    "B": ("lurch", "slow lurch: LFO 0.31 Hz, +-4.4 st (PITCH 80), FEEDBK 100, echo 266 ms", dict(**FUGUE, LFO_RATE=36, LFO_PITCH=80, ALLEY=97, DLY_FB=100, DLY_MIX=85)),
+    "B": ("lurch", "slow lurch: LFO 0.31 Hz, +-4.7 st (PITCH 80), FEEDBK 100, echo 266 ms", dict(**FUGUE, LFO_RATE=36, LFO_PITCH=80, ALLEY=97, DLY_FB=100, DLY_MIX=85)),
     "C": ("wobble", "fast wobble: LFO 4.9 Hz, +-1.8 st (PITCH 50), FEEDBK 95, echo 144 ms", dict(**FUGUE, LFO_RATE=91, LFO_PITCH=50, ALLEY=79, DLY_FB=95, DLY_MIX=85)),
-    "D": ("seasick", "middle rate and the deepest: LFO 1.1 Hz, +-7.0 st (PITCH 100), FEEDBK 110, echo 266 ms", dict(**FUGUE, LFO_RATE=62, LFO_PITCH=100, ALLEY=97, DLY_FB=110, DLY_MIX=85)),
+    "D": ("seasick", "middle rate and the deepest: LFO 1.1 Hz, +-7.3 st (PITCH 100), FEEDBK 110, echo 266 ms", dict(**FUGUE, LFO_RATE=62, LFO_PITCH=100, ALLEY=97, DLY_FB=110, DLY_MIX=85)),
 }

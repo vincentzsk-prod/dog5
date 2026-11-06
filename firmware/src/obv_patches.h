@@ -56,7 +56,7 @@ static const uint8_t PF_RESO_ZAP[] = {P_MODE, M_MONO, P_RESO, 110, P_CUTOFF, 20,
     P_AS, 0, P_FTYPE, F_LP12, P_O1_WAVE, W_PLS, P_NOISE, 20, P_AA, 1, P_AR, 30, X};
 /* 23 Crypt Dust (Batch 5B round 1, variant B committed PROVISIONALLY, not yet heard: dog5-docs/voicing/README.md section 19; was PF_NOISE_WASH, this slot's alone): noise under a thin 12 % pulse through a band-pass, POLY 2 (CPU), heavy tape wow (CHEW 100, mostly wow, DROPS 90) */
 static const uint8_t PF_CRYPT_DUST[] = {P_O1_WAVE, W_PLS, P_O1_PW, 15, P_O1_LVL, 127, P_NOISE, 127, P_O2_WAVE, W_OFF,
-    P_CUTOFF, 72, P_RESO, 50, P_FENV_AMT, 64, P_FTYPE, F_BP12, P_FA, 60, P_AA, 60, P_AR, 110, P_LFO_RATE, 20,
+    P_CUTOFF, 72, P_RESO, 50, P_FENV_AMT, 64, P_FTYPE, F_BP12, P_FA, 60, P_AA, 100, P_AR, 110, P_LFO_RATE, 20,
     P_LFO_FLT, 60, P_VOLUME, 124, P_REV_SIZE, 127, P_REV_DAMP, 40, P_REV_MIX, 60, P_POLY_N, 2, P_CHEW, 100,
     P_TP_WOWFLT, 16, P_TP_DROPS, 90, X};
 /* 10 Atlantic Swell (approved Nov 2026, Batch 4A variant A, the starting point unchanged: dog5-docs/voicing/10-atlantic-swell.md; was PF_HOLLOW_PAD, shared with 12 Kelp Tangle, which has its own array now): POLY 5, two narrow pulses (PW 16 % and PW 85 %, the second a near-inverse of the
