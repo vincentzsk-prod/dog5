@@ -1,0 +1,5 @@
+# VOICING PHRASE (v lo) (Batch 5A, for the drones 18 Roto-scopo and 19 Blackwater): ONE note, A1 (MIDI 33, 55 Hz), held 15 s from 3000 ms, then released; the script runs on to 22.5 s so a long release is measured. It judges the drone: wander over time (windowed centroid), the settled level (read over +5 s .. +14 s after the note-on), the weight, the release.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 33 108
+18000 midi 0x80 33 0
+22500 end

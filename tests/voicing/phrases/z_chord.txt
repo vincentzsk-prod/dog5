@@ -1,0 +1,9 @@
+# VOICING PHRASE (z chord) (Batch 5A round 2, for 19 Micro-mist): the A major triad A3 C#4 E4 (MIDI 57, 61, 64) held 10 s from 3000 ms, released at 13000 ms, the script runs to 19 s so 6 s of release (the hover of the echo and spring) are measured. THE LEVEL PHRASE of 19: RMS over +4 s .. +10 s after the note-on (the settled hold: bloom and the echo's build-up done).
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3000 midi 0x90 61 100
+3000 midi 0x90 64 100
+13000 midi 0x80 57 0
+13000 midi 0x80 61 0
+13000 midi 0x80 64 0
+19000 end

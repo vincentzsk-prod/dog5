@@ -1,0 +1,11 @@
+# VOICING PHRASE (z tap) (Batch 5A round 2, 19 Micro-mist): what a tap does: the chord A3 C#4 E4 tapped 150 ms (3000 ms), then a single A4 (69) tapped 150 ms (8000 ms), 4.8 s of nothing after each so the whole hover is heard.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3000 midi 0x90 61 100
+3000 midi 0x90 64 100
+3150 midi 0x80 57 0
+3150 midi 0x80 61 0
+3150 midi 0x80 64 0
+8000 midi 0x90 69 100
+8150 midi 0x80 69 0
+13000 end

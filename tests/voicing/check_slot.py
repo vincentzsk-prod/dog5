@@ -4,7 +4,7 @@
 variant's parameter list (byte for byte), and the audio of the program-load path against the variant path on the audition phrases (bit-exact where the
 cutoff approaches from the same side, README section 8; the difference in dB otherwise).
 
-  python3 tests/voicing/check_slot.py SLOT KEY      (variant KEY of Batch 2A; add 'round2' as a third argument for round 2, '3a' for Batch 3A, '3b' for Batch 3B, '4a' for Batch 4A, '4b' for Batch 4B ('4b-r2': 13 round 2) or '3b-r2' for 05 ZEAROX round 2, from listen/voicing/batch-0Xx/<dir>/results.json)"""
+  python3 tests/voicing/check_slot.py SLOT KEY      (variant KEY of Batch 2A; add 'round2' as a third argument for round 2, '3a' for Batch 3A, '3b' for Batch 3B, '4a' for Batch 4A, '4b' for Batch 4B ('4b-r2': 13 round 2) '5a' for Batch 5A ('5a-r2': the new slot 19), or '3b-r2' for 05 ZEAROX round 2, from listen/voicing/batch-0Xx/<dir>/results.json)"""
 import json
 import os
 import subprocess
@@ -38,6 +38,14 @@ def main():
     if b4b:
         from batch04b_variants import PATCHES as P4B
         spec = [p for p in P4B if p["slot"] == slot][0]
+    b5a = len(sys.argv) > 3 and sys.argv[3] in ("5a", "5a-r2")   # Batch 5A: variants from listen/voicing/batch-05a/<dir>/results.json ('5a-r2': the new slot 19, Micro-mist)
+    if b5a:
+        if sys.argv[3] == "5a-r2":
+            from batch05a_r2_variants import PATCH as P5R2
+            spec = P5R2
+        else:
+            from batch05a_variants import PATCHES as P5
+            spec = [p for p in P5 if p["slot"] == slot][0]
     b4br2 = len(sys.argv) > 3 and sys.argv[3] == "4b-r2"   # Batch 4B round 2 (13 only): variants from listen/voicing/batch-04b/13-round2/results.json
     if b4br2:
         spec = {"slot": 13, "phrases": ["b_stabs", "t_ghost"]}
@@ -49,8 +57,8 @@ def main():
         spec = [p for p in PATCHES_R2 if p["slot"] == slot][0]
     if b4br2:
         res = json.load(open(os.path.join(K.ROOT, "listen", "voicing", "batch-04b", "13-round2", "results.json")))[key]["params"]
-    elif b4a or b4b:
-        res = json.load(open(os.path.join(K.ROOT, "listen", "voicing", "batch-04b" if b4b else "batch-04a", spec["dir"], "results.json")))[key]["params"]
+    elif b4a or b4b or b5a:
+        res = json.load(open(os.path.join(K.ROOT, "listen", "voicing", "batch-05a" if b5a else "batch-04b" if b4b else "batch-04a", spec["dir"], "results.json")))[key]["params"]
     elif r3:
         res = json.load(open(os.path.join(K.ROOT, "listen", "voicing", "batch-03b", "round2", "05-zearox", "results.json")))["variants"][key]["params"]
     else:

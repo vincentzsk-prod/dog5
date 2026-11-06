@@ -39,8 +39,13 @@ static const uint8_t PF_ARP_SEQ[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OC
     P_O2_SEMI, 12, P_CUTOFF, 50, P_FENV_AMT, 124, P_FD, 45, P_FS, 0, P_AD, 50, P_AS, 0, P_AR, 40, P_RESO, 40, P_AA, 1, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, X};
 static const uint8_t PF_SWEEP_PAD[] = {P_O2_FINE, 74, P_CUTOFF, 30, P_FENV_AMT, 127, P_FA, 110, P_FD, 100, P_FS, 60, P_FR, 100,
     P_AA, 90, P_AR, 105, P_RESO, 20, P_LFO_FLT, 15, P_LFO_RATE, 30, P_SPREAD, 110, P_VINTAGE, 60, P_CHO_MIX, 40, P_REV_SIZE, 110, P_REV_MIX, 45, X};
-static const uint8_t PF_BP_QUACK[] = {P_FTYPE, F_BP12, P_RESO, 70, P_CUTOFF, 50, P_FENV_AMT, 124, P_FD, 55, P_FS, 0, P_AD, 80,
-    P_AS, 70, P_O2_WAVE, W_PLS, P_O2_PW, 30, P_AA, 1, X};
+/* 22 Melting Orb (Batch 5A, approved variant D: dog5-docs/voicing/22-melting-orb.md, cards/22-melting-orb.md; was PF_BP_QUACK, 22's alone): a dignified collapse, held. DUAL (POLY 6: a three-key chord melts together), saws on OSC 2 ONLY
+ * (ENV>O2 bends OSC 2's pitch, driven by the FILTER envelope; OSC 1 is off). The filter envelope RISES over ~4 s (FA 118) and a negative ENV AMT (32) / ENV>O2 (46 = -6.9 st) turn that rise into a fall of the cutoff (about -49 st) and of the
+ * pitch together; sustain 127 keeps it down while the key is held, filter release 127. LP12 RESO 75 (linear). VOLUME 97: -18.9 dBFS RMS over +9 .. +14 s of an A2 hold (the melted state), peak -4.1 (the three-key chord) */
+static const uint8_t PF_MELTING_ORB[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 0, P_O2_LVL, 110, P_ENV_O2, 46, P_CUTOFF, 100,
+    P_RESO, 75, P_FENV_AMT, 32, P_FTYPE, F_LP12, P_FA, 118, P_FD, 60, P_FS, 127, P_FR, 127, P_AA, 60, P_AD, 100,
+    P_AS, 127, P_AR, 92, P_MODE, M_DUAL, P_UNI_N, 6, P_UNI_DET, 40, P_VINTAGE, 40, P_SPREAD, 110, P_VOLUME, 97,
+    P_POLY_N, 6, X};
 static const uint8_t PF_RESO_ZAP[] = {P_MODE, M_MONO, P_RESO, 110, P_CUTOFF, 20, P_FENV_AMT, 127, P_FD, 40, P_FS, 0, P_AD, 40,
     P_AS, 0, P_FTYPE, F_LP12, P_O1_WAVE, W_PLS, P_NOISE, 20, P_AA, 1, P_AR, 30, X};
 static const uint8_t PF_NOISE_WASH[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70,
@@ -71,9 +76,16 @@ static const uint8_t PF_TIDAL_PULL[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O2_WAVE
 static const uint8_t PF_TREM_CHOP[] = {P_O1_LVL, 127, P_O2_LVL, 127, P_O2_FINE, 69, P_CUTOFF, 95, P_DRIVE, 60,
     P_AA, 3, P_AS, 127, P_AR, 40, P_LFO_SHAPE, L_SQR, P_LFO_RATE, 101, P_LFO_PHASE, LP_SPREAD, P_LFO_AMP, 127,
     P_MODE, M_DUAL, P_VINTAGE, 60, P_VOLUME, 84, P_DLY_TIME, DD_8, P_DLY_FB, 35, P_POLY_N, 6, X};
-static const uint8_t PF_SUB_BASS[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_SEMI, 12, P_O2_LVL, 60, P_CUTOFF, 35, P_RESO, 10,
-    P_FENV_AMT, 84, P_FD, 50, P_FS, 20, P_AA, 1, P_AD, 60, P_AR, 20, P_GLIDE, 5, X};
-/* 05 ZEAROX (round 2, voiced Nov 2026, variant D: dog5-docs/voicing/05-zearox.md; PF_SUB_BASS stays as 19 Blackwater's): the pixelated, hard black-and-white kick. MONO, ONE square (OSC 2 pulse, an octave up from the key, swept down by the
+/* 19 Micro-mist (Batch 5A, approved take D "tunnel": dog5-docs/voicing/19-micro-mist.md, cards/19-micro-mist.md; replaces Blackwater, dropped 6 Nov 2026): neon pixels floating in the ether. POLY 6, a saw and (an octave up, 6 cents sharp)
+ * a square through a band-pass (CUTOFF 70 = 740 Hz, RESO 40, linear), attack ~0.26 s nominal (AA 80), sustain 127; a 294 ms ping-pong echo at FEEDBK 105 and a large spring (DRAIN 80, SIZE 110), so the chord hangs for seconds after
+ * the key-up. The LFO is set (S&H, 9.9 Hz, PHASE SPREAD) but inert at these values: FILTER 10 is below the law's floor, PITCH and AMP are 0. NOT a granular engine: no freeze, no per-repeat pitch shift. VOLUME 96: -18.0 dBFS RMS over
+ * +4 .. +10 s of the held A3 C#4 E4 chord, peak -4.7; about 2000 host instr/sample worst case */
+static const uint8_t PF_MICRO_MIST[] = {P_O1_LVL, 127, P_O2_WAVE, W_PLS, P_O2_SEMI, 36, P_O2_FINE, 72, P_CUTOFF, 70,
+    P_RESO, 40, P_FENV_AMT, 74, P_FTYPE, F_BP12, P_FA, 75, P_FD, 90, P_FS, 90, P_AA, 80, P_AD, 100, P_AS, 127,
+    P_AR, 95, P_LFO_SHAPE, L_SH, P_LFO_RATE, 105, P_LFO_PHASE, LP_SPREAD, P_LFO_FLT, 10, P_VINTAGE, 40,
+    P_SPREAD, 100, P_VOLUME, 96, P_DLY_FB, 105, P_DLY_TONE, 100, P_DLY_MIX, 95, P_REV_SIZE, 110, P_REV_DAMP, 20,
+    P_REV_PRE, 10, P_REV_MIX, 80, P_POLY_N, 6, P_ALLEY, 100, X};
+/* 05 ZEAROX (round 2, voiced Nov 2026, variant D: dog5-docs/voicing/05-zearox.md; 19 has its own array, PF_MICRO_MIST): the pixelated, hard black-and-white kick. MONO, ONE square (OSC 2 pulse, an octave up from the key, swept down by the
  * filter envelope: ENV>O2 110 = +17 st falling over 11 ms), an open 12 dB filter (CUTOFF 105, RESO 0), attack 0, DECAY 76 (187 ms) to sustain 0, 2 ms release, a random stepped pitch LFO (S&H, 21 Hz, +-4.7 st) as the glitch.
  * No tape (CHEW 0, HISS 0, DROPS 0), no GROWL. VOLUME 123 puts it on the bank reference: -18.1 dBFS RMS over the kick phrase (m), peak -10.7; worst case 1337 host instr/sample */
 static const uint8_t PF_ZEAROX[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 40, P_O2_WAVE, W_PLS, P_O2_LVL, 127, P_O2_SEMI, 36,
@@ -84,8 +96,13 @@ static const uint8_t PF_SOFT_KEYS[] = {P_O1_LVL, 90, P_O2_WAVE, W_PLS, P_O2_PW, 
     P_FENV_AMT, 99, P_FD, 70, P_FS, 20, P_AA, 3, P_AD, 90, P_AS, 60, P_AR, 60, P_VEL_FLT, 80, P_VEL_AMP, 90, P_RESO, 10, P_CHO_MIX, 30, P_REV_SIZE, 80, P_REV_MIX, 30, X};
 static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, P_O2_SEMI, 29, P_ENV_O2, 89, P_CUTOFF, 65,
     P_FENV_AMT, 104, P_FA, 20, P_FD, 70, P_FS, 40, P_AA, 10, P_AR, 50, X};
-static const uint8_t PF_DRONE_UNI[] = {P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 80, P_O2_SEMI, 12, P_CUTOFF, 45, P_FENV_AMT, 79,
-    P_FA, 100, P_AA, 100, P_AR, 110, P_LFO_FLT, 20, P_LFO_RATE, 25, P_RESO, 10, P_VINTAGE, 80, P_SPREAD, 127, P_REV_SIZE, 120, P_REV_DAMP, 80, P_REV_MIX, 50, X};
+/* 18 Roto-scopo (Batch 5A, approved variant D: dog5-docs/voicing/18-roto-scopo.md, cards/18-roto-scopo.md; was PF_DRONE_UNI, 18's alone): a moaning dungeon drone. A 3-voice UNISON of two squares (the second an octave down), a resonant
+ * 12 dB low-pass (CUTOFF 66, RESO 115, linear) whose cutoff is moved +-24 st by the one shared LFO, smooth RANDOM at 0.11 Hz (RATE 15); VINTAGE 127; dry (the old spring is off, its SIZE / DAMP bytes are dead values).
+ * VOLUME 72: -17.9 dBFS RMS over +5 .. +14 s of an A1 hold, peak -8.0 */
+static const uint8_t PF_ROTO_SCOPO[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_LVL, 85, P_O2_SEMI, 12,
+    P_CUTOFF, 66, P_RESO, 115, P_FENV_AMT, 64, P_FTYPE, F_LP12, P_FA, 100, P_AA, 100, P_AR, 110, P_LFO_SHAPE, L_RND,
+    P_LFO_RATE, 15, P_LFO_FLT, 90, P_MODE, M_UNISON, P_UNI_N, 3, P_UNI_DET, 14, P_VINTAGE, 127, P_SPREAD, 127,
+    P_VOLUME, 72, P_REV_SIZE, 120, P_REV_DAMP, 80, X};
 static const uint8_t PF_ARP_PLUCK[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_ARP_OCT, 3, P_ARP_GATE, 40, P_O2_WAVE, W_PLS,
     P_O2_PW, 40, P_O2_SEMI, 36, P_CUTOFF, 60, P_FENV_AMT, 114, P_FD, 40, P_FS, 0, P_AD, 45, P_AS, 0, P_AR, 50, P_RESO, 30,
     P_SPREAD, 100, P_AA, 1, P_DLY_TIME, DD_8D, P_DLY_FB, 45, P_DLY_TONE, 50, P_DLY_MIX, 45, P_REV_SIZE, 90, P_REV_MIX, 28, X};
@@ -221,7 +238,7 @@ static const uint8_t PF_V_SYNC[] = {P_O1_LVL, 80, P_O2_LVL, 127, P_O2_SEMI, 31, 
     P_CUTOFF, 92, P_RESO, 24, P_FENV_AMT, 88, P_DRIVE, 20, P_FD, 78, P_FS, 28, P_FR, 30, P_AA, 0, P_AS, 127,
     P_AR, 30, P_MODE, M_UNISON, P_UNI_N, 2, P_UNI_DET, 22, P_GLIDE, 20, P_VOLUME, 91, P_DLY_TIME, DD_16,
     P_DLY_FB, 18, P_DLY_MIX, 12, X};
-/* 30 THE D\xD8G (voiced 4 Nov, round 2 on 5 Nov: dog5-docs/voicing/30-the-dog.md; PF_DRONE_UNI stays as 18 Roto-scopo's; 21 Cowl Shadow has its own since Batch 2A): the
+/* 30 THE D\xD8G (voiced 4 Nov, round 2 on 5 Nov: dog5-docs/voicing/30-the-dog.md; 18 Roto-scopo has its own array, PF_ROTO_SCOPO; 21 Cowl Shadow has its own since Batch 2A): the
  * signature low stack. UNISON, all 8 voices on one note, DETUNE 35 (the stack spans ~15 cents; round 1 had ~9, the drone ~78), a sub-octave saw under every
  * voice, the filter wide (CUTOFF 104, ENV AMT 88 snaps it open on the attack, KEY TRK 60, sustain 40), a 0.7 ms attack and a 21 ms release
  * for a punchy chop, SPREAD 50 so the bass stays put in a mono PA, per-voice DRIVE 100 (FILTER+ page: warmth and weight without compression or
@@ -238,7 +255,7 @@ static const uint8_t PF_THE_DOG[] = {P_O1_LVL, 114, P_O2_LVL, 94, P_O2_SEMI, 12,
 static const uint8_t PF_TITANIC[] = {P_O2_SEMI, 31, P_CUTOFF, 66, P_RESO, 12, P_FENV_AMT, 84, P_KEYTRK, 12, P_FA, 62,
     P_FD, 90, P_FS, 70, P_FR, 85, P_AA, 60, P_AS, 127, P_AR, 92, P_MODE, M_DUAL, P_VINTAGE, 40, P_SPREAD, 110,
     P_VOLUME, 93, P_POLY_N, 6, X};
-/* 21 Cowl Shadow (voiced Nov 2026, approved variant C: dog5-docs/voicing/21-cowl-shadow.md; PF_DRONE_UNI stays as 18 Roto-scopo's): a brass wall that blooms in about 5 s. UNISON, 5 voices of two
+/* 21 Cowl Shadow (voiced Nov 2026, approved variant C: dog5-docs/voicing/21-cowl-shadow.md; 18 Roto-scopo has its own array, PF_ROTO_SCOPO): a brass wall that blooms in about 5 s. UNISON, 5 voices of two
  * saws on the same pitch (DETUNE 40: the stack spans +-9.8 cents), a dark start (CUTOFF 40) and a 5.3 s filter attack (ATTACK 119, ENV AMT 118, KEY TRK 127 so the bloom is the same at any
  * pitch), both sustains full (the gate held open), a 0.6 s amp attack. Held, the centroid climbs 3.1 octaves on A2 (10 % of the climb at 0.8 s, 90 % at 4.1 s); let go early it is a dark short
  * note that fades (no latch in the engine: the bloom happens while the key is down); after a long hold the filter closes with the level (RELEASES 2.7 / 2.3 s). Dry, no LFO, no spring.
@@ -252,7 +269,7 @@ static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14
 static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_OFF, P_CUTOFF, 46, P_RESO, 62, P_FENV_AMT, 118,
     P_KEYTRK, 100, P_FTYPE, F_LP12, P_FD, 56, P_AA, 0, P_AS, 64, P_AR, 28, P_VOLUME, 92, P_REV_SIZE, 70,
     P_REV_DAMP, 40, P_REV_PRE, 4, P_REV_MIX, 90, X};
-/* 11 Slapback Strut (voiced Nov 2026, approved round 2 variant G: dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 19 Blackwater's): the surf bass, a GATED note with a crisp slap. MONO, one narrow
+/* 11 Slapback Strut (voiced Nov 2026, approved round 2 variant G: dog5-docs/voicing/11-slapback-strut.md; 19 has its own array, PF_MICRO_MIST): the surf bass, a GATED note with a crisp slap. MONO, one narrow
  * pulse (PW 32 %; the engine has no triangle) through a key-tracking 12 dB low-pass (CUTOFF 82, KEY TRK 90) with per-voice DRIVE 40; no real decay (a 36 ms settle to a sustain at 79 %, 1 ms releases): the note starts at once, holds
  * its body for the gate and stops in ~1 ms; one clean mono slap: ALLEY 62 = 80 ms, FEEDBK 6, MIX 127 (the top), TONE 127, PINGPONG 0: the first repeat -6.0 dB under the note's peak, the second 29 dB under the first. Dry (no spring).
  * VOLUME 102 puts it on the bank reference: -18.0 dBFS RMS over the note-on region of the surf riff (phrase h), echo included */
@@ -308,8 +325,8 @@ static const factory_t FACTORY[NFACT] = {
     {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_ATLANTIC_SWELL},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_KELP_TANGLE},
     {"Ghost Board", PF_GHOST_BOARD},{"Reef Break", PF_REEF_BREAK},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
-    {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
-    {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
+    {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_ROTO_SCOPO},     {"Micro-mist", PF_MICRO_MIST},   {"Fire & Ice", PF_SYNC_LEAD},
+    {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_MELTING_ORB},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
     {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
 };

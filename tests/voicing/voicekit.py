@@ -37,7 +37,9 @@ PHRASE_FILES = {"a_riff": "a_riff.txt", "b_stabs": "b_stabs.txt", "c_held": "c_h
                 "i_spit": "i_spit.txt", "j_grind": "j_grind.txt", "k_wall": "k_wall.txt", "l_wire": "l_wire.txt",
                 "m_kick": "m_kick.txt", "n_splice": "n_splice.txt", "o_chop": "o_chop.txt", "p_chopshort": "p_chopshort.txt",
                 "q_organ": "q_organ.txt", "r_tangle": "r_tangle.txt", "s_wash": "s_wash.txt",
-                "t_ghost": "t_ghost.txt", "u_crash": "u_crash.txt"}
+                "t_ghost": "t_ghost.txt", "u_crash": "u_crash.txt",
+                "v_drone_lo": "v_drone_lo.txt", "v_drone_mid": "v_drone_mid.txt", "w_chord_lo": "w_chord_lo.txt", "w_chord_mid": "w_chord_mid.txt", "y_tap": "y_tap.txt",
+                "z_chord": "z_chord.txt", "z_tap": "z_tap.txt", "z_single": "z_single.txt"}
 AUDITION = ("a_riff", "b_stabs", "c_held")      # the three phrases every variant is rendered on (x_stress is CPU only)
 
 
