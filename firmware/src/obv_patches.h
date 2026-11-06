@@ -76,15 +76,15 @@ static const uint8_t PF_TIDAL_PULL[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O2_WAVE
 static const uint8_t PF_TREM_CHOP[] = {P_O1_LVL, 127, P_O2_LVL, 127, P_O2_FINE, 69, P_CUTOFF, 95, P_DRIVE, 60,
     P_AA, 3, P_AS, 127, P_AR, 40, P_LFO_SHAPE, L_SQR, P_LFO_RATE, 101, P_LFO_PHASE, LP_SPREAD, P_LFO_AMP, 127,
     P_MODE, M_DUAL, P_VINTAGE, 60, P_VOLUME, 84, P_DLY_TIME, DD_8, P_DLY_FB, 35, P_POLY_N, 6, X};
-/* 19 Micro-mist (Batch 5A round 2, take B "glide", provisional, awaiting listening: dog5-docs/voicing/19-micro-mist.md; replaces Blackwater, dropped 6 Nov 2026): neon pixels floating in the ether. POLY 6, a saw and (an octave up, 6 cents sharp)
- * a square through a band-pass (CUTOFF 74 = 932 Hz, RESO 50, linear) with a soft bloom (AA 70); the one shared LFO, smooth RANDOM at 1.0 Hz (RATE 60), scatters pitch (+-28 cents), the filter (+-2.7 st) and a hair of level, PHASE SPREAD;
- * then a 414 ms ping-pong echo at FEEDBK 96 and a large spring (DRAIN 70, SIZE 110) so the mist hangs for seconds after the key-up. NOT a granular engine: no freeze, no per-repeat pitch shift. VOLUME 100: -19.1 dBFS RMS over +4 .. +10 s
- * of the held A3 C#4 E4 chord, peak -4.1; about 2002 host instr/sample worst case */
-static const uint8_t PF_MICRO_MIST[] = {P_O1_LVL, 127, P_O2_WAVE, W_PLS, P_O2_SEMI, 36, P_O2_FINE, 72, P_CUTOFF, 74,
-    P_RESO, 50, P_FENV_AMT, 74, P_FTYPE, F_BP12, P_FA, 75, P_FD, 90, P_FS, 90, P_AA, 70, P_AD, 100, P_AS, 110,
-    P_AR, 95, P_LFO_SHAPE, L_RND, P_LFO_RATE, 60, P_LFO_PHASE, LP_SPREAD, P_LFO_PITCH, 22, P_LFO_FLT, 30,
-    P_LFO_AMP, 8, P_VINTAGE, 40, P_SPREAD, 100, P_DLY_FB, 96, P_DLY_TONE, 100, P_DLY_MIX, 90, P_REV_SIZE, 110,
-    P_REV_DAMP, 20, P_REV_PRE, 10, P_REV_MIX, 70, P_POLY_N, 6, P_ALLEY, 110, X};
+/* 19 Micro-mist (Batch 5A, approved take D "tunnel": dog5-docs/voicing/19-micro-mist.md, cards/19-micro-mist.md; replaces Blackwater, dropped 6 Nov 2026): neon pixels floating in the ether. POLY 6, a saw and (an octave up, 6 cents sharp)
+ * a square through a band-pass (CUTOFF 70 = 740 Hz, RESO 40, linear), attack ~0.26 s nominal (AA 80), sustain 127; a 294 ms ping-pong echo at FEEDBK 105 and a large spring (DRAIN 80, SIZE 110), so the chord hangs for seconds after
+ * the key-up. The LFO is set (S&H, 9.9 Hz, PHASE SPREAD) but inert at these values: FILTER 10 is below the law's floor, PITCH and AMP are 0. NOT a granular engine: no freeze, no per-repeat pitch shift. VOLUME 96: -18.0 dBFS RMS over
+ * +4 .. +10 s of the held A3 C#4 E4 chord, peak -4.7; about 2000 host instr/sample worst case */
+static const uint8_t PF_MICRO_MIST[] = {P_O1_LVL, 127, P_O2_WAVE, W_PLS, P_O2_SEMI, 36, P_O2_FINE, 72, P_CUTOFF, 70,
+    P_RESO, 40, P_FENV_AMT, 74, P_FTYPE, F_BP12, P_FA, 75, P_FD, 90, P_FS, 90, P_AA, 80, P_AD, 100, P_AS, 127,
+    P_AR, 95, P_LFO_SHAPE, L_SH, P_LFO_RATE, 105, P_LFO_PHASE, LP_SPREAD, P_LFO_FLT, 10, P_VINTAGE, 40,
+    P_SPREAD, 100, P_VOLUME, 96, P_DLY_FB, 105, P_DLY_TONE, 100, P_DLY_MIX, 95, P_REV_SIZE, 110, P_REV_DAMP, 20,
+    P_REV_PRE, 10, P_REV_MIX, 80, P_POLY_N, 6, P_ALLEY, 100, X};
 /* 05 ZEAROX (round 2, voiced Nov 2026, variant D: dog5-docs/voicing/05-zearox.md; 19 has its own array, PF_MICRO_MIST): the pixelated, hard black-and-white kick. MONO, ONE square (OSC 2 pulse, an octave up from the key, swept down by the
  * filter envelope: ENV>O2 110 = +17 st falling over 11 ms), an open 12 dB filter (CUTOFF 105, RESO 0), attack 0, DECAY 76 (187 ms) to sustain 0, 2 ms release, a random stepped pitch LFO (S&H, 21 Hz, +-4.7 st) as the glitch.
  * No tape (CHEW 0, HISS 0, DROPS 0), no GROWL. VOLUME 123 puts it on the bank reference: -18.1 dBFS RMS over the kick phrase (m), peak -10.7; worst case 1337 host instr/sample */

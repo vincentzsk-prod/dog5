@@ -229,7 +229,7 @@ loop.** No new drawing code may block without yielding to notes. That is the who
 - **The 32 patches** and their SOUND briefs are locked (`dog5-docs/DOG-5-presets.md`). Voice them by ear on the
   host build. Minimum gig set defined there if time bites. ~Half are buildable before the Psych Chain exists.
 - **4 names changed** for the 14-char fit (and taste): 09 Skinhead Bubble→**Skeenhead**, 17 North Water
-  Ice→**Titanic**, 18 Rotoscoped Void→**Roto-scopo**, 19 Blackwater Tank→**Blackwater**. All other names fit
+  Ice→**Titanic**, 18 Rotoscoped Void→**Roto-scopo**, 19 Blackwater Tank→**Blackwater**→(dropped 6 Nov) **Micro-mist**. All other names fit
   at 14 untouched. Longest in the bank: Atlantic Swell / Slapback Strut (14).
 - **Fix the font for Ø first** (§4) or `THE DØG` shows as `THE D?G`.
 

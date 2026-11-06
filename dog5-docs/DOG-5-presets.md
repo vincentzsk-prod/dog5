@@ -8,7 +8,7 @@ source (`obv_params.h`, `obv_patches.h`, `obv_fx.h`).
 **Prime directive: TONE IS KING.** Ship fewer, better.
 
 **Names (27 Oct):** field widened to 14 chars; four names changed — 09→**Skeenhead**, 17→**Titanic**,
-18→**Roto-scopo**, 19→**Blackwater**. All others fit at 14.
+18→**Roto-scopo**, 19→**Micro-mist** (was Blackwater, dropped 6 Nov 2026). All others fit at 14.
 
 ---
 
@@ -105,7 +105,7 @@ SOUND / ART.
   exhales thick smoke over the top bar.
 - **18 "Roto-scopo" (was Rotoscoped Void) · P1 · from DRONE UNI** — SOUND: low-passed square, Poly-Mod OSC
   B→cutoff, slop ~90%, VCA latched. ART: slow dense magic obscuring the battery.
-- **19 "Blackwater" (was Blackwater Tank) · P1 · from SUB BASS** — SOUND: sub-osc only, highly resonant filter
+- **19 "Micro-mist" (6 Nov 2026: the Blackwater brief below was dropped and the slot rebuilt, see `voicing/19-micro-mist.md`; old entry:) "Blackwater" (was Blackwater Tank) · P1 · from SUB BASS** — SOUND: sub-osc only, highly resonant filter
   tracking the keys, long decay, latched. ART: dark fog suffocating the UI.
 - **20 "Fire & Ice" · P2 · from SYNC LEAD** — SOUND: hard-sync lead, tone rolled off, Drive + BBD. ART: smog
   across the right 1/5th on every held note.

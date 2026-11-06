@@ -70,6 +70,10 @@ Format: 16-bit stereo, 44.1 kHz. Level = RMS over the note-on region, peak = sam
 | `22-melting-orb_D_chord-mid.wav` | 22 melting-orb | D (dual-chord) | (w mid) A2 E3 A3 held 8 s | -14.1 | -4.1 | comparison (long held chord, peak -4.1) |
 | `22-melting-orb_D_stabs.wav` | 22 melting-orb | D (dual-chord) | (b) chord stabs | -18.3 | -6.6 | comparison |
 | `22-melting-orb_D_riff.wav` | 22 melting-orb | D (dual-chord) | (a) riff | -20.9 | -9.1 | comparison |
+| `19-micro-mist_D_held-chord.wav` | 19 micro-mist | D (tunnel) | (z chord) A3 C#4 E4 held 10 s + 6 s release | -17.9 | -4.7 | **LEVEL phrase** (reference -18.0; RMS over +4..+10 s) |
+| `19-micro-mist_D_tap.wav` | 19 micro-mist | D (tunnel) | (z tap) chord and A4 taps, 150 ms | -28.4 | -9.8 | comparison (slow attack; RMS over the note-on region) |
+| `19-micro-mist_D_stabs.wav` | 19 micro-mist | D (tunnel) | (b) chord stabs | -24.9 | -8.5 | comparison (low register; not what it is for) |
+| `19-micro-mist_D_riff.wav` | 19 micro-mist | D (tunnel) | (a) riff | -28.6 | -13.7 | comparison (low register) |
 
 Notes:
 - Where the stabs phrase is the level phrase (03, 25, 31) only stabs + riff are kept; elsewhere level phrase + stabs + riff. Held-note renders were not kept.
@@ -84,3 +88,4 @@ Notes:
 - 10 Atlantic Swell A, 12 Kelp Tangle C, 16 Tidal Pull D (Batch 4A, approved after listening 6 Nov 2026): copied byte for byte from the `listen/batch-04a-chapter2-organ-kelp-wash` branch (`listen/voicing/batch-04a/...`) with `git show`; the level phrase and the stabs phrase only. 10's renders are the unchanged original (the same values as before Batch 4A). Levels and peaks from each variant's `results.json` (the peak column of the level-phrase row is that phrase's peak; 10's whole-render peak is -4.8, from the stabs).
 - 13 Ghost Board C2 (Batch 4B round 2) and 14 Reef Break C (Batch 4B round 1), approved after listening 6 Nov 2026: copied byte for byte from the `listen/batch-04b-chapter2-ghost-and-reef` branch (`listen/voicing/batch-04b/13-round2/` and `.../14-reef-break/`) with `git show`; the level phrase and the stabs phrase only. Levels and peaks from each variant's `results.json` (the peak of a level-phrase row is that phrase's own peak; 14's stabs peak is the three-key stab's).
 - 18 Roto-scopo D and 22 Melting Orb D (Batch 5A round 2, approved after listening 6 Nov 2026): rendered from the COMMITTED slots through the program-load path (`render(program=17)` / `render(program=21)`), not copied from the listen branch. 22's renders are bit-identical to the listened variant renders; 18's differ from them (-30.2 .. -39.0 dB relative to the signal, `check_slot.py 18 D 5a`: the free-running random LFO and the CUTOFF / RESO slew start from the boot patch; not isolated). 22 has no phrase of its own other than the A2 hold, so its second held file is the three-key chord.
+- 19 Micro-mist D (Batch 5A round 2, approved after listening 6 Nov 2026): rendered from the COMMITTED slot through the program-load path. All four files are bit-identical to the variant renders that were heard (the LFO is inert at D's values, so the boot patch makes no difference).
