@@ -1,7 +1,7 @@
-# VOICING PHRASE (t): GHOST (Batch 4B, for 13 Ghost Board).  Tape wobble, spring and echo bodies kept separable by gaps.
+# VOICING PHRASE (t): GHOST (Batch 4B, for 13 Ghost Board).  The beating, the spring and the echo bodies kept separable by gaps (round 1 also judged a tape deck).
 # The A minor 7 chord A3 C4 E4 G4 held 2.4 s (3000 ms), 2.6 s gap, a SLOW single-note line E4 D4 C4 A3 (800 ms notes, 500 ms apart, from 8000 ms: the pitch wander of the tape on single notes),
 # a 2.1 s gap, a short-note figure: six 150 ms notes C4 E4 G4 E4 C4 A3, 450 ms apart, from 14700 ms, then 3.4 s of nothing for the tail.  Velocity 96-108.
-# Judges: the soft tone, the wobble on a held chord and on single notes, the echo and the spring tail after each, the short notes.  Level: RMS over the note-on region (1 + 4 + 6 note-ons), echo, spring and tape included, tails excluded.
+# Judges: the tone, the movement on a held chord and on single notes, the echo and the spring tail after each, the short notes.  Level: RMS over the note-on region (1 + 4 + 6 note-ons), echo and spring (and a tape deck where a variant has one) included, tails excluded.
 # Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
 3000 midi 0x90 57 100
 3000 midi 0x90 60 100

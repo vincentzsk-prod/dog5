@@ -1,5 +1,25 @@
 # Voicing log — 13 "Ghost Board" (FACTORY[12], Batch 4B, Chapter II, the tape / crash pair)
 
+## APPROVED: ROUND 2 variant C2 ("no PWM") — committed as the patch
+
+**Status: APPROVED by Vincent after two listening rounds (6 Nov 2026): round 2 variant C2.** His words: "This is the closest we have to what I imagined. I'll dial this more later." Earlier, on round 1: "Tape wobble is definitely killing the overall tone, needs to be dropped entirely"; on the echo and spring: "The Space Echo on D sounds SO GOOD." Committed as `PF_GHOST_BOARD` (equals C2 byte for byte: `tests/voicing/check_slot.py 13 C2 4b-r2`: resolved bytes identical, audio bit-identical from INIT AND from the boot patch). Voice card: `cards/13-ghost-board.md`; renders: `reference-renders/13-ghost-board_C2_*.wav`. **Round count: 2 silent measured rounds + 2 listening rounds.** The round-1 and round-2 text below is kept as the record.
+
+**Brief changed after listening.** The original brief (DOG-5-presets.md) said: *submerged and warped: a filtered near-sine, maximum tape wow/flutter, heavy spring.* Vincent heard round 1 (a triangle-leaning tone, tape wobble, an echo) and said the original patch was the closest to the Mellotron he wanted, the tape wobble killed the tone, and the Space Echo of round-1 variant D was the one he was chasing. **13 is now:** a dark pad of two slightly detuned pulse waves (the original patch's voice, unchanged) with a slow beating between the two oscillators, NO pulse-width movement (LFO PWM 0), NO tape deck (CHEW 0), a long echo (337 ms, FEEDBK 95, MIX 105) and a heavy spring (DRAIN 70). The near-sine and the tape wow/flutter of the original brief are not in the patch (harmonics 3 / 5 / 7 read -11 / -18 / -26 dB against an ideal triangle's -19 / -28 / -34; CHEW 0). It is very muddy by the ratio: note-on MUD 315 (the original 108), tail windows 1108 / 2198 / 3331 (0-250 / 250-750 / 750-1500 ms; centroids 488 / 509 / 528 Hz at -15 / -19 / -26 dBFS), 0.2 % of the note-on energy above 1.2 kHz.
+
+* **Level:** VOLUME 55; -18.0 dBFS RMS on the ghost phrase (peak -4.9, crest 13.1 dB); phrase (b) -23.4 dBFS (peak -11.7); worst-case CPU 2084 host instr/sample (idle 1180 + 905; the original 2069).
+* **Final values, each change before -> after against main (the patch as it stood before Batch 4B):**
+
+  * LFO_PITCH 3 -> 0 (-2%)
+  * LFO_PWM 60 -> 0 (-47%)
+  * VOLUME 100 -> 55 (-35%)
+  * DLY_FB 50 -> 95 (+35%)
+  * DLY_MIX 0 -> 105 (+83%)
+  * REV_DAMP 60 -> 25 (-28%)
+  * REV_MIX 35 -> 70 (+28%)
+  * ALLEY 0 -> 104 (+82%) (SYNC -> 337 ms)
+
+* **What round 2 isolated (one held voice, A3; band-energy depth in 23 ms frames):** the beating pair carries the 150-400 Hz movement (13.8 dB at 0.9 Hz; 0.3 dB with OSC 2 FINE 64; unchanged without the PWM), the pulse-width LFO carries the 400-1.2k movement (3.9 dB; 1.2 dB with LFO PWM 0), the dark filter carries the mud and not the movement (CUTOFF 84: note-on MUD 278 -> 82, the movement unchanged).
+
 ## ROUND 2 (6 Nov 2026) — the original's voice with round 1's D echo, the deck off
 
 **What Vincent heard (round 1):** variant C, built as "more Mellotron" (the tone nearest a triangle, tape wobble up, less echo), was the wrong direction: **the ORIGINAL A is the most Mellotron to his ear**. "Tape wobble is definitely killing the overall tone. Needs to be dropped entirely." "The echo, spring and first repeat of option D sound AMAZING! The Space Echo on D sounds SO GOOD! What I'm chasing is Mellotron + Space Echo, with the Space Echo as it is in D."

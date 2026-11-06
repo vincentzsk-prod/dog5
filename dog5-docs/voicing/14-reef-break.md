@@ -1,5 +1,35 @@
 # Voicing log — 14 "Reef Break" (FACTORY[13], Batch 4B, Chapter II, the tape / crash pair)
 
+## APPROVED: round-1 variant C ("swell") — committed as the patch
+
+**Status: APPROVED by Vincent after one listening round (6 Nov 2026): round-1 variant C.** His words: "C is the one." Committed as `PF_REEF_BREAK` (equals C byte for byte: `tests/voicing/check_slot.py 14 C 4b`: resolved bytes identical, audio bit-identical from INIT and from the boot patch). Voice card: `cards/14-reef-break.md`; renders: `reference-renders/14-reef-break_C_*.wav`. **Round count: 1 silent measured round + 1 listening round.** The recommendation text below (variant B) is kept as the record.
+
+* **Level (note-on region = the 300 ms gates of the 11 hits, echo included):** VOLUME 121; **-18.0 dBFS RMS** (seed 2: -18.0), own-phrase peak -4.5 / -4.3 dBFS on the two seeds, crest 13.5 / 13.7 dB, no clipped sample. **Phrase (b) -12.8 dBFS RMS; its peak is -1.55 dBFS (seed 2 -1.52) on the three-key stab (E2 B2 E3, at 3791 ms): three keys at once stack three noise voices, 1.5 dB under full scale, no clipped sample and no sample within 1 dB of full scale** (B: -1.0). Worst-case CPU 1857 host instr/sample (idle 1180 + 677; the original 1762).
+* **Final values, each change before -> after against main (the patch as it stood before Batch 4B):**
+
+  * O1_WAVE SAW -> PULSE
+  * O1_LVL 110 -> 80 (-24%)
+  * NOISE 60 -> 127 (+53%)
+  * O2_WAVE SAW -> PULSE
+  * O2_LVL 100 -> 45 (-43%)
+  * O2_SEMI +24 -> +12 st
+  * O2_FINE 70 -> 64 (centre 64: +6 -> +0, -5% of range) (+4.7 cents -> +0.0 cents)
+  * CUTOFF 90 -> 100 (+8%) (2349 Hz -> 4186 Hz)
+  * RESO 30 -> 10 (-16%)
+  * FENV_AMT 124 -> 0 (centre 64: +60 -> -64, -98% of range)
+  * KEYTRK 64 -> 0 (-50%)
+  * FTYPE LP12 -> HP12
+  * FA 20 -> 0 (-16%) (2 ms -> 0 ms)
+  * FD 25 -> 100 (+59%) (4 ms -> 1218 ms)
+  * AA 1 -> 52 (+40%) (1 ms -> 29 ms)
+  * AD 30 -> 97 (+53%) (5 ms -> 964 ms)
+  * AR 25 -> 97 (+57%) (4 ms -> 964 ms)
+  * VOLUME 100 -> 121 (+17%)
+  * DLY_FB 50 -> 100 (+39%)
+  * DLY_MIX 0 -> 80 (+63%)
+  * REV_MIX 40 -> 0 (-31%)
+  * ALLEY 0 -> 106 (+83%) (SYNC -> 361 ms)
+
 6 Nov 2026. Brief (Chapter II, The Tidal Hexes): *percussive crash: a noise burst on attack, a thick sub, long delay feedback (the original screen brief: a tidal maelstrom over the top-right corner). Vincent's notes: the noise must be a burst but not a complete blow-out; short to very short attack and/or a swell in quick (but not immediate) peak, then the decay ringing a crash-cymbal emulation out; the Space Echo reference and reach; emphasis on the burst with a medium-length tail.* Method and kit: `README.md` here (§1 phrases, §3 loudness, §17 Batch 4B).
 
 ## RECOMMENDED: variant B (burst) — committed as the patch, awaiting Vincent's listening
