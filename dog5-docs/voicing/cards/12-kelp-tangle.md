@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A two-pulse pad whose pulse widths are swept slowly and steadily by one triangle LFO, through a 24 dB low-pass that leaves little above 1.2 kHz, with a spring tail behind it. The sweep is measurable on held notes; on short notes only a slice of it is heard. Nothing else moves: there is no pitch vibrato and no echo.
+A two-pulse pad whose pulse widths are swept slowly and steadily by one triangle LFO, through a 24 dB low-pass that leaves little above 1.2 kHz, with a spring tail behind it. The sweep is measurable on held notes; on short notes only a slice of it is heard. No LFO pitch vibrato and no echo are set (VINTAGE 50 still adds the usual slop).
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
