@@ -1,0 +1,29 @@
+# VOICING PHRASE (q): ORGAN (Batch 4A, for 10 Atlantic Swell).  Held organ chords plus a staccato figure, with gaps so the BBD repeats and the vibrato / chorus show.
+# A minor triad A3 C4 E4 held 2.4 s (3000 ms; the vibrato / chorus over a held chord), 2 s gap, ONE isolated E4 (120 ms, 7400 ms; the delay's first repeat is read on it),
+# 2.5 s gap, four staccato notes E4 G4 A4 C5 (120 ms each, 300 ms apart, from 10000 ms: the figure the repeats pile onto), 1.2 s gap, a D minor triad D4 F4 A4 held 1.6 s
+# (13000 ms), then 2.4 s of nothing for the tail.  Velocities 96-108.  Judges: note definition under heavy modulation and a heavy echo, the chorus / vibrato / tremolo on held notes,
+# the echo's level and rhythm, how the tail sits between notes.  Level: RMS over the note-on region (3 + 1 + 4 + 3 note-ons), repeats that fall inside a gate included, tails excluded.
+# Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3000 midi 0x90 60 100
+3000 midi 0x90 64 100
+5400 midi 0x80 57 0
+5400 midi 0x80 60 0
+5400 midi 0x80 64 0
+7400 midi 0x90 64 104
+7520 midi 0x80 64 0
+10000 midi 0x90 64 100
+10120 midi 0x80 64 0
+10300 midi 0x90 67 104
+10420 midi 0x80 67 0
+10600 midi 0x90 69 108
+10720 midi 0x80 69 0
+10900 midi 0x90 72 104
+11020 midi 0x80 72 0
+13000 midi 0x90 62 98
+13000 midi 0x90 65 98
+13000 midi 0x90 69 98
+14600 midi 0x80 62 0
+14600 midi 0x80 65 0
+14600 midi 0x80 69 0
+17000 end

@@ -1,0 +1,40 @@
+# VOICING PHRASE (s): WASH (Batch 4A, for 16 Tidal Pull).  Held chords with gaps so the delay's repeats and the spring's tail are separable, and a figure that shows the attack.
+# A minor 7 chord A3 C4 E4 G4 held 2.0 s (3000 ms), 2.6 s gap, F major 7 F3 A3 C4 E4 held 2.0 s (7600 ms), 2.6 s gap, then the attack figure: three 400 ms notes E4, C4, A3 (900 ms apart,
+# from 12200 ms; a 80-250 ms attack is a ramp inside each), then three 100 ms stabs of the dyad A3+E4, 600 ms apart, from 15000 ms (what a medium attack does to a short note), then 3 s of nothing.
+# Judges: the wash (chorus width, LFO motion on the held chords), the delay audible against the spring, the attack, the tail.  Level: RMS over the note-on region (2 + 3 + 3 note-ons), tails excluded.
+# Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3000 midi 0x90 60 100
+3000 midi 0x90 64 100
+3000 midi 0x90 67 100
+5000 midi 0x80 57 0
+5000 midi 0x80 60 0
+5000 midi 0x80 64 0
+5000 midi 0x80 67 0
+7600 midi 0x90 53 100
+7600 midi 0x90 57 100
+7600 midi 0x90 60 100
+7600 midi 0x90 64 100
+9600 midi 0x80 53 0
+9600 midi 0x80 57 0
+9600 midi 0x80 60 0
+9600 midi 0x80 64 0
+12200 midi 0x90 64 104
+12600 midi 0x80 64 0
+13100 midi 0x90 60 100
+13500 midi 0x80 60 0
+14000 midi 0x90 57 104
+14400 midi 0x80 57 0
+15000 midi 0x90 57 100
+15000 midi 0x90 64 100
+15100 midi 0x80 57 0
+15100 midi 0x80 64 0
+15600 midi 0x90 57 104
+15600 midi 0x90 64 104
+15700 midi 0x80 57 0
+15700 midi 0x80 64 0
+16200 midi 0x90 57 100
+16200 midi 0x90 64 100
+16300 midi 0x80 57 0
+16300 midi 0x80 64 0
+20500 end
