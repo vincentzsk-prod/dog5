@@ -4,8 +4,8 @@
 
 ## 2. What it sounds like
 
-The iconic poly brass: two saws a few cents apart, stable and warm, with the filter swelling open on each note and settling into a solid, brassy body. It holds
-still: no wobble, no chop, no mess, only a gentle vibrato that fades in if you hold a note. A Prophet-5 survivor, rebuilt by ear.
+The iconic poly brass: a pair of saws slightly apart, stable and warm, with the filter swelling open on each note and settling into a solid, brassy body. It holds
+still: no wobble, no chop, no mess, only a gentle vibrato that fades in if you hold a note. A survivor of the classic poly synths, rebuilt by ear.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

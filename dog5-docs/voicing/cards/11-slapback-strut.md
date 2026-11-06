@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A tight, gated surf bass: the note starts at once, holds its body for as long as you hold the key, and stops dead. Behind each note comes one clean, loud echo, a plain copy of the note a moment later, and then nothing.
+A tight, gated surf bass: the note starts at once, holds its body for as long as you hold the key, and stops dead. Behind each note comes a single clean, loud echo, a plain copy of the note a moment later, and then nothing.
 It is bright and crisp on top for a bass, sharp and a little biting, and dry otherwise.
 
 ## 3. Gear inspirations (docs only, "inspired by")

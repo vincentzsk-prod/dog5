@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A bright pair of narrow pulse waves through a notch filter, played polyphonically, with a spring reverb behind it and nothing else. It has no vibrato, no chorus and no delay (measured, below). The two pulses beat slowly against each other, about once a second, and the spring rings on after the notes.
+A bright pair of narrow pulse waves through a notch filter, played polyphonically, with a spring reverb behind it and nothing else. It has no vibrato, no chorus and no delay (measured, below). The pulses beat slowly against each other, and the spring rings on after the notes.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

@@ -7,7 +7,7 @@
 Fat, slop-heavy dual saws with a sub-octave underneath: seasick, never quite in tune with itself, and thick without
 going murky. Short notes are chopped stone-dead by the gate, and the tail doesn't fade, it sputters — a few ragged
 stutters as the note dies. It is a raw, dry, engine-only sound with no effects on it: the drift and the chop are the
-whole point. This is the DØG-5 thesis in one patch.
+whole point. This is the DØG-5 thesis in a single patch.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

@@ -5,7 +5,7 @@
 ## 2. What it sounds like
 
 A tearing hard-sync lead: the pitch of the synced oscillator rips down on every note, nasal and biting, with a plain saw underneath for body. A pair of voices
-a few cents apart makes it fat enough to cut through a drum machine, and the note stops dead when you let go, with only a faint quick slap behind it. It is
+detuned slightly apart makes it fat enough to cut through a drum machine, and the note stops dead when you let go, with only a faint quick slap behind it. It is
 raw on purpose: that is where the rip lives.
 
 ## 3. Gear inspirations (docs only, "inspired by")

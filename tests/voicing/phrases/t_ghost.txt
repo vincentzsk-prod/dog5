@@ -1,0 +1,34 @@
+# VOICING PHRASE (t): GHOST (Batch 4B, for 13 Ghost Board).  The beating, the spring and the echo bodies kept separable by gaps (round 1 also judged a tape deck).
+# The A minor 7 chord A3 C4 E4 G4 held 2.4 s (3000 ms), 2.6 s gap, a SLOW single-note line E4 D4 C4 A3 (800 ms notes, 500 ms apart, from 8000 ms: the pitch wander of the tape on single notes),
+# a 2.1 s gap, a short-note figure: six 150 ms notes C4 E4 G4 E4 C4 A3, 450 ms apart, from 14700 ms, then 3.4 s of nothing for the tail.  Velocity 96-108.
+# Judges: the tone, the movement on a held chord and on single notes, the echo and the spring tail after each, the short notes.  Level: RMS over the note-on region (1 + 4 + 6 note-ons), echo and spring (and a tape deck where a variant has one) included, tails excluded.
+# Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3000 midi 0x90 60 100
+3000 midi 0x90 64 100
+3000 midi 0x90 67 100
+5400 midi 0x80 57 0
+5400 midi 0x80 60 0
+5400 midi 0x80 64 0
+5400 midi 0x80 67 0
+8000 midi 0x90 64 104
+8800 midi 0x80 64 0
+9300 midi 0x90 62 100
+10100 midi 0x80 62 0
+10600 midi 0x90 60 104
+11400 midi 0x80 60 0
+11900 midi 0x90 57 100
+12700 midi 0x80 57 0
+14700 midi 0x90 60 96
+14850 midi 0x80 60 0
+15150 midi 0x90 64 100
+15300 midi 0x80 64 0
+15600 midi 0x90 67 104
+15750 midi 0x80 67 0
+16050 midi 0x90 64 96
+16200 midi 0x80 64 0
+16500 midi 0x90 60 100
+16650 midi 0x80 60 0
+16950 midi 0x90 57 104
+17100 midi 0x80 57 0
+20500 end

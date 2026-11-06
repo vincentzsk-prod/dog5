@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A nervous, spitting bass made to sit under a vocal. Two fat saws, stacked and held steady, push through a resonant filter that snaps at the start of every note, and the whole thing is driven hard enough to be gritty and warm without getting piercing. It is nearly dry: a quick slap and a small spring sit behind each note as an afterthought, lifting it a little, and never getting anywhere near as loud as the note itself.
+A nervous, spitting bass made to sit under a vocal. A pair of fat saws, stacked and held steady, push through a resonant filter that snaps at the start of every note, and the whole thing is driven hard enough to be gritty and warm without getting piercing. It is nearly dry: a quick slap and a small spring sit behind each note as an afterthought, lifting it a little, and never getting anywhere near as loud as the note itself.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

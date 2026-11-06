@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A fat square with a wobble in its pitch, chopped short. Two square waves a hair apart, one frequency-modulating the other so the tone carries extra energy below the note, and a random pitch wobble (9.6 cents standard deviation on the held A2, the LFO depth up to ±19 cents). Notes stop quickly when you let go, and a tape stage on the end delays every note by a couple of milliseconds. It is dry: no echo, no spring.
+A fat square with a wobble in its pitch, chopped short. A pair of square waves a hair apart, one frequency-modulating the other so the tone carries extra energy below the note, and a random pitch wobble. Notes stop quickly when you let go, and a tape stage on the end delays every note slightly. It is dry: no echo, no spring.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-Cold, heavy and hollow: two saws a fifth apart, steady rather than seasick, with a deep sub-heavy floor. Low notes open up and ring out big; high notes close down and go dull, so the
+Cold, heavy and hollow: a pair of saws a fifth apart, steady rather than seasick, with a deep sub-heavy floor. Low notes open up and ring out big; high notes close down and go dull, so the
 weight lives at the bottom of the keyboard. It is dry and desolate, and it hangs on after you let go. This is the chapter anchor.
 
 ## 3. Gear inspirations (docs only, "inspired by")

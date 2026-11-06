@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A brass wall that starts dark and soft and swells open while you hold the note. It begins as a quiet, murky hum and, in a few seconds, blooms into a wide, full, glowing brass, with a slow
+A brass wall that starts dark and soft and swells open while you hold the note. It begins as a quiet, murky hum and, slowly, blooms into a wide, full, glowing brass, with a slow
 drift inside the stack. It is dry. When you let go it fades out slowly and darkens as it goes.
 
 ## 3. Gear inspirations (docs only, "inspired by")

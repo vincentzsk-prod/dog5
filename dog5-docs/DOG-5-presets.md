@@ -90,7 +90,7 @@ SOUND / ART.
   repeat. Percussive surf bass. ART: a rogue wave over the boundary.
 - **12 "Kelp Tangle" · P2 · from HOLLOW PAD** — SOUND: heavy PWM off OSC B, murky LP, spring tail. ART:
   deep-sea thrash.
-- **13 "Ghost Board" · P2 · from PWM STRING** — SOUND: filtered near-sine, max tape wow/flutter, heavy spring.
+- **13 "Ghost Board" · P2 · from PWM STRING** — SOUND: a dark pad of two slightly detuned pulse waves with a slow beating between them (no PWM, no tape deck), a long echo and a heavy spring. *(Brief changed after listening, 6 Nov 2026; it was: filtered near-sine, max tape wow/flutter, heavy spring.)*
   ART: a 1-bit coastal deluge swamps the text.
 - **14 "Reef Break" · P2 · from PERC HIT** — SOUND: white-noise attack, thick sub, long BBD feedback. ART: a
   tidal maelstrom over the top-right.
