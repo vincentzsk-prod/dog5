@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A single-voice lead that tears into every detached note with a bright hard-sync sweep, which then settles into a rounder, singing line. It is pushed into overdrive and thrown into a long, ping-ponging echo that keeps repeating behind the playing and sits on top of a short spring. Notes slide into each other a little. Played legato, the sweep is not re-fired, so a smooth run carries only the settled tone and loses the tear.
+A single-voice lead that tears into every detached note with a bright hard-sync sweep, which then settles into a rounder line. It is pushed into overdrive and thrown into a long, ping-ponging echo that keeps repeating behind the playing and sits on top of a short spring. Notes slide into each other a little. Played legato, the sweep is not re-fired, so a smooth run carries only the settled tone and loses the tear.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 

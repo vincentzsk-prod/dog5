@@ -54,11 +54,11 @@ static const uint8_t PF_MELTING_ORB[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 0, P_O2_LVL
     P_POLY_N, 6, X};
 static const uint8_t PF_RESO_ZAP[] = {P_MODE, M_MONO, P_RESO, 110, P_CUTOFF, 20, P_FENV_AMT, 127, P_FD, 40, P_FS, 0, P_AD, 40,
     P_AS, 0, P_FTYPE, F_LP12, P_O1_WAVE, W_PLS, P_NOISE, 20, P_AA, 1, P_AR, 30, X};
-/* 23 Crypt Dust (Batch 5B round 2, variant D2 committed PROVISIONALLY, not yet heard: dog5-docs/voicing/README.md section 19; was PF_NOISE_WASH, this slot's alone): a thin 12 % pulse under a trace of noise (NOISE 43, 25 dB under the pulse) through a band-pass, POLY 2, no tape, a slow S&H LFO on AMP and FILTER, a 75 ms echo and the spring */
+/* 23 Crypt Dust (Batch 5B, approved variant D3: cards/23-crypt-dust.md; was PF_NOISE_WASH, this slot's alone): a thin 12 % pulse under a trace of noise (NOISE 43, 24 dB under the pulse) through a band-pass, POLY 4, no tape (CHEW 0), a slow S&H LFO on AMP and FILTER, a 75 ms echo and the spring */
 static const uint8_t PF_CRYPT_DUST[] = {P_O1_WAVE, W_PLS, P_O1_PW, 15, P_O1_LVL, 127, P_NOISE, 43, P_O2_WAVE, W_OFF,
     P_CUTOFF, 72, P_RESO, 50, P_FENV_AMT, 64, P_FTYPE, F_BP12, P_FA, 60, P_AA, 100, P_AR, 110, P_LFO_SHAPE, L_SH,
-    P_LFO_RATE, 58, P_LFO_FLT, 45, P_LFO_AMP, 46, P_VOLUME, 127, P_DLY_FB, 60, P_DLY_TONE, 55, P_DLY_MIX, 85,
-    P_REV_SIZE, 127, P_REV_DAMP, 40, P_REV_MIX, 80, P_POLY_N, 2, P_ALLEY, 60, X};
+    P_LFO_RATE, 58, P_LFO_FLT, 45, P_LFO_AMP, 46, P_VOLUME, 120, P_DLY_FB, 60, P_DLY_TONE, 55, P_DLY_MIX, 85,
+    P_REV_SIZE, 127, P_REV_DAMP, 40, P_REV_MIX, 80, P_POLY_N, 4, P_ALLEY, 60, X};
 /* 10 Atlantic Swell (approved Nov 2026, Batch 4A variant A, the starting point unchanged: dog5-docs/voicing/10-atlantic-swell.md; was PF_HOLLOW_PAD, shared with 12 Kelp Tangle, which has its own array now): POLY 5, two narrow pulses (PW 16 % and PW 85 %, the second a near-inverse of the
  * first, so the pair beats), a notch filter (CUTOFF 70), AA 70 / AR 100, a slow PWM on the shared LFO (RATE 40 = 0.37 Hz, PWM +-2.3 points, PHASE SPREAD), spring only (DRAIN 40, SIZE 100). No pitch LFO (LFO PITCH 0), no delay, no chorus. VOLUME 100: -19.0 dBFS RMS over the
  * note-on region of the organ phrase (q), peak -4.8 */

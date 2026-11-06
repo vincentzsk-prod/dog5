@@ -12,7 +12,7 @@ import batch05b as X
 from lib5b import *
 
 exe = K.build_host()
-for slot, key, path in ((20, "D", "20-fire-ice"), (24, "C", "24-fugue-state"), (23, "D2", "23-crypt-dust/round2")):
+for slot, key, path in ((20, "D", "20-fire-ice"), (24, "C", "24-fugue-state"), (23, "D3", "23-crypt-dust/round2")):
     res = json.load(open(os.path.join(X.OUT, path, "results.json")))[key]["params"]
     print(f"{slot:02d} {key}: resolved bytes identical: {B.resolve(K.ROOT, slot) == res}")
     for label, extra in (("from the boot patch", ()), ("both from INIT first", ("2000 midi 0xC0 32 0",))):

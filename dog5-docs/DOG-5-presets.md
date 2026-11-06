@@ -113,8 +113,10 @@ SOUND / ART.
   ~10 s brass wall. Textbook drone-latch. ART: suffocating brass erases the top menu.
 - **22 "Melting Orb" · P1 · from BP QUACK (reworked)** — SOUND: slow downward filter-env melt on a fat unison
   source, inverted VCF env, high-but-musical resonance, latched. ART: a dense cloud rises to hide status.
-- **23 "Crypt Dust" · P2 · from NOISE WASH** — SOUND: noise + thin pulse, heavy tape wow, no drive. ART:
-  ancient smog into the margins.
+- **23 "Crypt Dust" · P2 · from NOISE WASH** — SOUND (final, 6 Nov 2026, variant D3, see `voicing/cards/23-crypt-dust.md`): a thin
+  pulse band-passed, only a trace of noise, no tape (CHEW 0), a slow S&H level flutter, a short echo and a large spring, POLY 4.
+  *Original brief, kept as history:* "noise + thin pulse, heavy tape wow, no drive" (changed after listening: the noise drowned
+  out the pulse and the tape is off in the final patch). ART: ancient smog into the margins.
 - **24 "Fugue State" · P2 · from NEON PAD** — SOUND: triangle, extreme LFO pitch mod, BBD self-feedback. ART:
   pitch-black fog over the 5th quadrant, only the core visible.
 
