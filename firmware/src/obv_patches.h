@@ -25,9 +25,14 @@ static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P
     P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
 static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
     P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
-static const uint8_t PF_PWM_STRINGS[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_PW, 40, P_O2_FINE, 73, P_LFO_PWM, 60,
-    P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD, P_AA, 60, P_AR, 90, P_FA, 50, P_CUTOFF, 75, P_FENV_AMT, 74, P_RESO, 5,
-    P_SPREAD, 100, P_VINTAGE, 50, P_LFO_PITCH, 3, P_REV_SIZE, 100, P_REV_MIX, 35, X};
+/* 13 Ghost Board (voiced Nov 2026, Batch 4B variant B, recommended: dog5-docs/voicing/13-ghost-board.md; was PF_PWM_STRINGS, this slot's alone): a triangle-leaning tone under a wobbling tape. POLY 5, a narrow pulse (PW 25 %) through a 12 dB low-pass at 100 % key tracking (CUTOFF 70 = 740 Hz at C4)
+ * with a copy two octaves up (OSC 2 +24 st, LEVEL 112: the energy above 1.2 kHz), no LFO (LFO PITCH 0, was an inert 3; LFO PWM 0), AA 45 / AR 80; the tape deck last in the chain: CHEW 100 (a measured 6.2 cents s.d. of wobble), WOW/FLT 48, HISS 40, DROPS 50; a BBD echo (ALLEY 98 = 275 ms, FEEDBK 82,
+ * MIX 70) and a spring (DRAIN 50, SIZE 90, DAMP 40) ahead of the deck. VOLUME 81: -18.0 dBFS RMS over the note-on region of the ghost phrase (t), peak -5.2. CHEW costs ~780 host instr/sample (worst case 2679) */
+static const uint8_t PF_GHOST_BOARD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O2_WAVE, W_PLS, P_O2_PW, 32, P_O2_LVL, 112,
+    P_O2_SEMI, 48, P_O2_FINE, 64, P_CUTOFF, 70, P_RESO, 0, P_FENV_AMT, 64, P_KEYTRK, 127, P_FTYPE, F_LP12, P_FA, 50,
+    P_AA, 45, P_AS, 127, P_AR, 80, P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD, P_VINTAGE, 50, P_SPREAD, 100,
+    P_VOLUME, 81, P_DLY_FB, 82, P_DLY_MIX, 70, P_REV_SIZE, 90, P_REV_DAMP, 40, P_REV_MIX, 50, P_CHEW, 100,
+    P_TP_WOWFLT, 48, P_TP_HISS, 40, P_TP_DROPS, 50, P_ALLEY, 98, X};
 static const uint8_t PF_BELL_XMOD[] = {P_O1_LVL, 100, P_O2_SEMI, 43, P_XMOD, 70, P_CUTOFF, 100, P_FD, 90, P_FS, 0, P_AD, 95,
     P_AS, 0, P_AR, 80, P_FENV_AMT, 94, P_AA, 1, P_DLY_TIME, DD_8, P_DLY_FB, 50, P_DLY_MIX, 40, P_REV_SIZE, 110, P_REV_MIX, 45, X};
 static const uint8_t PF_FAT_BASS[] = {P_MODE, M_MONO, P_O2_WAVE, W_PLS, P_O2_PW, 50, P_O2_SEMI, 12, P_CUTOFF, 40, P_RESO, 30,
@@ -54,7 +59,7 @@ static const uint8_t PF_KELP_TANGLE[] = {P_O1_WAVE, W_PLS, P_O1_PW, 42, P_O2_WAV
     P_CUTOFF, 98, P_RESO, 30, P_FENV_AMT, 64, P_KEYTRK, 127, P_AA, 52, P_AS, 127, P_AR, 88, P_LFO_RATE, 60,
     P_LFO_PHASE, LP_SYNC, P_LFO_PWM, 100, P_VINTAGE, 50, P_SPREAD, 100, P_VOLUME, 74, P_REV_SIZE, 75, P_REV_DAMP, 30,
     P_REV_MIX, 55, X};
-/* 16 Tidal Pull (approved Nov 2026, Batch 4A variant D: dog5-docs/voicing/16-tidal-pull.md; PF_PWM_STRINGS stays as 13 Ghost Board's): a triangle-like pulse stack. POLY 5, two narrow pulses (PW 25 %), the second an octave up (OSC 2 +12 st, LEVEL 84), through a 12 dB low-pass
+/* 16 Tidal Pull (approved Nov 2026, Batch 4A variant D: dog5-docs/voicing/16-tidal-pull.md; 13 Ghost Board has its own array since Batch 4B): a triangle-like pulse stack. POLY 5, two narrow pulses (PW 25 %), the second an octave up (OSC 2 +12 st, LEVEL 84), through a 12 dB low-pass
  * at 100 % key tracking (CUTOFF 64 = 523 Hz at C4); amp attack AA 82 (10 / 50 / 90 % of the level at 17 / 93 / 219 ms); a TRI LFO at 2.3 Hz (RATE 76) on pitch +-19 cents (LFO PITCH 16) in PHASE SPREAD; a ping-pong BBD echo (ALLEY 104 = 337 ms, FEEDBK 78, MIX 110) ahead of the
  * spring (DRAIN 45, SIZE 90, DAMP 35). VOLUME 76: -19.1 dBFS RMS over the note-on region of the wash phrase (s), echo and spring included, peak -4.4 (peak-limited) */
 static const uint8_t PF_TIDAL_PULL[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O2_WAVE, W_PLS, P_O2_PW, 32, P_O2_LVL, 84,
@@ -299,7 +304,7 @@ static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_ATLANTIC_SWELL},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_KELP_TANGLE},
-    {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
+    {"Ghost Board", PF_GHOST_BOARD},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
