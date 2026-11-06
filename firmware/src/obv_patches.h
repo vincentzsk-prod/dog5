@@ -11,7 +11,7 @@ static const uint8_t PF_UPSIDE_ARP[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_A
     P_O2_WAVE, W_SAW, P_O2_SEMI, 12, P_O2_LVL, 70, P_O2_FINE, 72, P_FTYPE, F_SEM, P_FMORPH, 18, P_CUTOFF, 40, P_RESO, 35,
     P_FENV_AMT, 100, P_FD, 50, P_FS, 10, P_AA, 1, P_AD, 60, P_AS, 20, P_AR, 70, P_VINTAGE, 70, P_SPREAD, 80,
     P_DLY_TIME, DD_8, P_DLY_FB, 62, P_DLY_TONE, 35, P_DLY_MIX, 64, P_REV_SIZE, 115, P_REV_DAMP, 85, P_REV_PRE, 40, P_REV_MIX, 66, X};
-static const uint8_t PF_NEON_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 50, P_O2_WAVE, W_BOTH, P_O2_PW, 80, P_O2_FINE, 74, P_LFO_PWM, 45,
+static const uint8_t PF_FUGUE_STATE[] = {P_O1_WAVE, W_PLS, P_O1_PW, 50, P_O2_WAVE, W_BOTH, P_O2_PW, 80, P_O2_FINE, 74, P_LFO_PWM, 45,
     P_LFO_RATE, 42, P_LFO_PHASE, LP_SPREAD, P_CUTOFF, 52, P_RESO, 12, P_FENV_AMT, 80, P_FA, 90, P_FD, 100, P_FS, 50, P_FR, 100,
     P_AA, 85, P_AR, 110, P_VINTAGE, 60, P_SPREAD, 120, P_LFO_PITCH, 4,
     P_REV_SIZE, 118, P_REV_DAMP, 60, P_REV_PRE, 50, P_REV_MIX, 70, P_DLY_TIME, DD_4D, P_DLY_FB, 40, P_DLY_TONE, 30, P_DLY_MIX, 35, X};
@@ -24,6 +24,9 @@ static const uint8_t PF_BRASS_STAB[] = {P_O2_FINE, 72, P_CUTOFF, 60, P_FENV_AMT,
 static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P_FENV_AMT, 100, P_FA, 70, P_FD, 85,
     P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
 static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
+    P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
+/* 20 Fire & Ice (Batch 5B: its own copy of PF_SYNC_LEAD, which 26 BSyncA keeps; values unchanged until voiced, dog5-docs/voicing/20-fire-ice.md) */
+static const uint8_t PF_FIRE_ICE[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
     P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
 /* 13 Ghost Board (voiced Nov 2026, Batch 4B round 2, approved variant C2: dog5-docs/voicing/13-ghost-board.md; was PF_PWM_STRINGS, this slot's alone): a dark pad. The old voice unchanged (POLY 5, a 50 % pulse and a 31 % pulse 7.0 cents sharp, so the pair beats; a 24 dB low-pass at CUTOFF 75 with 50 % key tracking; AA 60 / AR 90)
  * with NO pulse-width movement (LFO PWM 0), no tape deck (CHEW 0), LFO PITCH 0 (was an inert 3: the renders are bit-identical), a long BBD echo (ALLEY 104 = 337 ms, FEEDBK 95, MIX 105) and a heavy spring (DRAIN 70, SIZE 100, DAMP 25). VOLUME 55: -18.0 dBFS RMS over the note-on region of the ghost phrase (t), peak -4.9 */
@@ -48,7 +51,7 @@ static const uint8_t PF_MELTING_ORB[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 0, P_O2_LVL
     P_POLY_N, 6, X};
 static const uint8_t PF_RESO_ZAP[] = {P_MODE, M_MONO, P_RESO, 110, P_CUTOFF, 20, P_FENV_AMT, 127, P_FD, 40, P_FS, 0, P_AD, 40,
     P_AS, 0, P_FTYPE, F_LP12, P_O1_WAVE, W_PLS, P_NOISE, 20, P_AA, 1, P_AR, 30, X};
-static const uint8_t PF_NOISE_WASH[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70,
+static const uint8_t PF_CRYPT_DUST[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70,
     P_LFO_FLT, 60, P_LFO_RATE, 20, P_AA, 100, P_AR, 110, P_FA, 60, P_FENV_AMT, 64, P_REV_SIZE, 127, P_REV_DAMP, 40, P_REV_MIX, 60, X};
 /* 10 Atlantic Swell (approved Nov 2026, Batch 4A variant A, the starting point unchanged: dog5-docs/voicing/10-atlantic-swell.md; was PF_HOLLOW_PAD, shared with 12 Kelp Tangle, which has its own array now): POLY 5, two narrow pulses (PW 16 % and PW 85 %, the second a near-inverse of the
  * first, so the pair beats), a notch filter (CUTOFF 70), AA 70 / AR 100, a slow PWM on the shared LFO (RATE 40 = 0.37 Hz, PWM +-2.3 points, PHASE SPREAD), spring only (DRAIN 40, SIZE 100). No pitch LFO (LFO PITCH 0), no delay, no chorus. VOLUME 100: -19.0 dBFS RMS over the
@@ -325,8 +328,8 @@ static const factory_t FACTORY[NFACT] = {
     {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_ATLANTIC_SWELL},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_KELP_TANGLE},
     {"Ghost Board", PF_GHOST_BOARD},{"Reef Break", PF_REEF_BREAK},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
-    {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_ROTO_SCOPO},     {"Micro-mist", PF_MICRO_MIST},   {"Fire & Ice", PF_SYNC_LEAD},
-    {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_MELTING_ORB},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
+    {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_ROTO_SCOPO},     {"Micro-mist", PF_MICRO_MIST},   {"Fire & Ice", PF_FIRE_ICE},
+    {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_MELTING_ORB},     {"Crypt Dust", PF_CRYPT_DUST}, {"Fugue State", PF_FUGUE_STATE},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
     {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
 };
