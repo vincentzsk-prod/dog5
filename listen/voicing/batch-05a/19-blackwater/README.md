@@ -1,3 +1,5 @@
+> **SUPERSEDED, patch dropped 6 Nov 2026** (Vincent rejected every variant; slot 19 is now Micro-mist, see `19-micro-mist.md`). Kept as history.
+
 # Batch 5A, 19 Blackwater: variants A-D (round 1, rendered, not yet heard)
 
 **Level reading:** RMS dBFS (both channels, one power average) over **+5 s .. +14 s after the note-on of the 15 s hold on the phrase `v_drone_lo`** (the held, settled state; the note-on is at 3 s), target -18.0 +-1.5, VOLUME trimmed last; peak = the largest sample of any audition phrase (riff, stabs, held, drone, chord, taps), limit -4. `first 1 s` = RMS over the first second of the same hold. K-RMS = the same window K-weighted (informational). Worst-case CPU = idle + stress-chord load, host instructions per sample (a relative yardstick; 2900 us aim / 5800 us limit are device numbers).

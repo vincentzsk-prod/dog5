@@ -1,3 +1,5 @@
+> **SUPERSEDED, patch dropped 6 Nov 2026** (Vincent rejected every variant; slot 19 is now Micro-mist, see `19-micro-mist.md`). Kept as history.
+
 # Voicing log: 19 "Blackwater" (FACTORY[18], Batch 5A, Chapter III, the drones)
 
 ## ROUND 1: rendered, not yet heard. Variant B is committed as the patch (own array); A, C, D are render-only.
