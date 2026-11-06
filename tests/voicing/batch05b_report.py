@@ -71,6 +71,7 @@ def write20(R, orig):
 
 def write23(R, orig):
     spec = X.SPECS[23]; L = head(23, spec, R)
+    L[1:1] = ["", "> **Round 1 is history for 23: B (heavy tape, the committed variant of round 1) was not picked and is superseded; Vincent liked the underlying sound of C and D and found far too much noise. Round 2 (C2, C3, D2, D3, `round2/README.md`) re-voices from C and D. This material stays as the record.**"]
     L += ["## Parameter changes against the original (A)", ""]
     for k in "BCD":
         L += [f"**{k} {R[k]['tag']}** ({R[k]['desc']})", ""] + [f"* {c}" for c in changes(orig, R[k]["params"])] + [""]
