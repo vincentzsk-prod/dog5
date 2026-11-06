@@ -42,6 +42,15 @@ static const uint8_t PF_RESO_ZAP[] = {P_MODE, M_MONO, P_RESO, 110, P_CUTOFF, 20,
     P_AS, 0, P_FTYPE, F_LP12, P_O1_WAVE, W_PLS, P_NOISE, 20, P_AA, 1, P_AR, 30, X};
 static const uint8_t PF_NOISE_WASH[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70,
     P_LFO_FLT, 60, P_LFO_RATE, 20, P_AA, 100, P_AR, 110, P_FA, 60, P_FENV_AMT, 64, P_REV_SIZE, 127, P_REV_DAMP, 40, P_REV_MIX, 60, X};
+/* 10 Atlantic Swell (voiced Nov 2026, Batch 4A variant B: dog5-docs/voicing/10-atlantic-swell.md; was PF_HOLLOW_PAD, shared with 12 Kelp Tangle, which has its own now): a cold, clear combo organ. DUAL (every note a left / right
+ * pair, POLY 6), two narrow pulses (PW 20 %) an exact octave apart (8' + 4'), organ keying (AA 18 = a 3 ms attack, full sustain, AR 52 = 29 ms), an open 12 dB low-pass (CUTOFF 104, KEY TRK 50 %); the chorus is the DUAL pair
+ * with a slow TRI pitch LFO (0.72 Hz, +-19 cents) in PHASE SPREAD (each voice card 45 degrees on, so the two voices of a note wander out of step); a heavy ping-pong BBD (ALLEY 106 = 361 ms, FEEDBK 95, MIX 100) and
+ * a touch of spring (DRAIN 24, SIZE 70, DAMP 30). VOLUME 64 puts it on the bank reference: -18.2 dBFS RMS over the note-on region of the organ phrase (q), echo included */
+static const uint8_t PF_ATLANTIC_SWELL[] = {P_O1_WAVE, W_PLS, P_O1_PW, 26, P_O2_WAVE, W_PLS, P_O2_PW, 26,
+    P_O2_LVL, 84, P_O2_SEMI, 36, P_O2_FINE, 64, P_CUTOFF, 104, P_RESO, 22, P_FENV_AMT, 64, P_FTYPE, F_LP12,
+    P_AA, 18, P_AS, 127, P_AR, 52, P_LFO_RATE, 53, P_LFO_PHASE, LP_SPREAD, P_LFO_PITCH, 16,
+    P_MODE, M_DUAL, P_SPREAD, 127, P_VOLUME, 64, P_DLY_FB, 95, P_DLY_TONE, 90, P_DLY_MIX, 100, P_REV_SIZE, 70,
+    P_REV_DAMP, 30, P_REV_MIX, 24, P_POLY_N, 6, P_ALLEY, 106, X};
 static const uint8_t PF_HOLLOW_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 20, P_O2_WAVE, W_PLS, P_O2_PW, 108, P_O2_FINE, 76, P_FTYPE, F_NOTCH,
     P_CUTOFF, 70, P_LFO_PWM, 40, P_LFO_RATE, 40, P_LFO_PHASE, LP_SPREAD, P_AA, 70, P_AR, 100, P_FENV_AMT, 64, P_SPREAD, 100, P_REV_SIZE, 100, P_REV_MIX, 40, X};
 /* 15 Trem Chop (voiced Nov 2026, approved variant D: dog5-docs/voicing/15-trem-chop.md; was PF_SQUARE_LEAD, this slot's alone): the broken strobe. DUAL, POLY 6 (every note is two voices), two bright saws 3.9 cents apart through an open
@@ -280,7 +289,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
-    {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
+    {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_ATLANTIC_SWELL},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
