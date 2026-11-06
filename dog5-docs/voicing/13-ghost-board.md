@@ -1,5 +1,43 @@
 # Voicing log — 13 "Ghost Board" (FACTORY[12], Batch 4B, Chapter II, the tape / crash pair)
 
+## ROUND 2 (6 Nov 2026) — the original's voice with round 1's D echo, the deck off
+
+**What Vincent heard (round 1):** variant C, built as "more Mellotron" (the tone nearest a triangle, tape wobble up, less echo), was the wrong direction: **the ORIGINAL A is the most Mellotron to his ear**. "Tape wobble is definitely killing the overall tone. Needs to be dropped entirely." "The echo, spring and first repeat of option D sound AMAZING! The Space Echo on D sounds SO GOOD! What I'm chasing is Mellotron + Space Echo, with the Space Echo as it is in D."
+
+**What round 2 built (13 only, parameter values only):** all four variants carry the ORIGINAL's voice exactly (from the pre-4B base, not from memory: O1 PULSE PW 64, O2 PULSE PW 40 FINE 73, LP24 CUTOFF 75, RESO 5, ENV AMT 74, FA 50, AA 60, AR 90, LFO TRI RATE 50 PHASE SPREAD PWM 60, VINTAGE 50, SPREAD 100, POLY 5); LFO PITCH 3 -> 0 (**bit-identical to 3 on both phrases, proved by rendering both: the law is zero below 12**); CHEW 0 (the deck inactive: TP_* are not read with CHEW 0); and **every echo and spring value copied from round-1 D**: DLY_TIME 3 (was 3), DLY_FB 95 (was 50), DLY_TONE 70 (was 70), DLY_MIX 105 (was 0), ALLEY 104 (was 0), ALLEY_FINE 0 (was 0), BBD_SPREAD 127 (was 127), REV_SIZE 100 (was 100), REV_DAMP 25 (was 60), REV_PRE 20 (was 20), REV_MIX 70 (was 35). VOLUME re-trimmed on each. The four differ by one thing each: **A2 as is; B2 CUTOFF 75 -> 84; C2 LFO PWM 0; D2 OSC 2 FINE 64 (no detune)**. Two render-only references at the same bank level: the original patch (re-trimmed to -18, its own spring, no echo) and round-1 D exactly.
+
+| variant | VOLUME | level | (b) (re level) | peak | crest | centroid Hz | note-on MUD | tail MUD 0-250 / 250-750 / 750-1500 | harmonics 3/5/7 dB | 150-400 depth dB / Hz | 400-1.2k depth dB / Hz | first repeat re note dB / echo over spring dB | CPU |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A2 as-is | 55 | -18.0 | -23.5 (-5.5) | -5.0 | 13.0 | 564 | 278 | 1370 / 2302 / 3233 | -11 / -18 / -26 | 13.8 / 0.9 | 3.9 / 2.4 | -8.6 / +10.1 | 2084 |
+| B2 more-top | 54 | -18.1 | -23.5 (-5.5) | -4.8 | 13.3 | 731 | 82 | 328 / 611 / 1009 | -10 / -16 / -20 | 13.8 / 0.9 | 4.0 / 2.3 | -8.7 / +9.1 | 2084 |
+| C2 no-pwm | 55 | -18.0 | -23.4 (-5.5) | -4.9 | 13.1 | 562 | 315 | 1108 / 2198 / 3331 | -11 / -18 / -26 | 13.6 / 0.9 | 1.2 / 2.7 | -8.7 / +10.3 | 2084 |
+| D2 no-beat | 73 | -20.0 | -21.7 (-1.7) | -4.3 | 15.7 | 686 | 47 | 212 / 463 / 695 | -11 / -18 / -26 | 0.3 / 0.8 | 3.1 / 0.8 | -8.8 / +9.4 | 2084 |
+| Aorig orig-ref | 75 | -17.9 | -18.9 (-1.0) | -4.5 | 13.5 | 605 | 110 | 1021 / 2376 / 5592 | -11 / -18 / -26 | 13.8 / 0.9 | 3.9 / 2.4 | -189.6 / -172.0 | 2069 |
+| D1 round1-D | 62 | -17.9 | -23.4 (-5.5) | -5.0 | 12.9 | 812 | 49 | 225 / 298 / 305 | -14 / -23 / -32 | 0.0 / 20.0 | 0.0 / 20.0 | -8.8 / +9.4 | 2680 |
+
+**What each change removed (one held voice, A3, echo and deck off; band-energy depth in 23 ms frames):**
+* **The beating pair is the movement in 150-400 Hz:** A2 13.8 dB at 0.9 Hz; removing the PWM (C2) leaves it 13.6 dB; removing the detune (D2, FINE 64) takes it to 0.3 dB. Opening the filter (B2) does not change it (13.8).
+* **The PWM is the movement in 400-1.2k:** A2 3.9 dB; without the PWM (C2) 1.2 dB; D2 keeps 3.1 (its rate drops to 0.8 Hz, the LFO's, from 2.4).
+* **The dark filter is the MUD, not the movement:** B2 (+9 steps, 988 -> 1661 Hz at C4) takes the note-on MUD from 278 to 82 and the tail MUD from 1370 / 2302 / 3233 to 328 / 611 / 1009, and leaves the movement as it was; the harmonics read -10 / -16 / -20 dB (A2 -11 / -18 / -26).
+* **D2 is quieter in the tail and level-limited:** without the beating the note-on MUD is 47 and the tail 212 / 463 / 695; its crest is 15.7 dB (A2 13.0), so at the peak limit (phrase (b)'s peak -4.3 dBFS) its level is -20.0 dBFS, 0.5 dB under the band.
+
+**The benchmark, honestly (MUD over the note-on region 10-40, tail windows no worse than about 80):** A2 278 / tail 1370 / 2302 / 3233 and C2 315 / 1108 / 2198 / 3331 are far over it (the original itself is 110); B2 82 / 328 / 611 / 1009 and D2 47 / 212 / 463 / 695 are closer; **no round-2 variant meets 10-40 and about 80**, round-1 D (49 / 225 / 298 / 305) was nearest on the tail. Vincent chooses by ear; the card will state these numbers.
+
+**The echo against round 1's D:** first repeat re the note -8.6 dB at 337 ms delay (D -8.8), echo above spring +10.1 dB (D +9.4): the same within 0.2 dB and 0.7 dB. After the chord's note-off the echo returns -5.7 / -6.1 / -6.2 / -9.3 / -16.0 dB re the chord (D -6.0 / -6.1 / -7.2 / -10.8 / -17.7) and the spring 6.2 / 3.3 / -2.3 / -9.8 / -27.1 (D 4.5 / 2.5 / -2.2 / -11.4 / -29.0) in 0-100 / 100-250 / 250-500 / 500-1000 / 1000-2000 ms. Where they differ (the spring is +1.7 dB louder in the first 100 ms here, the later tail is the same within about 2 dB) the voice is different (a darker, beating source feeds them) and the deck is absent: this suggests the deck's absence and the source, not isolated which. The tail's MUD is the difference you can see: 1370 / 2302 / 3233 against D's 225 / 298 / 305.
+
+**CPU:** 2084 host instr/sample worst case (idle 1180 + load 905); round-1 D 2680 (CHEW was +784 of it); the original 2069. Above the expected 1900 by about 180: the echo and spring on a 4-note chord of two oscillators through a 24 dB filter.
+
+**Committed:** A2 as `PF_GHOST_BOARD` (VOLUME 55: -18.0 dBFS RMS on the ghost phrase, peak -5.0; phrase (b) -23.5, -5.5 dB: the slow-moving soft chords and the stabs differ), replacing round-1 B; `check_slot.py 13 A2 4b-r2`: resolved bytes identical, audio bit-identical from INIT, from the boot patch -33.2 dB (stabs) / -40.7 dB (ghost) relative to the signal (not isolated). Tables: `listen/voicing/batch-04b/13-round2/README.md`; WAVs on the listen branch only (`listen/voicing/batch-04b/13-round2/`). **Round count: 2 silent measured rounds + 1 listening round done + 1 listening round pending.**
+
+### Recommendation (vocabulary)
+
+**A2 (as is):** the original's dark, beating, slowly pulse-width-moving tone, untouched, into round 1's D echo and spring, no tape. It is very muddy by the ratio and that is the character Vincent chose to keep; B2 is the same with the filter opened (less mud, the movement untouched), C2 removes the slow PWM, D2 removes the beating. Turn it by ear on: CUTOFF (mud against dark), OSC 2 FINE (the beating), LFO PWM (the slow shimmer in the upper mids), and the echo (MIX, FEEDBK) and spring (DRAIN).
+
+---
+
+# ROUND 1 (kept as the record; superseded by round 2)
+
+
 6 Nov 2026. Brief (Chapter II, The Tidal Hexes): *submerged and warped: a near-sine filtered triangle, maximum tape wow/flutter, heavy spring (the original screen brief: a 1-bit coastal deluge swamping the text). Vincent's notes: a MEDIUM level of muddy as the benchmark (MUD 150-400 over 1.2k+ roughly 10-40 over the note-on region, tail windows no worse than about 80); the Mellotron M400 (warped, wobbly tape, soft flute-like tone) to come through as much as possible, against the Space Echo's wet body: middle first, then he judges; B middle, C leans Mellotron, D leans Space Echo.* Method and kit: `README.md` here (§1 phrases, §3 loudness, §17 Batch 4B).
 
 ## RECOMMENDED: variant B (middle) — committed as the patch, awaiting Vincent's listening

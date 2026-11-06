@@ -25,14 +25,12 @@ static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P
     P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
 static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
     P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
-/* 13 Ghost Board (voiced Nov 2026, Batch 4B variant B, recommended: dog5-docs/voicing/13-ghost-board.md; was PF_PWM_STRINGS, this slot's alone): a triangle-leaning tone under a wobbling tape. POLY 5, a narrow pulse (PW 25 %) through a 12 dB low-pass at 100 % key tracking (CUTOFF 70 = 740 Hz at C4)
- * with a copy two octaves up (OSC 2 +24 st, LEVEL 112: the energy above 1.2 kHz), no LFO (LFO PITCH 0, was an inert 3; LFO PWM 0), AA 45 / AR 80; the tape deck last in the chain: CHEW 100 (a measured 6.2 cents s.d. of wobble), WOW/FLT 48, HISS 40, DROPS 50; a BBD echo (ALLEY 98 = 275 ms, FEEDBK 82,
- * MIX 70) and a spring (DRAIN 50, SIZE 90, DAMP 40) ahead of the deck. VOLUME 81: -18.0 dBFS RMS over the note-on region of the ghost phrase (t), peak -5.2. CHEW costs ~780 host instr/sample (worst case 2679) */
-static const uint8_t PF_GHOST_BOARD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O2_WAVE, W_PLS, P_O2_PW, 32, P_O2_LVL, 112,
-    P_O2_SEMI, 48, P_O2_FINE, 64, P_CUTOFF, 70, P_RESO, 0, P_FENV_AMT, 64, P_KEYTRK, 127, P_FTYPE, F_LP12, P_FA, 50,
-    P_AA, 45, P_AS, 127, P_AR, 80, P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD, P_VINTAGE, 50, P_SPREAD, 100,
-    P_VOLUME, 81, P_DLY_FB, 82, P_DLY_MIX, 70, P_REV_SIZE, 90, P_REV_DAMP, 40, P_REV_MIX, 50, P_CHEW, 100,
-    P_TP_WOWFLT, 48, P_TP_HISS, 40, P_TP_DROPS, 50, P_ALLEY, 98, X};
+/* 13 Ghost Board (voiced Nov 2026, Batch 4B round 2, variant A2, recommended: dog5-docs/voicing/13-ghost-board.md; was PF_PWM_STRINGS, this slot's alone): the old voice unchanged (POLY 5, a 50 % pulse and a 31 % pulse 7.0 cents sharp, a 24 dB low-pass at CUTOFF 75 with 50 % key tracking, AA 60 / AR 90, the slow
+ * TRI PWM on the shared LFO) with the tape deck off (CHEW 0), LFO PITCH 0 (was an inert 3: the renders are bit-identical) and a BBD echo and spring (ALLEY 104 = 337 ms, FEEDBK 95, MIX 105; DRAIN 70, SIZE 100, DAMP 25). VOLUME 55: -18.0 dBFS RMS over the note-on region of the ghost phrase (t), peak -5.0 */
+static const uint8_t PF_GHOST_BOARD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_PW, 40, P_O2_FINE, 73,
+    P_CUTOFF, 75, P_RESO, 5, P_FENV_AMT, 74, P_FA, 50, P_AA, 60, P_AR, 90, P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD,
+    P_LFO_PWM, 60, P_VINTAGE, 50, P_SPREAD, 100, P_VOLUME, 55, P_DLY_FB, 95, P_DLY_MIX, 105, P_REV_SIZE, 100,
+    P_REV_DAMP, 25, P_REV_MIX, 70, P_ALLEY, 104, X};
 static const uint8_t PF_BELL_XMOD[] = {P_O1_LVL, 100, P_O2_SEMI, 43, P_XMOD, 70, P_CUTOFF, 100, P_FD, 90, P_FS, 0, P_AD, 95,
     P_AS, 0, P_AR, 80, P_FENV_AMT, 94, P_AA, 1, P_DLY_TIME, DD_8, P_DLY_FB, 50, P_DLY_MIX, 40, P_REV_SIZE, 110, P_REV_MIX, 45, X};
 static const uint8_t PF_FAT_BASS[] = {P_MODE, M_MONO, P_O2_WAVE, W_PLS, P_O2_PW, 50, P_O2_SEMI, 12, P_CUTOFF, 40, P_RESO, 30,
