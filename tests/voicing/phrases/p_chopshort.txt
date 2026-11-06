@@ -1,0 +1,29 @@
+# VOICING PHRASE (p): CHOP vs GATE (Batch 3B, for 15 Trem Chop).  Eight eighths at 120 BPM (250 ms a step) on A3 (57) with C4 D4 E4 (60 62 64), gate 110 ms (a 8-12 Hz chop gives
+# one or two cycles per note), then four quarter-note notes with a 240 ms gate (A3 C4 E4 D4, 500 ms a step) and 1.5 s of tail.
+# Judges: how the chop sits against the gate: does a note start on a chopped-on or a chopped-off part, is it the same every time (LFO PHASE SYNC) or different (FREE).
+# Level: RMS over the note-on region.  Notes start at 3000 ms; bare events only.
+3000 midi 0x90 57 100
+3110 midi 0x80 57 0
+3250 midi 0x90 57 105
+3360 midi 0x80 57 0
+3500 midi 0x90 60 110
+3610 midi 0x80 60 0
+3750 midi 0x90 57 100
+3860 midi 0x80 57 0
+4000 midi 0x90 62 105
+4110 midi 0x80 62 0
+4250 midi 0x90 57 110
+4360 midi 0x80 57 0
+4500 midi 0x90 64 100
+4610 midi 0x80 64 0
+4750 midi 0x90 57 105
+4860 midi 0x80 57 0
+5300 midi 0x90 57 104
+5540 midi 0x80 57 0
+5800 midi 0x90 60 104
+6040 midi 0x80 60 0
+6300 midi 0x90 64 104
+6540 midi 0x80 64 0
+6800 midi 0x90 62 104
+7040 midi 0x80 62 0
+8500 end

@@ -1,0 +1,28 @@
+# VOICING PHRASE (m): KICK (Batch 3B, for 05 ZEAROX).  Three ISOLATED hits with 1.35 s of silence after each (A0 27.5 Hz at 3000 ms, A1 55 Hz at 4500, A2 110 Hz at 6000: the
+# register test: below ~60 Hz a small speaker gives nothing), then four hits a bar at 120 BPM (a quarter, 500 ms) for two bars on A1 from 8000 ms (vel 112 100 106 100), every
+# gate 150 ms, then 2.5 s of nothing (what the noise and the tape hiss do after the last note-off).  Single notes only: ZEAROX is MONO.
+# Judges: the click, the mid-range body (60-400 Hz) and the sub of a kick substitute by band split, the overload on each downbeat, the level of a hit against the gap.
+# Level: RMS over the note-on region (11 hits x 150 ms; tails excluded), crest factor reported next to it.  Notes start at 3000 ms; bare events only (voicekit.py puts the program select first).
+3000 midi 0x90 21 108
+3150 midi 0x80 21 0
+4500 midi 0x90 33 108
+4650 midi 0x80 33 0
+6000 midi 0x90 45 108
+6150 midi 0x80 45 0
+8000 midi 0x90 33 112
+8150 midi 0x80 33 0
+8500 midi 0x90 33 100
+8650 midi 0x80 33 0
+9000 midi 0x90 33 106
+9150 midi 0x80 33 0
+9500 midi 0x90 33 100
+9650 midi 0x80 33 0
+10000 midi 0x90 33 112
+10150 midi 0x80 33 0
+10500 midi 0x90 33 100
+10650 midi 0x80 33 0
+11000 midi 0x90 33 106
+11150 midi 0x80 33 0
+11500 midi 0x90 33 100
+11650 midi 0x80 33 0
+14500 end

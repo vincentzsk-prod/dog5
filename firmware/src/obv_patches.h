@@ -44,10 +44,21 @@ static const uint8_t PF_NOISE_WASH[] = {P_NOISE, 100, P_O1_WAVE, W_OFF, P_O2_WAV
     P_LFO_FLT, 60, P_LFO_RATE, 20, P_AA, 100, P_AR, 110, P_FA, 60, P_FENV_AMT, 64, P_REV_SIZE, 127, P_REV_DAMP, 40, P_REV_MIX, 60, X};
 static const uint8_t PF_HOLLOW_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 20, P_O2_WAVE, W_PLS, P_O2_PW, 108, P_O2_FINE, 76, P_FTYPE, F_NOTCH,
     P_CUTOFF, 70, P_LFO_PWM, 40, P_LFO_RATE, 40, P_LFO_PHASE, LP_SPREAD, P_AA, 70, P_AR, 100, P_FENV_AMT, 64, P_SPREAD, 100, P_REV_SIZE, 100, P_REV_MIX, 40, X};
-static const uint8_t PF_SQUARE_LEAD[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_FINE, 69, P_CUTOFF, 90, P_RESO, 20,
-    P_GLIDE, 30, P_LFO_PITCH, 8, P_LFO_DELAY, 50, P_DRIVE, 30, P_AA, 3, P_AR, 40, P_DLY_TIME, DD_8, P_DLY_FB, 35, P_DLY_MIX, 30, X};
+/* 15 Trem Chop (voiced Nov 2026, approved variant D: dog5-docs/voicing/15-trem-chop.md; was PF_SQUARE_LEAD, this slot's alone): the broken strobe. DUAL, POLY 6 (every note is two voices), two bright saws 3.9 cents apart through an open
+ * 24 dB low-pass, the amp chopped by a SQUARE LFO (RATE 101 = 8.1 Hz, AMP 127: full level / -42 dB, the edge of one voice is one 16-sample block) with LFO PHASE SPREAD (45 degrees per voice: the two voices of a note chop an eighth of a cycle apart).
+ * LFO PITCH 8 was inert (below 12 the law (d*d)>>7 is 0) and is 0; the delay is off (MIX 0). VOLUME 84 puts it on the bank reference: -17.9 dBFS RMS over the chop phrase (o), off parts included (peak -6.2) */
+static const uint8_t PF_TREM_CHOP[] = {P_O1_LVL, 127, P_O2_LVL, 127, P_O2_FINE, 69, P_CUTOFF, 95, P_DRIVE, 60,
+    P_AA, 3, P_AS, 127, P_AR, 40, P_LFO_SHAPE, L_SQR, P_LFO_RATE, 101, P_LFO_PHASE, LP_SPREAD, P_LFO_AMP, 127,
+    P_MODE, M_DUAL, P_VINTAGE, 60, P_VOLUME, 84, P_DLY_TIME, DD_8, P_DLY_FB, 35, P_POLY_N, 6, X};
 static const uint8_t PF_SUB_BASS[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_SEMI, 12, P_O2_LVL, 60, P_CUTOFF, 35, P_RESO, 10,
     P_FENV_AMT, 84, P_FD, 50, P_FS, 20, P_AA, 1, P_AD, 60, P_AR, 20, P_GLIDE, 5, X};
+/* 05 ZEAROX (round 2, voiced Nov 2026, variant D: dog5-docs/voicing/05-zearox.md; PF_SUB_BASS stays as 19 Blackwater's): the pixelated, hard black-and-white kick. MONO, ONE square (OSC 2 pulse, an octave up from the key, swept down by the
+ * filter envelope: ENV>O2 110 = +17 st falling over 11 ms), an open 12 dB filter (CUTOFF 105, RESO 0), attack 0, DECAY 76 (187 ms) to sustain 0, 2 ms release, a random stepped pitch LFO (S&H, 21 Hz, +-4.7 st) as the glitch.
+ * No tape (CHEW 0, HISS 0, DROPS 0), no GROWL. VOLUME 123 puts it on the bank reference: -18.1 dBFS RMS over the kick phrase (m), peak -10.7; worst case 1337 host instr/sample */
+static const uint8_t PF_ZEAROX[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 40, P_O2_WAVE, W_PLS, P_O2_LVL, 127, P_O2_SEMI, 36,
+    P_ENV_O2, 110, P_O2_FINE, 68, P_CUTOFF, 105, P_RESO, 0, P_FENV_AMT, 64, P_KEYTRK, 0, P_FTYPE, F_LP12, P_FA, 0,
+    P_FD, 40, P_FS, 0, P_AA, 0, P_AD, 76, P_AS, 0, P_AR, 20, P_LFO_SHAPE, L_SH, P_LFO_RATE, 120, P_LFO_PITCH, 80,
+    P_MODE, M_MONO, P_VOLUME, 123, P_TP_HISS, 0, P_TP_DROPS, 0, X};
 static const uint8_t PF_SOFT_KEYS[] = {P_O1_LVL, 90, P_O2_WAVE, W_PLS, P_O2_PW, 30, P_O2_LVL, 60, P_O2_SEMI, 36, P_CUTOFF, 60,
     P_FENV_AMT, 99, P_FD, 70, P_FS, 20, P_AA, 3, P_AD, 90, P_AS, 60, P_AR, 60, P_VEL_FLT, 80, P_VEL_AMP, 90, P_RESO, 10, P_CHO_MIX, 30, P_REV_SIZE, 80, P_REV_MIX, 30, X};
 static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, P_O2_SEMI, 29, P_ENV_O2, 89, P_CUTOFF, 65,
@@ -71,8 +82,12 @@ static const uint8_t PF_FIFTH[] = {P_O2_SEMI, 31, P_O2_FINE, 66, P_CUTOFF, 92, P
     P_POLY_N, 8, P_ALLEY, 65, P_BBD_SPREAD, 60, X};
 static const uint8_t PF_VINTAGE_PAD[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF, 55, P_FENV_AMT, 94, P_FA, 70, P_AA, 60, P_AR, 90,
     P_FR, 90, P_RESO, 15, P_SPREAD, 120, P_REV_SIZE, 105, P_REV_MIX, 45, X};
-static const uint8_t PF_XMOD_GROWL[] = {P_MODE, M_MONO, P_XMOD, 90, P_O2_SEMI, 19, P_CUTOFF, 50, P_FENV_AMT, 114, P_FD, 60, P_FS, 30,
-    P_DRIVE, 40, P_AA, 2, P_AR, 40, X};
+/* 07 Tape Splice (voiced Nov 2026, dog5-docs/voicing/07-tape-splice.md; was PF_XMOD_GROWL, this slot's alone): nervous and broken. MONO, two square pulses 3.1 cents apart, OSC 2 -> OSC 1 cross-mod (X-MOD 70), a smooth-random pitch LFO
+ * on both oscillators (RATE 94 = 5.7 Hz, PITCH 16 = +-19 cents), a 4 ms release so short notes chop, and CHEW 80 as the splice (HISS 0, DROPS 90: the tape stage delays each note 2.4 ms +-0.6).
+ * VOLUME 104 puts it on the bank reference: -18.1 dBFS RMS over the splice phrase (n) */
+static const uint8_t PF_TAPE_SPLICE[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_XMOD, 70, P_O2_FINE, 68, P_CUTOFF, 60,
+    P_FENV_AMT, 114, P_DRIVE, 40, P_FD, 60, P_FS, 60, P_AA, 2, P_AR, 25, P_LFO_SHAPE, L_RND, P_LFO_RATE, 94,
+    P_LFO_PITCH, 16, P_MODE, M_MONO, P_VOLUME, 104, P_CHEW, 80, P_TP_HISS, 0, P_TP_DROPS, 90, X};
 static const uint8_t PF_PERC_HIT[] = {P_O2_SEMI, 48, P_NOISE, 60, P_CUTOFF, 90, P_FENV_AMT, 124, P_FD, 25, P_FS, 0, P_AD, 30, P_AS, 0,
     P_AR, 25, P_FTYPE, F_LP12, P_RESO, 30, P_AA, 1, P_REV_SIZE, 90, P_REV_MIX, 40, X};
 /* 33-64 (1.5): a second set in the same spirit: arpeggios, brass, pads, keys, basses, leads, effects */
@@ -211,7 +226,7 @@ static const uint8_t PF_COWL_SHADOW[] = {P_O2_FINE, 66, P_CUTOFF, 40, P_RESO, 14
 static const uint8_t PF_SKEENHEAD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_OFF, P_CUTOFF, 46, P_RESO, 62, P_FENV_AMT, 118,
     P_KEYTRK, 100, P_FTYPE, F_LP12, P_FD, 56, P_AA, 0, P_AS, 64, P_AR, 28, P_VOLUME, 92, P_REV_SIZE, 70,
     P_REV_DAMP, 40, P_REV_PRE, 4, P_REV_MIX, 90, X};
-/* 11 Slapback Strut (voiced Nov 2026, approved round 2 variant G: dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 05 ZEAROX's and 19 Blackwater's): the surf bass, a GATED note with a crisp slap. MONO, one narrow
+/* 11 Slapback Strut (voiced Nov 2026, approved round 2 variant G: dog5-docs/voicing/11-slapback-strut.md; PF_SUB_BASS stays as 19 Blackwater's): the surf bass, a GATED note with a crisp slap. MONO, one narrow
  * pulse (PW 32 %; the engine has no triangle) through a key-tracking 12 dB low-pass (CUTOFF 82, KEY TRK 90) with per-voice DRIVE 40; no real decay (a 36 ms settle to a sustain at 79 %, 1 ms releases): the note starts at once, holds
  * its body for the gate and stops in ~1 ms; one clean mono slap: ALLEY 62 = 80 ms, FEEDBK 6, MIX 127 (the top), TONE 127, PINGPONG 0: the first repeat -6.0 dB under the note's peak, the second 29 dB under the first. Dry (no spring).
  * VOLUME 102 puts it on the bank reference: -18.0 dBFS RMS over the note-on region of the surf riff (phrase h), echo included */
@@ -264,9 +279,9 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
  * 33-99 fall back to FACT_INIT (prog_get). */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
-    {"ZEAROX", PF_SUB_BASS},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_XMOD_GROWL},{"Wire Bite", PF_WIRE_BITE},
+    {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
     {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_HOLLOW_PAD},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
-    {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_SQUARE_LEAD}, {"Tidal Pull", PF_PWM_STRINGS},
+    {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
