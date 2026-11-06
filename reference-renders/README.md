@@ -52,6 +52,12 @@ Format: 16-bit stereo, 44.1 kHz. Level = RMS over the note-on region, peak = sam
 | `05-zearox_D_kick.wav` | 05 zearox | D (light, round 2) | (m) kick: 3 isolated hits A0 A1 A2, then 4 a bar | -18.1 | -10.7 | **LEVEL phrase** (reference -18.0) |
 | `05-zearox_D_stabs.wav` | 05 zearox | D (light, round 2) | (b) chord stabs | -19.1 | -10.7 | comparison |
 | `05-zearox_D_riff.wav` | 05 zearox | D (light, round 2) | (a) riff | -18.4 | -10.7 | comparison |
+| `10-atlantic-swell_A_organ.wav` | 10 atlantic-swell | A (original, unchanged) | (q) organ: triads, staccato notes | -19.0 | -6.2 | **LEVEL phrase** (reference -18.0 ±1.5) |
+| `10-atlantic-swell_A_stabs.wav` | 10 atlantic-swell | A (original, unchanged) | (b) chord stabs | -17.6 | -4.8 | comparison |
+| `12-kelp-tangle_C_tangle.wav` | 12 kelp-tangle | C (cutoff 98) | (r) tangle: held A2, chord, short notes | -18.0 | -5.3 | **LEVEL phrase** (reference -18.0) |
+| `12-kelp-tangle_C_stabs.wav` | 12 kelp-tangle | C (cutoff 98) | (b) chord stabs | -17.0 | -6.1 | comparison |
+| `16-tidal-pull_D_wash.wav` | 16 tidal-pull | D (soft, triangle-like) | (s) wash: chords, notes, stabs | -19.1 | -4.4 | **LEVEL phrase** (peak-limited: -19.1, inside ±1.5) |
+| `16-tidal-pull_D_stabs.wav` | 16 tidal-pull | D (soft, triangle-like) | (b) chord stabs | -26.8 | -10.8 | comparison (slow attack: 7.7 dB under the wash phrase) |
 
 Notes:
 - Where the stabs phrase is the level phrase (03, 25, 31) only stabs + riff are kept; elsewhere level phrase + stabs + riff. Held-note renders were not kept.
@@ -63,3 +69,4 @@ Notes:
 - 01 Red Pill, 02 Cement Grind, 06 zzuFuzz, 08 Wire Bite (Batch 3A, approved 5 Nov 2026: 01 C, 02 D, 06 C, 08 D): copied byte for byte from the `listen/batch-03a-chapter1-fat-and-driven` branch (`listen/voicing/batch-03a/...`) with `git show`; the held-note renders were not kept. 06's stabs phrase reads -16.1 (about 2 dB over its level phrase; the cause was not isolated); 08's level is read on the wire phrase.
 - 07 Tape Splice B and 15 Trem Chop D (Batch 3B, approved as rendered after listening): copied byte for byte from the `listen/batch-03b-chapter1-wreck-and-chop` branch (`listen/voicing/batch-03b/...`); the held-note renders were not kept. Levels from the variants' `results.json`; the peaks are the whole phrase. 15 D is DUAL (every note two voices), so its chord phrase plays all three notes.
 - 05 ZEAROX D (round 2 of Batch 3B, approved as rendered after listening; round 1's variants were rejected and have no reference renders): copied byte for byte from the `listen/batch-03b-chapter1-wreck-and-chop` branch (`listen/voicing/batch-03b/round2/05-zearox/`); the held-note render was not kept. Levels from the variant's `results.json`; the peaks are the whole phrase.
+- 10 Atlantic Swell A, 12 Kelp Tangle C, 16 Tidal Pull D (Batch 4A, approved after listening 6 Nov 2026): copied byte for byte from the `listen/batch-04a-chapter2-organ-kelp-wash` branch (`listen/voicing/batch-04a/...`) with `git show`; the level phrase and the stabs phrase only. 10's renders are the unchanged original (the same values as before Batch 4A). Levels and peaks from each variant's `results.json` (the peak column of the level-phrase row is that phrase's peak; 10's whole-render peak is -4.8, from the stabs).

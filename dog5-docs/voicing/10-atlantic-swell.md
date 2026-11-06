@@ -2,9 +2,14 @@
 
 6 Nov 2026. Brief (Chapter II, The Tidal Hexes): *a woozy combo-organ. Dual pulse, slow vibrato, heavy BBD delay. Rolls like Cape surf. Vincent's notes: Leslie / roto-sound inspiration welcome; cold, fresh, clear note definition, not a tropical wash, 'cold crispy Atlantic ocean water'; a clear chorus with the vibrato more than a vibrato-led modulation (the TC Electronic June-60 pedal's tone); one shared LFO, so a Leslie-style effect is vibrato plus tremolo at one rate; CHEW only if it demonstrably helps clarity.* Method and kit: `README.md` here (§1 phrases, §3 loudness, §16 Batch 4A).
 
-## RECOMMENDED: variant B (june) — committed as the patch, awaiting Vincent's listening
+## APPROVED: variant A, the starting point unchanged (PF_ATLANTIC_SWELL holds the old PF_HOLLOW_PAD's values; slot 10 renders byte-identically to the pre-4A base)
 
-**Status: round 1 rendered, not yet heard.** Variant B is committed as `PF_ATLANTIC_SWELL` in `firmware/src/obv_patches.h` (equals variant B byte for byte: `tests/voicing/check_slot.py 10 B 4a`); the others are render-only. **Round count so far: 1 silent measured round (variants fixed by sweeps of the existing controls, not for ears) + 1 listening round pending.** No voice card and no `reference-renders/` yet (after approval). WAVs: the never-merged `listen/batch-04a-chapter2-organ-kelp-wash` branch, `listen/voicing/batch-04a/10-atlantic-swell/`; tables: `listen/voicing/batch-04a/10-atlantic-swell/README.md` and `probes.md`.
+**Status: APPROVED by Vincent after listening (6 Nov 2026): variant A, the starting point unchanged (PF_ATLANTIC_SWELL holds the old PF_HOLLOW_PAD's values; slot 10 renders byte-identically to the pre-4A base).** Committed as `PF_ATLANTIC_SWELL` in `firmware/src/obv_patches.h` (equals variant A byte for byte: `tests/voicing/check_slot.py 10 A 4a`). **Final round count: 1 silent measured round + 1 listening round.** Voice card: `cards/10-atlantic-swell.md`; renders: `reference-renders/10-atlantic-swell_A_*.wav`. The round-1 text below was written when variant B was the recommendation and is kept as the record; the numbers for the approved variant are in `listen/voicing/batch-04a/10-atlantic-swell/README.md`.
+
+* **Level of the approved variant:** VOLUME 100; -19.0 dBFS RMS on its own phrase (note-on region, effects in, tails out); phrase (b) -17.6; peak -4.8 dBFS over the whole renders; worst-case CPU 2020 host instr/sample (idle 1164 + load 856).
+* **Final values, each change before -> after against main (the patch as it stood before Batch 4A):**
+
+  * none: every parameter equals main's slot 10 (the array was renamed from PF_HOLLOW_PAD, which 12 shared, to its own PF_ATLANTIC_SWELL; VOLUME stays 100)
 
 ### The starting point (the patch as it stood)
 

@@ -2,9 +2,30 @@
 
 6 Nov 2026. Brief (Chapter II, The Tidal Hexes): *dense and tangled. Heavy PWM, murky low-pass, a spring tail. Vincent's notes: make the PWM stand out in the mix; stay close to the Moog Prodigy (murky, raw, dark), the Fender spring tank (the tail, springy) and, closest, a Polysix PWM pad into a spring tank; lean on the LFO; murky against PWM audible is the tension (a low cutoff hides PWM); watch tubby (150-400 Hz in the tail).* Method and kit: `README.md` here (§1 phrases, §3 loudness, §16 Batch 4A).
 
-## RECOMMENDED: variant B (murk) — committed as the patch, awaiting Vincent's listening
+## APPROVED: variant C (CUTOFF 98)
 
-**Status: round 1 rendered, not yet heard.** Variant B is committed as `PF_KELP_TANGLE` in `firmware/src/obv_patches.h` (equals variant B byte for byte: `tests/voicing/check_slot.py 12 B 4a`); the others are render-only. **Round count so far: 1 silent measured round (variants fixed by sweeps of the existing controls, not for ears) + 1 listening round pending.** No voice card and no `reference-renders/` yet (after approval). WAVs: the never-merged `listen/batch-04a-chapter2-organ-kelp-wash` branch, `listen/voicing/batch-04a/12-kelp-tangle/`; tables: `listen/voicing/batch-04a/12-kelp-tangle/README.md` and `probes.md`.
+**Status: APPROVED by Vincent after listening (6 Nov 2026): variant C (CUTOFF 98).** Committed as `PF_KELP_TANGLE` in `firmware/src/obv_patches.h` (equals variant C byte for byte: `tests/voicing/check_slot.py 12 C 4a`). **Final round count: 1 silent measured round + 1 listening round.** Voice card: `cards/12-kelp-tangle.md`; renders: `reference-renders/12-kelp-tangle_C_*.wav`. The round-1 text below was written when variant B was the recommendation and is kept as the record; the numbers for the approved variant are in `listen/voicing/batch-04a/12-kelp-tangle/README.md`.
+
+* **Level of the approved variant:** VOLUME 74; -18.0 dBFS RMS on its own phrase (note-on region, effects in, tails out); phrase (b) -17.0; peak -5.3 dBFS over the whole renders; worst-case CPU 2042 host instr/sample (idle 1164 + load 878).
+* **Final values, each change before -> after against main (the patch as it stood before Batch 4A):**
+  * O1_PW 20 -> 42 (+17%)
+  * O2_PW 108 -> 42 (-52%)
+  * O2_FINE 76 -> 73 (centre 64: +12 -> +9, -2% of range) (+9.4 cents -> +7.0 cents)
+  * CUTOFF 70 -> 98 (+22%) (740 Hz -> 3729 Hz)
+  * RESO 20 -> 30 (+8%)
+  * KEYTRK 64 -> 127 (+50%)
+  * FTYPE NOTCH -> LP24
+  * AA 70 -> 52 (-14%) (117 ms -> 29 ms)
+  * AS 100 -> 127 (+21%)
+  * AR 100 -> 88 (-9%) (1218 ms -> 478 ms)
+  * LFO_RATE 40 -> 60 (+16%) (0.4 Hz -> 1.0 Hz)
+  * LFO_PHASE SPREAD -> SYNC
+  * LFO_PWM 40 -> 100 (+47%)
+  * VINTAGE 30 -> 50 (+16%)
+  * VOLUME 100 -> 74 (-20%)
+  * REV_SIZE 100 -> 75 (-20%)
+  * REV_DAMP 60 -> 30 (-24%)
+  * REV_MIX 40 -> 55 (+12%)
 
 ### The starting point (the patch as it stood)
 
@@ -12,7 +33,7 @@
 * **Nearest starting patch:** HOLLOW PAD (`PF_HOLLOW_PAD`, shared with 10 Atlantic Swell): the same patch as the original 10, with a spring at DRAIN 40. Its LFO PWM is +-2.3 points around PW 16 % / 85 %: **the movement it has (14.2 dB in the 150-400 Hz band of a held A2 at 1.2 Hz) is the beating of its inverse narrow-pulse pair, not PWM** (with LFO PWM 0 it is still 14.2 dB; with the detune off too it is 1.0 dB: `probes.md`). It is not murky: centroid 4222 Hz, 13 % of the energy above 1.2 kHz.
 * **The 1-2 axes judged most uncertain:** (1) the cutoff against the PWM and the tail (the murk): measured by the 150-400 / 400-1.2k / 1.2k+ bands of a held A2 and of a chord, and the tail's MUD; (2) the PWM depth and rate (sweep width, 1 Hz against 2.3 Hz, and whether the voices sweep together).
 * **Control limits foreseen:** no Poly-Mod, so the brief's 'PWM driven by OSC B' is not possible: ONE shared TRI LFO drives the pulse widths of both oscillators (what is lost: a modulator with its own pitch / envelope, a different rate per oscillator, a sweep that follows the note); PWM through a low-pass reads as level and low-band movement, and the 150-400 Hz band's modulation saturates near 10 dB; a PWM sweep is one LFO period long (1 s here), so a 150 ms note hears only a slice; the spring is fed the murky voice, so its tail is murky too.
-* **Plan:** two pulses 5.9 cents apart, both swept by the LFO's TRI on ONE side of 50 % (PW 42 = 33 %, +-15 points: 18-48 %, so no doubled rate), LFO PHASE SYNC (every detached note starts the sweep together), a 24 dB low-pass at 100 % key tracking (the filter sits at the same place in each note's harmonics: murky in every register), RESO 30 for some bite, no filter envelope (nothing moves but the PWM), a medium spring. PWM audibility is measured AFTER the filter (the band energies of a held A2, dry).
+* **Plan:** two pulses 7.0 cents apart, both swept by the LFO's TRI on ONE side of 50 % (PW 42 = 33 %, +-15 points: 18-48 %, so no doubled rate), LFO PHASE SYNC (every detached note starts the sweep together), a 24 dB low-pass at 100 % key tracking (the filter sits at the same place in each note's harmonics: murky in every register), RESO 30 for some bite, no filter envelope (nothing moves but the PWM), a medium spring. PWM audibility is measured AFTER the filter (the band energies of a held A2, dry).
 
 ### Axes chosen, variants
 

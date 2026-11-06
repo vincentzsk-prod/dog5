@@ -2,9 +2,38 @@
 
 6 Nov 2026. Brief (Chapter II, The Tidal Hexes): *a massive wet chordal wash. Five-voice poly detuned pulses, delay and spring. Threatens to drown the mix. Medium attack, not slow. Vincent's notes: wide polys, wide chorus modulation; medium pulse rates on sine waves (triangle also approved); give options; no square or saw waves; make sure the delay does not get lost; the Fender Twin guides what 'wet' feels like: bright, clear, springy, washy, not punchy; bright and clear by note definition but heavily modulated.* Method and kit: `README.md` here (§1 phrases, §3 loudness, §16 Batch 4A).
 
-## RECOMMENDED: variant B (tri) — committed as the patch, awaiting Vincent's listening
+## APPROVED: variant D (triangle-like oscillator stack, TRI 2.3 Hz, DLY MIX 110)
 
-**Status: round 1 rendered, not yet heard.** Variant B is committed as `PF_TIDAL_PULL` in `firmware/src/obv_patches.h` (equals variant B byte for byte: `tests/voicing/check_slot.py 16 B 4a`); the others are render-only. **Round count so far: 1 silent measured round (variants fixed by sweeps of the existing controls, not for ears) + 1 listening round pending.** No voice card and no `reference-renders/` yet (after approval). WAVs: the never-merged `listen/batch-04a-chapter2-organ-kelp-wash` branch, `listen/voicing/batch-04a/16-tidal-pull/`; tables: `listen/voicing/batch-04a/16-tidal-pull/README.md` and `probes.md`.
+**Status: APPROVED by Vincent after listening (6 Nov 2026): variant D (triangle-like oscillator stack, TRI 2.3 Hz, DLY MIX 110).** Committed as `PF_TIDAL_PULL` in `firmware/src/obv_patches.h` (equals variant D byte for byte: `tests/voicing/check_slot.py 16 D 4a`). **Final round count: 1 silent measured round + 1 listening round.** Voice card: `cards/16-tidal-pull.md`; renders: `reference-renders/16-tidal-pull_D_*.wav`. The round-1 text below was written when variant B was the recommendation and is kept as the record; the numbers for the approved variant are in `listen/voicing/batch-04a/16-tidal-pull/README.md`.
+
+* **Level of the approved variant:** VOLUME 76; -19.1 dBFS RMS on its own phrase (note-on region, effects in, tails out); phrase (b) -26.8; peak -4.4 dBFS over the whole renders; worst-case CPU 2027 host instr/sample (idle 1180 + load 847).
+* **Final values, each change before -> after against main (the patch as it stood before Batch 4A):**
+  * O1_PW 64 -> 32 (-25%)
+  * O2_PW 40 -> 32 (-6%)
+  * O2_LVL 100 -> 84 (-13%)
+  * O2_SEMI +0 -> +12 st
+  * O2_FINE 73 -> 66 (centre 64: +9 -> +2, -6% of range) (+7.0 cents -> +1.6 cents)
+  * CUTOFF 75 -> 64 (-9%) (988 Hz -> 523 Hz)
+  * RESO 5 -> 0 (-4%)
+  * FENV_AMT 74 -> 64 (centre 64: +10 -> +0, -8% of range)
+  * KEYTRK 64 -> 127 (+50%)
+  * FTYPE LP24 -> LP12
+  * FA 50 -> 20 (-24%) (25 ms -> 2 ms)
+  * AA 60 -> 82 (+17%) (54 ms -> 299 ms)
+  * AS 100 -> 127 (+21%)
+  * AR 90 -> 92 (+2%) (558 ms -> 653 ms)
+  * LFO_RATE 50 -> 76 (+20%) (0.6 Hz -> 2.3 Hz)
+  * LFO_PITCH 3 -> 16 (+10%)
+  * LFO_PWM 60 -> 0 (-47%)
+  * SPREAD 100 -> 127 (+21%)
+  * VOLUME 100 -> 76 (-19%)
+  * DLY_FB 50 -> 78 (+22%)
+  * DLY_TONE 70 -> 100 (+24%)
+  * DLY_MIX 0 -> 110 (+87%)
+  * REV_SIZE 100 -> 90 (-8%)
+  * REV_DAMP 60 -> 35 (-20%)
+  * REV_MIX 35 -> 45 (+8%)
+  * ALLEY 0 -> 104 (+82%) (SYNC -> 337 ms)
 
 ### The starting point (the patch as it stood)
 
