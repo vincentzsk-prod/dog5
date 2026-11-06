@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A soft-attack chord in the mid-to-upper register: a saw with a slightly sharp square an octave above it, through a band-pass filter. It hovers on its own echo and a large spring, and keeps hanging in the air for several seconds after you let go. It is bright and glassy rather than low, and it does not flicker or scatter: it is a held pad dissolving into its effects, not a granular texture.
+A soft-attack chord in the mid-to-upper register: a saw with a slightly sharp square an octave above it, through a band-pass filter. It hovers on its own echo and a large spring, and keeps hanging in the air for several seconds after you let go. It is bright rather than low, and it does not flicker or scatter: it is a held pad dissolving into its effects, not a granular texture.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
