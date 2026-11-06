@@ -179,7 +179,7 @@ number needed — with your four renames in, **nothing in the bank is over 14 an
 | 09 Skinhead Bubble | **Skeenhead** | 9 |
 | 17 North Water Ice | **Titanic** | 7 |
 | 18 Rotoscoped Void | **Roto-scopo** | 10 |
-| 19 Blackwater Tank | **Blackwater** | 10 |
+| 19 Blackwater Tank | **Micro-mist** (was Blackwater, patch dropped 6 Nov 2026) | 10 |
 
 The other nine that were over 10 all fit at 14 untouched: Cement Grind (12) · Tape Splice (11) · Atlantic
 Swell (14) · Slapback Strut (14) · Kelp Tangle (11) · Ghost Board (11) · Cowl Shadow (11) · Melting Orb (11)

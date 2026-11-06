@@ -65,7 +65,7 @@ State** tends to black-out. LEDs: held keys stay lit for the drone.
 |---|---|---|---|---|---|---|---|---|
 | 17 | Titanic ⭐ | 200 | 130 | 20 | 90 | 150 | low | top bar, wide |
 | 18 | Roto-scopo | 180 | 130 | 25 | 90 | 160 | mid | upper-right (battery) |
-| 19 | Blackwater | 170 | 120 | 35 | 100 | 150 | mid | top + right margin |
+| 19 | Micro-mist (was Blackwater) | 170 | 120 | 35 | 100 | 150 | mid | top + right margin |
 | 20 | Fire & Ice | 160 | 110 | 40 | 80 | 130 | mid | right 1/5th |
 | 21 | Cowl Shadow | 190 | 120 | **10** | 110 | 160 | low | top menu, slowest |
 | 22 | Melting Orb | 175 | 125 | 30 | 95 | 155 | mid | rises low → status |
