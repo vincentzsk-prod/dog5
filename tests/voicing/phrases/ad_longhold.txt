@@ -1,0 +1,9 @@
+# (ad long hold) (Batch 5B, for 24 Fugue State): the triad A3 C#4 E4 (57 61 64) held 30 s from 3000 ms, released at 33000 ms, the script runs to 45 s: does a long BBD self-feedback run away, creep or clip (peak per 2 s window), and how long is the release.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3000 midi 0x90 61 100
+3000 midi 0x90 64 100
+33000 midi 0x80 57 0
+33000 midi 0x80 61 0
+33000 midi 0x80 64 0
+45000 end
