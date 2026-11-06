@@ -4,7 +4,7 @@
 variant's parameter list (byte for byte), and the audio of the program-load path against the variant path on the audition phrases (bit-exact where the
 cutoff approaches from the same side, README section 8; the difference in dB otherwise).
 
-  python3 tests/voicing/check_slot.py SLOT KEY      (variant KEY of Batch 2A; add 'round2' as a third argument for round 2, '3a' for Batch 3A, '3b' for Batch 3B or '3b-r2' for 05 ZEAROX round 2, from listen/voicing/batch-0Xx/<dir>/results.json)"""
+  python3 tests/voicing/check_slot.py SLOT KEY      (variant KEY of Batch 2A; add 'round2' as a third argument for round 2, '3a' for Batch 3A, '3b' for Batch 3B, '4a' for Batch 4A or '3b-r2' for 05 ZEAROX round 2, from listen/voicing/batch-0Xx/<dir>/results.json)"""
 import json
 import os
 import subprocess
@@ -30,13 +30,19 @@ def main():
     if b3b:
         from batch03b_variants import PATCHES as P3B
         spec = [p for p in P3B if p["slot"] == slot][0]
+    b4a = len(sys.argv) > 3 and sys.argv[3] == "4a"        # Batch 4A: variants from listen/voicing/batch-04a/<dir>/results.json (the keys are the variants)
+    if b4a:
+        from batch04a_variants import PATCHES as P4
+        spec = [p for p in P4 if p["slot"] == slot][0]
     r3 = len(sys.argv) > 3 and sys.argv[3] == "3b-r2"     # 05 ZEAROX round 2: variants from listen/voicing/batch-03b/round2/05-zearox/results.json
     if r3:
         spec = {"slot": 5, "phrases": ["a_riff", "b_stabs", "c_held", "m_kick"]}
     if r2:
         from batch02a_round2 import PATCHES_R2
         spec = [p for p in PATCHES_R2 if p["slot"] == slot][0]
-    if r3:
+    if b4a:
+        res = json.load(open(os.path.join(K.ROOT, "listen", "voicing", "batch-04a", spec["dir"], "results.json")))[key]["params"]
+    elif r3:
         res = json.load(open(os.path.join(K.ROOT, "listen", "voicing", "batch-03b", "round2", "05-zearox", "results.json")))["variants"][key]["params"]
     else:
       res = json.load(open(os.path.join(K.ROOT, "listen", "voicing", "batch-03b" if b3b else "batch-03a" if b3 else "batch-02a", "round2" if r2 else "", spec["dir"], "results.json")))["variants"][key]["params"]
