@@ -317,6 +317,8 @@ Approved 5 Nov 2026, all as rendered, 1 silent measured round + 1 listening roun
 
 ## 14. Batch 3B — the wreck and chop set (05 ZEAROX, 07 Tape Splice, 15 Trem Chop)
 
+*Chapter labels: 05 and 07 are Chapter I (The Wasteland Arsenal); **15 Trem Chop is Chapter II (The Tidal Hexes)** (`DOG-5-presets.md` §3). The batch and its branch names (`...chapter1-wreck-and-chop`) were labelled Chapter I as a whole; that label was wrong for 15.*
+
 Round 1 (5 Nov 2026), **rendered, not yet heard**: each patch has its recommended variant B committed and A, C, D render-only. The kit is `tests/voicing/batch03b.py` (driver), `batch03b_metrics.py` (the new measures) and `batch03b_variants.py` (variant tables and texts), the same method as 3A (§12): a variant is a full parameter list over INIT, A is rendered through the base program path, VOLUME is trimmed last to
 -18.0 dBFS RMS on the patch's level phrase (±1.5 dB, peak ≤ -4). Two branches, as in 2A / 3A: code, logs, cards and the small tables on `voicing/batch-03b-chapter1-wreck-and-chop` (to be merged), every WAV on the never-merged `listen/batch-03b-chapter1-wreck-and-chop` (`listen/voicing/batch-03b/` only). New phrases m, n, o, p (§1).
 Each patch has its own array now: 05 `PF_ZEAROX` (it shared `PF_SUB_BASS` with 19 Blackwater, which keeps it), 07 `PF_TAPE_SPLICE` (was `PF_XMOD_GROWL`, only 07's), 15 `PF_TREM_CHOP` (was `PF_SQUARE_LEAD`, only 15's).

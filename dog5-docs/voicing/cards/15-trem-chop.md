@@ -1,4 +1,4 @@
-# 15 · Trem Chop · Chapter I Wasteland
+# 15 · Trem Chop · Chapter II THE TIDAL HEXES
 
 *Voiced 5 Nov 2026, approved as rendered (variant D of Batch 3B; variant B was committed first). Renders: `reference-renders/15-trem-chop_D_*.wav` (D is this patch). Log: `../15-trem-chop.md`.*
 

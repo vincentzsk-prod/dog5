@@ -1,6 +1,6 @@
 # Voicing log — 15 "Trem Chop" (FACTORY[14], Batch 3B, the wreck and chop set)
 
-5 Nov 2026. Brief (Batch 3B, Chapter I): *a broken-strobe tremolo. A bright saw, a hard SQUARE-shaped LFO on the amp for a choppy on/off stutter (not a gentle sine), plus a touch of slop so the chop edges waver: a broken strobe, not a tidy trem.*
+5 Nov 2026. Brief (Batch 3B, Chapter II): *a broken-strobe tremolo. A bright saw, a hard SQUARE-shaped LFO on the amp for a choppy on/off stutter (not a gentle sine), plus a touch of slop so the chop edges waver: a broken strobe, not a tidy trem.*
 Closest to: an SH-101 saw through a TR-2 on square (SH-101 bright/punchy, Boss TR-2 square choppy/gated, Pulsar choppy/rhythmic, Polysix drift). Method and kit: `README.md` here (§1 phrases, §3 loudness, §14 Batch 3B).
 
 ## APPROVED: variant D (smeared) — committed as the patch

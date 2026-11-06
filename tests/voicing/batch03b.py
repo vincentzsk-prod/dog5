@@ -412,7 +412,7 @@ def write_log(spec, R, proof, probe):
     slot, rk = spec["slot"], spec["recommend"][0]
     r = R[rk]
     L = [f"# Voicing log — {slot:02d} \"{spec['name']}\" (FACTORY[{slot - 1}], Batch 3B, the wreck and chop set)\n",
-         f"5 Nov 2026. Brief (Batch 3B, Chapter I): *{BRIEFS[slot]} Method and kit: `README.md` here (§1 phrases, §3 loudness, §14 Batch 3B).\n",
+         f"5 Nov 2026. Brief (Batch 3B, Chapter {'II' if slot == 15 else 'I'}): *{BRIEFS[slot]} Method and kit: `README.md` here (§1 phrases, §3 loudness, §14 Batch 3B).\n",
          f"## RECOMMENDED: variant {rk} ({r['tag']}) — committed as the patch, awaiting Vincent's listening\n",
          f"**Status: round 1 rendered, not yet heard.** Variant {rk} is committed as `{'PF_' + spec['cname']}` in `firmware/src/obv_patches.h` (equals variant {rk} byte for byte: `tests/voicing/check_slot.py {slot} {rk} 3b`); A, C, D are render-only. "
          f"**Round count so far: 1 silent measured round (variants fixed by sweeps of the existing controls, not for ears) + 1 listening round pending.** No voice card and no reference-renders yet (after approval). WAVs: the never-merged `listen/batch-03b-chapter1-wreck-and-chop` branch, `listen/voicing/batch-03b/{spec['dir']}/`.\n",
