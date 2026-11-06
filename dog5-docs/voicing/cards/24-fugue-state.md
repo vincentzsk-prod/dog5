@@ -19,7 +19,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 ## 4. How to play it
 
 - **The pad:** a narrow pulse (OSC 1, PW 32 = 25 %) plus an octave-up copy of it (OSC 2, LEVEL 45) through a 12 dB low-pass at CUTOFF 63 with 100 % key tracking. Harmonics 3 / 5 / 7 of OSC 1 at rest read −17.5 / −27.9 / −37.5 dB against an ideal triangle's −19.1 / −28.0 / −34.2 (measured). The copy adds even harmonics only.
-- **Dark:** the held chord's centroid is 588 Hz, with 80 % of the energy in 150–400 Hz, 20 % in 400–1.2 kHz and 0.25 % above (4–10 s). The MUD ratio (317) is saturated by that empty top, so read the shares. Nothing was done to brighten it; a stronger copy (OSC 2 LEVEL 100) moved the 150–400 Hz share from 79 % to 64 % in the round 1 probe on the B variant.
+- **Dark:** the held chord's centroid is 588 Hz, with 80 % of the energy in 150–400 Hz, 20 % in 400–1.2 kHz and 0.25 % above (4–10 s). The MUD ratio (317) is saturated by that empty top, so read the shares. A stronger copy (OSC 2 LEVEL 100) moved the 150–400 Hz share from 79 % to 64 % in the round 1 probe on the B variant.
 - **Slow and soft:** the amp attack is A85 (about 377 ms nominal) and the release R110 (about 2.6 s); a 150 ms chord tap reads −27.3 dBFS, 9.4 dB under the held chord, and its tail takes 3764 ms to fall 40 dB. Stabs are quiet (phrase (b) −22.5 dBFS RMS). It is a held-chord patch.
 - **Width:** the left and right channels of the held chord correlate at 0.51 (measured, 150 Hz–4 kHz band).
 - **The LFO:** one shared LFO (TRI, 4.9 Hz, PITCH 50, to both oscillators). PHASE is SPREAD, which gives per-voice offsets; their size was not measured. One shared LFO means no true rotary or quadrature movement.
@@ -27,7 +27,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **Runaway tests:** a 30 s held triad: peak −4.9 to −6.5 dBFS in every 2 s window, growth +0.2 dB; twelve chords 1 s apart: the best later chord is +3.3 dB over the first, peaks no higher than −5.5 dBFS. No clipping. Release: the tail is 20 / 40 / 60 dB down at 1648 / 3520 / 4624 ms.
 - **Polyphony:** POLY with the default 5 voices. The MONO / UNISON legato rule does not apply (engine fact; not tested on this patch).
 - **Level and cost:** VOLUME 85, −17.9 dBFS RMS over +4 to +10 s of the held triad (K-weighted −18.0), peak −4.9 dBFS over every audition phrase. **CPU 2038 host instr/sample worst case.** The device render time is not measured.
-- **Tricks:** SLOBBER (it would add pitch wander to a patch that already sways), SEQ held (Tape Stop), GROWL and CHEW are untested. The PLAY/STOP kill switch clears the echo buffers, including the feedback (engine fact; not tested on this patch).
+- **Tricks:** SLOBBER, SEQ held (Tape Stop), GROWL and CHEW are untested. The PLAY/STOP kill switch clears the echo buffers, including the feedback (engine fact; not tested on this patch).
 
 ## 5. Final values (for debugging, not for players)
 
