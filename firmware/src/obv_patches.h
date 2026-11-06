@@ -51,8 +51,13 @@ static const uint8_t PF_ATLANTIC_SWELL[] = {P_O1_WAVE, W_PLS, P_O1_PW, 26, P_O2_
     P_AA, 18, P_AS, 127, P_AR, 52, P_LFO_RATE, 53, P_LFO_PHASE, LP_SPREAD, P_LFO_PITCH, 16,
     P_MODE, M_DUAL, P_SPREAD, 127, P_VOLUME, 64, P_DLY_FB, 95, P_DLY_TONE, 90, P_DLY_MIX, 100, P_REV_SIZE, 70,
     P_REV_DAMP, 30, P_REV_MIX, 24, P_POLY_N, 6, P_ALLEY, 106, X};
-static const uint8_t PF_HOLLOW_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 20, P_O2_WAVE, W_PLS, P_O2_PW, 108, P_O2_FINE, 76, P_FTYPE, F_NOTCH,
-    P_CUTOFF, 70, P_LFO_PWM, 40, P_LFO_RATE, 40, P_LFO_PHASE, LP_SPREAD, P_AA, 70, P_AR, 100, P_FENV_AMT, 64, P_SPREAD, 100, P_REV_SIZE, 100, P_REV_MIX, 40, X};
+/* 12 Kelp Tangle (voiced Nov 2026, Batch 4A variant B: dog5-docs/voicing/12-kelp-tangle.md; PF_HOLLOW_PAD is gone, 10 and 12 each have their own): a murky PWM pad. POLY, two pulses 5.9 cents apart, both swept by the LFO's
+ * TRI (1.03 Hz, PHASE SYNC, +-15 points around 33 %: 18-48 %, one side of 50 %), a 24 dB low-pass at 100 % key tracking (CUTOFF 86 = 1865 Hz at C4, RESO 30; the held A2 measures a 339 Hz centroid and 0.0 % above 1.2 kHz), no filter envelope, a spring
+ * tail (DRAIN 55, SIZE 75, DAMP 30). VOLUME 75 puts it on the bank reference: -18.0 dBFS RMS over the note-on region of the tangle phrase (r), spring included */
+static const uint8_t PF_KELP_TANGLE[] = {P_O1_WAVE, W_PLS, P_O1_PW, 42, P_O2_WAVE, W_PLS, P_O2_PW, 42, P_O2_FINE, 73,
+    P_CUTOFF, 86, P_RESO, 30, P_FENV_AMT, 64, P_KEYTRK, 127, P_AA, 52, P_AS, 127, P_AR, 88, P_LFO_RATE, 60,
+    P_LFO_PHASE, LP_SYNC, P_LFO_PWM, 100, P_VINTAGE, 50, P_SPREAD, 100, P_VOLUME, 75, P_REV_SIZE, 75, P_REV_DAMP, 30,
+    P_REV_MIX, 55, X};
 /* 15 Trem Chop (voiced Nov 2026, approved variant D: dog5-docs/voicing/15-trem-chop.md; was PF_SQUARE_LEAD, this slot's alone): the broken strobe. DUAL, POLY 6 (every note is two voices), two bright saws 3.9 cents apart through an open
  * 24 dB low-pass, the amp chopped by a SQUARE LFO (RATE 101 = 8.1 Hz, AMP 127: full level / -42 dB, the edge of one voice is one 16-sample block) with LFO PHASE SPREAD (45 degrees per voice: the two voices of a note chop an eighth of a cycle apart).
  * LFO PITCH 8 was inert (below 12 the law (d*d)>>7 is 0) and is 0; the delay is off (MIX 0). VOLUME 84 puts it on the bank reference: -17.9 dBFS RMS over the chop phrase (o), off parts included (peak -6.2) */
@@ -289,7 +294,7 @@ static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},
-    {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_ATLANTIC_SWELL},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_HOLLOW_PAD},
+    {"Skeenhead", PF_SKEENHEAD},   {"Atlantic Swell", PF_ATLANTIC_SWELL},{"Slapback Strut", PF_SLAPBACK_STRUT},{"Kelp Tangle", PF_KELP_TANGLE},
     {"Ghost Board", PF_PWM_STRINGS},{"Reef Break", PF_PERC_HIT},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_PWM_STRINGS},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_DRONE_UNI},     {"Blackwater", PF_SUB_BASS},   {"Fire & Ice", PF_SYNC_LEAD},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_BP_QUACK},     {"Crypt Dust", PF_NOISE_WASH}, {"Fugue State", PF_NEON_PAD},
