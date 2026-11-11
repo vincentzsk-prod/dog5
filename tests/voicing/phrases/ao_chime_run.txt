@@ -1,0 +1,19 @@
+# (ao) fast run (Batch 6A2, 29): eight 120 ms notes 160 ms apart, C6 C#6 D#6 F6 G6 F6 D#6 C#6 (84 85 87 89 91 89 87 85), vel 104. Judges: whether the voice pool copes with long rings piling up.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 84 104
+3120 midi 0x80 84 0
+3160 midi 0x90 85 104
+3280 midi 0x80 85 0
+3320 midi 0x90 87 104
+3440 midi 0x80 87 0
+3480 midi 0x90 89 104
+3600 midi 0x80 89 0
+3640 midi 0x90 91 104
+3760 midi 0x80 91 0
+3800 midi 0x90 89 104
+3920 midi 0x80 89 0
+3960 midi 0x90 87 104
+4080 midi 0x80 87 0
+4120 midi 0x90 85 104
+4240 midi 0x80 85 0
+6500 end

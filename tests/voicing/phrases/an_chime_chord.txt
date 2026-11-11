@@ -1,0 +1,9 @@
+# (an) chime chord (Batch 6A2, 29): A#5 C#6 F6 (82 85 89) struck together at 3000 ms, held 2.4 s, the script runs to 8.5 s. Judges: the wind-chime use, three rings at once.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 82 100
+3000 midi 0x90 85 100
+3000 midi 0x90 89 100
+5400 midi 0x80 82 0
+5400 midi 0x80 85 0
+5400 midi 0x80 89 0
+8500 end

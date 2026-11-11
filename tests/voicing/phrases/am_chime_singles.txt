@@ -1,0 +1,9 @@
+# (am) single notes (Batch 6A2, 29): C#5 (73), C#6 (85) and A#5 (82), each held 3 s and released, 2 s of nothing between (3000 / 8000 / 13000 ms), the script runs to 18.5 s. Judges: the ring, the tail, the tape and the echo after the key-up.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 73 100
+6000 midi 0x80 73 0
+8000 midi 0x90 85 100
+11000 midi 0x80 85 0
+13000 midi 0x90 82 100
+16000 midi 0x80 82 0
+18500 end

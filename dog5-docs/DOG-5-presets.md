@@ -129,7 +129,7 @@ SOUND / ART.
 - **28 "Bell Tolls" · P2 · from BELL XMOD (kept deliberately)** — SOUND: OSC B FM'ing OSC A (X-MOD), fast
   attack, long release. Inharmonic chimes; the friction with the hard-chop VCA IS the design. ART: golden code
   sheds over the poly-count.
-- **29 "VALHALLA" · P1 · from VINTAGE PD** — SOUND: PWM on both osc, slow attack/release, slop ~20%. *(Batch 6A, 11 Nov 2026: round 1 of a medium-attack PWM chord wash was rejected; the slot holds the original unvoiced values and goes to a round 2 with a new brief. This text is the original brief, kept as history.)* ART:
+- **29 "i scream" · P1 · from VINTAGE PD** — SOUND: a struck chime through a cheap van horn speaker (an ice-cream-van chime, from the stock FM-1 preset FINGERSYM): a square plus an inharmonic saw, amp decay with no sustain, a fixed band-pass as the speaker, tape wobble (CHEW), a short slap and a trace of spring. *(Brief changed, 12 Nov 2026 (Batch 6A2); it was the VALHALLA brief below, which round 1 of Batch 6A could not make work. The slot name changed from "VALHALLA" to "i scream".)* *Original VALHALLA brief, kept as history:* SOUND: PWM on both osc, slow attack/release, slop ~20%. *(Batch 6A, 11 Nov 2026: round 1 of a medium-attack PWM chord wash was rejected; the slot holds the original unvoiced values and goes to a round 2 with a new brief. This text is the original brief, kept as history.)* ART:
   fading amber radiates through the shattered HUD.
 - **30 "THE DØG" · P1 · from DRONE UNI/unison** — SOUND: all voices on one note (UNISON), slight detune,
   filter wide open, low register. Floor-shaking. **SIGNATURE PATCH.** ART: acoustic weight crumbles the altar
