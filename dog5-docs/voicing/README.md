@@ -58,6 +58,11 @@ arp/delay-synced patches see the same tempo.
 | `ag_bass_long.txt` | **(ag) bass line, long gate** (Batch 6A, 27 R3V3RT): eight quarter notes at 120 BPM, A1 C2 D2 E2 D2 C2 A1 E2 (33 36 38 40 38 36 33 40), gate 400 ms, vel 100-110 | 4 s + 1.5 s | the decay into the sustain, the run-off between notes |
 | `ah_bass_legato.txt` | **(ah) bass line, legato** (Batch 6A, 27): the SAME notes, each note-on 50 ms before the previous note-off (no neighbouring notes share a pitch) | the same | what a MONO envelope does not re-fire: notes 2+ lose their snap |
 | `ai_a2_held.txt` | **(ai) A2 held** (Batch 6A, 27): A2 (45, 110 Hz) held 3 s, released at 6000 ms | 3 s + 1.5 s | sustain against the peak, the run-off |
+| `aj_chime_melody.txt` | **(aj) chime melody** (Batch 6A2, 29 i scream): a generic stepwise tune around C#6 (MIDI 85), C6 to F6 with a climb to A6 (93) and a dip to A#5 (82), 27 notes 580 ms apart, gate 250 ms, vel 96-112, 3 s tail | 16.7 s | the ring against the next note, the front edge, the register, the pool. **The level phrase of 29** (note-on region) |
+| `ak_chime_melody_lo.txt` / `al_chime_melody_hi.txt` | (ak / al) the same melody 16 semitones down (centre A4) and 8 up (centre A6) | the same | the bottom and the top of the register |
+| `am_chime_singles.txt` | **(am) singles**: C#5 (73), C#6 (85), A#5 (82), each held 3 s and released, 2 s between | 18.5 s | the ring and the tail after the key-up |
+| `an_chime_chord.txt` | **(an) chord**: A#5 C#6 F6 (82 85 89) held 2.4 s | 8.5 s | the wind-chime use, three rings at once (the phrase that limits the peak) |
+| `ao_chime_run.txt` | **(ao) run**: eight 120 ms notes 160 ms apart, C6 to G6 and back | 6.5 s | whether the voice pool copes with long rings piling up |
 
 Anything new goes in the same folder with a header comment saying what it judges, and gets one line in
 `PHRASE_FILES` (voicekit.py).
@@ -684,3 +689,57 @@ Round 1 (11 Nov 2026), **rendered, not yet heard**: each patch has ONE variant c
 * **Brief changes (logged in `DOG-5-presets.md`, the originals kept as history):** 26 now has an audible master (OSC 1 LEVEL 0 -> 90), UNISON 3 instead of MONO, GROWL 44 and no echo or spring; 27 now has a sustained body (a single pulse, decay-only filter envelope with decay 85, AMP SUSTAIN 90) instead of a saw + sub-octave pulse with RESO 30.
 * **Files:** cards `cards/26-bsynca.md`, `cards/27-r3v3rt.md`; renders `reference-renders/26-bsynca_D_{riff-detached,riff-legato,held}.wav` and `27-r3v3rt_G_{riff-chopped,line-long,line-legato,held-A2}.wav` (rendered from the committed slots; seven are bit-identical to the heard renders, the chopped riff has no heard render to compare).
 * **Proof:** the committed slots equal 26 D and 27 `Glong` by resolved bytes; audio bit-identical to the variant path both with INIT loaded first and from the boot patch on the audition phrases tried (26: `d_lead`, `b_stabs`, `aa_fire_detached`, `ab_fire_legato`, `af_lead_held`; 27: `a_riff`, `b_stabs`, `ag_bass_long`, `ah_bass_legato`, `ai_a2_held`; INIT-first on all ten, boot on six). `identical_par.py build/voicing/base 26,27` (base = `main`, `cd6401e`): patch bytes of 30 of 32 slots equal (only 26 and 27 differ; 29 equals `main`), the audio of the **other 30 programs is byte-identical on all 40 phrases**. `tests/run_host.sh` exit 0.
+
+
+## 21. Batch 6A2: slot 29 REBUILT as "i scream" (the ice-cream-van chime)
+
+Round 1 (12 Nov 2026), **rendered, not yet heard**. Branches: `voicing/batch-06a2-i-scream` (code, docs, tables; to be merged) and `listen/batch-06a2-i-scream` (every WAV, `listen/voicing/batch-06a2/29/`, never merged). Kit: `tests/voicing/b6b_29.py` (variants and probes), `lib6b.py`, `b6b_report.py` (the tables in `listen/voicing/batch-06a2/29/README.md`, every change echoed before -> after). New phrases aj-ao (section 1). `main` contained the 6A approve merge (`b85d013`, cards 26 / 27, `PF_BSYNCA` GROWL 44, `PF_R3V3RT` G, `PF_VALHALLA` the original values).
+
+**Brief change, logged:** slot 29 was VALHALLA ("a monumental, eroding chordal wash", `DOG-5-presets.md`; round 1 of Batch 6A built a PWM wash, B / C / D, which Vincent scrapped: "all the great things thrown into a melting pot"). **The original VALHALLA brief and the round-1 numbers (section 20) stay here as history.** The slot is now `i scream` (name string `i scream`, 8 characters; the font folds it to upper case), array `PF_I_SCREAM`: a struck chime through a cheap van horn speaker, from Vincent's stock preset 109 FINGERSYM ("dreamy, crisp ring") and his recordings of the real van. Tape wobble is IN here (the "no tape" rule belonged to the scrapped wash).
+
+**The voice (shared by B, C, D):** POLY 5; OSC 1 a square (LEVEL 127), OSC 2 a saw +15 semitones (ratio 2.38, LEVEL 70) with X-MOD 25 and a short pitch zing (ENV>O2 76, FILTER DECAY 50); a band-pass filter at a fixed CUTOFF 77 (KEY TRK 0, RESO 105) as the speaker; AMP attack 0, sustain 0 (the ring is the decay); per-voice DRIVE 30; a 65 ms slap (ALLEY 56, FEEDBK 22, MIX 35) and a trace of spring (DRAIN 18, SIZE 40); VINTAGE 10; PHASE SYNC.
+
+| var | ring | tape | extra | what it is |
+|---|---|---|---|---|
+| A | the original VALHALLA values | none | | a reference, level-matched, not a candidate |
+| B | AMP DECAY 64 | CHEW 25 | | van-true short plink (committed: no) |
+| C | AMP DECAY 89 | CHEW 45 | | plink with a short ring (**committed provisionally**) |
+| D | AMP DECAY 101 | CHEW 65 | delayed LFO shimmer: TRI 0.8 Hz, pitch +-9.4 cents, amp 40, delay 40 | FINGERSYM-style long ring |
+| Ebox, Fmetal | calibrations on C | | OSC 2 +12 st FINE 70 X-MOD 0 / OSC 2 +17 st LEVEL 100 X-MOD 70 | music-box (harmonic) against metallic (inharmonic) |
+
+**Numbers (host; level on the chime melody aj / on the chord an; peak over all phrases; CPU worst case idle + load):**
+
+| var | VOLUME | aj | an | peak | CPU |
+|---|---|---|---|---|---|
+| A | 110 | -20.8 | -18.4 | -4.1 | 1995 |
+| B | 112 | **-26.5** | -33.0 | -4.1 | **2640** |
+| C | 111 | -19.2 | -24.2 | -4.0 | **2642** |
+| D | 111 | -18.1 | -21.4 | -5.0 | **2647** |
+| Ebox / Fmetal | 110 / 112 | -19.3 / -18.7 | -24.4 / -23.9 | -4.1 / -4.1 | 2600 / 2637 |
+
+**Flags and misses (plainly):**
+* **B misses the level band by 7 dB (-26.5 against -18.0 +-1.5)**: the plink is gone in 186 ms (-40 dB), so the 250 ms note-on region averages mostly silence, and the three-note chord peaks at -4.1 dBFS at VOLUME 112 (the melody alone peaks -8.6). B's VOLUME is 112 of 127, so VOLUME 127 would add only 1.1 dB (the melody alone would allow +4.6 dB, which VOLUME cannot give). C (-19.2) is within tolerance and D is at -18.1; the reference A reads -20.8 (also held down by the chord).
+* **CPU is over the 2400 flag and the 2500 cap on every candidate (2640-2647)**: CHEW alone adds 784 (C: 1858 with CHEW 0), five FM voices 700 under the stress chord, so the cap does not fit a CHEW patch with two oscillators. Levers on C: DRIVE 0 -55, POLY 3 -68, OSC 2 silent and X-MOD 0 -42, no echo -16; POLY 4 saves nothing; GROWL 34 or 44 on top of CHEW reads 3236 (GROWL 44 without CHEW 2452). Filter DRIVE 0 / 30 / 60 / 100 leaves the crest at 10.2 / 10.3 / 10.1 / 10.1 dB (GROWL 34 / 44: 8.6 / 7.4), so DRIVE 30 costs 55 instr/sample and no measurable crest.
+* **The inharmonic colour is faint on the top of the keybed**: through the band-pass the 2.38 partial is -35 dB re the note at C#6 and -19 dB at C#5 (B / C / D); the strongest partial after the note is the square's third harmonic (x2.99, -15 dB at C#6). The calibrations bracket it: Ebox is harmonic (x2.00 / 3.00 / 5.00), Fmetal puts partials at x0.66 / 1.34 / 1.67 / 2.67 (-31 .. -34 dB at C#6).
+
+**What was measured (the full tables are in `listen/voicing/batch-06a2/29/README.md`):**
+* **Ring (the actual render, C#6, whole patch, ms to -6 / -12 / -20 / -40 dB):** B 18 / 36 / 61 / 186 (the recording's one hit: 19 / 33 / 70 for -6 / -12 / -20), C 86 / 219 / 362 / 758, D 249 / 552 / 1031 / 1907. The amp envelope's nominal decay is 74 / 517 / 1317 ms, the filter decay 25 ms in all.
+* **Tape wobble (a one-voice probe, cents s.d.):** B 1.65, C 2.51, D 6.14 (the LFO alone gives 5.11, so the tape adds about 3.4); no LFO or tape in A. **Front edge** (centroid over the first 20 ms from the onset, C#6, CHEW against CHEW 0): B 2016 against 2095 Hz (-78), C 1975 / 2097 (-122), D 1933 / 2094 (-161); C#5 -87 / -143 / -190. The tape moves the onset 1.2-1.3 ms later and takes 4-8 % off the front-edge centroid at C#6: the edge stays bright but is not untouched.
+* **Speaker band:** the filter read with noise peaks at 1099 Hz, -3 dB width 898-1345 Hz (448 Hz), 0.4 % of the energy under 400 Hz and 4.1 % above 4 kHz (noise centroid 1537 Hz); the melody through the whole patch: 0.0 % under 400 Hz, 0.4 % above 4 kHz, centroid 1251-1277 Hz (the recordings: about 1.8 kHz, speaker, street and engine included; the first 100 ms of a note: 2.0 kHz at C#6).
+* **Space (C#6, return against the dry note):** C: -29.9 / -14.3 / -10.7 dB in 0-20 / 20-100 / 100-250 ms (B: -28.0 / -6.2 / +14.1, the dry has already gone; D: -30.1 / -15.2 / -12.8).
+* **Register (C, RMS 0-300 ms, centroid 0-100 ms):** A4 -23.8 dB / 1816 Hz, C#6 -20.1 / 2040, A6 -21.7 / 2392: A4 is 3.7 dB under C#6 and A6 1.6 dB under; nothing falls away at either end (B: -32.7 / -28.2 / -30.4; D -22.3 / -18.7 / -20.3).
+* **Pool:** POLY 4 / 5 / 6 against POLY 8 changes the level of what rings by -0.1 .. -0.7 dB at worst on the melody, the run (1.4-2.4 s tail -0.1 .. -0.5) and the chord (0.0): no cut ring is measurable (random start phases make sample-for-sample comparison useless; not isolated whether stolen voices were the oldest). POLY 5 is committed.
+* **Program-load render against the variant render:** with INIT loaded first the committed slot is bit-identical to variant C on aj, am, an, ao and the stabs; **from the boot patch it still differs** (-12.6 .. -20.1 dB re the signal) with PHASE SYNC set, which suggests the engine's random state (random oscillator start phases; not isolated), as in 5B.
+
+**Proof:** the committed slot equals variant C by resolved bytes. `identical_par.py build/voicing/base 29` (base = `main`, `b85d013`): patch bytes of 31 of 32 slots equal (only 29 differs) and the audio of the **other 31 programs is byte-identical on all 46 phrases**; slot 29 differs on all 46. `tests/run_host.sh` exit 0. No cards and no `reference-renders/`.
+
+### 21.1 Approved (12 Nov 2026): 29 i scream = D with CHEW 0
+
+* **Decision (Vincent, after listening to D):** "29 D, but take off the CHEW completely. I don't need to hear it again." The committed version is variant D exactly as built with CHEW 0 (no tape at all) and a re-matched VOLUME. **This exact version was not heard before approval.** The round-1 record (section 21) stays; the card's final values are the new ones.
+* **Brief change, logged:** the 6A2 brief called for tape wobble (CHEW, WOW/FLT); it is removed. The patch is a chime voice with no tape; `DOG-5-presets.md` keeps the original VALHALLA brief and the tape instruction as history.
+* **Echo, provisional C -> final:** AMP DECAY 89 -> 101 (+9 % of range), LFO RATE 70 -> 55 (-12 %), LFO DELAY 0 -> 40 (+31 %), LFO PITCH 0 -> 14 (+11 %), LFO AMP 0 -> 40 (+31 %), CHEW 45 -> 0 (-35 %), VOLUME 111 -> 113. **Variant D -> final:** CHEW 65 -> 0 (-51 %), VOLUME 111 -> 113; nothing else. The full list against the original VALHALLA is in `listen/voicing/batch-06a2/29/README.md` (`Dfinal`). HISS 25 and DROPS 20 stay stored and are inert at CHEW 0.
+* **Level re-search:** VOLUME 112 is the closest to the reference (-18.03 dBFS RMS on the chime melody, chord peak -4.17); **113 is committed** (-17.88, chord peak -4.06, still under -4); 114 would peak at -3.95. (D with CHEW needed 111 and peaked at -4.97.)
+* **Re-measured on the committed patch (nothing reused from the CHEW-on D):** ring on C#6, whole patch, to -6 / -12 / -20 / -40 dB: 252 / 550 / 1030 / 1896 ms (the old D: 249 / 552 / 1031 / 1907; the tape did not move the ring); one-voice wobble 5.11 cents s.d. (-8.2 .. +8.3, 0.80 Hz; the LFO alone; the old D 6.14); front edge over the first 20 ms 2096 Hz at C#6 and 1958 Hz at C#5 (the old D 1933 / 1768); speaker band: honk 1099 Hz, -3 dB 898-1345 Hz, 0.4 % under 400 Hz, 4.1 % above 4 kHz (noise), melody 0.0 % / 0.45 %, centroid 1262 Hz; partials of the first 100 ms (heard) C#6 1106 / 2637 (-34, x2.38) / 3319 (-15, x2.99) / 5532 Hz, C#5 553 / 1320 (-18, x2.38) / 1659 (-8) / 2765 Hz; space (return against the dry note, 0-20 / 20-100 / 100-250 ms) -28.7 / -15.0 / -12.8 dB; register A4 / C#6 / A6 -22.1 / -18.5 / -20.1 dB, centroids 1950 / 2183 / 2563 Hz; level -17.88 on the melody, -21.3 on the chord, -16.6 on the run, stabs -21.8, peak -4.06; **CPU 1863 (idle 1179 + load 685), down 784 from 2647**.
+* **Pool:** POLY 4 / 5 / 6 against POLY 8: worst -0.1 / -0.6 / -0.7 dB on the melody, -0.2 .. -0.3 on the run's tail, 0.0 on the chord: no cut ring measurable.
+* **Proof:** the committed slot equals variant `Dfinal` by resolved bytes; audio bit-identical to the variant path with INIT loaded first on all five phrases tried; from the boot patch it differs by -67.6 .. -74.6 dB re the signal (the random-state pattern, not isolated). `identical_par.py build/voicing/base 29` (base = `main`, `b85d013`): patch bytes of 31 of 32 slots equal (only 29 differs), the audio of the **other 31 programs is byte-identical on all 46 phrases**. `tests/run_host.sh` exit 0.
+* **Files:** card `cards/29-i-scream.md`; renders `reference-renders/29-i-scream_D_{melody-C#6,chord,held-C#6,run}.wav` (the same four on the listen branch as `29_Dfinal_*.wav`); phrase `ap_chime_held` (section 1).
