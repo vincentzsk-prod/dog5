@@ -1,0 +1,13 @@
+# (av) register (Batch 6B, 28): A2 A3 A4 A5 A6 (45 57 69 81 93), each struck at vel 100 and held 1.5 s, 3 s apart. Judges: level and centroid across the keybed.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 45 100
+4500 midi 0x80 45 0
+6000 midi 0x90 57 100
+7500 midi 0x80 57 0
+9000 midi 0x90 69 100
+10500 midi 0x80 69 0
+12000 midi 0x90 81 100
+13500 midi 0x80 81 0
+15000 midi 0x90 93 100
+16500 midi 0x80 93 0
+19500 end

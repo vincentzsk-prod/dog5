@@ -40,8 +40,14 @@ static const uint8_t PF_GHOST_BOARD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O
     P_CUTOFF, 75, P_RESO, 5, P_FENV_AMT, 74, P_FA, 50, P_AA, 60, P_AR, 90, P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD,
     P_VINTAGE, 50, P_SPREAD, 100, P_VOLUME, 55, P_DLY_FB, 95, P_DLY_MIX, 105, P_REV_SIZE, 100, P_REV_DAMP, 25,
     P_REV_MIX, 70, P_ALLEY, 104, X};
-static const uint8_t PF_BELL_XMOD[] = {P_O1_LVL, 100, P_O2_SEMI, 43, P_XMOD, 70, P_CUTOFF, 100, P_FD, 90, P_FS, 0, P_AD, 95,
-    P_AS, 0, P_AR, 80, P_FENV_AMT, 94, P_AA, 1, P_DLY_TIME, DD_8, P_DLY_FB, 50, P_DLY_MIX, 40, P_REV_SIZE, 110, P_REV_MIX, 45, X};
+/* 28 Bell Tolls (Batch 6B round 1, variant C committed PROVISIONALLY, awaiting listening; was the FM chime with the hard-chop friction, this slot's alone): a struck bell. POLY 5: the KEY is the hum, OSC 1 (a saw at the key) carries the hum, the prime (2x), the quint (3x) and the nominal (4x),
+ * OSC 2 (a saw +15 st, ratio 2.38 = the tierce of the prime, LEVEL 70) the minor third, X-MOD 64 (the middle of its range), a 24 dB low-pass (CUTOFF 88, KEY TRK 64) closed by the filter envelope faster than the ring; amp attack 0 / decay 111 / sustain 0 / release 111
+ * (a ring of about 4 s to -40 dB that goes on after the key-up); a TRI LFO (0.37 Hz) on pitch +-9.4 cents and amp that fades in (DELAY 35); a 149 ms echo (MIX 30, FEEDBK 25, TONE 80) and a spring (DRAIN 20). VOLUME 108: -19.7 dBFS RMS over the note-on region of the slow toll (ar), peak -4.09 (the chord) */
+static const uint8_t PF_BELL_XMOD[] = {P_O1_LVL, 127, P_O2_LVL, 70, P_O2_SEMI, 39, P_XMOD, 64, P_O2_FINE, 64,
+    P_CUTOFF, 88, P_RESO, 0, P_FENV_AMT, 88, P_FA, 0, P_FD, 90, P_FS, 30, P_FR, 70, P_AA, 0, P_AD, 111, P_AS, 0,
+    P_AR, 111, P_LFO_RATE, 40, P_LFO_DELAY, 35, P_LFO_PHASE, LP_SYNC, P_LFO_PITCH, 14, P_LFO_AMP, 20, P_VINTAGE, 20,
+    P_SPREAD, 70, P_VOLUME, 108, P_DLY_TIME, DD_8, P_DLY_FB, 25, P_DLY_TONE, 80, P_DLY_MIX, 30, P_REV_SIZE, 70,
+    P_REV_DAMP, 35, P_REV_PRE, 15, P_REV_MIX, 20, P_ALLEY, 80, X};
 /* 27 R3V3RT (voiced 11 Nov 2026, Batch 6A, approved variant G, a calibration render: dog5-docs/voicing/cards/27-r3v3rt.md; was PF_FAT_BASS, this slot's alone): a MONO bass from ONE pulse (OSC 1 PW 54, OSC 2 off), RESO 0, a decay-only filter envelope
  * (attack 0, decay 85, sustain 0), amp attack 0, AMP SUSTAIN 90, release 30 (5 ms), CUTOFF 66, KEY TRK 30, filter DRIVE 30, dry. VOLUME 98: -18.00 dBFS RMS over the note-on region of the chopped riff (a), peak -13.8 */
 static const uint8_t PF_R3V3RT[] = {P_O1_WAVE, W_PLS, P_O1_PW, 54, P_O1_LVL, 120, P_O2_WAVE, W_OFF, P_O2_PW, 50,
@@ -333,6 +339,9 @@ static const uint8_t PF_WIRE_BITE[] = {P_O1_WAVE, W_PLS, P_O1_PW, 18, P_O1_LVL, 
     P_LFO_RATE, 34, P_LFO_PHASE, LP_SPREAD, P_LFO_PITCH, 16, P_MODE, M_UNISON, P_UNI_N, 6, P_UNI_DET, 50,
     P_VINTAGE, 127, P_SPREAD, 100, P_VOLUME, 58, P_DLY_TIME, DD_4, P_DLY_FB, 35, X};
 static const uint8_t PF_INIT[] = {X};
+/* 32 Init bruv? (Batch 6B round 1, variant B committed PROVISIONALLY): the engine's own defaults (POLY 5, two saws 4.7 cents apart, LP24 CUTOFF 80 RESO 20, every effect at 0) with only VOLUME moved onto the reference: 97 = -18.05 dBFS RMS on the stabs phrase (b), peak -5.6.
+ * Its own array: PF_INIT is also FACT_INIT, the INIT of slots 33-99, which stays the pure defaults */
+static const uint8_t PF_INIT_BRUV[] = {P_VOLUME, 97, X};
 #undef X
 
 static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
@@ -350,5 +359,5 @@ static const factory_t FACTORY[NFACT] = {
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_ROTO_SCOPO},     {"Micro-mist", PF_MICRO_MIST},   {"Fire & Ice", PF_FIRE_ICE},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_MELTING_ORB},     {"Crypt Dust", PF_CRYPT_DUST}, {"Fugue State", PF_FUGUE_STATE},
     {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_BSYNCA},         {"R3V3RT", PF_R3V3RT},       {"Bell Tolls", PF_BELL_XMOD},
-    {"i scream", PF_I_SCREAM},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
+    {"i scream", PF_I_SCREAM},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT_BRUV},
 };
