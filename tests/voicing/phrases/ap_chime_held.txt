@@ -1,0 +1,5 @@
+# (ap) held C#6 (Batch 6A2, 29 i scream): C#6 (MIDI 85, 1109 Hz) struck at 3000 ms and held 3 s, released at 6000 ms, the script runs to 8000 ms. Judges: the ring, the shimmer fading in, the tail. (The reference render of the approved patch.)
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 85 100
+6000 midi 0x80 85 0
+8000 end

@@ -133,15 +133,15 @@ static const uint8_t PF_FIFTH[] = {P_O2_SEMI, 31, P_O2_FINE, 66, P_CUTOFF, 92, P
     P_DRIVE, 20, P_FA, 0, P_FD, 52, P_FS, 22, P_FR, 50, P_AA, 0, P_AD, 72, P_AS, 70, P_AR, 52, P_MODE, M_DUAL,
     P_UNI_DET, 36, P_VINTAGE, 35, P_SPREAD, 90, P_VOLUME, 92, P_DLY_FB, 28, P_DLY_TONE, 55, P_DLY_MIX, 36,
     P_POLY_N, 8, P_ALLEY, 65, P_BBD_SPREAD, 60, X};
-/* 29 i scream (Batch 6A2 round 1, variant C committed PROVISIONALLY, awaiting listening; was PF_VALHALLA = the unvoiced wash VINTAGE 127 / CUTOFF 55 / AA 60 / AR 90 / DRAIN 45 values, this slot's alone): a struck chime through a cheap van horn speaker. POLY 5, OSC 1 square at
- * LEVEL 127 with OSC 2 a saw +15 st (LEVEL 70, X-MOD 25, a short pitch zing ENV>O2 76), amp attack 0 / decay 89 / sustain 0 (a ring of about 0.76 s to -40 dB), a band-pass at a fixed CUTOFF 77 (about 1.1 kHz, KEY TRK 0, RESO 105) as the speaker, per-voice DRIVE 30,
- * CHEW 45 (tape wobble; HISS 25, DROPS 20), a 65 ms slap (ALLEY 56, FEEDBK 22, MIX 35) and a trace of spring (DRAIN 18). VOLUME 111: -19.2 dBFS RMS over the note-on region of the chime melody (aj), peak -4.0 (the three-note chord) */
+/* 29 i scream (voiced 11 Nov 2026, Batch 6A2, approved variant D with CHEW 0: dog5-docs/voicing/cards/29-i-scream.md; was PF_VALHALLA, retired with its wash brief): a struck chime through a cheap van horn speaker. POLY 5, OSC 1 square at LEVEL 127 with OSC 2 a saw +15 st (LEVEL 70, X-MOD 25,
+ * a short pitch zing ENV>O2 76), amp attack 0 / decay 101 / sustain 0 (a ring of about 1.9 s to -40 dB), a band-pass at a fixed CUTOFF 77 (about 1.1 kHz, KEY TRK 0, RESO 105) as the speaker, per-voice DRIVE 30, a TRI LFO (RATE 55 = 0.8 Hz) on pitch (PITCH 14 = +-9.4 cents) and amp (AMP 40) that
+ * fades in after the strike (DELAY 40, PHASE SYNC), a 65 ms slap (ALLEY 56, FEEDBK 22, MIX 35) and a trace of spring (DRAIN 18). NO TAPE: CHEW 0 (HISS 25 and DROPS 20 are inert at CHEW 0). VOLUME 113: -17.9 dBFS RMS over the note-on region of the chime melody (aj), peak -4.06 (the three-note chord) */
 static const uint8_t PF_I_SCREAM[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 127, P_O2_LVL, 70, P_O2_SEMI, 39, P_XMOD, 25,
     P_ENV_O2, 76, P_O2_FINE, 64, P_CUTOFF, 77, P_RESO, 105, P_FENV_AMT, 64, P_KEYTRK, 0, P_FTYPE, F_BP12,
-    P_DRIVE, 30, P_VEL_FLT, 0, P_FA, 0, P_FD, 50, P_FS, 0, P_FR, 30, P_AA, 0, P_AD, 89, P_AS, 0, P_AR, 50,
-    P_LFO_PHASE, LP_SYNC, P_VINTAGE, 10, P_SPREAD, 70, P_VOLUME, 111, P_DLY_FB, 22, P_DLY_TONE, 60, P_DLY_MIX, 35,
-    P_REV_SIZE, 40, P_REV_DAMP, 40, P_REV_PRE, 8, P_REV_MIX, 18, P_CHEW, 45, P_TP_HISS, 25, P_TP_DROPS, 20,
-    P_ALLEY, 56, X};
+    P_DRIVE, 30, P_VEL_FLT, 0, P_FA, 0, P_FD, 50, P_FS, 0, P_FR, 30, P_AA, 0, P_AD, 101, P_AS, 0, P_AR, 50,
+    P_LFO_RATE, 55, P_LFO_DELAY, 40, P_LFO_PHASE, LP_SYNC, P_LFO_PITCH, 14, P_LFO_AMP, 40, P_VINTAGE, 10,
+    P_SPREAD, 70, P_VOLUME, 113, P_DLY_FB, 22, P_DLY_TONE, 60, P_DLY_MIX, 35, P_REV_SIZE, 40, P_REV_DAMP, 40,
+    P_REV_PRE, 8, P_REV_MIX, 18, P_TP_HISS, 25, P_TP_DROPS, 20, P_ALLEY, 56, X};
 /* 07 Tape Splice (voiced Nov 2026, dog5-docs/voicing/07-tape-splice.md; was PF_XMOD_GROWL, this slot's alone): nervous and broken. MONO, two square pulses 3.1 cents apart, OSC 2 -> OSC 1 cross-mod (X-MOD 70), a smooth-random pitch LFO
  * on both oscillators (RATE 94 = 5.7 Hz, PITCH 16 = +-19 cents), a 4 ms release so short notes chop, and CHEW 80 as the splice (HISS 0, DROPS 90: the tape stage delays each note 2.4 ms +-0.6).
  * VOLUME 104 puts it on the bank reference: -18.1 dBFS RMS over the splice phrase (n) */

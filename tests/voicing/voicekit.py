@@ -40,7 +40,7 @@ PHRASE_FILES = {"a_riff": "a_riff.txt", "b_stabs": "b_stabs.txt", "c_held": "c_h
                 "t_ghost": "t_ghost.txt", "u_crash": "u_crash.txt",
                 "v_drone_lo": "v_drone_lo.txt", "v_drone_mid": "v_drone_mid.txt", "w_chord_lo": "w_chord_lo.txt", "w_chord_mid": "w_chord_mid.txt", "y_tap": "y_tap.txt",
                 "z_chord": "z_chord.txt", "z_tap": "z_tap.txt", "z_single": "z_single.txt",
-                "aa_fire_detached": "aa_fire_detached.txt", "ab_fire_legato": "ab_fire_legato.txt", "af_lead_held": "af_lead_held.txt", "ag_bass_long": "ag_bass_long.txt", "ah_bass_legato": "ah_bass_legato.txt", "ai_a2_held": "ai_a2_held.txt", "aj_chime_melody": "aj_chime_melody.txt", "ak_chime_melody_lo": "ak_chime_melody_lo.txt", "al_chime_melody_hi": "al_chime_melody_hi.txt", "am_chime_singles": "am_chime_singles.txt", "an_chime_chord": "an_chime_chord.txt", "ao_chime_run": "ao_chime_run.txt", "ad_longhold": "ad_longhold.txt", "ae_repeat": "ae_repeat.txt"}
+                "aa_fire_detached": "aa_fire_detached.txt", "ab_fire_legato": "ab_fire_legato.txt", "af_lead_held": "af_lead_held.txt", "ag_bass_long": "ag_bass_long.txt", "ah_bass_legato": "ah_bass_legato.txt", "ai_a2_held": "ai_a2_held.txt", "aj_chime_melody": "aj_chime_melody.txt", "ak_chime_melody_lo": "ak_chime_melody_lo.txt", "al_chime_melody_hi": "al_chime_melody_hi.txt", "am_chime_singles": "am_chime_singles.txt", "an_chime_chord": "an_chime_chord.txt", "ao_chime_run": "ao_chime_run.txt", "ap_chime_held": "ap_chime_held.txt", "ad_longhold": "ad_longhold.txt", "ae_repeat": "ae_repeat.txt"}
 AUDITION = ("a_riff", "b_stabs", "c_held")      # the three phrases every variant is rendered on (x_stress is CPU only)
 
 

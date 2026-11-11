@@ -27,6 +27,7 @@ V = {
     "D": ("long-shimmer", "FINGERSYM-style long ring: AMP DECAY 101, heavier tape (CHEW 65), the delayed LFO shimmer (TRI 0.8 Hz, pitch +-9.4 cents, amp 40, delay 40, PHASE SYNC)", dict(CHIME, AD=101, CHEW=65, LFO_SHAPE=0, LFO_RATE=55, LFO_PITCH=14, LFO_AMP=40, LFO_DELAY=40)),
 }
 CAL = {
+    "Dfinal": ("D-no-tape", "the APPROVED version: variant D with CHEW 0 (no tape at all), everything else as D", dict(CHIME, AD=101, CHEW=0, LFO_SHAPE=0, LFO_RATE=55, LFO_PITCH=14, LFO_AMP=40, LFO_DELAY=40)),
     "Ebox": ("music-box", "calibration: C with a nearer-harmonic interval (OSC 2 +12 st, FINE 70, X-MOD 0, LEVEL 50)", dict(CHIME, AD=89, CHEW=45, O2_SEMI=36, O2_FINE=70, XMOD=0, O2_LVL=50, ENV_O2=64)),
     "Fmetal": ("metallic", "calibration: C with a strongly inharmonic interval (OSC 2 +17 st, LEVEL 100, X-MOD 70)", dict(CHIME, AD=89, CHEW=45, O2_SEMI=41, XMOD=70, O2_LVL=100)),
 }
@@ -183,6 +184,8 @@ def main():
             continue
         p = dict(orig) if key == "A" else {**orig, **ch}
         p = fit(exe, p)
+        if key == "Dfinal":          # one step above the level search's 112 (-18.03, peak -4.17): 113 reads -17.88 with the chord peak at -4.06, still under -4
+            p = {**p, "VOLUME": 113}
         m, W = measure(exe, cg, p, key, no_cost)
         m["volume"], m["params"], m["tag"], m["desc"] = p["VOLUME"], p, tag, desc
         R[key] = m

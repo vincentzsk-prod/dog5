@@ -14,9 +14,9 @@ def rr(v, n=1):
 def main():
     R = json.load(open(os.path.join(OUT, "results.json")))
     orig = B.resolve(BASE, 29)
-    keys = ["A", "B", "C", "D", "Ebox", "Fmetal"]
+    keys = ["A", "B", "C", "D", "Dfinal", "Ebox", "Fmetal"]
     L = ["# 29 i scream, Batch 6A2 round 1 (rendered, not yet heard)", "",
-         "Slot 29 was VALHALLA (a chordal wash: round 1 of Batch 6A was rejected). It is rebuilt as `i scream`, an ice-cream-van chime. A is the ORIGINAL VALHALLA values level-matched, a reference and not a candidate; B, C, D are the candidates; Ebox and Fmetal are calibration renders of the OSC 2 interval (on C). Level phrase: the note-on region of the chime melody (aj, 27 notes 580 ms apart, gate 250 ms); peak limit -4 dBFS over every audition phrase (the three-note chord is the limiting one).", ""]
+         "Slot 29 was VALHALLA (a chordal wash: round 1 of Batch 6A was rejected). It is rebuilt as `i scream`, an ice-cream-van chime. A is the ORIGINAL VALHALLA values level-matched, a reference and not a candidate; B, C, D are the candidates; Dfinal is the APPROVED version (variant D with CHEW 0, re-measured; it has not been heard); Ebox and Fmetal are calibration renders of the OSC 2 interval (on C). Level phrase: the note-on region of the chime melody (aj, 27 notes 580 ms apart, gate 250 ms); peak limit -4 dBFS over every audition phrase (the three-note chord is the limiting one).", ""]
     L += ["| var | tag | VOLUME | level aj | level chord (an) | level run (ao) | peak | (b) stabs | CPU | what |", "|---|---|---|---|---|---|---|---|---|---|"]
     for k in keys:
         m = R[k]; c = m.get("cost")
