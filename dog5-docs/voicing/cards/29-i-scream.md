@@ -17,6 +17,10 @@ Closest to: **a music-box chime played through a cheap van horn speaker**.
 
 The reference for the register was Vincent's two phone recordings of a real ice-cream van: the chimes sit in a narrow band centred about C#6 (about 1110 Hz), notes about 580 ms apart. **Those measurements of the recordings were rough** (speaker, street and engine are in them), and the van chime's own spectrum is not known, so the partials above were measured on this patch, not copied from the recordings. Nothing here says the patch matches the gear or the van: it was built toward the descriptions, by measurement, and approved by ear (with the tape on).
 
+**Provenance, built by ear:** the patch was built by ear on the OberVave engine from field recordings Vincent made of a real South African ice-cream van parked outside his house (two phone recordings, Nov 2026). The register (chimes centred about C#6), the note spacing (about 580 ms) and the short bright strike came from those recordings; the measurements of them were rough. Nothing is sampled, and no audio from the recordings is in the firmware or the repo.
+
+**Vincent's ear, after hearing the final (12 Nov 2026), not measured:** he hears it as closer to an arcade or vintage video-game chime than to finger cymbals ("a cleaner ring"). The bank had nothing in that register before this patch.
+
 ## 4. How to play it
 
 - **Register:** voiced for A4 to A6. RMS over the first 300 ms of one struck note, with the centroid over the first 100 ms: A4 −22.1 dB / 1950 Hz, C#6 −18.5 dB / 2183 Hz, A6 −20.1 dB / 2563 Hz (measured). A4 sits 3.6 dB under C#6 and A6 1.6 dB under it; neither end falls away in that range. Nothing outside A4–A6 was measured.
