@@ -25,8 +25,11 @@ static const uint8_t PF_BRASS_STAB[] = {P_O2_FINE, 72, P_CUTOFF, 60, P_FENV_AMT,
  * this one holds still. VOLUME 97 puts it on the bank reference (-18.0 dBFS RMS, phrase b) */
 static const uint8_t PF_SAWTOOTH[] = {P_O2_FINE, 71, P_CUTOFF, 56, P_RESO, 15, P_FENV_AMT, 100, P_FA, 70, P_FD, 85,
     P_FS, 50, P_AA, 50, P_AR, 55, P_LFO_RATE, 75, P_LFO_DELAY, 60, P_LFO_PITCH, 20, P_VOLUME, 97, X};
-static const uint8_t PF_SYNC_LEAD[] = {P_MODE, M_MONO, P_O1_LVL, 0, P_O2_LVL, 120, P_SYNC, 1, P_ENV_O2, 104, P_O2_SEMI, 31,
-    P_FD, 80, P_FS, 20, P_CUTOFF, 90, P_RESO, 10, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_FENV_AMT, 80, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, P_REV_SIZE, 70, P_REV_MIX, 22, X};
+/* 26 BSyncA (voiced 11 Nov 2026, Batch 6A, approved variant D: dog5-docs/voicing/cards/26-bsynca.md; was PF_SYNC_LEAD, this slot's alone): a hard-sync lead, UNISON 3 voices (DETUNE 22), the master saw audible under the synced slave (OSC 1 LEVEL 90),
+ * CUTOFF 84 / ENV AMT 100 (LP24), GLIDE 50 (about 64 ms for an octave), GROWL 44, dry. VOLUME 90: -18.05 dBFS RMS over the note-on region of the lead phrase (d), peak -11.0 */
+static const uint8_t PF_BSYNCA[] = {P_O1_LVL, 90, P_O2_LVL, 120, P_O2_SEMI, 31, P_SYNC, 1, P_ENV_O2, 104,
+    P_CUTOFF, 84, P_RESO, 10, P_FENV_AMT, 100, P_FD, 80, P_FS, 20, P_AA, 2, P_AR, 40, P_MODE, M_UNISON, P_UNI_N, 3,
+    P_UNI_DET, 22, P_GLIDE, 50, P_VOLUME, 90, P_GROWL, 44, P_DLY_FB, 40, P_REV_SIZE, 70, X};
 /* 20 Fire & Ice (Batch 5B, approved variant D: cards/20-fire-and-ice.md; was a copy of PF_SYNC_LEAD, which 26 BSyncA keeps): a hard-sync MONO lead, CUTOFF 84, GROWL 48, GLIDE 56 (94 ms), a 374 ms BBD echo at FEEDBK 92 */
 static const uint8_t PF_FIRE_ICE[] = {P_O1_LVL, 0, P_O2_LVL, 127, P_O2_SEMI, 31, P_SYNC, 1, P_ENV_O2, 104,
     P_CUTOFF, 84, P_RESO, 10, P_FENV_AMT, 85, P_FD, 80, P_FS, 20, P_AA, 2, P_AR, 50, P_MODE, M_MONO, P_GLIDE, 56,
@@ -39,8 +42,11 @@ static const uint8_t PF_GHOST_BOARD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O
     P_REV_MIX, 70, P_ALLEY, 104, X};
 static const uint8_t PF_BELL_XMOD[] = {P_O1_LVL, 100, P_O2_SEMI, 43, P_XMOD, 70, P_CUTOFF, 100, P_FD, 90, P_FS, 0, P_AD, 95,
     P_AS, 0, P_AR, 80, P_FENV_AMT, 94, P_AA, 1, P_DLY_TIME, DD_8, P_DLY_FB, 50, P_DLY_MIX, 40, P_REV_SIZE, 110, P_REV_MIX, 45, X};
-static const uint8_t PF_FAT_BASS[] = {P_MODE, M_MONO, P_O2_WAVE, W_PLS, P_O2_PW, 50, P_O2_SEMI, 12, P_CUTOFF, 40, P_RESO, 30,
-    P_FENV_AMT, 109, P_FD, 60, P_FS, 10, P_AA, 2, P_AR, 30, P_DRIVE, 40, P_GLIDE, 10, X};
+/* 27 R3V3RT (voiced 11 Nov 2026, Batch 6A, approved variant G, a calibration render: dog5-docs/voicing/cards/27-r3v3rt.md; was PF_FAT_BASS, this slot's alone): a MONO bass from ONE pulse (OSC 1 PW 54, OSC 2 off), RESO 0, a decay-only filter envelope
+ * (attack 0, decay 85, sustain 0), amp attack 0, AMP SUSTAIN 90, release 30 (5 ms), CUTOFF 66, KEY TRK 30, filter DRIVE 30, dry. VOLUME 98: -18.00 dBFS RMS over the note-on region of the chopped riff (a), peak -13.8 */
+static const uint8_t PF_R3V3RT[] = {P_O1_WAVE, W_PLS, P_O1_PW, 54, P_O1_LVL, 120, P_O2_WAVE, W_OFF, P_O2_PW, 50,
+    P_O2_LVL, 0, P_O2_SEMI, 12, P_CUTOFF, 66, P_RESO, 0, P_FENV_AMT, 118, P_KEYTRK, 30, P_DRIVE, 30, P_FA, 0,
+    P_FD, 85, P_FS, 0, P_FR, 20, P_AA, 0, P_AD, 80, P_AS, 90, P_AR, 30, P_MODE, M_MONO, P_GLIDE, 10, P_VOLUME, 98, X};
 static const uint8_t PF_ARP_SEQ[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 2, P_ARP_GATE, 50, P_O1_WAVE, W_PLS, P_O1_PW, 40,
     P_O2_SEMI, 12, P_CUTOFF, 50, P_FENV_AMT, 124, P_FD, 45, P_FS, 0, P_AD, 50, P_AS, 0, P_AR, 40, P_RESO, 40, P_AA, 1, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, X};
 static const uint8_t PF_SWEEP_PAD[] = {P_O2_FINE, 74, P_CUTOFF, 30, P_FENV_AMT, 127, P_FA, 110, P_FD, 100, P_FS, 60, P_FR, 100,
@@ -127,7 +133,8 @@ static const uint8_t PF_FIFTH[] = {P_O2_SEMI, 31, P_O2_FINE, 66, P_CUTOFF, 92, P
     P_DRIVE, 20, P_FA, 0, P_FD, 52, P_FS, 22, P_FR, 50, P_AA, 0, P_AD, 72, P_AS, 70, P_AR, 52, P_MODE, M_DUAL,
     P_UNI_DET, 36, P_VINTAGE, 35, P_SPREAD, 90, P_VOLUME, 92, P_DLY_FB, 28, P_DLY_TONE, 55, P_DLY_MIX, 36,
     P_POLY_N, 8, P_ALLEY, 65, P_BBD_SPREAD, 60, X};
-static const uint8_t PF_VINTAGE_PAD[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF, 55, P_FENV_AMT, 94, P_FA, 70, P_AA, 60, P_AR, 90,
+/* 29 VALHALLA (Batch 6A: round 1 was rejected, the slot goes to round 2; the values are the ORIGINAL ones of PF_VINTAGE_PAD, this slot's alone): the unvoiced wash, VINTAGE 127, spring DRAIN 45 */
+static const uint8_t PF_VALHALLA[] = {P_VINTAGE, 127, P_O2_FINE, 73, P_CUTOFF, 55, P_FENV_AMT, 94, P_FA, 70, P_AA, 60, P_AR, 90,
     P_FR, 90, P_RESO, 15, P_SPREAD, 120, P_REV_SIZE, 105, P_REV_MIX, 45, X};
 /* 07 Tape Splice (voiced Nov 2026, dog5-docs/voicing/07-tape-splice.md; was PF_XMOD_GROWL, this slot's alone): nervous and broken. MONO, two square pulses 3.1 cents apart, OSC 2 -> OSC 1 cross-mod (X-MOD 70), a smooth-random pitch LFO
  * on both oscillators (RATE 94 = 5.7 Hz, PITCH 16 = +-19 cents), a 4 ms release so short notes chop, and CHEW 80 as the splice (HISS 0, DROPS 90: the tape stage delays each note 2.4 ms +-0.6).
@@ -336,6 +343,6 @@ static const factory_t FACTORY[NFACT] = {
     {"Ghost Board", PF_GHOST_BOARD},{"Reef Break", PF_REEF_BREAK},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_ROTO_SCOPO},     {"Micro-mist", PF_MICRO_MIST},   {"Fire & Ice", PF_FIRE_ICE},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_MELTING_ORB},     {"Crypt Dust", PF_CRYPT_DUST}, {"Fugue State", PF_FUGUE_STATE},
-    {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_SYNC_LEAD},         {"R3V3RT", PF_FAT_BASS},       {"Bell Tolls", PF_BELL_XMOD},
-    {"VALHALLA", PF_VINTAGE_PAD},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
+    {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_BSYNCA},         {"R3V3RT", PF_R3V3RT},       {"Bell Tolls", PF_BELL_XMOD},
+    {"VALHALLA", PF_VALHALLA},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT},
 };

@@ -1,0 +1,5 @@
+# (af) lead held (Batch 6A, for 26 BSyncA): ONE note, A3 (MIDI 57, 220 Hz), held 4 s from 3000 ms, released at 7000 ms, the script runs to 8500 ms. Judges: the sync rip settling into a sustain (windowed centroid), fatness (beat of the stack), the release.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+7000 midi 0x80 57 0
+8500 end

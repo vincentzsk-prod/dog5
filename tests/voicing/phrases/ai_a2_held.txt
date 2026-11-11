@@ -1,0 +1,5 @@
+# (ai) A2 held (Batch 6A, for 27 R3V3RT): A2 (MIDI 45, 110 Hz) held 3 s from 3000 ms, released at 6000 ms, the script runs to 7500 ms. Judges: sustain level against the peak, the run-off at key-up, the weight.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 45 100
+6000 midi 0x80 45 0
+7500 end
