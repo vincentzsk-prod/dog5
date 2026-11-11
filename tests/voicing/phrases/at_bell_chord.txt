@@ -1,0 +1,9 @@
+# (at) bell chord (Batch 6B, 28): A3 E4 A4 (57 64 69) struck together at 3000 ms, held 3 s, the script runs to 11 s. Judges: three rings at once, the pool.
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3000 midi 0x90 64 100
+3000 midi 0x90 69 100
+6000 midi 0x80 57 0
+6000 midi 0x80 64 0
+6000 midi 0x80 69 0
+11000 end

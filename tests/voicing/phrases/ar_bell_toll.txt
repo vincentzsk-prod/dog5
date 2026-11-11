@@ -1,0 +1,19 @@
+# (ar) slow toll (Batch 6B, for 28 Bell Tolls): eight single notes 1 s apart, A3 E4 A4 C#5 E5 A5 E5 A4 (57 64 69 73 76 81 76 69), gate 400 ms, vel 96-110, 4 s tail. Judges: the ring against the next strike, the register, the pool. The level phrase of 28 (note-on region).
+# Notes start at 3000 ms.  Bare events only: tests/voicing/voicekit.py puts the program select / parameters first.
+3000 midi 0x90 57 100
+3400 midi 0x80 57 0
+4000 midi 0x90 64 96
+4400 midi 0x80 64 0
+5000 midi 0x90 69 104
+5400 midi 0x80 69 0
+6000 midi 0x90 73 100
+6400 midi 0x80 73 0
+7000 midi 0x90 76 106
+7400 midi 0x80 76 0
+8000 midi 0x90 81 110
+8400 midi 0x80 81 0
+9000 midi 0x90 76 104
+9400 midi 0x80 76 0
+10000 midi 0x90 69 98
+10400 midi 0x80 69 0
+15000 end
