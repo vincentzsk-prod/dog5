@@ -24,7 +24,7 @@ is the pass that uses that list.
 | 32 patches, voiced by ear **on the host build** | Anything that needs an actual speaker and a room |
 | The browser sim and the installer page | The web editor (dropped — §8 of the decisions doc) |
 | Font fix, name field, polyphony control | |
-| | **More blank canvases** (Vincent, 11 Nov): a couple of further INIT-style slots such as an init pulse, an init two-oscillator, an init mono; shape and number open |
+| | **More blank canvases** (Vincent, 11 Nov): a couple of further INIT-style slots such as an init pulse, an init two-oscillator, an init mono; shape and number open; extended 12 Nov: also a raw single-saw canvas (the Craw render of Batch 6B) and a MONO init |
 
 The split is clean because the host build renders real audio to WAV and the sim runs the real firmware in a
 browser. Nearly everything is judgeable before the hardware exists. What isn't, is the last mile of tone —
