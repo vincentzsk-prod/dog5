@@ -123,14 +123,13 @@ SOUND / ART.
 ### CHAPTER IV — THE ANCIENT RELICS (the survivors, rebuilt not ripped) — LE GATO (the closer)
 - **25 "SAWTOOTH" · P1 · from POLY BRASS** — SOUND: dual saws, slight detune, classic 24 dB filter-env swell.
   ART: amber shrapnel pierces the right UI border.
-- **26 "BSyncA" · P1 · from SYNC LEAD** — SOUND: OSC2 hard-synced, pitch env sweeping the slave. ART: geometric
+- **26 "BSyncA" · P1 · from SYNC LEAD** — SOUND: a UNISON 3 hard-sync lead, an audible master under the synced slave, the pitch envelope sweeping the slave on detached notes, GROWL 44, dry. *(Brief changed after listening, 11 Nov 2026; it was: OSC2 hard-synced, pitch env sweeping the slave, silent master, MONO, with echo and spring. Vincent's notes: Prophet-5 sync solo, fat, warm, gritty, driven, not fuzzy.)* ART: geometric
   debris across the edge.
-- **27 "R3V3RT" · P1 · from FAT BASS** — SOUND: single pulse, punchy decay-only filter env, zero resonance.
-  Tight analog bass. ART: sharp polygonal strikes chip the frame.
+- **27 "R3V3RT" · P1 · from FAT BASS** — SOUND: single pulse, decay-only filter env (decay 85, sustain 0), zero resonance, AMP SUSTAIN 90 with a 5 ms release: a sustained body with a tight run-off. *(Brief changed after listening, 11 Nov 2026; it was: single pulse, punchy decay-only filter env, zero resonance, tight analog bass; the original array was a saw plus a sub-octave pulse, RESO 30. Vincent wanted a healthy sustain.)* ART: sharp polygonal strikes chip the frame.
 - **28 "Bell Tolls" · P2 · from BELL XMOD (kept deliberately)** — SOUND: OSC B FM'ing OSC A (X-MOD), fast
   attack, long release. Inharmonic chimes; the friction with the hard-chop VCA IS the design. ART: golden code
   sheds over the poly-count.
-- **29 "VALHALLA" · P1 · from VINTAGE PD** — SOUND: PWM on both osc, slow attack/release, slop ~20%. ART:
+- **29 "VALHALLA" · P1 · from VINTAGE PD** — SOUND: PWM on both osc, slow attack/release, slop ~20%. *(Batch 6A, 11 Nov 2026: round 1 of a medium-attack PWM chord wash was rejected; the slot holds the original unvoiced values and goes to a round 2 with a new brief. This text is the original brief, kept as history.)* ART:
   fading amber radiates through the shattered HUD.
 - **30 "THE DØG" · P1 · from DRONE UNI/unison** — SOUND: all voices on one note (UNISON), slight detune,
   filter wide open, low register. Floor-shaking. **SIGNATURE PATCH.** ART: acoustic weight crumbles the altar
