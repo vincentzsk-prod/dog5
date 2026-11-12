@@ -42,10 +42,10 @@ OberVave turns the FM-1 into a single, deep instrument in the spirit of the clas
 lowpass-to-highpass morph, two envelopes, an LFO, an arpeggiator, a two-track step sequencer, 99 programs (64 factory sounds), and
 three effects after the voices. No second engine: one synth, as far as the chip goes.
 
-<p align="center"><img src="docs/screen.png" width="240" alt="OberVave's screen: program 01 DARK ARP, the ARP page with four knobs, the scope, eight voice LEDs"></p>
+<p align="center"><img src="assets/obervave-screen.png" width="240" alt="OberVave's screen: program 01 DARK ARP, the ARP page with four knobs, the scope, eight voice LEDs"></p>
 
 > **Status: 1.5.3, runs on the FM-1.** Install it from [thefirmwarehub.com](https://thefirmwarehub.com) or with
-> `tools/fm1_install.py docs/firmware/obervave-1.5.3.fwsc` (identity `FM-1_955`). 1.5.3: the update loader shows what it
+> `tools/fm1_install.py` with the 1.5.3 package (identity `FM-1_955`; it was `docs/firmware/obervave-1.5.3.fwsc` until Batch 7B, now only in git history). 1.5.3: the update loader shows what it
 > does (UPDATE MODE with a running light while it waits, WRITING with 20 segments and the percent, UPDATE FAILED), in the
 > Firmware Hub's look; the idea from Skiff. 1.5.2 opened the FM-1's **TRS MIDI IN**
 > jack: a keyboard, a drum machine or a sequencer through a TRS-to-DIN adapter plays OberVave (notes, CC, program
@@ -67,9 +67,9 @@ three effects after the voices. No second engine: one synth, as far as the chip 
 > saves patterns as zp12 does its loops (see [the sequencer](#the-sequencer)). Do not install 1.1: its USB-MIDI out is
 > broken, and once it runs no installer gets another firmware back on (1.2 fixed it).
 
-**Play it in your browser:** `docs/sim/` is the firmware itself (the same C sources, compiled to WebAssembly) with
+**Play it in your browser:** `tests/ref-sim/` is the firmware itself (the same C sources, compiled to WebAssembly) with
 the FM-1's screen, keys, buttons and knobs, your computer keyboard or a MIDI keyboard. Build it with
-`sh web/sim/build.sh`, try it with `python3 -m http.server -d docs/sim` (see `web/sim/build.sh` for the two tools).
+`sh web/sim/build.sh`, try it with `python3 -m http.server -d tests/ref-sim` (see `web/sim/build.sh` for the two tools).
 
 **M-Vave SMK-37:** see [SMK-37 instructions](SMK37.md).
 
@@ -176,7 +176,7 @@ the JieLi AC79 SDK: see Dinghy's README, "Set up once").
 ```sh
 tests/run_host.sh                 # the synth on your computer: build/host/obervave.wav and screens as PNG
 tests/run_host.sh my-script.txt   # your own keys / buttons / knob turns / MIDI over time (tests/host.c explains)
-sh web/sim/build.sh               # the browser simulator: docs/sim (zig cc + wasm-opt), node tests/sim_test.mjs
+sh web/sim/build.sh               # the browser simulator: tests/ref-sim (zig cc + wasm-opt), node tests/sim_test.mjs
 ./build.sh                        # the device package: build/dog5.fwsc
 python3 tools/fm1_install.py build/dog5.fwsc   # onto the FM-1 over USB
 ```

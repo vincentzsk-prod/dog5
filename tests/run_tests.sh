@@ -95,10 +95,10 @@ done
 [ "$found" = 1 ] || echo "(no SMK-37 packages in build/: BOARD=smk37 sh build.sh first)"
 
 NODE=$(command -v node || true)
-if [ -n "$NODE" ] && [ -f docs/sim/obervave.wasm ]; then
-    run "browser simulator (docs/sim, web/sim/build.sh): boots, sounds, the screen, speed, storage, the worklet; = the host build" "$NODE" tests/sim_test.mjs
+if [ -n "$NODE" ] && [ -f tests/ref-sim/obervave.wasm ]; then
+    run "browser simulator (tests/ref-sim, web/sim/build.sh): boots, sounds, the screen, speed, storage, the worklet; = the host build" "$NODE" tests/sim_test.mjs
 else
-    echo "(no node or no docs/sim/obervave.wasm: the browser simulator's test is skipped)"
+    echo "(no node or no tests/ref-sim/obervave.wasm: the browser simulator's test is skipped)"
 fi
 
 run "installer (tools/fm1_install.py): FM-1 and SMK-37, install and the update-mode resume check the model" python3 tests/install_test.py

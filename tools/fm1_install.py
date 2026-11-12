@@ -3,7 +3,7 @@
 # Copyright (C) 2026 Leo Kuroshita (@kurogedelic), Hügelton Instruments
 """Install a Felucca package (.fwsc) on an FM-1 (or an M-Vave SMK-37 Pro) over USB-MIDI.
 
-The same update as the web installer (web/fm1ota.js): step 1, the
+The same update as the web installer (web/install/fm1install.js): step 1, the
 running firmware reads parts of the package and starts the update loader;
 step 2, the loader reads the whole package and writes it. In both steps the
 device asks (SysEx read requests on the logical image) and we answer. Then

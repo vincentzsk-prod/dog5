@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// The browser simulator without a browser: loads docs/sim/obervave.wasm in node, boots it, plays a chord, MIDI notes,
+// The browser simulator without a browser: loads tests/ref-sim/obervave.wasm in node, boots it, plays a chord, MIDI notes,
 // a button, knob turns, renders seconds of sound and checks: it sounds, no NaN, no clipping, the screen changes, and
 // it renders far faster than real time. Then the same script through the native host build (tests/host.c): the
 // sound must be the same samples (the simulator renders a block ahead, as the device's ISR: 256 frames later in
 // time) and the screens the same pixels.
-//   node tests/sim_test.mjs [docs/sim/obervave.wasm]      (after sh web/sim/build.sh)
+//   node tests/sim_test.mjs [tests/ref-sim/obervave.wasm]      (after sh web/sim/build.sh)
 import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const WASM = process.argv[2] || path.join(ROOT, 'docs/sim/obervave.wasm');
+const WASM = process.argv[2] || path.join(ROOT, 'tests/ref-sim/obervave.wasm');
 let fail = 0;
 const check = (ok, what) => { console.log((ok ? '  ok    ' : '  FAIL  ') + what); if (!ok) fail = 1; };
 
