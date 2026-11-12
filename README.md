@@ -1,3 +1,36 @@
+# DØG-5
+
+**Custom firmware for the M-VAVE FM-1 pocket synth, for the band DØGS.** An aggressive, live, virtual-analog voice (8
+voices, a Psych Chain of GROWL / ALLEY / DRAIN / CHEW after them, 99 program slots with 32 factory patches). Free and
+open source, GPL-3.0-only. The build brief and the reasoning are in [`CLAUDE.md`](CLAUDE.md) and [`dog5-docs/`](dog5-docs/).
+
+> **Status (12 Nov 2026): a pre-release test build, v0.1, package identity `FM-1_961`.** Not yet flashed on a real
+> unit. The installer page described below has been tested against Python's reference installer and a fake MIDI device,
+> not against hardware.
+
+**Install it:** the self-hosted installer page, [`docs/install/`](docs/install/README.md) (Chrome or Edge, over USB; once
+GitHub Pages is on for `main` `/docs`: <https://vincentzsk-prod.github.io/dog5/install/>). It carries the package inside
+the page, shows what it will write, has a dry run, and resumes an interrupted install. From a terminal:
+`python3 tools/fm1_install.py docs/install/dog5-0.1-20261112.fwsc`. If the unit will not boot: M-Flasher and your backup.
+
+**Build it:** `./build.sh --release 0.1` makes `build/dog5-0.1.fwsc` (identity `FM-1_961`; a dev build is `build/dog5.fwsc`,
+`FM-1_960`); `python3 tools/make_installer_page.py --release 0.1` regenerates the installer page and its package together.
+The product's name and identity live in one file, [`firmware/src/dog5_id.h`](firmware/src/dog5_id.h).
+
+**Credits.** DØG-5 by ZIGGY (DØGS). **DØG-5 is a fork of OberVave v1.5.3 (pinned)** by
+[zvenson](https://github.com/zvenson/obervave) (`zvenson/obervave`, tag `v1.5.3`, commit `7e1ccf9`), which stands on
+[Dinghy](https://github.com/zvenson/dinghy), [Felucca](https://github.com/hugelton/Felucca) (Leo Kuroshita, Hügelton
+Instruments) and [SLOOP](https://github.com/isod89/sloop-fm1) (isod89). Everything inherited keeps its copyright and
+licence; see [`NOTICE`](NOTICE), [`LICENSING.md`](LICENSING.md) and [`LICENSE`](LICENSE) (GPL-3.0-only).
+
+---
+
+## The base project: OberVave 1.5.3 (its README, preserved)
+
+*Everything below describes OberVave 1.5.3, the pinned base. DØG-5 differs (no sequencer, a new panel, a Psych Chain,
+99 slots with a 14-character name field): `CLAUDE.md` is the truth for DØG-5. The install lines and the Firmware Hub
+link below install OberVave, not DØG-5.*
+
 <p align="center"><img src="assets/logo.png" width="800" alt="OberVave: the name in red glowing outlines, three blue bands through the lower half of the letters"></p>
 
 # OberVave
@@ -144,8 +177,8 @@ the JieLi AC79 SDK: see Dinghy's README, "Set up once").
 tests/run_host.sh                 # the synth on your computer: build/host/obervave.wav and screens as PNG
 tests/run_host.sh my-script.txt   # your own keys / buttons / knob turns / MIDI over time (tests/host.c explains)
 sh web/sim/build.sh               # the browser simulator: docs/sim (zig cc + wasm-opt), node tests/sim_test.mjs
-./build.sh                        # the device package: build/obervave.fwsc
-python3 tools/fm1_install.py build/obervave.fwsc   # onto the FM-1 over USB
+./build.sh                        # the device package: build/dog5.fwsc
+python3 tools/fm1_install.py build/dog5.fwsc   # onto the FM-1 over USB
 ```
 
 The build refuses what would brick an FM-1 (a 64-bit division, a call into the chip ROM, too much RAM); the rules

@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-only
 # Copyright (C) 2026 Leo Kuroshita (@kurogedelic), Hügelton Instruments
-"""Build OberVave (on Felucca / SLOOP's platform): the app, the update loader and an installable .fwsc package.
+"""Build DØG-5 (forked from OberVave v1.5.3, on Felucca / SLOOP's platform): the app, the update loader and an installable
+.fwsc package.
 
   tools/build.py [--release X.Y[-suffix]] [--board fm1|smk37] [--model pro|elite|mke]
 
-Outputs in build/: obervave.bin (app), loader/ota.bin (update loader),
-obervave.fwsc (package). See README.md for the toolchain and the SDK.
+Outputs in build/: obervave.bin (app; the file name is the fork's source name), loader/ota.bin (update loader),
+dog5.fwsc (package; dog5-X.Y.fwsc for a release). See README.md for the toolchain and the SDK.
+The product's name, package identity and file stem are read from firmware/src/dog5_id.h: that file is the one place.
 
 BOARD=smk37 (or --board smk37) builds for the M-Vave SMK-37 (SMK37.md): -DBOARD_SMK37=1 for the app and the loader,
-identity SMK-37 Pro_950 (release X.Y: SMK-37 Pro_95Y, as the FM-1's FM-1_95Y), the SMK flash layout (fm1pkg_make.py,
-app slot 0x97400), the package build/obervave-smk37.fwsc (obervave-X.Y-smk37.fwsc for a release). MODEL=elite / mke
+identity SMK-37 Pro_960 (release X.Y: SMK-37 Pro_96Y, as the FM-1's FM-1_96Y), the SMK flash layout (fm1pkg_make.py,
+app slot 0x97400), the package build/dog5-smk37.fwsc (dog5-X.Y-smk37.fwsc for a release). MODEL=elite / mke
 (or --model) with smk37: the same build under the SMK-37 Elite's or the MKE-P37's model name (identity SMK-37
-Elite_95Y / MKE-P37_95Y, the loader's and the update record's name too; -DSMK_MODEL), so M-Vave's updater still takes
-that unit's factory package: obervave-smk37-elite.fwsc, -mke.fwsc. The default stays the FM-1, built exactly as before.
+Elite_96Y / MKE-P37_96Y, the loader's and the update record's name too; -DSMK_MODEL), so M-Vave's updater still takes
+that unit's factory package: dog5-smk37-elite.fwsc, -mke.fwsc. The default stays the FM-1, built exactly as before.
 
 The JieLi toolchain is Linux x86-64 only. JIELI_TOOLCHAIN points at it; on
 macOS (or with JIELI_DOCKER=1) each tool runs in a linux/amd64 container.
@@ -56,9 +58,22 @@ SDK_SHA256 = {
     "cfg/eq_cfg_hw.bin": "41167491bffed4651750719c973d2758adeb9021a5670d02d6a53c85ed80ea7d",
 }
 
-PRODUCT = "FM-1_950"                # OberVave: 95N (OUR_LOADER in the installer wants FM-1_9NN). Your fork: pick your own
+
+
+def dog5_id():
+    """the product's identity strings: the #define DOG5_* lines of firmware/src/dog5_id.h (the one place)"""
+    txt = (FW / "src" / "dog5_id.h").read_text(encoding="utf-8")
+    d = dict(re.findall(r'^#define\s+(DOG5_\w+)\s+"((?:[^"\\]|\\.)*)"', txt, re.M))
+    for k in ("DOG5_ID_FM1", "DOG5_ID_SMK", "DOG5_PACKAGE"):
+        if k not in d:
+            raise SystemExit(f"firmware/src/dog5_id.h: no #define {k} \"...\"")
+    return d
+
+
+ID = dog5_id()
+PRODUCT = ID["DOG5_ID_FM1"] + "0"   # DØG-5: FM-1_96N (the installer wants FM-1_9NN). Taken: SLOOP 900, 91N, 93N, 95N OberVave, 97N, 98N, 99N
 BOARD = "fm1"                       # fm1 (default) or smk37: BOARD env or --board
-BOARD_PREFIX = {"fm1": "FM-1_95", "smk37": "SMK-37 Pro_95"}   # identity: prefix + the minor version (0: a dev build)
+BOARD_PREFIX = {"fm1": ID["DOG5_ID_FM1"], "smk37": ID["DOG5_ID_SMK"]}   # identity: prefix + the minor version (0: a dev build)
 BOARD_DEFS = {"fm1": [], "smk37": ["-DBOARD_SMK37=1"]}       # the FM-1 build gets no new flag (byte-identical)
 # smk37: the keyboard's model name (MODEL env or --model); one hardware, three names. pro adds no flag
 MODELS = {"pro": "SMK-37 Pro", "elite": "SMK-37 Elite", "mke": "MKE-P37"}
@@ -298,7 +313,7 @@ def mmio_check():
 def main():
     global PRODUCT, VERSION, BOARD, APP_SLOT
     ap = argparse.ArgumentParser()
-    ap.add_argument("--release", metavar="X.Y", help="release build: identity FM-1_95Y, version string X.Y")
+    ap.add_argument("--release", metavar="X.Y", help="release build: identity FM-1_96Y, version string X.Y")
     ap.add_argument("--board", choices=sorted(BOARD_PREFIX), default=None,
                     help="target board: fm1 (default) or smk37 (default: $BOARD, else fm1)")
     ap.add_argument("--model", choices=sorted(MODELS), default=None,
@@ -320,14 +335,14 @@ def main():
         BOARD_PREFIX[BOARD] = BOARD_PREFIX[BOARD].replace(MODELS["pro"], MODELS[model])
         PRODUCT = BOARD_PREFIX[BOARD] + "0"
         suffix += "-" + model
-    name = f"obervave{suffix}.fwsc"
+    name = f"{ID['DOG5_PACKAGE']}{suffix}.fwsc"
     if a.release:                   # one digit each: the identity has room for two (X.Y; a .Z only in the text)
         m = re.fullmatch(r"(\d)\.(\d)(\.\d)?(-[A-Za-z0-9]+)?", a.release)
         if not m:
             raise SystemExit(f"--release {a.release}: use X.Y, X.Y.Z or X.Y-suffix, one digit each")
         PRODUCT = BOARD_PREFIX[BOARD] + m[2]
         VERSION = m[1] + "." + m[2] + (m[3] or "")
-        name = f"obervave-{a.release}{suffix}.fwsc"
+        name = f"{ID['DOG5_PACKAGE']}-{a.release}{suffix}.fwsc"
     fm1pkg_make.SDK = a.sdk
     for rel, sha in SDK_SHA256.items():          # fail early without the SDK
         if hashlib.sha256(fm1pkg_make.sdk_file(rel)).hexdigest() != sha:

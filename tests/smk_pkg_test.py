@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-only
-# (from genkigenki/sloop-fm1 smk37; OberVave: identity SMK-37 Pro_950)
+# (from genkigenki/sloop-fm1 smk37; DØG-5: identity SMK-37 Pro_960)
 """An SMK-37 Pro package from fm1pkg_make.py --board smk37: flash.bin is the stock PRCT size (0x9D000) and
 its app area carries the stock v016 region table exactly (see the fm1-to-smk37 guide), so the SDK
 and a later stock rollback see the same VM / BTIF / USRTRIM / USRFLASH / USR regions.
@@ -24,7 +24,7 @@ def ok(cond, what):
 
 
 raw = Path(sys.argv[1]).read_bytes()
-want_product = sys.argv[2] if len(sys.argv) > 2 else "SMK-37 Pro_950"
+want_product = sys.argv[2] if len(sys.argv) > 2 else "SMK-37 Pro_960"
 image, n = I.deinterleave(raw)
 ok(n == 20 and I.product_of(raw) == want_product and not I.package_damage(image),
    f"identity {I.product_of(raw)}, 20 blocks, CRCs ok")

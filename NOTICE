@@ -1,0 +1,22 @@
+DØG-5 by ZIGGY (DØGS)
+=====================
+
+DØG-5 is free software under the GNU General Public License, version 3 only (GPL-3.0-only); the full text is in LICENSE.
+
+DØG-5 is a fork of OberVave v1.5.3 (pinned):
+    OberVave by zvenson, https://github.com/zvenson/obervave
+    tag v1.5.3, commit 7e1ccf9ca9e96a14a961e48ea8fe6efa907422df (released 2026-10-19)
+    plus one upstream change, 36df696 (the UC25HQ80 flash chip accepted), cherry-picked.
+OberVave stands on Dinghy (zvenson, https://github.com/zvenson/dinghy), which carries the FM-1 platform of Felucca
+(Leo Kuroshita, Hügelton Instruments, https://github.com/hugelton/Felucca) with the changes of SLOOP (isod89,
+https://github.com/isod89/sloop-fm1).
+
+Who made what, file by file, and the third-party material (Terminus font, JieLi AC79 SDK files, the SMK-37 port by
+M. Geisler, the update loader's screen from Skiff by illuminus5, ...): LICENSING.md. Every copyright line and SPDX
+header in the source files stays as it is.
+
+The installer page (web/install/, docs/install/) ports the install protocol of tools/fm1_install.py (Copyright (C)
+2026 Leo Kuroshita, Hügelton Instruments; the SMK-37 additions by M. Geisler) to JavaScript.
+
+OberVave is inspired by the classic 8-voice poly synths of 1979-84; those names are trademarks of their owners and
+none of the marks appear in the firmware. "M-VAVE" and "FM-1" belong to their owners.

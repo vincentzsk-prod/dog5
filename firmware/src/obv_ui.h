@@ -139,9 +139,9 @@ static void cv_stripes(int32_t y0, int32_t band, int32_t gap, int32_t x_to, int3
             }
 }
 
-static void draw_logo_small(int32_t x, int32_t y)   /* "OBERVAVE" in FONT_S with the bands through the lower half */
+static void draw_logo_small(int32_t x, int32_t y)   /* the name in FONT_S with the bands through the lower half */
 {
-    cv_text(x, y, &FONT_S, "OBERVAVE", C_CREAM);
+    cv_text(x, y, &FONT_S, DOG5_NAME, C_CREAM);
     cv_stripes(y + 10, 2, 0, 0, 1);
 }
 
@@ -158,7 +158,7 @@ static void ui_header(uint32_t prog, const uint8_t *name, uint32_t edited, const
     n[PATCH_NAME + 1] = 0;
     cv_text(54, 4, &FONT_S, n, C_CREAM);
     cv_text(54, 22, &FONT_S, tags, C_DIMT);
-    draw_logo_small(240 - 4 - text_w(&FONT_S, "OBERVAVE"), 4);
+    draw_logo_small(240 - 4 - text_w(&FONT_S, DOG5_NAME), 4);
     cv_rect(0, 42, 240, 1, C_RULE);
     cv_blit(0, 0);
 }
@@ -264,31 +264,23 @@ static void ui_hints(const char *l1, const char *l2, uint16_t c1)
     cv_blit(0, 200);
 }
 
-/* the splash: the logo (firmware/gen/obv_splash.h, from tools/make_logo.py --splash). The glowing letters strike
- * like a neon tube (a few flickers, then full), the three bands sweep in from the left, the line under it fades in.
- * ~2.4 s, polls meanwhile. Both layers are RLE over one palette; they are read in step, pixel by pixel */
-#include "obv_splash.h"
+/* the splash: the name, plain, struck like a neon tube (a few flickers, then full), the line under it fades in.
+ * ~2.4 s, polls meanwhile. The first splash was the OberVave wordmark (firmware/gen/obv_splash.h, tools/make_logo.py
+ * --splash: both stay in the tree, no longer included); a richer one comes with the artwork. x_to is kept for that
+ * (the bands' sweep, unused now) so ui_splash's timing stays as it was */
+#define SPLASH_H 49
 #define SPLASH_Y 70
 static void splash_frame(uint32_t fade, int32_t x_to, uint32_t sub)
 {
-    const uint8_t *a = SPLASH_RLE0, *b = SPLASH_RLE1;     /* the letters; the letters with the bands */
-    uint32_t ra = 0, rb = 0, ia = 0, ib = 0, x = 0, y = 0, n = SPLASH_W * SPLASH_H, i;
+    uint16_t c = fade >= 256u ? C_CREAM : blend565(C_PANEL, C_CREAM, fade);
+    (void)x_to;
     cv_begin(240, SPLASH_H + 40, C_PANEL);
-    for (i = 0; i < n; i++) {
-        uint16_t c;
-        if (!ra) { ra = *a++; ia = *a++; }
-        if (!rb) { rb = *b++; ib = *b++; }
-        ra--; rb--;
-        c = SPLASH_PAL[(int32_t)x < x_to ? ib : ia];
-        if (c != C_PANEL)
-            cv_px[y * 240u + x] = swap16(fade >= 256u ? c : blend565(C_PANEL, c, fade));
-        if (++x == SPLASH_W) { x = 0; y++; }
-    }
-    if (sub) {                                      /* the line under the logo, as in assets/logo.png, in two rows */
+    cv_text((240 - text_w(&FONT_S, DOG5_NAME)) / 2, 16, &FONT_S, DOG5_NAME, c);
+    if (sub) {                                      /* the line under the name, in two rows */
         const char *t1 = "8-VOICE ANALOG POLY", *t2 = "M-VAVE FM-1";
-        uint16_t c = sub >= 256u ? C_AMBER : blend565(C_PANEL, C_AMBER, sub);
-        cv_text((240 - text_w(&FONT_S, t1)) / 2, SPLASH_H + 14, &FONT_S, t1, c);
-        cv_text((240 - text_w(&FONT_S, t2)) / 2, SPLASH_H + 28, &FONT_S, t2, c);
+        uint16_t c2 = sub >= 256u ? C_AMBER : blend565(C_PANEL, C_AMBER, sub);
+        cv_text((240 - text_w(&FONT_S, t1)) / 2, SPLASH_H + 14, &FONT_S, t1, c2);
+        cv_text((240 - text_w(&FONT_S, t2)) / 2, SPLASH_H + 28, &FONT_S, t2, c2);
     }
     cv_blit(0, SPLASH_Y);
 }

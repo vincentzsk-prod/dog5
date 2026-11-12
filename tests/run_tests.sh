@@ -16,7 +16,7 @@ CC="${CC:-cc} -O1 -Wall -Wno-unused-function"
 fail=0
 run() { echo "== $1"; shift; "$@" || fail=1; }
 
-[ -f build/obervave.fwsc ] || { echo "run ./build.sh first"; exit 1; }
+[ -f build/dog5.fwsc ] || { echo "run ./build.sh first"; exit 1; }
 
 run "FM-1 app on the host: the default script plays, screens and sound" sh tests/run_host.sh
 run "SMK-37 app on the host: the default script" env BOARD=smk37 sh tests/run_host.sh
@@ -61,13 +61,13 @@ $CC -o "$OUT/smk_wheel_test" tests/smk_wheel_test.c
 run "SMK-37 pitch wheel: the bend is back to 0 at rest, however slowly the wheel was moved" "$OUT/smk_wheel_test"
 
 $CC -o "$OUT/ota_test" tests/ota_test.c
-run "M-UPGRADE entry (FM-1)" "$OUT/ota_test" build/obervave.fwsc
+run "M-UPGRADE entry (FM-1)" "$OUT/ota_test" build/dog5.fwsc
 head -c 60000 build/obervave.bin > "$OUT/old_app.bin"
 python3 tools/fm1pkg_make.py "$OUT/old_app.bin" build/loader/ota.bin "$OUT/old.fwsc" >/dev/null
 $CC -o "$OUT/ldr_screen_test" tests/ldr_screen_test.c
 run "update loader's screen (from Skiff): UPDATE MODE, WRITING and its bar, UPDATE FAILED" "$OUT/ldr_screen_test" "$OUT"
 $CC -o "$OUT/ldr_test" tests/ldr_test.c
-run "update loader (FM-1): other app -> this build" "$OUT/ldr_test" "$OUT/old.fwsc" build/obervave.fwsc
+run "update loader (FM-1): other app -> this build" "$OUT/ldr_test" "$OUT/old.fwsc" build/dog5.fwsc
 
 # SMK-37: the OTA staging and the loader windows on SMK-layout packages (made here from the FM-1 binaries: only the
 # layout and the protocol are under test), then the real SMK packages
@@ -84,11 +84,11 @@ done
 $CC -DBOARD_SMK37=1 -o "$OUT/ldr_test_smk" tests/ldr_test.c
 run "update loader, SMK-37: app area 0x4000-0x9CFFF, protected ranges untouched" "$OUT/ldr_test_smk" "$OUT/smk_old.fwsc" "$OUT/smk_new.fwsc"
 found=0
-for m in ":SMK-37 Pro_95" "-elite:SMK-37 Elite_95" "-mke:MKE-P37_95"; do
-    for f in build/obervave*-smk37${m%%:*}.fwsc; do
+for m in ":SMK-37 Pro_96" "-elite:SMK-37 Elite_96" "-mke:MKE-P37_96"; do
+    for f in build/dog5*-smk37${m%%:*}.fwsc; do
         [ -f "$f" ] || continue
         found=1
-        v=$(echo "$f" | sed -n 's/.*obervave-[0-9]\.\([0-9]\).*/\1/p'); v=${v:-0}
+        v=$(echo "$f" | sed -n 's/.*dog5-[0-9]\.\([0-9]\).*/\1/p'); v=${v:-0}
         run "SMK-37 package $f: layout, identity ${m#*:}$v, the loader marker" python3 tests/smk_pkg_test.py "$f" "${m#*:}$v"
     done
 done
@@ -102,6 +102,11 @@ else
 fi
 
 run "installer (tools/fm1_install.py): FM-1 and SMK-37, install and the update-mode resume check the model" python3 tests/install_test.py
+if command -v node >/dev/null 2>&1; then
+    run "installer page (docs/install): same frames and sessions as tools/fm1_install.py, no drift" sh tests/install/run.sh
+else
+    echo "(no node: the installer page's test is skipped)"
+fi
 
 [ "$fail" = 0 ] && echo "ALL TESTS PASSED" || echo "SOME TESTS FAILED"
 exit "$fail"

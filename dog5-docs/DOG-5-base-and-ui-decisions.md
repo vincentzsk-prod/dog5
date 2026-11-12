@@ -453,6 +453,15 @@ Also inherited: **the update-loader screen**, redesigned upstream in 1.5.3
 already a designed surface; DØG-5 reskins it rather than building it. First impression on every machine the
 firmware ever lands on.
 
+**Done 12 Nov 2026 (Batch 7): the plain DØG-5 identity and an own installer page.** Package identity `FM-1_96N`
+(`FM-1_961` for the v0.1 test build), name and identity in one file (`firmware/src/dog5_id.h`, read by `tools/build.py`);
+the installer is one self-contained page, `docs/install/index.html`, with the package inside it, built from
+`web/install/` by `tools/make_installer_page.py` (`--check` fails on drift); its protocol is a port of
+`tools/fm1_install.py`, proven byte-identical by `tests/install/run.sh` (not tested against hardware; see
+`docs/install/README.md`). Build + install: `./build.sh --release 0.1`, then
+`python3 tools/make_installer_page.py --release 0.1`, then `sh tests/install/run.sh`. The boot splash is a plain text
+splash for now and the browser simulator (`docs/sim/`) is still the OberVave build: both wait for the artwork batch.
+
 ### 7.3 Web editor — ⚠️ the one that is NOT free
 
 OberVave has **no** web editor. Felucca, SLOOP, Skiff, Melodee, JIANT and GammaWave all do, so it is the
