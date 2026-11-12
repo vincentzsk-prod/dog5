@@ -40,15 +40,15 @@ static const uint8_t PF_GHOST_BOARD[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O
     P_CUTOFF, 75, P_RESO, 5, P_FENV_AMT, 74, P_FA, 50, P_AA, 60, P_AR, 90, P_LFO_RATE, 50, P_LFO_PHASE, LP_SPREAD,
     P_VINTAGE, 50, P_SPREAD, 100, P_VOLUME, 55, P_DLY_FB, 95, P_DLY_MIX, 105, P_REV_SIZE, 100, P_REV_DAMP, 25,
     P_REV_MIX, 70, P_ALLEY, 104, X};
-/* 28 Bell Tolls (Batch 6B2 round 2, variant C2 committed PROVISIONALLY until Vincent picks: C of Batch 6B with X-MOD 64 -> 32; this slot's alone): a struck bell, the KEY is the hum. OSC 1 a saw (LEVEL 127) carries the hum, prime, quint and nominal as
- * its harmonics, OSC 2 a saw +15 st (2.378x, LEVEL 70) the tierce; X-MOD 32 (was 64: the FM sidebands of that inharmonic ratio were the noise-like top grit, measured in 2-10 kHz); a 24 dB low-pass (CUTOFF 88, KEY TRK 64) closed by the filter
- * envelope faster than the ring; amp attack 0 / decay 111 / sustain 0 / release 111 (a ring of about 4 s to -40 dB that goes on after the key-up); a TRI LFO (0.37 Hz) on pitch +-9.4 cents and amp that fades in (DELAY 35); a 149 ms echo (MIX 30,
- * FEEDBK 25, TONE 80) and a spring (DRAIN 20). No GROWL, CHEW or DRIVE. VOLUME 113: -19.0 dBFS RMS over the note-on region of the slow toll (ar), chord peak -4.03 */
-static const uint8_t PF_BELL_XMOD[] = {P_O1_LVL, 127, P_O2_LVL, 70, P_O2_SEMI, 39, P_XMOD, 32, P_O2_FINE, 64,
-    P_CUTOFF, 88, P_RESO, 0, P_FENV_AMT, 88, P_FA, 0, P_FD, 90, P_FS, 30, P_FR, 70, P_AA, 0, P_AD, 111, P_AS, 0,
-    P_AR, 111, P_LFO_RATE, 40, P_LFO_DELAY, 35, P_LFO_PHASE, LP_SYNC, P_LFO_PITCH, 14, P_LFO_AMP, 20, P_VINTAGE, 20,
-    P_SPREAD, 70, P_VOLUME, 113, P_DLY_TIME, DD_8, P_DLY_FB, 25, P_DLY_TONE, 80, P_DLY_MIX, 30, P_REV_SIZE, 70,
-    P_REV_DAMP, 35, P_REV_PRE, 15, P_REV_MIX, 20, P_ALLEY, 80, X};
+/* 28 Arr 2 Dee 2 (was Bell Tolls; voiced 11-12 Nov 2026, Batch 6B2 round 2, approved variant D2: dog5-docs/voicing/cards/28-are-two-d2.md; was PF_BELL_XMOD, this slot's alone): a struck bell tone, the KEY is the hum. OSC 1 a saw (LEVEL 127) carries
+ * the hum, prime, quint and nominal as its harmonics, OSC 2 a saw +15 st (2.378x, LEVEL 70) the tierce; X-MOD 32 (was 64 in round 1: the FM sidebands of that inharmonic ratio were the noise-like top grit, measured in 2-10 kHz); a 24 dB low-pass
+ * (CUTOFF 88, KEY TRK 64) closed by the filter envelope faster than the ring; amp attack 0 / decay 116 / sustain 0 / release 116 (a ring of about 6 s to -40 dB that goes on after the key-up); a TRI LFO (0.37 Hz) on pitch +-9.4 cents and amp that
+ * fades in (DELAY 35); a 149 ms echo (MIX 45, FEEDBK 25, TONE 80) and a spring (DRAIN 35). No GROWL, CHEW or DRIVE. VOLUME 105: -19.13 dBFS RMS over the note-on region of the slow toll (ar), chord peak -4.03 */
+static const uint8_t PF_ARE_TWO_D2[] = {P_O1_LVL, 127, P_O2_LVL, 70, P_O2_SEMI, 39, P_XMOD, 32, P_O2_FINE, 64,
+    P_CUTOFF, 88, P_RESO, 0, P_FENV_AMT, 88, P_FA, 0, P_FD, 90, P_FS, 30, P_FR, 70, P_AA, 0, P_AD, 116, P_AS, 0,
+    P_AR, 116, P_LFO_RATE, 40, P_LFO_DELAY, 35, P_LFO_PHASE, LP_SYNC, P_LFO_PITCH, 14, P_LFO_AMP, 20, P_VINTAGE, 20,
+    P_SPREAD, 70, P_VOLUME, 105, P_DLY_TIME, DD_8, P_DLY_FB, 25, P_DLY_TONE, 80, P_DLY_MIX, 45, P_REV_SIZE, 70,
+    P_REV_DAMP, 35, P_REV_PRE, 15, P_REV_MIX, 35, P_ALLEY, 80, X};
 /* 27 R3V3RT (voiced 11 Nov 2026, Batch 6A, approved variant G, a calibration render: dog5-docs/voicing/cards/27-r3v3rt.md; was PF_FAT_BASS, this slot's alone): a MONO bass from ONE pulse (OSC 1 PW 54, OSC 2 off), RESO 0, a decay-only filter envelope
  * (attack 0, decay 85, sustain 0), amp attack 0, AMP SUSTAIN 90, release 30 (5 ms), CUTOFF 66, KEY TRK 30, filter DRIVE 30, dry. VOLUME 98: -18.00 dBFS RMS over the note-on region of the chopped riff (a), peak -13.8 */
 static const uint8_t PF_R3V3RT[] = {P_O1_WAVE, W_PLS, P_O1_PW, 54, P_O1_LVL, 120, P_O2_WAVE, W_OFF, P_O2_PW, 50,
@@ -359,6 +359,6 @@ static const factory_t FACTORY[NFACT] = {
     {"Ghost Board", PF_GHOST_BOARD},{"Reef Break", PF_REEF_BREAK},      {"Trem Chop", PF_TREM_CHOP}, {"Tidal Pull", PF_TIDAL_PULL},
     {"Titanic", PF_TITANIC},       {"Roto-scopo", PF_ROTO_SCOPO},     {"Micro-mist", PF_MICRO_MIST},   {"Fire & Ice", PF_FIRE_ICE},
     {"Cowl Shadow", PF_COWL_SHADOW},  {"Melting Orb", PF_MELTING_ORB},     {"Crypt Dust", PF_CRYPT_DUST}, {"Fugue State", PF_FUGUE_STATE},
-    {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_BSYNCA},         {"R3V3RT", PF_R3V3RT},       {"Bell Tolls", PF_BELL_XMOD},
+    {"SAWTOOTH", PF_SAWTOOTH},    {"BSyncA", PF_BSYNCA},         {"R3V3RT", PF_R3V3RT},       {"Arr 2 Dee 2", PF_ARE_TWO_D2},
     {"i scream", PF_I_SCREAM},   {"THE D\xD8G", PF_THE_DOG},     {"Fi(l)fth", PF_FIFTH},  {"Init bruv?", PF_INIT_BRUV},
 };
