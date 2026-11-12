@@ -87,7 +87,7 @@ bruv?** = the only patch where nothing fractures (dormant bookend). LEDs: hardes
 | 25 | SAWTOOTH | 190 | 140 | 200 | 70 | 110 | low | right border |
 | 26 | BSyncA | 200 | 150 | 220 | 60 | 120 | mid | screen edge, wide |
 | 27 | R3V3RT | 180 | 120 | 230 | 50 | 90 | low | right frame, sharp |
-| 28 | Bell Tolls | 150 | 130 | 120 | 130 | 60 | mid | poly-count; long shed |
+| 28 | Arr 2 Dee 2 | 150 | 130 | 120 | 130 | 60 | mid | poly-count; long shed |
 | 29 | VALHALLA | 160 | 110 | 90 | 120 | 80 | low | HUD-wide; radiant cracks |
 | 30 | THE DØG ★ | 255 | 160 | 180 | 110 | **180** | low | top-right, heaviest |
 | 31 | Fi(l)fth ◆ | 230 | 150 | 210 | 80 | 160 | mid | bin + frame |

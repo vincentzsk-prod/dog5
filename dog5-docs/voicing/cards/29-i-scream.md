@@ -19,7 +19,7 @@ The reference for the register was Vincent's two phone recordings of a real ice-
 
 **Provenance, built by ear:** the patch was built by ear on the OberVave engine from field recordings Vincent made of a real South African ice-cream van parked outside his house (two phone recordings, Nov 2026). The register (chimes centred about C#6), the note spacing (about 580 ms) and the short bright strike came from those recordings; the measurements of them were rough. Nothing is sampled, and no audio from the recordings is in the firmware or the repo.
 
-**Vincent's ear, after hearing the final (12 Nov 2026), not measured:** he hears it as closer to an arcade or vintage video-game chime than to finger cymbals ("a cleaner ring"). The bank had nothing in that register before this patch.
+**Vincent's ear, after hearing the final (11 Nov 2026), not measured:** he hears it as closer to an arcade or vintage video-game chime than to finger cymbals ("a cleaner ring"). The bank had nothing in that register before this patch.
 
 ## 4. How to play it
 
