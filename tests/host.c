@@ -26,8 +26,9 @@
 #include <valgrind/callgrind.h>
 #endif
 
+#include "../firmware/src/dog5_id.h"
 #ifndef APP_NAME
-#define APP_NAME "OBERVAVE"
+#define APP_NAME DOG5_NAME
 #endif
 #ifndef APP_VER
 #define APP_VER "0.0"

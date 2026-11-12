@@ -72,14 +72,15 @@ static void fm1_led_key_glow(uint32_t id, int on)   /* as fm1_led_key, the dim l
 #endif
 #include "bootguard.h"
 
+#include "dog5_id.h"                              /* the product's name and identity: that file only */
 #ifndef APP_NAME
-#define APP_NAME "OBERVAVE"
+#define APP_NAME DOG5_NAME
 #endif
 #ifndef FELUCCA_ID
 #if BOARD_SMK37
-#define FELUCCA_ID SMK_MODEL "_950"             /* SMK-37 Pro_95N (Elite, MKE-P37: SMK_MODEL), tools/build.py */
+#define FELUCCA_ID SMK_MODEL "_960"             /* SMK-37 Pro_96N (Elite, MKE-P37: SMK_MODEL), tools/build.py */
 #else
-#define FELUCCA_ID "FM-1_950"                   /* package identity: 95N = OberVave build N (tools/build.py) */
+#define FELUCCA_ID DOG5_ID_FM1 "0"              /* package identity: 96N = DØG-5 build N (tools/build.py) */
 #endif
 #endif
 #ifndef APP_VER

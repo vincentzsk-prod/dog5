@@ -127,10 +127,10 @@ Let go and you are back. If something does not respond, a photo of this screen h
 ## Build
 
 ```sh
-BOARD=smk37 ./build.sh                    # SMK-37 Pro:   build/obervave-smk37.fwsc        (SMK-37 Pro_950)
-BOARD=smk37 MODEL=elite ./build.sh        # SMK-37 Elite: build/obervave-smk37-elite.fwsc  (SMK-37 Elite_950)
-BOARD=smk37 MODEL=mke ./build.sh          # MKE-P37:      build/obervave-smk37-mke.fwsc    (MKE-P37_950)
-BOARD=smk37 ./build.sh --release 1.3-beta # a release:    build/obervave-1.3-beta-smk37.fwsc (SMK-37 Pro_953)
+BOARD=smk37 ./build.sh                    # SMK-37 Pro:   build/dog5-smk37.fwsc            (SMK-37 Pro_960)
+BOARD=smk37 MODEL=elite ./build.sh        # SMK-37 Elite: build/dog5-smk37-elite.fwsc      (SMK-37 Elite_960)
+BOARD=smk37 MODEL=mke ./build.sh          # MKE-P37:      build/dog5-smk37-mke.fwsc        (MKE-P37_960)
+BOARD=smk37 ./build.sh --release 1.3-beta # a release:    build/dog5-1.3-beta-smk37.fwsc (SMK-37 Pro_963)
 ./build.sh                                # the FM-1, unchanged (byte for byte the same as without the SMK code)
 sh tests/run_tests.sh                     # the host tests (build the SMK packages first, the FM-1 last)
 BOARD=smk37 tests/run_host.sh             # the SMK build on your computer (tests/host.c: pads, faders, wheels)
