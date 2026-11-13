@@ -260,6 +260,16 @@ wordmark) — full spec in the build kit.
 - **Host build + browser sim need only clang + Python + Pillow** — all present in a default cloud env. The
   whole synth, the Psych Chain, patch voicing and the art can be built and heard/seen there with no special
   setup. `tests/run_host.sh` (WAV + screen PNGs), `web/sim/build.sh` (browser).
+  **Browser player (Batch 8B, live at `docs/play/` = `https://vincentzsk-prod.github.io/dog5/play/`):** `sh web/sim/build.sh`
+  builds the unchanged firmware + `web/sim/sim.c` to `docs/play/dog5.wasm` (zig cc, then Binaryen `wasm-opt --asyncify`) and copies
+  the page (`index.html`, `sim.js`, `sim.css`, `worklet.js`) and `patches.json` (the 32 factory names, read from
+  `obv_patches.h` by `web/sim/gen_patches.py`). Tools, installed by hand once (the script installs nothing and prints the
+  commands): `python3 -m venv ~/.local/share/obervave-wasm && ~/.local/share/obervave-wasm/bin/pip install ziglang`, and
+  `npm install --prefix ~/.local/share/obervave-wasm/npm binaryen` (wasm-opt 132; the script finds it there). Test:
+  `node tests/sim_test.mjs` (default `docs/play/dog5.wasm`; sound is checked bit-for-bit against the host build). The sim keeps
+  **12 storage blobs** (settings, 8 pattern sectors, 3 program sectors; a store of any other length is ignored) in localStorage
+  key `dog5-sim-store-1`. The page picks a patch with a MIDI program change (works while the MIDI channel is OMNI). No analytics.
+  `tests/ref-sim/` is the stale OberVave simulator, kept untouched as provenance; nothing builds into it any more.
 - **The device build (`.fwsc`) needs two JieLi downloads.** Re-tested 2026-11-02: the original hosts work
   fine from this cloud environment once `pkgman.jieliapp.com`, `gitee.com` and
   `jl-update.oss-cn-shenzhen.aliyuncs.com` (the redirect target the toolchain link lands on) are allowlisted
