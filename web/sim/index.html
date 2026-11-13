@@ -4,85 +4,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OberVave Simulator</title>
-<meta name="description" content="OberVave, an 8-voice analog-style polysynth firmware for the FM-1, running in your browser: the firmware's own code compiled to WebAssembly.">
-<link rel="icon" href="logo.png">
+<title>DØG-5 — play it in your browser</title>
+<meta name="description" content="DØG-5, free open-source custom firmware for the M-VAVE FM-1, running in your browser: the firmware's own code compiled to WebAssembly.">
 <link rel="stylesheet" href="sim.css">
 </head>
 <body>
 <header class="top">
-  <img class="logo" src="logo.png" alt="OberVave">
-  <p class="tag">The FM-1 firmware in your browser: the same C code that runs on the device, compiled to WebAssembly.
-    Screen, sound, panel, all of it is the firmware's.</p>
-  <nav class="links">
-    <a class="cta" href="https://thefirmwarehub.com/#fw-obervave">Install on your FM-1 &rarr;</a>
-    <a href="https://github.com/zvenson/obervave">Source code</a>
-  </nav>
+  <h1 class="word">DØG-5</h1>
+  <p class="tag">Free, open-source custom firmware for the M-VAVE FM-1. Pick a patch, play it.</p>
+  <p class="notice" role="note">This is the real DØG-5 firmware running in your browser. It sounds like the firmware's engine; the FM-1 itself has
+    real-time limits (its CPU budget) that a browser does not model, so a patch with everything pushed can sound different on the device.</p>
 </header>
 
 <main>
-  <section class="device" id="device" aria-label="The simulated FM-1">
-    <div class="left">
-      <div class="knobrow">
-        <div class="knob" data-id="master" data-label="MASTER"></div>
-        <div class="knob" data-id="select" data-label="SELECT"></div>
+  <div class="stage">
+    <section class="device" id="device" aria-label="The simulated FM-1">
+      <div class="left">
+        <div class="knobrow">
+          <div class="knob" data-id="master" data-label="MASTER"></div>
+          <div class="knob" data-id="select" data-label="SELECT"></div>
+        </div>
+        <div class="knobrow">
+          <div class="knob" data-id="presets" data-label="PRESETS"></div>
+          <div class="knob" data-id="algo" data-label="ALGORITHM"></div>
+        </div>
+        <div class="octs">
+          <button class="btn" data-btn="0">OCT &minus;</button>
+          <button class="btn" data-btn="1">OCT +</button>
+        </div>
       </div>
-      <div class="knobrow">
-        <div class="knob" data-id="presets" data-label="PRESETS"></div>
-        <div class="knob" data-id="algo" data-label="ALGORITHM"></div>
+      <div class="screenbox">
+        <canvas id="screen" width="240" height="240" aria-label="The FM-1's screen"></canvas>
+        <button id="power" class="power">
+          <span class="p1">Start audio</span>
+          <span class="p2">tap to power on</span>
+        </button>
       </div>
-      <div class="octs">
-        <button class="btn" data-btn="0">OCT &minus;</button>
-        <button class="btn" data-btn="1">OCT +</button>
+      <div class="right">
+        <div class="knobrow four">
+          <div class="knob" data-id="k1" data-label="KNOB 1"></div>
+          <div class="knob" data-id="k2" data-label="KNOB 2"></div>
+          <div class="knob" data-id="k3" data-label="KNOB 3"></div>
+          <div class="knob" data-id="k4" data-label="KNOB 4"></div>
+        </div>
+        <div class="btngrid">
+          <button class="btn" data-btn="2">FX</button>
+          <button class="btn" data-btn="3">SEL</button>
+          <button class="btn" data-btn="4">ENV</button>
+          <button class="btn" data-btn="5">LFO</button>
+          <button class="btn" data-btn="6">EDIT</button>
+          <button class="btn" data-btn="7">GLO</button>
+          <button class="btn" data-btn="8">HOME</button>
+          <button class="btn" data-btn="9">SAVE</button>
+          <button class="btn" data-btn="10">ARP</button>
+          <button class="btn" data-btn="11">SEQ</button>
+          <button class="btn" data-btn="12">PLAY<br>STOP</button>
+          <button class="btn rec" data-btn="13">REC</button>
+        </div>
       </div>
-    </div>
-    <div class="screenbox">
-      <canvas id="screen" width="240" height="240" aria-label="The FM-1's screen"></canvas>
-      <button id="power" class="power">
-        <span class="p1">Start audio</span>
-        <span class="p2">tap to power on</span>
-      </button>
-    </div>
-    <div class="right">
-      <div class="knobrow four">
-        <div class="knob" data-id="k1" data-label="KNOB 1"></div>
-        <div class="knob" data-id="k2" data-label="KNOB 2"></div>
-        <div class="knob" data-id="k3" data-label="KNOB 3"></div>
-        <div class="knob" data-id="k4" data-label="KNOB 4"></div>
-      </div>
-      <div class="btngrid">
-        <button class="btn" data-btn="2">FX</button>
-        <button class="btn" data-btn="3">SEL</button>
-        <button class="btn" data-btn="4">ENV</button>
-        <button class="btn" data-btn="5">LFO</button>
-        <button class="btn" data-btn="6">EDIT</button>
-        <button class="btn" data-btn="7">GLO</button>
-        <button class="btn" data-btn="8">HOME</button>
-        <button class="btn" data-btn="9">SAVE</button>
-        <button class="btn" data-btn="10">ARP</button>
-        <button class="btn" data-btn="11">SEQ</button>
-        <button class="btn" data-btn="12">PLAY<br>STOP</button>
-        <button class="btn rec" data-btn="13">REC</button>
-      </div>
-    </div>
-    <div class="keys" id="keys" aria-label="The 27 keys, F3 to G5"></div>
-  </section>
+      <div class="keys" id="keys" aria-label="The 27 keys, F3 to G5"></div>
+    </section>
+
+    <aside class="patches" aria-label="Patches">
+      <h2>Patches</h2>
+      <div id="patchList"></div>
+      <p class="hint" id="slotNow"></p>
+    </aside>
+  </div>
 
   <section class="info">
     <div class="box">
       <h2>How to play</h2>
       <ul>
-        <li><b>Tap</b> a function button (press and let go, touching nothing else): its pages open.
-          <b>Hold</b> it: it is a <b>layer</b>, the keys and knobs change job until you let go.
-          <b>HOME</b> tapped while a layer is held locks it open.</li>
-        <li><b>PRESETS</b> picks the program (32), <b>KNOB 1-4</b> are the page's four parameters,
-          <b>SELECT</b> the tempo, <b>ALGORITHM</b> the sequencer track (A / B), <b>OCT &minus; / +</b> the octave.</li>
-        <li><b>HOME</b> PERFORM page, <b>EDIT</b> oscillators and filter, <b>ENV</b>, <b>LFO</b>, <b>FX</b> chorus,
-          delay, reverb, <b>GLO</b> global / voice / output, <b>ARP</b> the arpeggiator (on its page: HOLD).</li>
-        <li><b>Hold SEQ</b>: the white keys are steps 1-16 (tap: set with the last note or chord, again: clear).
-          <b>PLAY</b> starts the sequencer, <b>REC</b> records on top.</li>
-        <li><b>Hold SAVE</b> + <b>SEL</b>: a new random sound. <b>SAVE</b> twice: keep the program
-          (kept in this browser).</li>
+        <li>Pick a patch from the list, or turn the <b>PRESETS</b> knob (or the <kbd>&uarr;</kbd> <kbd>&darr;</kbd> keys).</li>
+        <li>The four knobs change whatever page the screen shows.</li>
+        <li><b>FX</b> cycles the four effect pages (DRIVE, BBD DELAY, SPRING, TAPE); hold <b>SEL</b> for an effect's second set of knobs.
+          <b>ENV</b>, <b>LFO</b>, <b>EDIT</b> and <b>GLO</b> each cycle their own family of pages. <b>HOME</b> goes back to the play page;
+          hold <b>HOME</b> to see a map of the knobs and buttons.</li>
+        <li>Hold <b>SEQ</b>: Tape Stop (everything drags to a halt; let go to snap back).
+          <b>PLAY / STOP</b>: the kill switch (stops everything dead; press again to play on).
+          <b>ALGORITHM</b> knob: Vintage Slop (rides the tuning instability up; back to 0 when you reload).</li>
+        <li><b>SAVE</b>: tap it, pick a slot with <b>PRESETS</b>, tap it again. It is kept in this browser only. Slots 33&ndash;99 are empty;
+          save there to leave the 32 patches as they are.</li>
+        <li><b>REC</b> taps the BBD delay's time, on the BBD DELAY page only.</li>
+        <li><b>GLO</b> opens the GLOBAL page. Its CPU readout is the device's render-time meter; in the browser it shows 0 &micro;s, so it tells you nothing here.</li>
       </ul>
       <p class="hint">Hold a button with the mouse and play the computer keys at the same time; on a phone, use two fingers.</p>
     </div>
@@ -95,7 +100,7 @@
         <tr><th>Keys F3 .. B3</th><td><kbd>Q</kbd> <kbd>2</kbd> <kbd>W</kbd> <kbd>3</kbd> <kbd>E</kbd> <kbd>4</kbd> <kbd>R</kbd></td></tr>
         <tr><th>Keys F5 .. G5</th><td><kbd>I</kbd> <kbd>9</kbd> <kbd>O</kbd></td></tr>
         <tr><th>Buttons</th><td><kbd>1</kbd> HOME, <kbd>5</kbd> ENV, <kbd>7</kbd> LFO, <kbd>8</kbd> ARP, <kbd>0</kbd> SEQ, <kbd>-</kbd> EDIT,
-          <kbd>=</kbd> GLO, <kbd>[</kbd> FX, <kbd>]</kbd> SAVE, <kbd>Enter</kbd> SEL, <kbd>Space</kbd> PLAY, <kbd>\</kbd> REC,
+          <kbd>=</kbd> GLO, <kbd>[</kbd> FX, <kbd>]</kbd> SAVE, <kbd>Enter</kbd> SEL, <kbd>Space</kbd> PLAY / STOP, <kbd>\</kbd> REC,
           <kbd>&larr;</kbd> <kbd>&rarr;</kbd> OCT &minus; / +</td></tr>
         <tr><th>Knobs</th><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd> PRESETS; drag a knob up / down or scroll on it</td></tr>
       </table>
@@ -113,20 +118,23 @@
     </div>
 
     <div class="box">
-      <h2>Your programs</h2>
-      <p>Saved programs, settings and sequencer patterns stay in this browser (localStorage).</p>
-      <button id="resetStore" class="small">Forget them and restart</button>
+      <h2>Your patches</h2>
+      <p>Saved patches and settings stay in this browser (localStorage). They are not shared with other browsers or people.</p>
+      <button id="resetStore" class="small">Forget saved patches</button>
     </div>
   </section>
 </main>
 
 <footer>
-  <p>OberVave by <a href="https://github.com/zvenson">zvenson</a>, built on
+  <p class="links"><a href="https://github.com/vincentzsk-prod/dog5">Source code</a> &middot; <a href="../install/">Install on your FM-1</a> &middot;
+    GPL-3.0-only</p>
+  <p>DØG-5 by ZIGGY (DØGS). DØG-5 is a fork of OberVave v1.5.3 (pinned) by
+    <a href="https://github.com/zvenson/obervave">zvenson</a>, which stands on
     <a href="https://github.com/zvenson/dinghy">Dinghy</a>,
     <a href="https://github.com/hugelton/Felucca">Felucca</a> (Leo Kuroshita, H&uuml;gelton Instruments) and
-    <a href="https://github.com/isod89/sloop-fm1">SLOOP</a> (isod89). The simulator follows the web simulators of
-    <a href="https://github.com/genkigenki/Makkuro37">Makkuro37</a> and <a href="https://github.com/hericdk/winampFM">winampFM</a>.
-    GPL-3.0. Not affiliated with M-VAVE.</p>
+    <a href="https://github.com/isod89/sloop-fm1">SLOOP</a> (isod89). Everything inherited keeps its copyright and licence.
+    This page follows the web simulators of <a href="https://github.com/genkigenki/Makkuro37">Makkuro37</a> (M. Geisler) and
+    <a href="https://github.com/hericdk/winampFM">winampFM</a> (hericdk), GPL-3.0. Not affiliated with M-VAVE.</p>
 </footer>
 <script src="sim.js"></script>
 </body>

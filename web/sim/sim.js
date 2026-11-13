@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// OberVave simulator, the page: builds the panel (27 keys, 14 buttons, 7 encoders + MASTER), starts the AudioWorklet
-// (worklet.js runs obervave.wasm, the firmware), draws its 240 x 240 screen and LEDs, and feeds it the mouse, touch,
+// DØG-5 simulator, the page (forked from OberVave's): builds the panel (27 keys, 14 buttons, 7 encoders + MASTER), starts
+// the AudioWorklet (worklet.js runs dog5.wasm, the firmware), draws its 240 x 240 screen and LEDs, and feeds it the mouse, touch,
 // the computer keyboard and Web MIDI. Everything on the screen and in the sound is the firmware's own doing.
 (function () {
   'use strict';
@@ -11,18 +11,12 @@
   // the firmware's numbers (firmware/src/platform.c: BTN_*, ENC_*)
   const BTN = { octm: 0, octp: 1, fx: 2, sel: 3, env: 4, lfo: 5, edit: 6, glo: 7, home: 8, save: 9, arp: 10, seq: 11, play: 12, rec: 13 };
   const ENC = { select: 0, algo: 1, k1: 2, k2: 3, k3: 4, k4: 5, presets: 6 };
-  const STORE_KEY = 'obervave-sim-store-1', MASTER_KEY = 'obervave-sim-master';
+  const STORE_KEY = 'dog5-sim-store-1', MASTER_KEY = 'dog5-sim-master';
 
   const S = { node: null, ctx: null, on: false, starting: false, master: 900, midi: null, midiSel: '' };
   try { const m = parseInt(localStorage.getItem(MASTER_KEY), 10); if (m >= 0 && m <= 1023) S.master = m; } catch (e) {}
-  // Matomo on thefirmwarehub.com (no cookies, if the page has it): who starts the sound, plays a note, brings a MIDI
-  // keyboard, keeps playing a minute / five; nothing else, no notes or settings
-  const ev = (a) => { try { if (window._paq) window._paq.push(['trackEvent', 'Play', 'OberVave: ' + a]); } catch (e) {} };
-  let played = false;
-  const send = (m) => {
-    if (S.node) S.node.port.postMessage(m);
-    if (!played && ((m.t === 'key' && m.down) || (m.t === 'midi' && (m.d[0] & 0xF0) === 0x90 && m.d[2] > 0))) { played = true; ev('first note'); }
-  };
+  const send = (m) => { if (S.node) S.node.port.postMessage(m); };
+  // no analytics, no cookies, no network calls beyond loading this page's own files
 
   // ---- the screen
   const cv = $('#screen'), cx = cv.getContext('2d'), img = cx.createImageData(240, 240);
@@ -48,6 +42,41 @@
     location.reload();
   });
 
+  // ---- the patch list: patches.json (the firmware's 32 factory names, made by web/sim/gen_patches.py). A click sends the
+  // MIDI program change the firmware already takes (it loads the slot, and its screen follows)
+  const patchEls = [];
+  let progNow = -1;
+  const showProg = (p) => {
+    if (p === undefined || p === progNow) return;
+    progNow = p;
+    patchEls.forEach((el, i) => { const on = i === p; el.classList.toggle('on', on); el.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    const n = $('#slotNow');
+    if (n) n.textContent = p < patchEls.length ? '' : 'Slot ' + String(p + 1).padStart(2, '0') + (p >= 32 ? ' (yours: 33-99)' : '');
+  };
+  const pickPatch = (i) => { if (!S.on) start(); send({ t: 'midi', d: [0xC0, i, 0] }); };
+  fetch('patches.json').then((r) => r.json()).then((list) => {
+    const host = $('#patchList'); let sec = null, last = '';
+    for (const it of list) {
+      if (it.chapter !== last) {
+        last = it.chapter;
+        sec = document.createElement('div'); sec.className = 'chap';
+        const h = document.createElement('h3'); h.textContent = it.chapter; sec.append(h);
+        const g = document.createElement('div'); g.className = 'pgrid'; sec.append(g); host.append(sec);
+      }
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'patch';
+      const no = document.createElement('span'); no.className = 'no'; no.textContent = String(it.slot).padStart(2, '0');
+      b.append(no, document.createTextNode(it.name));
+      b.addEventListener('click', () => pickPatch(it.slot - 1));
+      sec.querySelector('.pgrid').append(b);
+      patchEls[it.slot - 1] = b;
+    }
+    progNow = -1;
+  }).catch(() => { $('#patchList').textContent = 'The patch list could not be loaded; turn the PRESETS knob instead.'; });
+  // the firmware file, fetched at page load so that power-on needs no network
+  const wasmP = fetch('dog5.wasm').then((r) => { if (!r.ok) throw new Error('dog5.wasm: ' + r.status); return r.arrayBuffer(); });
+  wasmP.catch(() => {});
+
   // ---- power on: a browser starts audio only after a gesture
   const power = $('#power');
   const say = (a, b) => { power.querySelector('.p1').textContent = a; power.querySelector('.p2').textContent = b; };
@@ -59,16 +88,17 @@
       if (!window.AudioWorkletNode) throw new Error('this browser has no AudioWorklet');
       const Ctx = window.AudioContext || window.webkitAudioContext;
       try { S.ctx = new Ctx({ sampleRate: 44100, latencyHint: 'interactive' }); } catch (e) { S.ctx = new Ctx({ latencyHint: 'interactive' }); }
-      if (S.ctx.sampleRate !== 44100) throw new Error('the audio runs at ' + S.ctx.sampleRate + ' Hz, the firmware wants 44100');
+      if (S.ctx.sampleRate !== 44100)          // (the browser was asked for 44100 above and may resample: this one did not)
+        throw new Error('This browser gives the page audio at ' + S.ctx.sampleRate + ' Hz and will not run it at 44100 Hz, which the firmware needs. ' +
+          'Try Chrome or Edge on a computer.');
       const resumed = S.ctx.resume();                     // (inside the gesture)
-      const [wasm] = await Promise.all([fetch('obervave.wasm').then((r) => { if (!r.ok) throw new Error('obervave.wasm: ' + r.status); return r.arrayBuffer(); }),
-        S.ctx.audioWorklet.addModule('worklet.js')]);
-      S.node = new AudioWorkletNode(S.ctx, 'obervave', { numberOfInputs: 0, outputChannelCount: [2], processorOptions: { wasm, store: loadStore(), master: S.master } });
+      const [wasm] = await Promise.all([wasmP, S.ctx.audioWorklet.addModule('worklet.js')]);
+      S.node = new AudioWorkletNode(S.ctx, 'dog5', { numberOfInputs: 0, outputChannelCount: [2], processorOptions: { wasm, store: loadStore(), master: S.master } });
       S.node.port.onmessage = (msg) => {
         const m = msg.data;
-        if (m.t === 'frame') { if (m.fb) draw(m.fb); leds(m.leds, m.keys, m.glow); }
+        if (m.t === 'frame') { if (m.fb) draw(m.fb); leds(m.leds, m.keys, m.glow); showProg(m.prog); }
         else if (m.t === 'store') saveStore(m.data);
-        else if (m.t === 'ready') { S.on = true; power.hidden = true; ev('start'); setTimeout(() => ev('1 min'), 60e3); setTimeout(() => ev('5 min'), 300e3); }
+        else if (m.t === 'ready') { S.on = true; power.hidden = true;  }
         else if (m.t === 'error') { say('Error', m.message); S.starting = false; }
       };
       S.node.connect(S.ctx.destination);
@@ -269,7 +299,7 @@
     if (!navigator.requestMIDIAccess) { midiMsg.textContent = 'This browser has no Web MIDI (Safari): try Chrome, Edge or Firefox.'; return; }
     try {
       S.midi = await navigator.requestMIDIAccess({ sysex: false });
-      ev('midi');
+     
       S.midi.onstatechange = listMidi;
       listMidi();
       midiBtn.textContent = 'MIDI connected';
