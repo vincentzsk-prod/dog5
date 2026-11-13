@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// OberVave in an AudioWorklet: obervave.wasm is the firmware (firmware/src, unchanged) on a simulated FM-1
+// DØG-5 in an AudioWorklet (forked from OberVave): dog5.wasm is the firmware (firmware/src, unchanged) on a simulated FM-1
 // (web/sim/sim.c). Each 128-frame render quantum runs the device's clock: the ISR's 256-frame blocks are served out
 // of sim_render, the main loop runs once per millisecond of it. ~30 times a second the screen (when it changed) and
 // the LEDs go to the page; about once a second the storage, when a save changed it.
 // After Makkuro37's web/sim/worklet.js (M. Geisler) and winampFM's sim/fm1-worklet.js (hericdk), GPL-3.0.
-class OberVave extends AudioWorkletProcessor {
+class DOG5 extends AudioWorkletProcessor {
   constructor(options) {
     super();
     const o = options.processorOptions || {};
@@ -16,10 +16,13 @@ class OberVave extends AudioWorkletProcessor {
     try {
       const mod = new WebAssembly.Module(o.wasm);
       this.ex = new WebAssembly.Instance(mod, {}).exports;
-      const ex = this.ex, size = ex.sim_blob_size();
-      if (o.store && o.store.byteLength === 9 * size) {     // the saved programs, settings and patterns, before boot
+      const ex = this.ex, size = ex.sim_blob_size(), nb = ex.sim_nblobs();
+      this.nb = nb;
+      // the saved settings, patterns and program sectors, before boot. Only a store of exactly the right length
+      // (12 blobs) is taken: any other (an old 9-blob one) is ignored whole, never half-loaded
+      if (o.store && o.store.byteLength === nb * size) {
         const src = new Uint8Array(o.store);
-        for (let i = 0; i < 9; i++) new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size).set(src.subarray(i * size, (i + 1) * size));
+        for (let i = 0; i < nb; i++) new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size).set(src.subarray(i * size, (i + 1) * size));
       }
       if (ex.sim_init(44100) !== 0) throw new Error('sim_init failed');
       if (o.master !== undefined) ex.sim_master(o.master);
@@ -41,7 +44,7 @@ class OberVave extends AudioWorkletProcessor {
     else if (m.t === 'master') ex.sim_master(m.v | 0);
   }
   publish() {
-    const ex = this.ex, msg = { t: 'frame', leds: ex.sim_leds_buttons(), keys: ex.sim_leds_keys(), glow: ex.sim_glow_keys() }, tr = [];
+    const ex = this.ex, msg = { t: 'frame', prog: ex.sim_prog(), leds: ex.sim_leds_buttons(), keys: ex.sim_leds_keys(), glow: ex.sim_glow_keys() }, tr = [];
     const h = ex.sim_fb_hash();
     if (h !== this.fbHash) {
       this.fbHash = h;
@@ -54,8 +57,8 @@ class OberVave extends AudioWorkletProcessor {
     const ex = this.ex, h = ex.sim_store_hash();
     if (h === this.storeHash) return;
     this.storeHash = h;
-    const size = ex.sim_blob_size(), all = new Uint8Array(9 * size);
-    for (let i = 0; i < 9; i++) all.set(new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size), i * size);
+    const size = ex.sim_blob_size(), all = new Uint8Array(this.nb * size);
+    for (let i = 0; i < this.nb; i++) all.set(new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size), i * size);
     this.port.postMessage({ t: 'store', data: all.buffer }, [all.buffer]);
   }
   process(inputs, outputs) {
@@ -76,4 +79,4 @@ class OberVave extends AudioWorkletProcessor {
     return true;
   }
 }
-registerProcessor('obervave', OberVave);
+registerProcessor('dog5', DOG5);

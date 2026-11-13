@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
-/* OberVave in a browser: the firmware's own sources (firmware/src/obervave.c, unchanged) on the host build's fake
+/* DØG-5 in a browser (forked from OberVave): the firmware's own sources (firmware/src/obervave.c, unchanged) on the host build's fake
  * FM-1 (tests/host.c: screen, settings, patterns, MIDI queue, buttons, LEDs), compiled to WebAssembly by
  * web/sim/build.sh (zig cc, wasm32-freestanding). The pattern follows Makkuro37's web/sim (M. Geisler, GPL-3.0) and
  * winampFM's simulator (hericdk, GPL-3.0): the page's AudioWorklet calls sim_render(n) and the device's clock runs
@@ -28,6 +28,7 @@ int memcmp(const void *a, const void *b, size_t n)
     return 0;
 }
 #define printf(...) ((void)0)                   /* (host.c's log lines: nowhere to go) */
+static void exit(int c) { (void)c; for (;;) ; }   /* (the store self-test in obervave.c calls it; never reached here) */
 
 #include "../../firmware/src/obervave.c"
 
@@ -171,14 +172,20 @@ EXPORT uint32_t sim_glow_keys(void) { return (uint32_t)(host_glow >> 14) & 0x7FF
 EXPORT uint32_t sim_page(void) { return page; }
 EXPORT uint32_t sim_prog(void) { return prog; }
 
-/* ---- storage: the settings sector (programs, globals) and the 8 pattern sectors, in RAM. The page may keep them
- * (localStorage) and put them back before sim_init: blob 0 = settings, 1..8 = patterns 1..8, byte 0 = 1 if used */
+/* ---- storage: the settings sector, the 8 pattern sectors and the 3 program sectors (SAVE writes those: 42 patches of
+ * 96 bytes each), in RAM. The page may keep them (localStorage) and put them back before sim_init: blob 0 = settings,
+ * 1..8 = patterns 1..8, 9..11 = program sectors 0..2; every blob SETTINGS_MAX + 4 bytes (a 4-byte length, then data) */
+#define SIM_NBLOBS (1u + NBLOB + NPSECT)
 EXPORT uint32_t sim_blob_size(void) { return SETTINGS_MAX + 4u; }
-EXPORT uint8_t *sim_blob(uint32_t i) { return i == 0u ? host_store : i <= NBLOB ? host_blob[i - 1u] : 0; }
-EXPORT uint32_t sim_store_hash(void)            /* changes when a save happens */
+EXPORT uint32_t sim_nblobs(void) { return SIM_NBLOBS; }
+EXPORT uint8_t *sim_blob(uint32_t i)
+{
+    return i == 0u ? host_store : i <= NBLOB ? host_blob[i - 1u] : i < SIM_NBLOBS ? host_psect[i - 1u - NBLOB] : 0;
+}
+EXPORT uint32_t sim_store_hash(void)            /* changes when a save happens (all of the blobs) */
 {
     uint32_t h = 2166136261u, i, b;
-    for (b = 0; b <= NBLOB; b++) {
+    for (b = 0; b < SIM_NBLOBS; b++) {
         const uint8_t *p = sim_blob(b);
         for (i = 0; i < SETTINGS_MAX + 4u; i++) h = (h ^ p[i]) * 16777619u;
     }

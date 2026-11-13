@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// The browser simulator without a browser: loads tests/ref-sim/obervave.wasm in node, boots it, plays a chord, MIDI notes,
+// The DØG-5 browser simulator without a browser: loads docs/play/dog5.wasm in node, boots it, plays a chord, MIDI notes,
 // a button, knob turns, renders seconds of sound and checks: it sounds, no NaN, no clipping, the screen changes, and
 // it renders far faster than real time. Then the same script through the native host build (tests/host.c): the
 // sound must be the same samples (the simulator renders a block ahead, as the device's ISR: 256 frames later in
 // time) and the screens the same pixels.
-//   node tests/sim_test.mjs [tests/ref-sim/obervave.wasm]      (after sh web/sim/build.sh)
+//   node tests/sim_test.mjs [docs/play/dog5.wasm]      (after sh web/sim/build.sh)
 import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const WASM = process.argv[2] || path.join(ROOT, 'tests/ref-sim/obervave.wasm');
+const WASM = process.argv[2] || path.join(ROOT, 'docs/play/dog5.wasm');
 let fail = 0;
 const check = (ok, what) => { console.log((ok ? '  ok    ' : '  FAIL  ') + what); if (!ok) fail = 1; };
 
@@ -106,20 +106,25 @@ check(ex.sim_leds_buttons() !== 0, `button LEDs (0x${ex.sim_leds_buttons().toStr
   for (let i = 0; i < 44100 * 3 / 128; i++) ex.sim_render(128);   // (the releases and the reverb die away)
 }
 
-// storage: SAVE twice keeps the program in the settings sector (written ~2 s later, when quiet); a new instance with
-// those bytes boots on it
+// storage: SAVE, SAVE keeps the program in a program sector (written ~2 s later, when quiet: the settings sector holds the
+// globals); the sim exports all 12 blobs (settings, 8 patterns, 3 program sectors); a new instance with those bytes boots on it
 {
-  check(ex.sim_blob_size() === 4088 && ex.sim_blob(0) !== 0 && ex.sim_blob(9) === 0, 'storage blobs exported');
+  const NB = ex.sim_nblobs();
+  check(ex.sim_blob_size() === 4088 && NB === 12 && ex.sim_blob(0) !== 0 && ex.sim_blob(11) !== 0 && ex.sim_blob(12) === 0, 'storage: 12 blobs exported (settings, 8 patterns, 3 program sectors)');
+  const h = (i) => { let x = 2166136261; const u = new Uint8Array(ex.memory.buffer, ex.sim_blob(i), 4088); for (const v of u) x = Math.imul(x ^ v, 16777619) >>> 0; return x; };
+  const before = [...Array(NB).keys()].map(h);
   const h0 = ex.sim_store_hash(), tap = (b) => { ex.sim_button(b, 1); for (let i = 0; i < 20; i++) ex.sim_render(128); ex.sim_button(b, 0); for (let i = 0; i < 20; i++) ex.sim_render(128); };
   tap(8);                                               // HOME: PERFORM
   ex.sim_enc(2, 7);                                     // KNOB 1 (CUTOFF) +7: the program is edited
   for (let i = 0; i < 100; i++) ex.sim_render(128);
-  tap(9); tap(9);                                       // SAVE, SAVE
+  tap(9); tap(9);                                       // SAVE, SAVE (the slot: the current one)
   for (let i = 0; i < 44100 * 4 / 128; i++) ex.sim_render(128);
   const h1 = ex.sim_store_hash(), size = ex.sim_blob_size(), prog = ex.sim_prog();
-  check(h1 !== h0, 'SAVE twice -> the settings sector changes');
+  const after = [...Array(NB).keys()].map(h), sector = 9 + Math.floor(prog / 42);
+  check(h1 !== h0, 'SAVE twice -> the stored bytes change (sim_store_hash covers all 12 blobs)');
+  check(after[sector] !== before[sector], `SAVE twice -> program sector ${sector - 9} (blob ${sector}) changes, program ${String(prog + 1).padStart(2, '0')}`);
   const ex2 = (await WebAssembly.instantiate(fs.readFileSync(WASM), {})).instance.exports;
-  for (let i = 0; i < 9; i++) new Uint8Array(ex2.memory.buffer, ex2.sim_blob(i), size).set(new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size));
+  for (let i = 0; i < NB; i++) new Uint8Array(ex2.memory.buffer, ex2.sim_blob(i), size).set(new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size));
   ex2.sim_init(44100);
   for (let i = 0; i < 44100 * 3 / 128; i++) ex2.sim_render(128);
   check(ex2.sim_prog() === prog && ex2.sim_store_hash() === h1, `a new instance with the saved bytes boots on program ${String(prog + 1).padStart(2, '0')}`);
@@ -133,12 +138,12 @@ check(ex.sim_leds_buttons() !== 0, `button LEDs (0x${ex.sim_leds_buttons().toStr
   let Proc = null;
   const ctx = {
     AudioWorkletProcessor: class { constructor() { this.port = { postMessage: (m) => posted.push(m), onmessage: null }; } },
-    registerProcessor: (name, c) => { if (name === 'obervave') Proc = c; },
+    registerProcessor: (name, c) => { if (name === 'dog5') Proc = c; },
     currentTime: 0, WebAssembly, Float32Array, Uint16Array, Uint8Array, Error, String,
   };
   vm.runInNewContext(fs.readFileSync(path.join(path.dirname(WASM), 'worklet.js'), 'utf8'), ctx);
-  const size = ex.sim_blob_size(), store = new Uint8Array(9 * size);
-  for (let i = 0; i < 9; i++) store.set(new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size), i * size);
+  const size = ex.sim_blob_size(), NB = ex.sim_nblobs(), store = new Uint8Array(NB * size);
+  for (let i = 0; i < NB; i++) store.set(new Uint8Array(ex.memory.buffer, ex.sim_blob(i), size), i * size);
   const w = new Proc({ processorOptions: { wasm: fs.readFileSync(WASM), store: store.buffer, master: 900 } });
   const out = [[new Float32Array(128), new Float32Array(128)]];
   let e2 = 0, frames = 0;
@@ -153,6 +158,11 @@ check(ex.sim_leds_buttons() !== 0, `button LEDs (0x${ex.sim_leds_buttons().toStr
   check(frames >= 10, `worklet.js: sends the screen when it changes (${frames} frames in 4 s)`);
   check(e2 > 0.01, 'worklet.js: a key sounds through process()');
   check(w.ex.sim_prog() === ex.sim_prog(), 'worklet.js: boots with the storage it was given');
+  // an old 9-blob store (OberVave's) must be ignored whole, not half-loaded
+  const old = new Uint8Array(9 * size).fill(0x5A);
+  const w2 = new Proc({ processorOptions: { wasm: fs.readFileSync(WASM), store: old.buffer, master: 900 } });
+  check(w2.ex.sim_prog() === 0 && w2.ex.sim_blob_size() === size && new Uint8Array(w2.ex.memory.buffer, w2.ex.sim_blob(0), 4)[0] !== 0x5A, 'worklet.js: a 9-blob store is ignored (boots on program 01)');
+  check(posted.some((m) => m.t === 'frame' && m.prog !== undefined) || (w.process([], out), posted.some((m) => m.t === 'frame' && m.prog !== undefined)), 'worklet.js: frames carry the program number');
 }
 
 // the native host build, same script: the same samples and the same screens
