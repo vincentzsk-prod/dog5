@@ -225,13 +225,15 @@ answer is 19 — one less than the base, because the sequencer goes and the Psyc
 | Family | Button | Pages | Count |
 |---|---|---|---|
 | **LIVE** | HOME | **HOME** (the dog, the beam, the field, the bar) | 1 |
-| **Voice** | EDIT · *DIG* | OSC 1 · OSC 2 · OSC MOD · FILTER · FILTER + | 5 |
+| **Voice** | EDIT · *DIG* | OSC 1 · OSC 2 · MIXER · OSC MOD · FILTER · FILTER + | 6 (Batch 9B added MIXER; CLAUDE.md §5 has the knob table and the EDIT-held key shortcuts) |
 | **Envelopes** | ENV · *HEEL* | FILTER ENV · AMP ENV | 2 |
 | **Modulation** | LFO · *ZOOMIES* | LFO · LFO DEST · LFO + | 3 |
 | **Psych Chain** | FX · *FETCH* | DRIVE · BBD DELAY · SPRING · TAPE | 4 |
 | **Arp** | ARP · *BARKS* | ARP | 1 |
 | **System** | GLO · *FLEAS* | GLOBAL · VOICE · OUTPUT | 3 |
 | | | **TOTAL** | **19** |
+
+(Batch 9B: the table is now **21** pages, MIXER being the newest; CLAUDE.md §5 is the live table.)
 
 Four Psych Chain pages instead of the base's three effect pages: DRIVE and TAPE are new, CHORUS is retired,
 DELAY and REVERB are re-voiced. The freed `P_CHO_*` parameter slots carry Drive and Tape, as already planned —

@@ -65,11 +65,11 @@ typedef struct {
 static const pdef_t PDEF[NPARAM] = {
     [P_O1_WAVE] = {"WAVE", 3, W_SAW, K_WAVE, 0},
     [P_O1_PW] = {"PW", 127, 64, K_PCT, 0},
-    [P_O1_LVL] = {"LEVEL", 127, 110, K_NUM, 0},
+    [P_O1_LVL] = {"O1 LVL", 127, 110, K_NUM, 0},   /* (MIXER shows both levels on one page: "LEVEL" twice would say nothing) */
     [P_NOISE] = {"NOISE", 127, 0, K_NUM, 0},
     [P_O2_WAVE] = {"WAVE", 3, W_SAW, K_WAVE, 0},
     [P_O2_PW] = {"PW", 127, 64, K_PCT, 0},
-    [P_O2_LVL] = {"LEVEL", 127, 100, K_NUM, 0},
+    [P_O2_LVL] = {"O2 LVL", 127, 100, K_NUM, 0},
     [P_O2_SEMI] = {"SEMI", 48, 24, K_SEMI, 0},
     [P_SYNC] = {"SYNC", 1, 0, K_ONOFF, 0},
     [P_XMOD] = {"X-MOD", 127, 0, K_NUM, 0},
@@ -132,8 +132,8 @@ static const pdef_t PDEF[NPARAM] = {
     [P_TP_HISS] = {"HISS", 127, 64, K_DB12, 0},  /* 0 off, else -12 .. +12 dB around CHEW's own hiss */
     [P_TP_DROPS] = {"DROPS", 127, 64, K_REL, 0}, /* 0 none, 64 CHEW's own, 127 three times as many */
     [P_ALLEY] = {"ALLEY", 127, 0, K_ALLEY, 0},  /* the BBD's time: 0 SYNC (TIME's note value at the tempo), 1..127 free,
-                                                 * 10 .. 740 ms (BBD_T); REC on the BBD page taps it in */
-    [P_ALLEY_FINE] = {"FINE", 127, 0, K_AFINE, 0},   /* 1/128ths of an ALLEY step (a tap's precision) */
+                                                 * 10 .. 740 ms (BBD_T) */
+    [P_ALLEY_FINE] = {"FINE", 127, 0, K_AFINE, 0},   /* 1/128ths of an ALLEY step */
     [P_BBD_SPREAD] = {"PINGPONG", 127, 127, K_WIDTH, 0},   /* 0 mono repeats (a BBD's), 127 ping-pong (as before) */
 };
 
@@ -149,12 +149,12 @@ static const uint8_t DIV_PER_QUARTER[NDIV] = {1, 2, 3, 4, 6, 8, 12};
 static const char *const DDIV_NAME[NDDIV] = {"1/16", "1/8T", "1/8", "1/8.", "1/4", "1/4.", "1/2"};
 static const uint8_t DDIV_NUM[NDDIV] = {1, 1, 1, 3, 1, 3, 2}, DDIV_DEN[NDDIV] = {4, 3, 2, 4, 1, 2, 1};   /* of a quarter */
 
-/* the pages: four knobs each (-1 = no knob). DØG-5 has 20 (CLAUDE.md §5); a button's pages are contiguous, so a
+/* the pages: four knobs each (-1 = no knob). DØG-5 has 21 (CLAUDE.md §5); a button's pages are contiguous, so a
  * family is "first page + count" (FAM_* below). DRIVE, SPRING and TAPE carry one macro each on KNOB 1 (GROWL, DRAIN,
  * CHEW), their secondaries on SELECT held; VOICE + carries P_POLY_N (the polyphony / voice window). */
 typedef struct { const char *title; int8_t p[4]; } page_t;
 enum { PG_PERFORM,                                                              /* HOME */
-       PG_OSC1, PG_OSC2, PG_OSCMOD, PG_FILTER, PG_FILTER2,                      /* EDIT */
+       PG_OSC1, PG_OSC2, PG_MIXER, PG_OSCMOD, PG_FILTER, PG_FILTER2,            /* EDIT (Batch 9B: + MIXER) */
        PG_FENV, PG_AENV,                                                        /* ENV */
        PG_LFO, PG_LFODEST, PG_LFO2,                                             /* LFO */
        PG_DRIVE, PG_BBD, PG_SPRING, PG_TAPE,                                    /* FX: the Psych Chain */
@@ -163,11 +163,12 @@ enum { PG_PERFORM,                                                              
        NPAGE };
 static const page_t PAGE[NPAGE] = {
     [PG_PERFORM] = {"D\xD8G-5", {P_CUTOFF, P_RESO, P_FENV_AMT, P_AR}},   /* (HOME; the Ø is the font's byte 0xD8) */
-    [PG_OSC1] = {"OSC 1", {P_O1_WAVE, P_O1_PW, P_O1_LVL, P_NOISE}},
-    [PG_OSC2] = {"OSC 2", {P_O2_WAVE, P_O2_PW, P_O2_LVL, P_O2_SEMI}},
-    [PG_OSCMOD] = {"OSC MOD", {P_SYNC, P_XMOD, P_ENV_O2, P_O2_FINE}},
-    [PG_FILTER] = {"FILTER", {P_RESO, P_FENV_AMT, P_KEYTRK, P_FTYPE}},
-    [PG_FILTER2] = {"FILTER +", {P_DRIVE, P_VEL_FLT, P_VEL_AMP, P_FMORPH}},
+    [PG_OSC1] = {"OSC 1", {P_O1_WAVE, P_O1_PW, -1, -1}},
+    [PG_OSC2] = {"OSC 2", {P_O2_WAVE, P_O2_PW, P_O2_SEMI, P_O2_FINE}},
+    [PG_MIXER] = {"MIXER", {P_O1_LVL, P_O2_LVL, P_NOISE, P_DRIVE}},             /* (P_DRIVE: the pre-filter drive, not GROWL) */
+    [PG_OSCMOD] = {"OSC MOD", {P_SYNC, P_XMOD, P_ENV_O2, -1}},
+    [PG_FILTER] = {"FILTER", {P_RESO, P_FENV_AMT, P_FMORPH, P_FTYPE}},
+    [PG_FILTER2] = {"FILTER +", {P_KEYTRK, P_VEL_FLT, P_VEL_AMP, -1}},
     [PG_FENV] = {"FILTER ENV", {P_FA, P_FD, P_FS, P_FR}},
     [PG_AENV] = {"AMP ENV", {P_AA, P_AD, P_AS, P_AR}},
     [PG_LFO] = {"LFO", {P_LFO_SHAPE, P_LFO_RATE, P_LFO_DELAY, P_LFO_PHASE}},
@@ -175,7 +176,7 @@ static const page_t PAGE[NPAGE] = {
     [PG_LFO2] = {"LFO +", {P_LFO_PITCH_TO, P_LFO_PWM_TO, -1, -1}},
     [PG_DRIVE] = {"DRIVE", {P_GROWL, -1, -1, -1}},                              /* SELECT held: BIAS, TONE (PAGE_SEL) */
     [PG_BBD] = {"BBD DELAY", {P_ALLEY, P_DLY_FB, P_DLY_TONE, P_DLY_MIX}},     /* SELECT held: TIME (sync), FINE,
-                                                 * PINGPONG (PAGE_BBD_SEL); REC tapped: the time (tap tempo) */
+                                                 * PINGPONG (PAGE_BBD_SEL) */
     [PG_SPRING] = {"SPRING", {P_DRAIN, -1, -1, -1}},                            /* SELECT held: SIZE, DAMP, PRE-DLY */
     [PG_TAPE] = {"TAPE", {P_CHEW, -1, -1, -1}},                                 /* SELECT held: WOW/FLT, HISS, DROPS */
     [PG_ARP] = {"ARP", {P_ARP_MODE, P_ARP_DIV, P_ARP_OCT, P_ARP_GATE}},
@@ -184,7 +185,7 @@ static const page_t PAGE[NPAGE] = {
     [PG_VOICE2] = {"VOICE +", {P_POLY_N, -1, -1, -1}},                          /* polyphony: the voice window 1-8 */
     [PG_OUTPUT] = {"OUTPUT", {P_VINTAGE, P_SPREAD, P_BEND, P_VOLUME}},
 };
-_Static_assert(NPAGE == 20, "DOG-5 has 20 pages (CLAUDE.md section 5)");
+_Static_assert(NPAGE == 21, "DOG-5 has 21 pages (CLAUDE.md section 5)");
 /* SELECT held: a Psych Chain page's knobs turn to its secondaries (dog5-docs/DOG-5-presets.md section 2: KNOB 1's
  * secondary is the drive's bias; TONE beside it). The pages without any keep their knobs */
 static const page_t PAGE_DRIVE_SEL = {"DRIVE +", {P_GRL_BIAS, P_GRL_TONE, -1, -1}};
@@ -198,7 +199,7 @@ static const page_t PAGE_TAPE_SEL = {"TAPE +", {P_TP_WOWFLT, P_TP_HISS, P_TP_DRO
 /* the button families: each remembers its last page (fam_last in obervave.c) */
 enum { FAM_HOME, FAM_EDIT, FAM_ENV, FAM_LFO, FAM_FX, FAM_ARP, FAM_GLO, NFAM };
 static const struct { uint8_t first, count; } FAM[NFAM] = {
-    [FAM_HOME] = {PG_PERFORM, 1}, [FAM_EDIT] = {PG_OSC1, 5}, [FAM_ENV] = {PG_FENV, 2}, [FAM_LFO] = {PG_LFO, 3},
+    [FAM_HOME] = {PG_PERFORM, 1}, [FAM_EDIT] = {PG_OSC1, 6}, [FAM_ENV] = {PG_FENV, 2}, [FAM_LFO] = {PG_LFO, 3},
     [FAM_FX] = {PG_DRIVE, 4}, [FAM_ARP] = {PG_ARP, 1}, [FAM_GLO] = {PG_GLOBAL, 4},
 };
 

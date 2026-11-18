@@ -266,6 +266,18 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
 }
 
 static uint32_t cut_shown_t;                    /* the header shows the cutoff for a second after it moved */
+static char ro_msg[24];                         /* Batch 9B: a transient readout in the header's tag line, a second: what a control
+                                                 * without a knob on the screen just changed (SELECT's LFO RATE, the MONO / POLY keys) */
+static uint32_t ro_t;
+static void readout(const char *label, uint32_t p)
+{
+    char v[12];
+    ro_msg[0] = 0;
+    scat(ro_msg, label); scat(ro_msg, " ");
+    param_value(v, p, live.v[p]);
+    scat(ro_msg, v);
+    ro_t = fm1_ms + 1u;
+}
 static uint32_t slop, slop_shown_t;             /* ALGORITHM's ride (obv_engine.h ctl_slop), 0..127; shown a second */
 static void draw_header(void)
 {
@@ -287,6 +299,10 @@ static void draw_header(void)
         scat(tags, "SLOP +"); fmt_u(tags + slen(tags), (uint32_t)SLOP_RIDE(slop));
         scat(tags, " = VINTAGE "); fmt_u(tags + slen(tags), sum > (uint32_t)SLOP_MAX ? (uint32_t)SLOP_MAX : sum);
         ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
+        return;
+    }
+    if (ro_t && fm1_ms + 1u - ro_t < 1000u) {   /* LFO RATE 4.2Hz, MODE MONO */
+        ui_header(prog, live.v + PATCH_NAME_AT, edited, ro_msg);
         return;
     }
     if (cut_shown_t && fm1_ms + 1u - cut_shown_t < 1000u) {
@@ -331,10 +347,10 @@ static void fmt_note(char *s, uint32_t n)       /* C4, F#3 */
     fmt_u(s + slen(s), n < 12u ? 1u : n / 12u - 1u);
 }
 
-/* ALLEY's knobs and the tap (REC on the BBD page). The time is ALLEY (a step of BBD_T) + FINE (1/128 of a step):
- * turning ALLEY clears FINE (the knob walks clean steps); leaving SYNC (ALLEY 0) by ALLEY or FINE starts from the time
- * that was sounding, so the echo never jumps; turning SYNC (the note value, BBD +) goes back to SYNC. A tap sets both
- * from the time between the taps (a CC sets its byte as it is: CC 87 at 0 is SYNC) */
+/* ALLEY's knobs. The time is ALLEY (a step of BBD_T) + FINE (1/128 of a step): turning ALLEY clears FINE (the knob
+ * walks clean steps); leaving SYNC (ALLEY 0) by ALLEY or FINE starts from the time that was sounding, so the echo never
+ * jumps; turning SYNC (the note value, BBD +) goes back to SYNC. (REC's tap tempo went in Batch 9B: REC is HOLD now.
+ * A CC sets its byte as it is: CC 87 at 0 is SYNC) */
 static uint32_t sync_samples(void)              /* the time SYNC gives now (as fx_block works it out) */
 {
     uint32_t q = ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240), d = live.v[P_DLY_TIME] % NDDIV;
@@ -354,27 +370,6 @@ static void alley_turn(uint32_t p, int32_t e)   /* a knob on ALLEY, FINE or SYNC
     if (p == P_ALLEY) { set_param(P_ALLEY, clampi((int32_t)live.v[P_ALLEY] + e, 1, 127)); live.v[P_ALLEY_FINE] = 0; }
     else set_param(P_ALLEY_FINE, (int32_t)live.v[P_ALLEY_FINE] + e * 2);
 }
-#define TAP_GAP_MS 2000u                        /* taps further apart start again */
-static uint32_t tap_t, tap_n, tap_sum, tap_last_iv;
-static char tap_msg[20];
-static void alley_tap(void)                     /* REC on the BBD page: the time between taps (the mean of the last 3) */
-{
-    uint32_t now = fm1_ms, iv = now - tap_t, n, f, a, fold = 0;
-    tap_t = now;
-    if (!tap_n || iv > TAP_GAP_MS || iv < 40u) { tap_n = 1; tap_sum = 0; say("TAP AGAIN"); return; }
-    if (tap_n >= 2u && (iv * 10u < tap_last_iv * 7u || iv * 7u > tap_last_iv * 10u)) { tap_n = 1; tap_sum = 0; }   /* a new tempo */
-    tap_last_iv = iv;
-    tap_sum = tap_n >= 4u ? tap_sum - tap_sum / 3u + iv : tap_sum + iv;   /* (3 intervals at most) */
-    if (tap_n < 4u) tap_n++;
-    n = tap_sum * 441u / (10u * (tap_n - 1u));  /* samples */
-    while (n > BBD_T[127]) { n >>= 1; fold++; }   /* slower than 740 ms: its 8th (and so on) */
-    a = alley_index(n, &f);
-    live.v[P_ALLEY] = (uint8_t)a; live.v[P_ALLEY_FINE] = (uint8_t)f; edited = 1;
-    tap_msg[0] = 0; scat(tap_msg, "ALLEY "); param_value(tap_msg + slen(tap_msg), P_ALLEY, a);
-    if (fold) scat(tap_msg, fold == 1u ? " /2" : " /4");
-    say(tap_msg);
-}
-
 /* FX held: its knobs are the Psych Chain's four macros, in the chain's order (DOG-5-presets.md section 2: GROWL ALLEY
  * DRAIN CHEW; the only layer left: SEQ/EDIT/GLO/SAVE's hold-layers were sequencer content and went with it; EDIT, GLO
  * and SAVE are plain tap buttons now, see app_main) */
@@ -494,15 +489,18 @@ static uint32_t host_idle_n, host_map_idle;     /* tests: app_idle calls that go
 #endif
 static void draw_map(void)
 {
-    /* each button as "DOG NAME (PRINTED NAME)" (CLAUDE.md section 5); FX and OCT have no dog name in the brief, HOME's
-     * is HOME */
+    /* each button as "DOG NAME (PRINTED NAME)" (CLAUDE.md section 5); FX has no dog name in the brief */
     static const struct { uint8_t fam; const char *label; } PB[6] = {
         {FAM_EDIT, "DIG (EDIT)"}, {FAM_ENV, "HOWL (ENV)"}, {FAM_LFO, "PANT (LFO)"},
         {FAM_FX, "FX"}, {FAM_GLO, "FLEAS (GLO)"}, {FAM_ARP, "ZOOMIES (ARP)"}};
+    /* the three lines of the EDIT-held shortcuts, in the unit's key groups (3 2 3 2 1): OP1 OP2 OP3 | OP4 OP5 + MONO POLY |
+     * OP6 PIT GLO. (OP4 again = FILTER +, GLO again = OUTPUT: the manual's) */
+    static const char *const EK_LINES[3] = {"OP1 OSC1  OP2 OSC2  OP3 MIXER", "OP4 FILTER OP5 VOICE MONO POLY",
+                                            "OP6 VOICE+ PIT MOD GLO GLOBAL"};
     map_row_t R[MAP_ROWS];
     knob_view_t k[4];
-    int32_t i, hi = page == PG_PERFORM ? 0 : -1;
-    uint32_t none = 1;
+    int32_t i, hi = -1;
+    uint32_t none = 1, n;
 #ifdef OBV_HOST
     uint32_t idle0 = host_idle_n;
 #endif
@@ -515,19 +513,30 @@ static void draw_map(void)
         } else if (p >= 0) { k[i].label = PDEF[p].name; k[i].present = 1; }
         none &= !k[i].present;
     }
-    R[0].label = "HOME"; R[0].what = "TAP: HOME";
     for (i = 0; i < 6; i++) {                   /* the page buttons: where a press goes NOW (the live part) */
-        R[1 + i].label = PB[i].label;
-        R[1 + i].what = PB[i].fam == FAM_ARP && page == PG_ARP ? "HOLD" : PAGE[cycle_fam(PB[i].fam)].title;
-        if (in_fam(PB[i].fam)) hi = 1 + i;
+        R[i].label = PB[i].label;
+        R[i].what = PB[i].fam == FAM_ARP && page == PG_ARP ? "HOLD" : PAGE[cycle_fam(PB[i].fam)].title;
+        if (in_fam(PB[i].fam)) hi = i;
     }
-    R[7].label = "BURY (SAVE)"; R[7].what = "TAP TWICE";
-    R[8].label = "FETCH (SELECT)";
-    R[8].what = page == PG_DRIVE ? "HOLD: DRIVE +" : page == PG_TAPE ? "HOLD: TAPE +" : page == PG_BBD ? "HOLD: BBD +"
-              : page == PG_SPRING ? "HOLD: SPRING +" : "TEMPO";
-    R[9].label = "BARKS (" NM_PRESETS ")"; R[9].what = "SOUND";
-    R[10].label = "OCT-/+"; R[10].what = "OCTAVE";
-    ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi, page == PG_BBD ? "WAG (REC): TAP THE TIME" : "FX HELD: THE 4 MACROS");
+    R[6].label = "HEEL (PLAY)"; R[6].what = killed ? "RESUME" : "STOP";   /* the live tricks (all pages) */
+    R[7].label = "FLOP (SEQ)"; R[7].what = "HOLD=TAPE STOP";
+    R[8].label = "SLOBBER (ALGO)"; R[8].what = "SLOP RIDE";
+    R[9].label = "WAG (REC)"; R[9].what = "HOLD";
+    n = 10;
+    if (in_fam(FAM_EDIT)) {                     /* EDIT-family pages: the shortcuts take the rest of the screen */
+        for (i = 0; i < 3; i++) { R[n].label = EK_LINES[i]; R[n].what = 0; n++; }
+    } else {
+        if (page == PG_PERFORM) { R[n].label = "FETCH (SELECT)"; R[n].what = "LFO RATE"; n++; }
+        else if (page == PG_DRIVE || page == PG_TAPE || page == PG_BBD || page == PG_SPRING) {
+            R[n].label = "FETCH (SELECT)";
+            R[n].what = page == PG_DRIVE ? "HOLD: DRIVE +" : page == PG_TAPE ? "HOLD: TAPE +" : page == PG_BBD ? "HOLD: BBD +" : "HOLD: SPRING +";
+            n++;
+        }
+        R[n].label = "BURY (SAVE)"; R[n].what = "TAP TWICE"; n++;
+        R[n].label = "BARKS (" NM_PRESETS ")"; R[n].what = "SOUND"; n++;
+        if (n < MAP_ROWS) { R[n].label = "OCT-/+"; R[n].what = "OCTAVE"; n++; }
+    }
+    ui_map(page_now()->title, k, none ? "NO KNOBS HERE YET" : 0, R, hi);
 #ifdef OBV_HOST
     host_map_idle = host_idle_n - idle0;
 #endif
@@ -552,20 +561,80 @@ static uint8_t held_key[27];
 #include "obv_smk.h"                            /* the SMK-37's outer keys, faders, wheels, < >, FADER BANK */
 #endif
 
+/* HOLD, one latch with two buttons (Batch 9B): the ARP button on its page and REC on any page both come here, so they
+ * cannot disagree. It ORs with the sustain pedal in part_sus() (obv_engine.h); the PLAY / STOP kill switch releases it
+ * (below, where PLAY is handled); nothing else does (a patch change, MIDI panic and the pedal leave it as it is) */
+static void hold_toggle(void) { hold ^= 1u; ctl_hold = hold; dirty_tags = 1; }
+
+/* EDIT held + a black key of the upper row = a jump (Batch 9B). Note-key indices, 0 = F3: the keybed starts on F, so its
+ * 11 black keys are F#3 G#3 A#3 | C#4 D#4 | F#4 G#4 A#4 | C#5 D#5 | F#5, in groups of 3 2 3 2 1, which are the unit's
+ * printing OP1 OP2 OP3 | OP4 OP5 | OP6 PIT GLO | MONO POLY | (none). By index, not by note number: the octave buttons
+ * don't move it. The last key (25) is no shortcut: it plays as always. A shortcut never sounds, and never leaves a stuck
+ * note: a key already down when EDIT was pressed keeps its note and ends it as always */
+enum { EK_OP1 = 1, EK_OP2 = 3, EK_OP3 = 5, EK_OP4 = 8, EK_OP5 = 10, EK_OP6 = 13, EK_PIT = 15, EK_GLO = 17, EK_MONO = 20,
+       EK_POLY = 22, EK_NONE = 25 };
+#define EK_BIT(k) (1u << (k))
+#define EDIT_KEYS (EK_BIT(EK_OP1) | EK_BIT(EK_OP2) | EK_BIT(EK_OP3) | EK_BIT(EK_OP4) | EK_BIT(EK_OP5) | EK_BIT(EK_OP6) | \
+                   EK_BIT(EK_PIT) | EK_BIT(EK_GLO) | EK_BIT(EK_MONO) | EK_BIT(EK_POLY))
+#define IS_BLACK(k) ((0x54Au >> ((KEY0 + (k)) % 12u)) & 1u)   /* pitch classes C# D# F# G# A# */
+_Static_assert(IS_BLACK(EK_OP1) && IS_BLACK(EK_OP2) && IS_BLACK(EK_OP3) && IS_BLACK(EK_OP4) && IS_BLACK(EK_OP5) &&
+               IS_BLACK(EK_OP6) && IS_BLACK(EK_PIT) && IS_BLACK(EK_GLO) && IS_BLACK(EK_MONO) && IS_BLACK(EK_POLY) &&
+               IS_BLACK(EK_NONE), "the EDIT shortcuts sit on black keys");
+_Static_assert(IS_BLACK(0) + IS_BLACK(1) + IS_BLACK(2) + IS_BLACK(3) + IS_BLACK(4) + IS_BLACK(5) + IS_BLACK(6) + IS_BLACK(7) +
+               IS_BLACK(8) + IS_BLACK(9) + IS_BLACK(10) + IS_BLACK(11) + IS_BLACK(12) + IS_BLACK(13) + IS_BLACK(14) +
+               IS_BLACK(15) + IS_BLACK(16) + IS_BLACK(17) + IS_BLACK(18) + IS_BLACK(19) + IS_BLACK(20) + IS_BLACK(21) +
+               IS_BLACK(22) + IS_BLACK(23) + IS_BLACK(24) + IS_BLACK(25) + IS_BLACK(26) == 11, "27 keys from F: 11 black");
+static const struct { uint8_t key, page, page2; int8_t mode; } EDIT_KEY[] = {   /* page2: the key again (a toggle), = page: it stays */
+    {EK_OP1, PG_OSC1, PG_OSC1, -1}, {EK_OP2, PG_OSC2, PG_OSC2, -1}, {EK_OP3, PG_MIXER, PG_MIXER, -1},
+    {EK_OP4, PG_FILTER, PG_FILTER2, -1}, {EK_OP5, PG_VOICE, PG_VOICE, -1}, {EK_OP6, PG_VOICE2, PG_VOICE2, -1},
+    {EK_PIT, PG_OSCMOD, PG_OSCMOD, -1}, {EK_GLO, PG_GLOBAL, PG_OUTPUT, -1},
+    {EK_MONO, 0, 0, M_MONO}, {EK_POLY, 0, 0, M_POLY},
+};
+static uint32_t edit_swallow;                   /* bit k: key k went down with EDIT held: it did its job, its release sounds nothing */
+static uint32_t edit_used;                      /* a shortcut was used during this EDIT hold: letting go does not cycle the family */
+static uint8_t edit_q[8];                       /* the shortcuts pressed, for the main loop (keys_in also runs inside a draw) */
+static uint32_t edit_qr, edit_qw;
+
 static void keys_in(void)
 {
     uint32_t keys = fm1_in.notes, down = keys & ~keys_prev, up = keys_prev & ~keys, base = (uint32_t)(KEY0 + 12 * set.oct), k;
+    uint32_t edit = fm1_in.buttons >> BTN_EDIT & 1u;
     for (k = 0; k < 27u; k++) {
         if (down >> k & 1u) {
             keys_prev |= 1u << k;
+            if (edit && (EDIT_KEYS >> k & 1u)) {    /* EDIT held: a jump, not a note (no sound, no MIDI out) */
+                edit_swallow |= 1u << k;
+                edit_used = 1;
+                if (edit_qw - edit_qr < 8u) edit_q[edit_qw++ & 7u] = (uint8_t)k;
+                continue;
+            }
             held_key[k] = (uint8_t)(base + k);
             play_note(1, held_key[k], KEY_VEL(k)); midi_send(0x90u | MIDI_OUT_CH, held_key[k], KEY_VEL(k));
         }
         if (up >> k & 1u) {
             keys_prev &= ~(1u << k);
+            if (edit_swallow >> k & 1u) { edit_swallow &= ~(1u << k); continue; }   /* (it never sounded) */
             play_note(0, held_key[k], 0); midi_send(0x80u | MIDI_OUT_CH, held_key[k], 0);
         }
     }
+}
+
+/* the main loop: what a shortcut does. cur = the page the panel is on (after this pass's buttons); returns the page to go to.
+ * MONO / POLY set the patch's MODE as the VOICE page's knob does, with the readout in the header */
+static uint32_t edit_key_do(uint32_t k, uint32_t cur)
+{
+    uint32_t i;
+    for (i = 0; i < sizeof EDIT_KEY / sizeof EDIT_KEY[0]; i++) {
+        if (EDIT_KEY[i].key != k) continue;
+        if (EDIT_KEY[i].mode >= 0) {
+            set_param(P_MODE, EDIT_KEY[i].mode);
+            readout("MODE", P_MODE);
+            dirty_hdr = dirty_tags = dirty_page = 1;
+            return cur;
+        }
+        return cur == EDIT_KEY[i].page ? EDIT_KEY[i].page2 : EDIT_KEY[i].page;
+    }
+    return cur;
 }
 
 static uint8_t midi_back[4];                    /* a message left for the main loop (app_idle met a program change) */
@@ -820,11 +889,15 @@ static void app_main(void)
             layer = L_NONE; layer_lock = 0; b &= ~((1u << BTN_ENV) | (1u << BTN_LFO) | (1u << BTN_ARP));
             dirty_page = dirty_tags = 1; leds_q = 0xFFFFFFFFu;
         }
-        if (b & (1u << BTN_EDIT)) np = cycle_fam(FAM_EDIT);
+        if (rel & (1u << BTN_EDIT)) {           /* EDIT is a hold now (EDIT + a key = a jump, keys_in): the tap acts on release, */
+            if (!edit_used) np = cycle_fam(FAM_EDIT);   /* unless a shortcut was used while it was down */
+            edit_used = 0;
+        }
+        while (edit_qr != edit_qw) np = edit_key_do(edit_q[edit_qr++ & 7u], np);   /* (in the order pressed) */
         if (b & (1u << BTN_ENV)) np = cycle_fam(FAM_ENV);
         if (b & (1u << BTN_LFO)) np = cycle_fam(FAM_LFO);
         if (b & (1u << BTN_ARP)) {
-            if (page == PG_ARP) { hold ^= 1u; ctl_hold = hold; dirty_tags = 1; }   /* on its page: HOLD */
+            if (page == PG_ARP) hold_toggle();   /* on its page: HOLD (REC's latch, on any page) */
             else np = PG_ARP;
         }
         if (b & (1u << BTN_GLO)) np = cycle_fam(FAM_GLO);
@@ -843,11 +916,12 @@ static void app_main(void)
             save_armed = 0;
             dirty_hdr = dirty_tags = dirty_page = 1;
         }
-        if (b & (1u << BTN_REC) && page == PG_BBD && !layer) { alley_tap(); dirty_page = dirty_hdr = 1; }   /* WAG: the tap */
+        if (b & (1u << BTN_REC) && !layer) hold_toggle();   /* WAG: HOLD, on any page, the ARP button's latch */
         ctl_tstop = fm1_in.buttons >> BTN_SEQ & 1u;   /* FLOP: TAPE STOP while SEQ is held (obv_deck.h) */
         if (b & (1u << BTN_PLAY) || (KILL_MOMENTARY && killed && (rel & (1u << BTN_PLAY)))) {   /* HEEL: STOP / live */
             killed = KILL_MOMENTARY ? (b >> BTN_PLAY & 1u) : killed ^ 1u;
             ctl_kill = killed;
+            if (killed && hold) { hold = 0; ctl_hold = 0; dirty_tags = 1; }   /* STOP lets a latched HOLD go (the notes it held are cleared) */
             dirty_hdr = 1;
         }
         if (save_armed && fm1_ms - save_t > 3000u) { save_armed = 0; dirty_page = dirty_hdr = 1; }
@@ -873,13 +947,13 @@ static void app_main(void)
                 dirty_hdr = dirty_page = dirty_tags = 1;
             }
         }
-        if ((e = fm1_enc_take(ENC_SELECT)) != 0) {   /* SELECT: the tempo, always */
-            static char msg[16];
-            set.tempo = (uint8_t)clampi(set.tempo + e, 40, 240); ctl_tempo = set.tempo;
-            set_dirty = 1; set_t = fm1_ms;
-            msg[0] = 0; scat(msg, "TEMPO "); fmt_u(msg + slen(msg), set.tempo);
-            say(msg);
-            dirty_page |= page == PG_GLOBAL;
+        if ((e = fm1_enc_take(ENC_SELECT)) != 0) {   /* SELECT: LFO RATE on HOME (nothing held), 2 a detent; nowhere else (the tempo
+                                                 * lives on GLOBAL knob 1 and the MIDI clock, as before) */
+            if (page == PG_PERFORM && !layer) {
+                set_param(P_LFO_RATE, (int32_t)live.v[P_LFO_RATE] + e * 2);
+                readout("LFO RATE", P_LFO_RATE);
+                dirty_hdr = dirty_page = 1;
+            }
         }
         if ((e = fm1_enc_take(ENC_ALGORITHM)) != 0) {   /* SLOBBER: the SLOP ride, on any page, on top of the sound's
                                                  * VINTAGE; never stored, 0 at power-on */
@@ -889,6 +963,7 @@ static void app_main(void)
             slop_shown_t = fm1_ms + 1u; dirty_hdr = 1;
         }
         if (slop_shown_t && fm1_ms + 1u - slop_shown_t >= 1000u) { slop_shown_t = 0; dirty_hdr = 1; }   /* (back to the tags) */
+        if (ro_t && fm1_ms + 1u - ro_t >= 1000u) { ro_t = 0; dirty_hdr = 1; }   /* (the readout is gone: back to the tags) */
         for (k = 0; k < 4u; k++) {
             int32_t p = page_now()->p[k];
             if ((e = fm1_enc_take(ENC_KNOB1 + k)) == 0) continue;
@@ -946,7 +1021,7 @@ static void app_main(void)
         fm1_led_key(BTN_FX, in_fam(FAM_FX));
         fm1_led_key(BTN_GLO, in_fam(FAM_GLO));
         fm1_led_key(BTN_SAVE, save_armed);
-        fm1_led_key(BTN_REC, page == PG_BBD);   /* WAG lit: tap the time here */
+        fm1_led_key(BTN_REC, hold);             /* WAG lit: HOLD is latched */
         fm1_led_key(BTN_PLAY, killed);          /* HEEL lit: stopped */
         fm1_led_key(BTN_SEQ, ctl_tstop);        /* FLOP lit: the tape stops */
 #if BOARD_SMK37

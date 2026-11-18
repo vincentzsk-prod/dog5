@@ -228,7 +228,7 @@ The scene gives each chapter its arc; the names are its vocabulary, implied not 
 | ENV | Drone Latch | **HOWL** | | SAVE | Store patch | **BURY** |
 | SEQ | Tape Stop | **FLOP** | | EDIT | Param pages | **DIG** |
 | PLAY/STOP | Global kill | **HEEL** | | SEL | Reorder FX | **FETCH** |
-| REC | Tap tempo | **WAG** | | PRESETS | Patch select | **BARKS** |
+| REC | Hold (was tap tempo until Batch 9B) | **WAG** | | PRESETS | Patch select | **BARKS** |
 | GLO | Degradation | **FLEAS** | | HOME | Main screen | **HOME** |
 | ARP | Arpeggiator | **ZOOMIES** | | | | |
 

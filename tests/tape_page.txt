@@ -7,7 +7,7 @@
 3200 btn 2   # BBD DELAY
 3400 btn 2   # SPRING
 3600 btn 2   # TAPE
-3800 expect page 14
+3800 expect page 15
 3800 enc 2 1
 3850 enc 2 1
 3900 enc 2 1
@@ -35,14 +35,14 @@
 5200 btndown 8   # HOME held on TAPE: the map names CHEW
 5600 shot
 5700 btnup 8
-5900 expect page 14
+5900 expect page 15
 5900 btndown 3   # SELECT held while HOME is held: the map shows TAPE +'s knobs
 6000 btndown 8
 6400 shot
 6500 btnup 8
 6600 btnup 3
 6800 btn 2   # FX again: round to DRIVE, SELECT there is still DRIVE + (BIAS on KNOB 1)
-7000 expect page 11
+7000 expect page 12
 7000 btndown 3
 7100 enc 2 1
 7300 expect param 52 42

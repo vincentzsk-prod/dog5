@@ -17,7 +17,7 @@
 6900 btn 7
 7100 btn 7
 7300 btn 7
-7500 expect page 18
+7500 expect page 19
 7600 shot                 # VOICE +: POLY at the default 5
 7900 enc 2 3
 8200 shot                 # turned up to 8

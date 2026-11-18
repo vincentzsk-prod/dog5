@@ -3,7 +3,7 @@
 # buttons: 2 FX, 3 SELECT, 6 EDIT. Program 1 (Red Pill): GROWL 0, BIAS 40, TONE 50, RESO 30.
 3000 expect param 54 0
 3000 btn 2   # FX: DRIVE
-3200 expect page 11
+3200 expect page 12
 3200 enc 2 1
 3250 enc 2 1
 3300 enc 2 1
@@ -31,23 +31,24 @@
 4700 btndown 8   # HOME held on DRIVE: the map names GROWL
 5100 shot
 5200 btnup 8
-5400 expect page 11
+5400 expect page 12
 5400 btndown 3   # SELECT held while HOME is held: the map shows DRIVE +'s knobs
 5500 btndown 8
 5900 shot
 6000 btnup 8
 6100 btnup 3
-6300 btn 6   # EDIT: back to where EDIT was (OSC 1), then on to FILTER
+6300 btn 6   # EDIT: back to where EDIT was (OSC 1), then on to FILTER (OSC 2, MIXER, OSC MOD, FILTER)
 6500 btn 6
 6700 btn 6
 6900 btn 6
-7100 expect page 4
-7100 btndown 3   # SELECT held on FILTER: no secondaries there, KNOB 1 stays RESO
-7300 enc 2 1
-7500 expect param 13 32
-7500 btnup 3
-7700 btndown 2   # FX held: the layer's KNOB 1 is GROWL
-7900 enc 2 1
-8100 expect param 54 14
-8100 btnup 2
-8600 end
+7100 btn 6
+7300 expect page 5
+7300 btndown 3   # SELECT held on FILTER: no secondaries there, KNOB 1 stays RESO
+7500 enc 2 1
+7700 expect param 13 32
+7700 btnup 3
+7900 btndown 2   # FX held: the layer's KNOB 1 is GROWL
+8100 enc 2 1
+8300 expect param 54 14
+8300 btnup 2
+8800 end
