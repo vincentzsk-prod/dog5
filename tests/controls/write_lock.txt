@@ -1,0 +1,29 @@
+# Batch 15: THE POUND (programs 1-32, the factory) is locked; SAVE writes only THE PACK (33-99). SAVE armed on a POUND slot
+# offers the first free PACK slot; PRESETS while armed moves through 33-99 only (wrapping 99 <-> 33). The POUND always
+# reads the factory. Buttons: 9 = SAVE. Encoder 6 = PRESETS. Param 12 = CUTOFF. "T expect slot N" = the program sounding.
+2900 expect slot 1
+3000 param 12 3   # an edit on program 1 (POUND)
+3100 btn 9   # SAVE armed: the first free PACK slot, 33
+3300 btn 9   # saved there
+3500 expect slot 33
+3600 expect param 12 3
+3700 midi 0xC0 0 0   # program 1 again: the factory, untouched
+3900 expect slot 1
+4000 expect param 12 92
+4100 param 12 5   # another edit on program 1
+4200 btn 9   # armed: 34 now (33 is taken)
+4300 enc 6 -1   # PRESETS while armed: 33 ...
+4400 enc 6 -1   # ... and down again wraps to 99, never into the POUND
+4600 btn 9
+4800 expect slot 99
+4900 expect param 12 5
+5000 param 12 7   # an edit on 99 (PACK): SAVE armed offers 99 itself
+5100 btn 9
+5200 enc 6 1   # up from 99 wraps to 33
+5400 btn 9
+5600 expect slot 33
+5700 expect param 12 7
+5800 midi 0xC0 0 0
+6000 expect slot 1
+6100 expect param 12 92
+6300 end

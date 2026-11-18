@@ -82,10 +82,14 @@ static uint32_t layer, layer_lock, layer_used, layer_t, layer_btn;
 static void say(const char *s) { toast = s; toast_t = fm1_ms; }
 static uint8_t cc_map[128];                     /* MIDI CC -> parameter + 1, 0 = none */
 
-static void prog_get(uint32_t n, patch_t *p)    /* program n: the user's, else the factory's (65-99: INIT) */
+/* THE POUND and THE PACK: programs 1-32 (0-idx < NFACT) are the factory's and locked, always read from the firmware (so a
+ * firmware update brings its voicing with it); SAVE writes only 33-99, the user's. The store below the lock (psect,
+ * prog_put) is unchanged and still has room for all 99. */
+#define PACK_N (NPROG - NFACT)                  /* THE PACK: 67 slots */
+static void prog_get(uint32_t n, patch_t *p)    /* program n: 1-32 the factory's; 33-99 the user's, else INIT */
 {
     n %= NPROG;
-    if (psect[n / PS_N].used[n % PS_N]) *p = psect[n / PS_N].p[n % PS_N];
+    if (n >= NFACT && psect[n / PS_N].used[n % PS_N]) *p = psect[n / PS_N].p[n % PS_N];
     else patch_from_factory(p, n < NFACT ? &FACTORY[n] : &FACT_INIT);
 }
 
@@ -96,6 +100,27 @@ static void prog_put(uint32_t n, const patch_t *p)   /* program n is the user's 
     psect[n / PS_N].used[n % PS_N] = 1;
     ps_dirty |= 1u << (n / PS_N);
     set_t = fm1_ms;
+}
+
+static uint32_t pack_free(void)                 /* the first PACK slot never saved to (all used: the first, 33) */
+{
+    uint32_t n;
+    for (n = NFACT; n < NPROG; n++) if (!psect[n / PS_N].used[n % PS_N]) return n;
+    return NFACT;
+}
+
+/* once, at power-on: a save over a POUND slot from before the lock (v0.1 / v0.2 let SAVE write 1-32) moves to the first free
+ * PACK slot, so nothing saved is lost and the POUND reads the factory. With no free slot it stays where it was, unread. */
+static void pound_rescue(void)
+{
+    uint32_t n, d;
+    for (n = 0; n < NFACT; n++) {
+        if (!psect[n / PS_N].used[n % PS_N]) continue;
+        if ((d = pack_free()) == NFACT && psect[NFACT / PS_N].used[NFACT % PS_N]) break;   /* THE PACK is full */
+        prog_put(d, &psect[n / PS_N].p[n % PS_N]);
+        psect[n / PS_N].used[n % PS_N] = 0;
+        ps_dirty |= 1u << (n / PS_N);
+    }
 }
 
 static void load_program(uint32_t n)
@@ -424,6 +449,7 @@ static void draw_hints(void)
 
 #ifdef OBV_HOST
 static uint32_t host_page_now(void) { return page; }   /* (tests/host.c: "T expect page N") */
+static uint32_t host_slot_now(void) { return prog + 1u; }   /* ("T expect slot N": the program sounding, 1-99) */
 static void host_set_param(uint32_t p, int32_t v) { set_param(p, v); }   /* (tests/host.c: "T param P V") */
 static uint32_t host_voices_on(void) { uint32_t v, n = 0; for (v = 0; v < NV; v++) n += vc[v].gate; return n; }   /* ("T expect voices N") */
 static uint32_t host_get_param(uint32_t p) { return live.v[p % PATCH_BYTES]; }   /* ("T expect param P V") */
@@ -725,10 +751,23 @@ static void store_selftest(void)
         if (psect_load(n, &psect[n], sizeof psect[n]) || psect[n].tag != PS_TAG) { memset(&psect[n], 0, sizeof psect[n]); psect[n].tag = PS_TAG; }
     {
         int all = 1, s3 = 1;
-        for (n = 0; n < NPROG; n++) { prog_get(n, &got); if (memcmp(&got, &sf_expect[n], PATCH_BYTES)) { all = 0; printf("  slot %u differs\n", n + 1u); } }
+        for (n = 0; n < NPROG; n++) {           /* (the store itself: all 99, the POUND's too, below the lock) */
+            got = psect[n / PS_N].p[n % PS_N];
+            if (!psect[n / PS_N].used[n % PS_N] || memcmp(&got, &sf_expect[n], PATCH_BYTES)) { all = 0; printf("  slot %u differs\n", n + 1u); }
+        }
         for (n = 84; n < NPROG; n++) if (n / PS_N != 2u) s3 = 0;   /* programs 85-99 (0-idx 84-98) */
         sf_check("all 99 patches survive the power-cycle byte-exact (every byte of every patch)", all);
         sf_check("programs 85-99 live in the 3rd sector (index 2)", s3);
+    }
+
+    /* ---- d: the lock: with all 99 stored, 1-32 still read the factory, 33-99 the user's ---- */
+    {
+        int pound = 1, pack = 1;
+        patch_t f;
+        for (n = 0; n < NFACT; n++) { prog_get(n, &got); patch_from_factory(&f, &FACTORY[n]); if (memcmp(&got, &f, PATCH_BYTES)) pound = 0; }
+        for (n = NFACT; n < NPROG; n++) { prog_get(n, &got); if (memcmp(&got, &sf_expect[n], PATCH_BYTES)) pack = 0; }
+        sf_check("THE POUND: with saves stored over 1-32, programs 1-32 still read the factory", pound);
+        sf_check("THE PACK: programs 33-99 read the user's saves", pack);
     }
 
     /* ---- a2: saving one slot touches only its sector; the other two + all other flash unchanged ---- */
@@ -763,6 +802,31 @@ static void store_selftest(void)
                  empty && psect[0].tag == PS_TAG);
     }
 
+    /* ---- e: the rescue at power-on: old saves over 1-32 (v0.1 / v0.2) move to the first free PACK slots, in order ---- */
+    {
+        patch_t a, b2;
+        int moved, kept;
+        for (n = 0; n < NPSECT; n++) { memset(&psect[n], 0, sizeof psect[n]); psect[n].tag = PS_TAG; }
+        sf_seed(&a, 501u); prog_put(4u, &a);       /* program 5: an old save */
+        sf_seed(&b2, 502u); prog_put(20u, &b2);    /* program 21: another */
+        sf_seed(&live, 503u); prog_put(32u, &live);   /* program 33: the user's, already in THE PACK */
+        ps_dirty = 0;
+        pound_rescue();
+        moved = !memcmp(&psect[33 / PS_N].p[33 % PS_N], &a, PATCH_BYTES) && !memcmp(&psect[34 / PS_N].p[34 % PS_N], &b2, PATCH_BYTES);
+        kept = !memcmp(&psect[0].p[32], &live, PATCH_BYTES);
+        sf_check("rescue: old saves on 5 and 21 moved to 34 and 35 (33 was taken), 33 untouched", moved && kept);
+        sf_check("rescue: 5 and 21 are free again (read the factory) and sector 0 is due to be saved",
+                 !psect[0].used[4] && !psect[0].used[20] && (ps_dirty & 1u));
+        ps_dirty = 0;
+        pound_rescue();
+        sf_check("rescue: a second power-on moves nothing", ps_dirty == 0);
+        for (n = 0; n < NPSECT; n++) { memset(&psect[n], 0, sizeof psect[n]); psect[n].tag = PS_TAG; }
+        for (n = 0; n < NPROG; n++) { sf_seed(&live, n + 900u); prog_put(n, &live); }   /* THE PACK full */
+        ps_dirty = 0;
+        pound_rescue();
+        sf_check("rescue: with THE PACK full nothing is overwritten (the old save stays, unread)", ps_dirty == 0 && psect[0].used[0]);
+    }
+
     printf("selftest: %s\n", sf_fail ? "FAILED" : "all ok");
     exit(sf_fail ? 1 : 0);
 }
@@ -792,6 +856,7 @@ static void app_main(void)
             set.tempo = 120;
         }
     }
+    pound_rescue();
     if (set.prog >= NPROG) set.prog = 0;
     if (set.tempo < 40u || set.tempo > 240u) set.tempo = 120;
     if (set.oct < -2 || set.oct > 2) set.oct = 0;
@@ -875,14 +940,19 @@ static void app_main(void)
         }
         if (b & (1u << BTN_GLO)) np = cycle_fam(FAM_GLO);
         if (b & (1u << BTN_SAVE)) {              /* a tap: armed (the slot to save into); tapped again: saved */
-            if (save_armed) {
+            if (save_armed && save_to < NFACT) {   /* (never: the slot is kept in THE PACK) */
+                save_armed = 0;
+                dirty_hdr = dirty_page = 1;
+            } else if (save_armed) {
                 uint32_t n = save_to % NPROG;
                 prog_put(n, &live);
                 prog = n; set.prog = (uint8_t)n; edited = 0; set_dirty = 1;
                 save_armed = 0;
                 say("SAVED");
                 dirty_hdr = dirty_tags = dirty_page = 1;
-            } else { save_armed = 1; save_t = fm1_ms; save_to = prog; dirty_hdr = dirty_page = 1; }
+            } else {                            /* armed: on THE PACK, this slot; on THE POUND (locked), the first free PACK slot */
+                save_armed = 1; save_t = fm1_ms; save_to = prog >= NFACT ? prog : pack_free(); dirty_hdr = dirty_page = 1;
+            }
         }
         if (b & (1u << BTN_SEL) && save_armed) {   /* SAVE armed + SELECT pressed: a new sound (dice) instead */
             randomize();
@@ -910,8 +980,8 @@ static void app_main(void)
 
         /* encoders */
         if ((e = fm1_enc_take(ENC_PRESETS)) != 0) {
-            if (save_armed) {                   /* SAVE armed: PRESETS picks the slot to save into ("save as") */
-                save_to = (uint32_t)((int32_t)save_to + e + (int32_t)NPROG * 4) % NPROG;
+            if (save_armed) {                   /* SAVE armed: PRESETS picks the slot to save into ("save as"), 33-99 only */
+                save_to = NFACT + (uint32_t)((int32_t)(save_to - NFACT) + e + (int32_t)PACK_N * 4) % PACK_N;
                 save_t = fm1_ms;
                 dirty_hdr = 1;
             } else {
