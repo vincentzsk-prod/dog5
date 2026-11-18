@@ -41,6 +41,7 @@ class DOG5 extends AudioWorkletProcessor {
     else if (m.t === 'btn') ex.sim_button(m.b, m.down ? 1 : 0);
     else if (m.t === 'enc') ex.sim_enc(m.e, m.steps | 0);
     else if (m.t === 'midi') ex.sim_midi(m.d[0] | 0, m.d[1] | 0, m.d[2] | 0);
+    else if (m.t === 'pick') ex.sim_pick(m.p | 0);
     else if (m.t === 'master') ex.sim_master(m.v | 0);
   }
   publish() {

@@ -370,7 +370,7 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
 - `PLATFORM-API.md` (platform.c's calls) and `CHIP-RULES.md` (the chip's habits) — Dinghy's docs, moved from `docs/` in 12B.
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
-  `BATCH-12B-CLEANUP.md` (the repo clean-up) and `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs).
+  `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs) and `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes).
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

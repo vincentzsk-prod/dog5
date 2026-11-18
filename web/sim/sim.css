@@ -140,7 +140,8 @@ main { max-width: 1280px; margin: 0 auto; padding: 8px 16px 24px; }
 .key.w.down { background: linear-gradient(180deg, #bfb8af, #cfc8bf); }
 .key.b.down { background: #3a3435; }
 
-/* ---- the stage: the device, and beside it (narrow: under it) the patch list */
+/* ---- the stage: the device, and beside it (wide) or under it the patch list; narrow (980 px and less), sim.js moves the list into
+ * the device, above the keys, as its own scrolling box */
 .stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; margin: 12px 0 24px; }
 .stage .device { margin: 0; }
 .patches { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
@@ -155,6 +156,9 @@ main { max-width: 1280px; margin: 0 auto; padding: 8px 16px 24px; }
 .patch:hover { border-color: var(--cyan); }
 .patch.on { border-color: var(--red); background: #2f1d1c; box-shadow: 0 0 0 1px var(--red); }
 .patch.on .no { color: var(--led); }
+.device .patches { grid-area: patches; max-height: 38vh; overflow-y: auto; overscroll-behavior: contain; padding: 8px 10px; }
+.device .patches .patch { touch-action: manipulation; }   /* (the device's buttons take no gestures; this list scrolls) */
+.device .patches .hint:empty { display: none; }
 @media (min-width: 1240px) {
   .stage { grid-template-columns: minmax(0, 1fr) 270px; }
   .pgrid { grid-template-columns: 1fr 1fr; }
@@ -186,11 +190,11 @@ footer { max-width: 1280px; margin: 0 auto; padding: 12px 16px 32px; color: var(
 
 /* ---- narrower: the screen on top, the knobs and buttons under it, then the keys */
 @media (max-width: 980px) {
-  .device { grid-template-columns: 1fr 1fr; grid-template-areas: "screen screen" "left right" "keys keys"; }
+  .device { grid-template-columns: 1fr 1fr; grid-template-areas: "screen screen" "left right" "patches patches" "keys keys"; }
   .screenbox { justify-self: center; }
 }
 @media (max-width: 640px) {
-  .device { grid-template-columns: 1fr; grid-template-areas: "screen" "right" "left" "keys"; padding: 14px 10px 16px; gap: 14px; border-radius: 16px; }
+  .device { grid-template-columns: 1fr; grid-template-areas: "screen" "right" "left" "patches" "keys"; padding: 14px 10px 16px; gap: 14px; border-radius: 16px; }
   .screenbox { width: 100%; max-width: 360px; }
   .pgrid { grid-template-columns: 1fr 1fr; }
   .left { flex-direction: row; flex-wrap: wrap; justify-content: center; }

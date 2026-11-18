@@ -88,18 +88,8 @@ for src in ("stab", "bass", "lead"):
         write(f"combo_{src}_{nm}", lines + settings(s) + ex, end)
         write(f"combo_{src}_{nm}_noalley", lines + ex, end)    # the same without ALLEY: what ALLEY adds
 
-# tap tempo on the panel: the bass riff looped (8ths at 120 BPM), on the BBD page; WAG (REC, button 13) tapped
-# 4x at 500 ms (a quarter: the echo lands on the beat), then 4x at 375 ms while the repeats ring (a dotted 8th: the
-# repeats bend to it), then 3x at 1000 ms (slower than 740 ms: folded to its 8th, 500 ms again)
-tp = prog(0, [("DLY_FB", 55), ("DLY_MIX", 60), ("SPREAD", 64)]) + TO_BBD
-riff = [33, 33, 45, 33, 36, 33, 31, 33]
-tp += sum((note(T0 + 300 + 250 * i, riff[i % 8], 200) for i in range(48)), [])
-tp += [f"{T0 + 400 + 500 * i} btn 13" for i in range(4)]
-tp += [f"{T0 + 4400 + 375 * i} btn 13" for i in range(4)]
-tp += [f"{T0 + 8400 + 1000 * i} btn 13" for i in range(3)]
-tp += [f"{T0 + 2200} expect param {P['ALLEY']} 115", f"{T0 + 2200} expect param {P['FINE']} 66",
-       f"{T0 + 6000} expect param {P['ALLEY']} 107", f"{T0 + 10500} expect param {P['ALLEY']} 115"]
-write("tap_bass", tp, T0 + 15000)
+# (The tap-tempo script, tap_bass, went in Batch 14: REC is HOLD since Batch 9B, so it measured nothing. Its last
+# render, listen/bbd/tap_bass.wav, is on the listen/ branches.)
 
 # the knob while the repeats ring: KNOB 1 (encoder 2) on the BBD page, one ALLEY step every 80 ms (3.5 % a step)
 def knob(t, steps, every=80):
