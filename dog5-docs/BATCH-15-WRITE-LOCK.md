@@ -28,6 +28,6 @@ Branch `build/batch-15-write-lock`, off `origin/main` 945bc88 (after Batch 14).
 - Device build: image 82,536 B (+272), RAM 32,432 B, pool 304,896 B (both unchanged). `run_tests.sh` ALL TESTS PASSED.
   Web player rebuilt (its SAVE line now explains the lock); `sim_test.mjs` passes.
 
-## Not done
+## The 0.3 test build
 
-Not on the unit yet: it ships with the 0.3 test build.
+**The 0.3 test build is in this batch** (second commit): `./build.sh --release 0.3` twice, same SHA-256 `293d78904a7d9874c12cc180219e8dda8081b58bd0029278d28b6a8204bdf763`, 612,223 B, identity `FM-1_963`; installer page regenerated (`v0.3 · 2026-11-18`), `--check` in sync, `tests/install/run.sh` 20/20. The 0.2 package leaves the page (it is in git history, commit 945bc88). Not on the unit yet.

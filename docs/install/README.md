@@ -1,7 +1,7 @@
 # DØG-5 installer (self-hosted page)
 
 `index.html` here installs DØG-5 on an **M-VAVE FM-1** over USB-MIDI, from **Chrome or Edge**. It is one file: the
-package (`dog5-0.2-20261118.fwsc`, identity `FM-1_962`) is inside it, and it makes no network request of any kind. It is
+package (`dog5-0.3-20261118.fwsc`, identity `FM-1_963`) is inside it, and it makes no network request of any kind. It is
 served by GitHub Pages from `main` `/docs`; the expected address is <https://vincentzsk-prod.github.io/dog5/install/>
 (GitHub's usual form; confirm it once Pages is on). WebMIDI itself needs `https://` or `http://localhost`.
 
@@ -86,8 +86,8 @@ App-level USB rescue (holding OCT− at power-on) is **unproven on this hardware
 ## Rebuild and tests
 
 ```sh
-./build.sh --release 0.2                        # build/dog5-0.2.fwsc (needs the JieLi toolchain + SDK)
-python3 tools/make_installer_page.py --release 0.2 --date 2026-11-18   # the package and index.html, together
+./build.sh --release 0.3                        # build/dog5-0.3.fwsc (needs the JieLi toolchain + SDK)
+python3 tools/make_installer_page.py --release 0.3 --date 2026-11-18   # the package and index.html, together
 python3 tools/make_installer_page.py --check    # fails if the page or the package beside it have drifted
 sh tests/install/run.sh                         # the proof below
 ```
