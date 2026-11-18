@@ -80,7 +80,7 @@ its DSP (`obv_dsp.h`) is self-contained, but the engine hookup needs a manual po
 | Program slots | **99** (`NPROG 99`) — **1–32 the DØG-5 factory (`NFACT 32`), 33–99 INIT** | `firmware/src/obv_params.h` |
 | Patch size | **`PATCH_BYTES 96`** (was 80; grown — §7, done) — 42 patches per 4 KiB sector, 3 sectors | `obv_params.h` |
 | Patch name field | **`PATCH_NAME 14`** (was 10; widened — §7, done), at a fixed offset `PATCH_NAME_AT 80` | `obv_params.h` |
-| Pages | 19 in base (DØG-5 → **20**, see §5), a table of `{title,{4 param ids}}` | `obv_params.h` PG_* |
+| Pages | 19 in base (DØG-5 → **21**, see §5), a table of `{title,{4 param ids}}` | `obv_params.h` PG_* |
 | Font | **ASCII 32–126 only**; anything else draws as `?` | `gfx.c`, `felucca_font.h` |
 | ⚠️ Ø renders as `?` | `THE DØG` currently shows `THE D?G` — **fix via `tools/gen_font.py`** (Terminus has Ø) | — |
 | Scope capture | already exists: zero-crossing-triggered, stride from the note's period | `obv_engine.h` (`scope[]`) |
@@ -103,12 +103,12 @@ then decays and the art returns. The bar is never permanently filled with live v
 his name), no knob values. Legible 16px font (`FONT_S`/Terminus). It is the one element that never degrades
 and is never broken by the fracture — **top of the screen breaks, the bottom bar is sacred.**
 
-**Pages = 20** (**DONE**, `PAGE[]` in `obv_params.h`; DRIVE and TAPE have no knobs until the Psych Chain lands; VOICE + carries `P_POLY_N`), a table edit (one row each):
+**Pages = 21** (**DONE**, `PAGE[]` in `obv_params.h`; Batch 9B added MIXER and re-dealt the EDIT knobs; VOICE + carries `P_POLY_N`), a table edit (one row each; no parameter id moved, the patch record is untouched):
 
 | Family | Button | Pages |
 |---|---|---|
 | LIVE | HOME | HOME (dog/beam/field/bar) |
-| Voice | EDIT | OSC 1 · OSC 2 · OSC MOD · FILTER · FILTER + |
+| Voice | EDIT | OSC 1 · OSC 2 · MIXER · OSC MOD · FILTER · FILTER + |
 | Envelopes | ENV | FILTER ENV · AMP ENV |
 | Modulation | LFO | LFO · LFO DEST · LFO + |
 | Psych Chain | FX | DRIVE · BBD DELAY · SPRING · TAPE |
@@ -118,12 +118,36 @@ and is never broken by the fracture — **top of the screen breaks, the bottom b
 (VOICE splits into two pages to fit the polyphony control — §6. The **sequencer is deleted**, freeing SEQ,
 ALGORITHM, PLAY, REC.)
 
+**The EDIT pages' knobs (Batch 9B, `PAGE[]`; `-` = no knob):** OSC 1 = WAVE · PW · - · - ; OSC 2 = WAVE · PW · SEMI · FINE ;
+MIXER = O1 LVL · O2 LVL · NOISE · DRIVE (the pre-filter `P_DRIVE`, not GROWL; the two levels are labelled O1 / O2 LVL
+because "LEVEL" twice on one page said nothing) ; OSC MOD = SYNC · X-MOD · ENV>O2 · - ; FILTER = RESO · ENV AMT · MORPH · TYPE ;
+FILTER + = KEY TRK · VEL>FLT · VEL>AMP · -. HOME (PERFORM) is unchanged: CUTOFF · RESO · ENV AMT · RELEASE.
+
+**Hold EDIT + a black key = jump to a page (Batch 9B; `keys_in`, `EDIT_KEY[]`, tests/controls/edit_keys.txt).** The keybed's 11
+black keys read, from F3, in groups 3·2·3·2·1 = the unit's printing OP1 OP2 OP3 · OP4 OP5 · OP6 PIT GLO · MONO POLY · (none):
+OP1 = OSC 1, OP2 = OSC 2, OP3 = MIXER, OP4 = FILTER (again: FILTER +), OP5 = VOICE, OP6 = VOICE +, PIT = OSC MOD,
+GLO = GLOBAL (again: OUTPUT), MONO / POLY = the patch's MODE (header readout `MODE MONO`). The shortcut never sounds a note and
+sends no MIDI; the key right of POLY (F#5) stays a note. A jump updates the family's remembered page. A tap on EDIT still cycles
+the family, now **on release** (suppressed if a shortcut was used during the hold).
+
+**SELECT (Batch 9B):** on HOME with no layer held, a turn is `P_LFO_RATE`, 2 a detent, clamped 0..127, a real parameter (SAVE
+stores it), header readout `LFO RATE 4.2Hz` for a second; on every other page it does nothing. The old always-on tempo scroll
+is gone: the tempo is GLOBAL knob 1 and the MIDI clock. SAVE armed + SELECT pressed = the dice, and SELECT held on a Psych page =
+the "+" knobs, both as before.
+
+**REC (WAG) = HOLD (Batch 9B):** a press with no layer held, on any page, toggles the same latch as the ARP button on its page
+(`hold_toggle`; ORed with the sustain pedal in `part_sus`); the REC LED shows it. STOP (PLAY) releases it when it engages; a patch
+change, MIDI panic and the pedal do not. REC's tap tempo (`alley_tap`) is gone; ALLEY's knob is unchanged.
+
 **Adopted from Skiff** (the strongest navigation model in the scene; upstream already borrows from it):
 - ⭐ **Hold HOME = a live control map** showing what every button/knob does on the current page. This is the
   answer to the renamed controls — no memorisation, no dual-labelling; the headers stay pure. **DONE**
   (`ui_map`/`draw_map`; tests/map.txt): held ≥ 350 ms it shows the page's four knobs and, per button, its dog name with the
-  label printed on the panel ("DIG (EDIT)", "HOWL (ENV)" … "BARKS (PRESETS)"; FX and OCT have none in the brief, HOME's
-  is HOME) and where a press goes *now*; letting go stays on the page. The page titles stay plain (FILTER, BBD
+  label printed on the panel ("DIG (EDIT)", "HOWL (ENV)" … "BARKS (PRESETS)"; FX and OCT have none in the brief) and where a
+  press goes *now*; letting go stays on the page. **Batch 9B:** 13 rows under a 32 px head (`MAP_ROWS`): the six page buttons, HEEL (PLAY)
+  STOP, FLOP (SEQ) HOLD=TAPE STOP, SLOBBER (ALGO) SLOP RIDE, WAG (REC) HOLD, then by page: on an EDIT-family page the three
+  EDIT-held key lines, on HOME FETCH (SELECT) LFO RATE + BURY + BARKS, on a Psych page FETCH HOLD: X + + BURY + BARKS, elsewhere BURY +
+  BARKS + OCT-/+. Dropped to fit: the HOME row and "FX HELD: THE 4 MACROS" (and OCT-/+ on HOME / Psych / EDIT pages). The page titles stay plain (FILTER, BBD
   DELAY…; HOME's is **DØG-5**, the owner's choice 2 Nov): the dog names live in the map only. A tap goes HOME **on release** (that is the cost: HOME no longer
   acts on press). The map draw calls `app_idle()` (DRAW RULE) — the host script asserts it.
 - **Page families remember their last page** (one `uint8_t` each, `fam_last`) — so HOME→play→EDIT returns you to
@@ -147,7 +171,7 @@ by ear 3 Nov from 1x / 1.5x / 2x, `listen/trick/slop_depths/`; `SLOP_SCALE_X2 4`
 `SLOP +N = VINTAGE M` for 1 s. **Known, accepted character trait — heard and approved, NOT a bug, do not "fix" it:** at
 full ride each voice card sits off true by its own VINTAGE offset — voice card 0 (all MONO/UNISON notes) ~20 cents
 flat (≈10 at the old 1x, doubled at this range), other cards sharp (a chord averages ~3 cents flat), plus the wander. The hold-HOME
-map is full (11 rows) and doesn't list them yet.
+map lists the three tricks (Batch 9B).
 
 **Control renames (the dumb-dog register, function unchanged):** ALGORITHM=SLOBBER, ENV=HOWL, SEQ=FLOP (now TAPE STOP), PLAY=HEEL, REC=WAG, GLO=FLEAS, ARP=ZOOMIES, LFO=PANT, SAVE=BURY, EDIT=DIG, SEL=FETCH,
 PRESETS=BARKS, HOME=HOME. Psych Chain knobs: Drive=GROWL, BBD=ALLEY, Spring=DRAIN, Tape=CHEW. Banks: THE
@@ -158,7 +182,7 @@ POUND (locked factory) / THE PACK (live). FLEAS = the degradation dial (CLEAN/IT
 ## 6. THE SOUND
 
 **The Psych Chain** (after voices, before the master VCA gate), reached by FX:
-`VOICES → PREAMP DRIVE (new) → BBD DELAY (re-voiced, free-ms, REC=tap-tempo) → SPRING REVERB (re-voiced) →
+`VOICES → PREAMP DRIVE (new) → BBD DELAY (re-voiced, free-ms; REC was tap-tempo until Batch 9B, now HOLD) → SPRING REVERB (re-voiced) →
 TAPE DEGRADE (new) → MASTER GATE`. The 3 freed chorus param slots (`P_CHO_*`) carry Drive + Tape; no new
 patch storage. Build Drive/Tape as integer fixed-point.
 **DRIVE (GROWL) — DONE** (`obv_drive.h`): on the voice bus before the output stage; the 3 chorus bytes are GROWL (54,
@@ -180,8 +204,8 @@ bit-exact bypass. ~960 host instr/sample (the most of any stage: levers in `dog5
 output stage, before the reverb). Bytes **68–70** (ALLEY, FINE, PINGPONG; CC 87–89, appended; 71–79 stay free); the old
 TIME byte 55 is now SYNC, the note value **ALLEY 0** follows (so the 8 factory patches with the delay on keep their
 times). KNOB 1 on BBD DELAY = ALLEY: 10–740 ms free (3.5 % a step; leaving SYNC starts from the time sounding), SELECT
-held = BBD + (SYNC, FINE, PINGPONG); **REC (WAG) on the page = tap tempo** (mean of 3 intervals, FINE makes it exact; a
-tap slower than 740 ms folds to its 8th); the REC LED is lit there. Each pass is band-limited as a BBD's (2-pole + 1-pole,
+held = BBD + (SYNC, FINE, PINGPONG); **the REC tap tempo (mean of 3 intervals, folds to its 8th) was removed in Batch 9B:
+REC is HOLD now (§5); FINE stays, ALLEY's knob is unchanged.** Each pass is band-limited as a BBD's (2-pole + 1-pole,
 8 kHz at 10 ms → 2.8 kHz at 740 ms), TONE stays in the loop, an 80 Hz high-pass thins the repeats, tanh headroom on the
 line and in the loop; FEEDBK keeps the old law to 112, holds at ~120 and runs away above (settling under full scale). A
 time change bends the repeats' pitch (≤ −12 / +7 semitones, eased: never a click). MIX 0 is the old delay's bypass,

@@ -112,7 +112,7 @@ All fixed-point. Priority when the budget bites: oscillators → filter → VCA 
 4. **Poly-Mod** — per-voice; sources filter env, Osc B; dests Osc A pitch, filter cutoff.
 5. **VCA** — true zero gate, hard-chop exponential release, gates the whole noise floor incl. effects
    (exception: ENV Drone Latch / HOWL holds it open → latched drones carry tape hiss + drive crackle).
-6. **Psych Chain** — Preamp Drive (asymmetric clipper) → BBD Delay (free-ms, REC=tap-tempo, LP in feedback)
+6. **Psych Chain** — Preamp Drive (asymmetric clipper) → BBD Delay (free-ms, REC=tap-tempo [dropped in Batch 9B: REC is HOLD], LP in feedback)
    → Spring Reverb (re-voiced plate, `REV_DIV 2` fallback) → Tape Degrade (wow, flutter, dropouts).
 
 ---

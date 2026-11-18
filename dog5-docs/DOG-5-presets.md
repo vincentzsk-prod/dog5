@@ -44,11 +44,11 @@ secondaries on SELECT-hold. Repurpose the 3 freed chorus slots (`P_CHO_*`) for D
 | Knob | Effect | Primary | Secondary | Status |
 |---|---|---|---|---|
 | K1 GROWL | Preamp Drive (new) | Drive 0–127 (warmth→gated fuzz) | Bias/asymmetry | New — integer asymmetric soft-clip before `sat16()` |
-| K2 ALLEY | BBD Delay (re-voiced) | **Free-running ms** time | Feedback (→0.97 self-osc) | Tone-in-feedback + tape-slew already coded; **REC = tap-tempo** |
+| K2 ALLEY | BBD Delay (re-voiced) | **Free-running ms** time | Feedback (→0.97 self-osc) | Tone-in-feedback + tape-slew already coded; **REC = tap-tempo** (superseded, Batch 9B: REC is HOLD on every page, the tap is gone) |
 | K3 DRAIN | Spring Reverb (re-voiced) | Mix | Size/decay | Plate's allpasses pushed → spring chirp. "Next closest thing," excellence not required |
 | K4 CHEW | Tape Degrade (new) | Degrade (wow→flutter→dropouts) | Wow/flutter balance | New — reuses Hermite moving-tap reader + HF roll-off + micro-dropouts |
 
-Baked in: BBD = free ms (never a click live); REC = tap-tempo. Spring = re-voiced plate (true waveguide NOT
+Baked in: BBD = free ms (never a click live); (REC was tap-tempo: superseded in Batch 9B, REC is HOLD). Spring = re-voiced plate (true waveguide NOT
 attempted; `REV_DIV 2` half-rate is the documented CPU fallback — Chapter II leans on it most). Order
 consequences: Tape last compounds slop + wow; HOWL (ENV latch) holds the gate so latched drones carry the
 chain's hiss/crackle; HEEL (PLAY/STOP) flushes buffers to dead air; FLOP (SEQ tape-stop — note: goes with the

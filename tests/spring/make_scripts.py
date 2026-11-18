@@ -92,7 +92,7 @@ for src in ("stab", "bass", "lead", "pluck"):
 
 # the knobs while it rings, on the panel: FX x3 = SPRING, SELECT held = SPRING + (KNOB 1 SIZE, 2 DAMP, 3 PRE-DLY;
 # encoders 2, 3, 4), one detent (2 steps) every 40 ms. The pluck figure looped under it
-TO_SPRING = [f"{T0 + 20} btn 2", f"{T0 + 60} btn 2", f"{T0 + 100} btn 2", f"{T0 + 200} expect page 13"]
+TO_SPRING = [f"{T0 + 20} btn 2", f"{T0 + 60} btn 2", f"{T0 + 100} btn 2", f"{T0 + 200} expect page 14"]
 
 
 def turns(t, enc, detents, every=40):

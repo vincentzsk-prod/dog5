@@ -1,0 +1,69 @@
+# Batch 9B: REC (WAG) = HOLD, on any page, with no layer held: one latch (hold / ctl_hold) shared with the ARP button on its
+# page, ORed with the sustain pedal (part_sus), released by STOP (PLAY) and by nothing else. "T expect voices N" = cards gated on.
+# Buttons: 2 FX, 8 HOME, 10 ARP, 12 PLAY, 13 REC. Keys: 0x80 = C4. MIDI CC 64 = the sustain pedal. Program 1 = POLY, no arp.
+2900 expect page 0
+3000 keys 0x80   # a note, let go with HOLD off: it ends
+3300 keys 0
+3800 expect voices 0
+4000 btn 13   # REC: HOLD on (HOME page)
+4200 keys 0x80
+4500 keys 0
+5000 expect voices 1   # latched
+5200 btn 13   # REC again: released
+5600 expect voices 0
+# the same on the BBD page (REC used to tap the time there)
+6000 btn 2
+6200 btn 2
+6400 expect page 13
+6500 btn 13
+6700 keys 0x80
+7000 keys 0
+7500 expect voices 1
+7700 btn 13
+8100 expect voices 0
+# the ARP button on its page is the same latch: on, then REC releases it
+8300 btn 10   # ARP: the page
+8500 expect page 16
+8600 btn 10   # ARP on its page: HOLD on
+8800 keys 0x80
+9100 keys 0
+9600 expect voices 1
+9800 btn 13   # REC releases the latch the ARP button set (one state, two buttons)
+10200 expect voices 0
+# a layer held: REC does nothing (the FX layer owns the panel)
+10400 btn 8
+10600 btndown 2
+11400 btn 13   # (FX held > 600 ms: a layer)
+11600 keys 0x80
+11900 keys 0
+12400 expect voices 0   # no latch
+12500 btnup 2
+# the pedal and REC are ORed: REC off with the pedal down keeps the notes, the pedal up lets them go
+13000 btn 13
+13200 midi 0xB0 64 127
+13400 keys 0x80
+13700 keys 0
+14000 btn 13   # REC off: the pedal still holds
+14400 expect voices 1
+14500 midi 0xB0 64 0
+14900 expect voices 0
+# a patch change does not release a latched HOLD
+15000 btn 13
+15200 keys 0x80
+15500 keys 0
+15800 midi 0xC0 0 0
+16200 expect voices 1
+16400 btn 13
+16800 expect voices 0
+# STOP (PLAY) releases it: after STOP and back, a note ends when its key does
+17000 btn 13
+17200 keys 0x80
+17500 keys 0
+17900 expect voices 1
+18000 btn 12   # PLAY: STOP
+18300 expect voices 0
+18400 btn 12   # PLAY: live again
+18800 keys 0x80
+19100 keys 0
+19600 expect voices 0   # the latch is gone
+19800 end

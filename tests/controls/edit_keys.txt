@@ -1,0 +1,104 @@
+# Batch 9B: EDIT held + a black key of the upper row jumps to a page (OP1 OSC 1, OP2 OSC 2, OP3 MIXER, OP4 FILTER / FILTER +,
+# OP5 VOICE, OP6 VOICE +, PIT OSC MOD, GLO GLOBAL / OUTPUT, MONO / POLY = the voice mode); the shortcut never sounds a note;
+# the key right of POLY stays a note; a tap on EDIT still cycles (on release) unless a shortcut was used while it was down.
+# Keys (bit = key index, 0 = F3): OP1 1, OP2 3, OP3 5, OP4 8, OP5 10, OP6 13, PIT 15, GLO 17, MONO 20, POLY 22, none 25.
+# Pages: OSC1 1 OSC2 2 MIXER 3 OSCMOD 4 FILTER 5 FILTER+ 6 VOICE 18 VOICE+ 19 GLOBAL 17 OUTPUT 20. Parameter 38 = MODE
+# (POLY 0, MONO 3). Run: sh tests/run_host.sh tests/controls/edit_keys.txt; 'MIDI out' lines in the log are the notes sent.
+2900 expect page 0
+3000 btndown 6   # EDIT held
+3100 keys 0x2   # OP1
+3160 expect page 1
+3160 expect voices 0   # (no note)
+3250 keys 0
+3400 keys 0x8   # OP2
+3460 expect page 2
+3460 expect voices 0   # (no note)
+3550 keys 0
+3700 keys 0x20   # OP3
+3760 expect page 3
+3760 expect voices 0   # (no note)
+3850 keys 0
+4000 keys 0x100   # OP4
+4060 expect page 5
+4060 expect voices 0   # (no note)
+4150 keys 0
+4300 keys 0x100   # OP4 again: FILTER +
+4360 expect page 6
+4450 keys 0
+4600 keys 0x100   # and again: back to FILTER
+4660 expect page 5
+4750 keys 0
+4900 keys 0x400   # OP5
+4960 expect page 18
+4960 expect voices 0
+5050 keys 0
+5200 keys 0x2000   # OP6
+5260 expect page 19
+5260 expect voices 0
+5350 keys 0
+5500 keys 0x8000   # PIT
+5560 expect page 4
+5560 expect voices 0
+5650 keys 0
+5800 keys 0x2   # OP1 again: the single-page key stays
+5860 expect page 1
+5950 keys 0
+6100 keys 0x2
+6160 expect page 1
+6250 keys 0
+6400 keys 0x20000   # GLO: GLOBAL
+6460 expect page 17
+6550 keys 0
+6700 keys 0x20000   # again: OUTPUT
+6760 expect page 20
+6850 keys 0
+7000 keys 0x20000   # again: GLOBAL
+7060 expect page 17
+7150 keys 0
+7300 keys 0x100000   # MONO: the voice mode, no page change
+7360 expect param 38 3
+7360 expect page 17
+7360 expect voices 0
+7450 keys 0
+7600 keys 0x400000   # POLY
+7660 expect param 38 0
+7660 expect voices 0
+7750 keys 0
+7900 btnup 6   # EDIT let go after shortcuts: it does NOT cycle (we are on GLOBAL, 17)
+8100 expect page 17
+8300 btn 6   # an EDIT tap now: back to where EDIT was left (the last jump, OP1's OSC 1) and it acts on release
+8500 expect page 1
+8700 btn 6   # in the family: the next page (OSC 2)
+8900 expect page 2
+9100 btn 7   # GLO: GLOBAL remembered (the shortcut updated that family's page)
+9300 expect page 17
+# the key right of POLY (index 25, F#5) is a normal note even with EDIT held; and no stuck notes
+9500 btndown 6
+9600 keys 0x2000000
+9700 expect voices 1   # it sounds
+9700 expect page 17
+9900 btnup 6   # EDIT let go first: the unassigned key does not count as a used shortcut, so EDIT cycles: GLOBAL -> OSC 2 (remembered)
+10050 expect page 2
+10200 keys 0   # key let go after EDIT: its note ends
+10700 expect voices 0   # (no stuck note)
+# a key already down when EDIT is pressed keeps its note and ends it as always (OP1's key is F#3)
+10900 keys 0x2
+11000 expect voices 1
+11200 btndown 6   # EDIT pressed with OP1's key held: no jump (no new key edge)
+11300 expect voices 1
+11500 keys 0
+12000 expect voices 0   # no stuck note
+12100 btnup 6
+# a shortcut pressed, EDIT let go BEFORE the key: the key's release sounds nothing and sends nothing
+12600 btndown 6
+12700 keys 0x20
+12760 expect page 3
+12850 btnup 6
+13100 expect page 3   # (used: no cycle)
+13300 keys 0
+13800 expect voices 0
+# the key afterwards plays (EDIT is not held any more)
+14100 keys 0x20
+14300 expect voices 1
+14700 keys 0
+15300 end

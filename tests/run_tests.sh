@@ -31,14 +31,18 @@ run "FM-1 DRIVE page: GROWL on KNOB 1, SELECT held turns it to BIAS / TONE, nowh
 # CHEW (obv_tape.h): KNOB 1 on TAPE, SELECT held = TAPE + (WOW/FLT, HISS, DROPS); the map; DRIVE + unchanged
 run "FM-1 TAPE page: CHEW on KNOB 1, SELECT held turns it to WOW/FLT / HISS / DROPS, the map names them" sh tests/run_host.sh tests/tape_page.txt
 # ALLEY (obv_fx.h): KNOB 1 leaves SYNC from the time sounding, SELECT held = BBD + (SYNC, FINE, PINGPONG), SYNC turned =
-# SYNC again, REC taps the time (500 ms taps = step 115 + FINE 66; 1000 ms ones fold to the same), FX held's 4th knob, CC 87
+# SYNC again, (REC's tap tempo went in Batch 9B), FX held's 4th knob, CC 87
 # the FX-held layer: KNOB 1-4 = GROWL ALLEY DRAIN CHEW on any page (ALLEY leaves SYNC from the time sounding), nothing else
 run "FM-1 FX-held layer: GROWL / ALLEY / DRAIN / CHEW on KNOB 1-4, the BBD's MIX off it, the page's knobs back on release" sh tests/run_host.sh tests/fx_layer.txt
 # DRAIN (obv_fx.h, the spring): KNOB 1 on SPRING, SELECT held = SPRING + (SIZE, DAMP, PRE-DLY), the map; TAPE + unchanged
 run "FM-1 SPRING page: DRAIN on KNOB 1, SELECT held turns it to SIZE / DAMP / PRE-DLY, the map names them" sh tests/run_host.sh tests/spring_page.txt
 # the reverb's overflow can't come back, the whole chain at its extremes is clean under the sanitizer, no crack
 run "DRAIN: the sanitizer on the hot-input scripts, the chain's extremes and the bench's worst signals" sh tests/spring/regress.sh
-run "FM-1 BBD DELAY page: ALLEY from SYNC, BBD +, REC tap tempo (and its fold), the FX layer's ALLEY, CC 87 = SYNC" sh tests/run_host.sh tests/bbd_page.txt
+run "FM-1 BBD DELAY page: ALLEY from SYNC, BBD +, REC no longer taps (it is HOLD), the FX layer's ALLEY, CC 87 = SYNC" sh tests/run_host.sh tests/bbd_page.txt
+# Batch 9B, the control surface: EDIT held + a black key = a page jump (never a note), SELECT = LFO RATE on HOME only, REC = HOLD
+run "FM-1 EDIT held + keys: OP1-OP6 PIT GLO jump (toggles on OP4 / GLO), MONO / POLY set the mode, no notes, no stuck notes, the tap acts on release" sh tests/run_host.sh tests/controls/edit_keys.txt
+run "FM-1 SELECT dial: LFO RATE on HOME (2 a detent, clamped), nothing on other pages or with a layer held, the dice and the + knobs intact" sh tests/run_host.sh tests/controls/select_dial.txt
+run "FM-1 REC = HOLD: one latch with the ARP button, ORed with the pedal, released by STOP only" sh tests/run_host.sh tests/controls/rec_hold.txt
 # layer-lock with HOME acting on its release: hold FX + tap HOME locks; the tap never goes HOME; FX / ENV let it go
 run "FM-1 layer-lock: FX held + HOME tapped locks (no jump HOME), the lock outlives FX's release, FX or ENV ends it" sh tests/run_host.sh tests/layer_lock.txt
 # the live tricks (tests/trick): PLAY = STOP, the kill switch ("T expect peak MS MAX": the output's peak over the last MS ms)
