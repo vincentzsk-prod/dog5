@@ -1,0 +1,32 @@
+loader: image 8476 B at 0x1c0a800, bss end 0x1c0f530
+loader: ota.bin 7211 B
+  ok    .ram_text: 969 insns, no calls
+  ok    image 86956 B of 619520; RAM .data+.bss 35360 B of 98304; pool 304896 B of 344064
+  ok    register access: hal/ only (src/, loader/ clean)
+app      /home/user/dog5/build/obervave.bin  86956 B
+loader   /home/user/dog5/build/loader/ota.bin  7211 B
+package  /home/user/dog5/build/dog5-smk37.fwsc  651327 B, identity SMK-37 Pro_960, board smk37
+loader: image 8476 B at 0x1c0a800, bss end 0x1c0f530
+loader: ota.bin 7211 B
+  ok    .ram_text: 969 insns, no calls
+  ok    image 86960 B of 619520; RAM .data+.bss 35360 B of 98304; pool 304896 B of 344064
+  ok    register access: hal/ only (src/, loader/ clean)
+app      /home/user/dog5/build/obervave.bin  86960 B
+loader   /home/user/dog5/build/loader/ota.bin  7211 B
+package  /home/user/dog5/build/dog5-smk37-elite.fwsc  651327 B, identity SMK-37 Elite_960, board smk37
+loader: image 8472 B at 0x1c0a800, bss end 0x1c0f530
+loader: ota.bin 7207 B
+  ok    .ram_text: 969 insns, no calls
+  ok    image 86944 B of 619520; RAM .data+.bss 35360 B of 98304; pool 304896 B of 344064
+  ok    register access: hal/ only (src/, loader/ clean)
+app      /home/user/dog5/build/obervave.bin  86944 B
+loader   /home/user/dog5/build/loader/ota.bin  7207 B
+package  /home/user/dog5/build/dog5-smk37-mke.fwsc  651323 B, identity MKE-P37_960, board smk37
+loader: image 10468 B at 0x1c0a800, bss end 0x1c0ff50
+loader: ota.bin 9067 B
+  ok    .ram_text: 916 insns, no calls
+  ok    image 82352 B of 581564; RAM .data+.bss 32432 B of 98304; pool 304896 B of 344064
+  ok    register access: hal/ only (src/, loader/ clean)
+app      /home/user/dog5/build/obervave.bin  82352 B
+loader   /home/user/dog5/build/loader/ota.bin  9067 B
+package  /home/user/dog5/build/dog5.fwsc  612223 B, identity FM-1_960

@@ -4,10 +4,11 @@ Branch `build/batch-11-test-build-0.2`, off `main` (Batch 9B merged). Everything
 
 ## 0. Things you should know first
 
-1. **`firmware/src/dog5_id.h` did not need an edit, and I did not touch it.** The brief says it holds `FM-1_961` → `FM-1_962`. It holds only the family `#define DOG5_ID_FM1 "FM-1_96"` (`dog5_id.h:19`); the minor digit comes from `tools/build.py` from `--release X.Y` (`build.py:74` `PRODUCT = ID["DOG5_ID_FM1"] + "0"`, `:339-345` for a release). So `./build.sh --release 0.2` alone yields `FM-1_962` (the build printed `identity FM-1_962`).
-2. **The 9B build figures in the brief do not match `main`.** I built `main` with the same toolchain: image **82148 B**, RAM **32464 B**, pool 304896 B (brief: 82352 / 32432 / 304896). `main` at `--release 0.1` reproduces the committed `docs/install/dog5-0.1-20261112.fwsc` byte for byte (SHA-256 `3de092d5…87f6a`), so the toolchain is the same as Batch 7's; the 9B numbers in the brief are stale or from a different build, not caused by this batch. Branch vs `main`: identical sizes (see §6).
-3. **`make_installer_page.py` deletes older `dog5-*.fwsc`** (`tools/make_installer_page.py`, the `for old in out.glob("dog5-*.fwsc"): old.unlink()` loop), and both `--check` and `tests/install/run.sh` (`ls docs/install/dog5-*.fwsc`) require exactly one such file beside the page. Keeping the 0.1 file where it was would break the installer check. **What I did:** let the script run, then put the 0.1 package (byte-identical, SHA `3de092d5…`) back at **`docs/install/previous/dog5-0.1-20261112.fwsc`** (a subfolder, so the one-file rule still holds). That moves it from the old path; if you want it at the old path, the installer check has to change instead — your call.
-4. **VOLUME had to change** (121 → 116). See §2.
+**Correction (merge of Batch 9B).** The first version of this report was built on a stale local `main` (Batch 8B, `7a1fba8`); the Batch 9B merge (`b673521`, with `dog5-docs/BATCH-09B-CONTROLS.md` and `tests/controls/`) was only on `origin/main`. I fetched, confirmed the 9B merge is on `origin/main`, merged `origin/main` into this branch (merge commit `562ffa9`; the only conflict was the generated `docs/play/dog5.wasm`, rebuilt) and redid every step that depends on the firmware. All figures below are from the merged tree and a fresh `origin/main` (9B) checkout as baseline. The earlier "9B figures do not match main" note was this staleness, not a brief error: image / RAM now equal the 9B figures.
+
+1. **`firmware/src/dog5_id.h` did not need an edit, and I did not touch it.** The brief says it holds `FM-1_961`. It holds only the family `#define DOG5_ID_FM1 "FM-1_96"` (`dog5_id.h:19`); the minor digit comes from `tools/build.py` and `--release X.Y` (`build.py:74`, `:339-345`). `./build.sh --release 0.2` alone gives `FM-1_962`.
+2. **`make_installer_page.py` deletes older `dog5-*.fwsc`** (its `for old in out.glob("dog5-*.fwsc"): old.unlink()` loop), and both `--check` and `tests/install/run.sh` require exactly one such file beside the page. The script ran, then the 0.1 package (byte-identical, SHA `3de092d5…87f6a`) was put back at **`docs/install/previous/dog5-0.1-20261112.fwsc`**. That moves it from the old path; if you want it at the old path, the installer check has to change instead. Your call.
+3. **VOLUME had to change** (121 → 116), see §2.
 
 ## 1. Table check: 82 → 299 ms, both envelopes
 
@@ -72,7 +73,7 @@ A2 (4k+): −20 / −40 at 723 / 1422 → 967 / 1654 ms; lowest band 250 / 305 �
 
 ## 6. The 32-patch comparison
 
-`python3 tests/voicing/identical.py <main tree> 14`: **patch bytes: 31 of 32 slots identical (slot 14 differs)**; **audio: 31 of 31 other slots byte-identical on all 52 phrases; slot 14 differs: True.** Result `OK`. (Phrase set is the kit's full `PHRASE_FILES`, not one short phrase; `--from-init` not needed, slot 1 unchanged.)
+`python3 tests/voicing/identical.py <fresh origin/main (9B) checkout> 14`: **patch bytes: 31 of 32 slots identical (slot 14 differs)**; **audio: 31 of 31 other slots byte-identical on all 52 phrases (the kit's full phrase set); slot 14 differs: True.** `OK`. The before / after measurements of §3 and §4 were re-run on the merged tree: same numbers (9B did not change the sound).
 
 ## 7. Version label
 
@@ -86,32 +87,32 @@ Driven by `build.py --release` (`-DFELUCCA_ID`, `-DAPP_VER`, `build.py:184`); th
 
 ## 8. Package
 
-`./build.sh --release 0.2` (after `tools/get_vendored_deps.sh`): **`build/dog5-0.2.fwsc`, 612223 B, SHA-256 `5fcb07324e385e2474deaaed2b0b58f6b771366cecf99508c72ae4124100009e`**, identity `FM-1_962`. Built twice: identical hash. (`build/` is git-ignored; the same bytes are `docs/install/dog5-0.2-20261118.fwsc`.)
+`./build.sh --release 0.2` on the merged tree: **`build/dog5-0.2.fwsc`, 612223 B, SHA-256 `b2be33a96864349ab155d7c29b3b3ccbe86ba0b38369289bb54995ab3da36b96`**, identity `FM-1_962`. Built twice: identical hash.
 
-| | brief's 9B figure | `main` built here (0.2) | this branch |
+| | 9B figure | `origin/main` (9B), `--release 0.2` | this branch |
 |---|---|---|---|
-| image | 82352 B | 82148 B | 82148 B |
-| RAM .data+.bss | 32432 B | 32464 B | 32464 B |
+| image | 82352 B | 82352 B | 82352 B |
+| RAM .data+.bss | 32432 B | 32432 B | 32432 B |
 | pool | 304896 B | 304896 B | 304896 B |
-| package | — | 612223 B | 612223 B |
+| package | — | 612223 B, SHA `745630ca…c195` | 612223 B, SHA `b2be33a9…6b96` |
 
-`main` and the branch give the same numbers; the package differs from `main`'s 0.2 package only by the patch bytes (hash: the branch differs from main's build of the same release string, as it should). All build checks passed (`-Os`, no 64-bit division, register access in hal/ only, `.ram_text` ok).
+Only the patch bytes differ from 9B's package (same size). Build checks passed (`-Os`, no 64-bit division, register access in `hal/` only).
 
 ## 9. Installer page
 
-`python3 tools/make_installer_page.py --release 0.2 --date 2026-11-18` wrote: `docs/install/dog5-0.2-20261118.fwsc` (612223 B, identity FM-1_962, SHA as above) and `docs/install/index.html` (860438 B); it **deleted** `docs/install/dog5-0.1-20261112.fwsc` (by design; see §0.3, restored to `docs/install/previous/`); left alone: `README.md` (edited by hand, §7). `--check`: in sync. `sh tests/install/run.sh`: all frames matched — "every reply the page sent matched the reference frame, 1203 replies served", "embedded package SHA-256 == Python's", 20/20 page checks passed. That is the existing frame-identity check against `fm1_install.py`, unchanged.
+`python3 tools/make_installer_page.py --release 0.2 --date 2026-11-18` (re-run after the merge) wrote `docs/install/dog5-0.2-20261118.fwsc` (612223 B, identity FM-1_962, SHA as in §8) and `docs/install/index.html` (860438 B); it deleted nothing new (the 0.1 file is already under `previous/`); `README.md` is hand-edited (§7). `--check`: in sync. `sh tests/install/run.sh`: "embedded package SHA-256 == Python's", "every reply the page sent matched the reference frame, 1203 replies served", 20/20 page checks. This is the existing frame-identity check against `fm1_install.py`.
 
 ## 10. Web player
 
-`sh web/sim/build.sh` (installed ziglang + binaryen by hand per the script's own instructions): `docs/play/dog5.wasm` rebuilt (95849 B); `patches.json` unchanged (names did not change). `node tests/sim_test.mjs`: **SIM TEST PASSED**, including "sound = the host build's, sample for sample (264448 frames, 0 differ)" and screens identical. *Note:* that sound check runs program 1, so it does not exercise slot 14; slot 14's change is proved by §6.
+`sh web/sim/build.sh` rebuilt `docs/play/dog5.wasm` (96165 B) from the merged tree (the merge's own `.wasm` conflict was resolved this way); `patches.json` unchanged. `node tests/sim_test.mjs`: **SIM TEST PASSED** (sound = the host build's sample for sample, screens identical). That sound check runs program 1, so slot 14 is covered by §6.
 
 ## 11. `tests/run_tests.sh`
 
-`main`: 22 FAIL lines; branch: **22 FAIL lines, the identical set** (sorted `diff` empty; e.g. `expect param 54 = 0: 46 FAIL`, `expect param 52 = 46: 36 FAIL`), nothing new. Both trees were built the documented way (three SMK-37 builds, FM-1 last). Both runs finished: `SOME TESTS FAILED` (the 22 lines), the installer-page stage 20/20 on both.
+Fresh `origin/main` (9B) checkout: 22 FAIL lines. This branch: **22 FAIL lines, the identical set** (sorted `diff` empty), nothing new. Both trees were built the documented way (three SMK-37 builds, FM-1 last). The 9B tests are in the run and produce no FAIL line: `tests/controls/edit_keys.txt`, `select_dial.txt`, `rec_hold.txt`. The 22 lines sit in the DRIVE page (9), layer-lock (9), TAPE page (2) and update-loader screen (2) tests, as on `main`. Not run: `tests/controls/bitident.sh` (it compares patches 03, 14, 28, 30 against a reference and 14 now differs by design; §6 covers the 31 others).
 
 ## 12. Surprising / open
 
 * The identity header and the "9B figures" premises of the brief were both off (§0.1, §0.2).
-* The installer script's delete-old-package behaviour conflicts with "do not delete" (§0.3).
+* The installer script's delete-old-package behaviour conflicts with "do not delete" (§0.2).
 * The slower attack moves the sub to the end of the gate: with a 300 ms gate the lows are barely there before the release starts (their −20 dB points are 308–311 ms). Short staccato playing will give a more top-heavy hit than the old one; I measured only the 300 ms gate.
 * Not done: any listening; any device run.
