@@ -649,7 +649,10 @@ static void midi_in(uint32_t notes_only)
         else if (kind == 0xB0u) {
             if (d1 == 7u) ctl_cc7 = d2;
             else if (d1 == 64u) ctl_sustain = d2 >= 64u;
-            else if (d1 == 120u || d1 == 123u) ctl_panic = 1;
+            else if (d1 == 120u || d1 == 123u) {   /* a panic: and a latched HOLD goes, as on STOP */
+                if (hold) { hold = 0; ctl_hold = 0; dirty_tags = 1; }
+                ctl_panic = 1;
+            }
             else if (cc_map[d1]) {
                 uint32_t p = cc_map[d1] - 1u;
                 set_param(p, PDEF[p].max == 127 ? (int32_t)d2 : ((int32_t)d2 * PDEF[p].max + 63) / 127);
