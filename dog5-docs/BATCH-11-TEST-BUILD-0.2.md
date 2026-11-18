@@ -112,7 +112,7 @@ Fresh `origin/main` (9B) checkout: 22 FAIL lines. This branch: **22 FAIL lines, 
 
 ## 12. Surprising / open
 
-* The identity header and the "9B figures" premises of the brief were both off (§0.1, §0.2).
+* My first baseline was a stale local `main` (see the correction in §0); the brief's identity-header premise was also off (§0.1).
 * The installer script's delete-old-package behaviour conflicts with "do not delete" (§0.2).
 * The slower attack moves the sub to the end of the gate: with a 300 ms gate the lows are barely there before the release starts (their −20 dB points are 308–311 ms). Short staccato playing will give a more top-heavy hit than the old one; I measured only the 300 ms gate.
 * Not done: any listening; any device run.
