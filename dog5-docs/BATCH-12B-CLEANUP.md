@@ -23,8 +23,10 @@ tested on the unit 18 Nov). Run directly by Claude in the planning chat, with th
 - **D2** the three `listen/trick/*.wav` and **the four `listen/voicing/**/*_held.wav`** left main (10.8 MB). Identical
   copies (blob hashes checked) are on every `listen/` branch, e.g. `listen/batch-06b2-bell-clean`; the READMEs say so.
 - **D3** `video/` deleted (it drove the deleted sequencer and was OberVave-branded).
-- **D4** `docs/install/previous/` deleted. v0.1 as published is the annotated tag **`archive/dog5-0.1`** at `7a1fba8`
-  (its package is byte-identical). Not a `v*` tag on purpose: `release.yml` builds and publishes a release on `v*` tags.
+- **D4** `docs/install/previous/` deleted. v0.1 as published is commit **`7a1fba8`** (the last `main` with the 0.1
+  installer page; its `docs/install/dog5-0.1-20261112.fwsc` is byte-identical, sha256 `3de092d5…7f6a`). A tag was planned
+  (`archive/dog5-0.1`) but the cloud session's git proxy refuses tag pushes (HTTP 403); never use a `v*` name for one:
+  `release.yml` builds and publishes a release on `v*` tags.
 - **D5** deleted `tests/pages.txt` (stale, no expectations; `families.txt` covers the 21 pages), `tests/controls/bitident.sh`
   + `render4.txt` (Batch 9B's one-off proof; `tests/drive/bitexact.sh` and `tests/voicing/identical.py` do the general
   job). The generated kit scripts stay. Moved to `dog5-docs/history/`: `BATCH-07`, `BATCH-08B`, `DOG-5-build-review.md`,

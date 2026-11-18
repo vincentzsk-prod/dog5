@@ -342,7 +342,8 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
    `"DOG5"` store tag, 3 program sectors (42/sector). Proven by the host self-test (99 patches round-trip
    byte-exact across a power cycle, save-isolation, old 80-byte "BOVP" sector rejected as empty INIT).
 3. **FM-1** — arrived; **v0.2 (`FM-1_962`, package SHA-256 `b2be33a9…6b96`) flashed and tested on the unit 18 Nov**.
-   v0.1 as published is the tag `archive/dog5-0.1` (not `v*`: a `v*` tag triggers a release build).
+   v0.1 as published is commit `7a1fba8` (the installer page with `dog5-0.1-20261112.fwsc`, sha256 `3de092d5…7f6a`).
+   Never push a `v*` tag casually: `release.yml` builds and publishes a release on `v*` tags.
 4. **The 15–16 hand-drawn assets** (build kit §1) — the only thing gating Stage 3.
 
 ---
