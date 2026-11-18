@@ -43,7 +43,8 @@
   });
 
   // ---- the patch list: patches.json (the firmware's 32 factory names, made by web/sim/gen_patches.py). A click sends the
-  // MIDI program change the firmware already takes (it loads the slot, and its screen follows)
+  // MIDI program change the firmware already takes (it loads the slot, and its screen follows), on the MIDI channel set on
+  // GLOBAL (sim_pick), so it works with a channel set too
   const patchEls = [];
   let progNow = -1;
   const showProg = (p) => {
@@ -53,7 +54,7 @@
     const n = $('#slotNow');
     if (n) n.textContent = p < patchEls.length ? '' : 'Slot ' + String(p + 1).padStart(2, '0') + (p >= 32 ? ' (yours: 33-99)' : '');
   };
-  const pickPatch = (i) => { if (!S.on) start(); send({ t: 'midi', d: [0xC0, i, 0] }); };
+  const pickPatch = (i) => { if (!S.on) start(); send({ t: 'pick', p: i }); };
   fetch('patches.json').then((r) => r.json()).then((list) => {
     const host = $('#patchList'); let sec = null, last = '';
     for (const it of list) {
@@ -73,6 +74,14 @@
     }
     progNow = -1;
   }).catch(() => { $('#patchList').textContent = 'The patch list could not be loaded; turn the PRESETS knob instead.'; });
+  // on a narrow screen (a phone, a tablet) the list sits inside the device, just above the keys, so a patch is picked and played
+  // without scrolling between them; wider, it sits beside (or under) the device as before
+  {
+    const list = $('.patches'), keysAt = $('#keys'), stage = $('.stage'), narrow = matchMedia('(max-width: 980px)');
+    const place = () => { if (narrow.matches) { if (list.nextElementSibling !== keysAt) keysAt.before(list); } else if (list.parentElement !== stage) stage.append(list); };
+    if (narrow.addEventListener) narrow.addEventListener('change', place); else narrow.addListener(place);
+    place();
+  }
   // the firmware file, fetched at page load so that power-on needs no network
   const wasmP = fetch('dog5.wasm').then((r) => { if (!r.ok) throw new Error('dog5.wasm: ' + r.status); return r.arrayBuffer(); });
   wasmP.catch(() => {});

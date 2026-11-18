@@ -42,7 +42,7 @@ def main():
             trim(f"{d}/combo_{src}_{nm}.wav", f"{out}/{src}_{nm.replace('g050', 'growl50').replace('g100', 'growl100').replace('c050', 'chew50').replace('c100', 'chew100')}.wav")
         for nm in ("g050_sync_c050", "g100_runaway_c100"):
             trim(f"{d}/combo_{src}_{nm}_noalley.wav", f"{out}/{src}_{nm.replace('g050', 'growl50').replace('g100', 'growl100').replace('c050', 'chew50').replace('c100', 'chew100').replace('_sync', '').replace('_runaway', '')}_no_alley.wav")
-    for nm in ("tap_bass", "sweep_lead", "sweep_runaway"):
+    for nm in ("sweep_lead", "sweep_runaway"):
         trim(f"{d}/{nm}.wav", f"{out}/{nm}.wav")
     # the time-change bench as audio: a 1 kHz sine's echo alone (FEEDBK 0), -12 dBFS: one step, a dive, a rise
     x = np.fromfile(f"{d}/tc.raw", np.int32).reshape(-1, 4).astype(float)

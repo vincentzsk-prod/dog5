@@ -81,7 +81,8 @@ is the delay, in the delay's place.
 TONE 70, MIX 70). This is what the 8 factory patches that use the delay will sound like; see "factory patches" below.
 
 **The demonstrations:**
-- [tap_bass.wav](tap_bass.wav): the bass riff looped (8ths at 120 BPM), on the BBD page, with REC tapped. First 4 ×
+- *tap_bass.wav (history: the REC tap tempo was removed in Batch 9B and its script in Batch 14; the render is on the
+  `listen/` branches):* the bass riff looped (8ths at 120 BPM), on the BBD page, with REC tapped. First 4 ×
   500 ms (a quarter: the echo lands on the beat). At ~4.4 s, 4 × 375 ms *while the repeats ring*, so the repeats bend
   to the new time. At ~8.4 s, 3 × 1000 ms, which folds to 500 ms, so the repeats bend back.
 - [sweep_lead.wav](sweep_lead.wav): the lead's phrase at FEEDBK 95. KNOB 1 turns ALLEY down 30 steps (one every 80 ms)

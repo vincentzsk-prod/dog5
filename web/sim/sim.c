@@ -171,6 +171,11 @@ EXPORT uint32_t sim_leds_keys(void) { return (uint32_t)(host_leds >> 14) & 0x7FF
 EXPORT uint32_t sim_glow_keys(void) { return (uint32_t)(host_glow >> 14) & 0x7FFFFFFu; }  /* the dim layer */
 EXPORT uint32_t sim_page(void) { return page; }
 EXPORT uint32_t sim_prog(void) { return prog; }
+EXPORT void sim_pick(uint32_t p)                 /* the patch list: a program change on the MIDI channel set on GLOBAL (OMNI: 1),
+                                                 * so a click still loads the patch when a channel is set */
+{
+    sim_midi(0xC0u | MIDI_OUT_CH, p, 0);
+}
 
 /* ---- storage: the settings sector, the 8 pattern sectors and the 3 program sectors (SAVE writes those: 42 patches of
  * 96 bytes each), in RAM. The page may keep them (localStorage) and put them back before sim_init: blob 0 = settings,

@@ -130,6 +130,24 @@ check(ex.sim_leds_buttons() !== 0, `button LEDs (0x${ex.sim_leds_buttons().toStr
   check(ex2.sim_prog() === prog && ex2.sim_store_hash() === h1, `a new instance with the saved bytes boots on program ${String(prog + 1).padStart(2, '0')}`);
 }
 
+// the patch list with a MIDI channel set on GLOBAL: sim_pick sends its program change on that channel, so the click still loads
+// the patch (a program change on channel 1 is ignored then, as on the device)
+{
+  const run = (n) => { for (let i = 0; i < n; i++) ex.sim_render(128); };
+  const tap = (b) => { ex.sim_button(b, 1); run(20); ex.sim_button(b, 0); run(20); };
+  tap(7);                                               // GLO: GLOBAL
+  for (let i = 0; i < 5; i++) { ex.sim_enc(4, 1); run(10); }   // KNOB 3 (MIDI CH) OMNI -> 5
+  ex.sim_pick(6); run(100);
+  check(ex.sim_prog() === 6, `MIDI channel 5: a patch-list click loads program 07 (prog ${ex.sim_prog() + 1})`);
+  ex.sim_midi(0xC0, 9, 0); run(100);
+  check(ex.sim_prog() === 6, 'MIDI channel 5: a program change on channel 1 is ignored');
+  for (let i = 0; i < 5; i++) { ex.sim_enc(4, -1); run(10); }  // back to OMNI
+  ex.sim_pick(2); run(100);
+  check(ex.sim_prog() === 2, `OMNI: a patch-list click loads program 03 (prog ${ex.sim_prog() + 1})`);
+  tap(8);                                               // HOME
+  run(44100 * 4 / 128);                                 // (the settings sector is written, quiet, ~2 s later)
+}
+
 // the page's AudioWorklet (worklet.js) in a stand-in for the browser's worklet scope: boots, renders 128-frame
 // quanta, sends the screen and LEDs, takes a key, keeps the storage it is given
 {

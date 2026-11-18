@@ -15,7 +15,7 @@
   .grid { display:grid; gap:12px; grid-template-columns:1fr 1fr; align-items:start; } @media (max-width:820px) { .grid { grid-template-columns:1fr; } }
   section { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:12px; }
   .grid section { margin-bottom:0; }
-  dl { display:grid; grid-template-columns:auto 1fr; gap:3px 12px; margin:0; } dt { color:var(--dim); } dd { margin:0; word-break:break-all; }
+  dl { display:grid; grid-template-columns:auto 1fr; gap:3px 12px; margin:0; } dt { color:var(--dim); } dd { margin:0; overflow-wrap:anywhere; } dd.mono { word-break:break-all; }
   code, pre, .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px; }
   .badge { display:inline-block; padding:1px 8px; border-radius:10px; font-size:12px; border:1px solid var(--line); margin:0 4px 4px 0; }
   .ok { color:var(--ok); border-color:var(--ok); } .warn { color:var(--warn); border-color:var(--warn); } .bad { color:var(--bad); border-color:var(--bad); }
@@ -242,6 +242,8 @@
         + "  " + String(fr.length).padStart(4) + " B  " + hex(fr, 14) + " …"; });
     $("frames").textContent = lines.join("\n");
     $("btncopyhex").onclick = () => navigator.clipboard && navigator.clipboard.writeText(f.map((x) => FM1.toHex(x)).join("\n"));
+    setStage("Dry run done: " + d.frames + " frames built, nothing sent. The details are below.");
+    $("drysec").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   // ---- the install
