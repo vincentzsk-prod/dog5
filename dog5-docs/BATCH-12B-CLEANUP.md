@@ -35,8 +35,11 @@ tested on the unit 18 Nov). Run directly by Claude in the planning chat, with th
 - **D7** `reference-renders/` kept as is.
 - **D8** `docs/API.md` → `dog5-docs/PLATFORM-API.md`, `docs/RULES.md` → `dog5-docs/CHIP-RULES.md`. Pages now serves only
   `docs/index.html`, `install/`, `play/`.
-- **D9** the five merged branches deleted from the remote (the four `build/batch-*` and `claude/peaceful-planck-6oikap`).
-  Every `listen/` branch kept (each holds WAVs found nowhere else).
+- **D9** approved: delete the merged `build/batch-08a-web-player-check`, `build/batch-08b-web-player`,
+  `build/batch-09b-controls`, `build/batch-11-test-build-0.2` (each re-checked as an ancestor of `main`;
+  `claude/peaceful-planck-6oikap` was already gone). The session's git proxy refuses deletes (HTTP 403), so Vincent
+  deletes them on GitHub's Branches page, with `build/batch-12a-cleanup-inventory` (its report is in `history/`) and this
+  branch after the merge. Every `listen/` branch kept (each holds WAVs found nowhere else).
 
 ## Also deleted (12A's DELETE list)
 
