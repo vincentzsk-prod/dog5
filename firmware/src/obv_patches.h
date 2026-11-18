@@ -157,10 +157,11 @@ static const uint8_t PF_TAPE_SPLICE[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_X
     P_LFO_PITCH, 16, P_MODE, M_MONO, P_VOLUME, 104, P_CHEW, 80, P_TP_HISS, 0, P_TP_DROPS, 90, X};
 /* 14 Reef Break (voiced Nov 2026, Batch 4B, approved round-1 variant C: dog5-docs/voicing/14-reef-break.md; was PF_PERC_HIT, this slot's alone): a noise burst that swells in quickly over a square sub, with a cymbal-like ring-out and a long echo. POLY 5, NOISE 127 over a square (O1, LEVEL 80) and a square an octave up (O2,
  * LEVEL 45); ONE 12 dB HIGH-pass (CUTOFF 100 = 4186 Hz at C4) whose cutoff is pushed far down at the strike by a negative ENV AMT (0 = -97 semitones) and climbs back as the filter envelope falls (FD 100): the sub and the lows go first, the top of the noise rings longest; AA 52 (10 / 50 / 90 % of the peak at 2 / 9 / 27 ms), AD = AR = 97
- * (the 4k+ band 20 / 40 dB down at 665 / 1329 ms); a BBD echo (ALLEY 106 = 361 ms, FEEDBK 100, MIX 80), no spring. VOLUME 121: -18.0 dBFS RMS over the 300 ms gates of the crash phrase (u), own-phrase peak -4.5 / -4.3 (two seeds) */
+ * (the 4k+ band 20 / 40 dB down at 665 / 1329 ms); a BBD echo (ALLEY 106 = 361 ms, FEEDBK 100, MIX 80), no spring. VOLUME 121: -18.0 dBFS RMS over the 300 ms gates of the crash phrase (u), own-phrase peak -4.5 / -4.3 (two seeds).
+ * BATCH 11 (test build 0.2, on Vincent's instruction, not auditioned before merge): FA 0 -> 82 and AA 52 -> 82 (both 299 ms on the screen, TIME_MS_X10[82] = 2992); VOLUME 121 -> 116 (own-phrase peak was -3.56, limit -4); measurements: dog5-docs/BATCH-11-TEST-BUILD-0.2.md */
 static const uint8_t PF_REEF_BREAK[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 80, P_NOISE, 127, P_O2_WAVE, W_PLS, P_O2_LVL, 45,
-    P_O2_SEMI, 36, P_O2_FINE, 64, P_CUTOFF, 100, P_RESO, 10, P_FENV_AMT, 0, P_KEYTRK, 0, P_FTYPE, F_HP12, P_FA, 0,
-    P_FD, 100, P_FS, 0, P_AA, 52, P_AD, 97, P_AS, 0, P_AR, 97, P_VOLUME, 121, P_DLY_FB, 100, P_DLY_MIX, 80,
+    P_O2_SEMI, 36, P_O2_FINE, 64, P_CUTOFF, 100, P_RESO, 10, P_FENV_AMT, 0, P_KEYTRK, 0, P_FTYPE, F_HP12, P_FA, 82,
+    P_FD, 100, P_FS, 0, P_AA, 82, P_AD, 97, P_AS, 0, P_AR, 97, P_VOLUME, 116, P_DLY_FB, 100, P_DLY_MIX, 80,
     P_REV_SIZE, 90, P_ALLEY, 106, X};
 /* 33-64 (1.5): a second set in the same spirit: arpeggios, brass, pads, keys, basses, leads, effects */
 static const uint8_t PF_NIGHT_DRIVE[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 2, P_ARP_GATE, 55, P_O1_WAVE, W_BOTH, P_O1_PW, 45,

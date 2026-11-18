@@ -4,17 +4,17 @@
 voices, a Psych Chain of GROWL / ALLEY / DRAIN / CHEW after them, 99 program slots with 32 factory patches). Free and
 open source, GPL-3.0-only. The build brief and the reasoning are in [`CLAUDE.md`](CLAUDE.md) and [`dog5-docs/`](dog5-docs/).
 
-> **Status (12 Nov 2026): a pre-release test build, v0.1, package identity `FM-1_961`.** Not yet flashed on a real
+> **Status (18 Nov 2026): a pre-release test build, v0.2, package identity `FM-1_962`.** Not yet flashed on a real
 > unit. The installer page described below has been tested against Python's reference installer and a fake MIDI device,
 > not against hardware.
 
 **Install it:** the self-hosted installer page, [`docs/install/`](docs/install/README.md) (Chrome or Edge, over USB; once
 GitHub Pages is on for `main` `/docs`: <https://vincentzsk-prod.github.io/dog5/install/>). It carries the package inside
 the page, shows what it will write, has a dry run, and resumes an interrupted install. From a terminal:
-`python3 tools/fm1_install.py docs/install/dog5-0.1-20261112.fwsc`. If the unit will not boot: M-Flasher and your backup.
+`python3 tools/fm1_install.py docs/install/dog5-0.2-20261118.fwsc`. If the unit will not boot: M-Flasher and your backup.
 
-**Build it:** `./build.sh --release 0.1` makes `build/dog5-0.1.fwsc` (identity `FM-1_961`; a dev build is `build/dog5.fwsc`,
-`FM-1_960`); `python3 tools/make_installer_page.py --release 0.1` regenerates the installer page and its package together.
+**Build it:** `./build.sh --release 0.2` makes `build/dog5-0.2.fwsc` (identity `FM-1_962`; a dev build is `build/dog5.fwsc`,
+`FM-1_960`); `python3 tools/make_installer_page.py --release 0.2` regenerates the installer page and its package together.
 The product's name and identity live in one file, [`firmware/src/dog5_id.h`](firmware/src/dog5_id.h).
 
 **Credits.** DØG-5 by ZIGGY (DØGS). **DØG-5 is a fork of OberVave v1.5.3 (pinned)** by
