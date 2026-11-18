@@ -1,7 +1,9 @@
 # DØG-5 (fork of OberVave): build the packages on GitHub, run the host tests, and on a tag vX.Y publish the release with a build
 # attestation (actions/attest-build-provenance): the Firmware Hub shows "Built from source" for exactly these files.
-# The JieLi toolchain comes from pkgman.jieliapp.com (tools/get_toolchain.sh), the AC79 SDK from gitee.com, as in
-# sloopDX's workflow. Run by hand (workflow_dispatch) for a test build without a release.
+# The JieLi toolchain and the AC79 SDK come from this repo's own release build-deps-v1 (tools/get_vendored_deps.sh: the same
+# pinned pair as pkgman.jieliapp.com + gitee.com, which tools/get_toolchain.sh still fetches by hand). FM-1 only: the
+# SMK-37 code is frozen and not published since Batch 12B (SMK37.md). Run by hand (workflow_dispatch) for a test build
+# without a release.
 name: release
 
 on:
@@ -26,38 +28,20 @@ jobs:
       - name: Python packages
         run: python3 -m pip install Pillow
 
-      - name: JieLi toolchain (pkgman.jieliapp.com)
-        run: sh tools/get_toolchain.sh
+      - name: JieLi toolchain + AC79 SDK (our build-deps-v1 release; three SDK files are placed in the package)
+        run: sh tools/get_vendored_deps.sh
 
-      - name: JieLi AC79 SDK (three files of it are placed in the package)
-        run: |
-          for i in 1 2 3; do                     # (gitee.com drops a clone now and then: try again)
-            git clone --depth 1 --branch AC79NN_SDK_V1.2.1_2023-12-13 \
-                https://gitee.com/Jieli-Tech/fw-AC79_AIoT_SDK.git ~/fw-AC79_AIoT_SDK && break
-            rm -rf ~/fw-AC79_AIoT_SDK
-            sleep 20
-          done
-          test -d ~/fw-AC79_AIoT_SDK
+      - name: Build (FM-1)
+        run: sh build.sh
 
-      - name: Build (the SMK-37 first, the FM-1 last, as the tests expect)
-        run: |
-          BOARD=smk37 sh build.sh
-          BOARD=smk37 MODEL=elite sh build.sh
-          BOARD=smk37 MODEL=mke sh build.sh
-          sh build.sh
-
-      # (not blocking for now: at the 18.10.2026 state some host tests are stale, see the log; to be fixed, then blocking)
+      # blocking since Batch 12B (the stale expectations fixed): a red test stops the release
       - name: Host tests
-        continue-on-error: true
         run: sh tests/run_tests.sh
 
       - name: Release packages (tags only)
         if: github.ref_type == 'tag'
         run: |
           V="${GITHUB_REF_NAME#v}"
-          BOARD=smk37 sh build.sh --release "$V"
-          BOARD=smk37 MODEL=elite sh build.sh --release "$V"
-          BOARD=smk37 MODEL=mke sh build.sh --release "$V"
           sh build.sh --release "$V"
           ls -l build/dog5-"$V"*.fwsc
           (cd build && sha256sum dog5-"$V"*.fwsc > SHA256SUMS)

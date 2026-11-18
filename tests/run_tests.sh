@@ -1,12 +1,12 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-3.0-only
-# OberVave's host tests (no hardware). Run from the repo root after building, the SMK-37 first, the FM-1 last
-# (both boards write the same build/ intermediates; the tests expect the FM-1 binaries):
-#   BOARD=smk37 sh build.sh; BOARD=smk37 MODEL=elite sh build.sh; BOARD=smk37 MODEL=mke sh build.sh; sh build.sh
+# DØG-5's host tests (no hardware). Run from the repo root after a plain FM-1 build, which must be the LAST build
+# (the tests read build/dog5.fwsc and the FM-1 intermediates; `./build.sh --release X.Y` writes only dog5-X.Y.fwsc):
+#   sh build.sh                 (optionally first: BOARD=smk37 [MODEL=elite|mke] sh build.sh, for the SMK package checks)
 #   sh tests/run_tests.sh
-# The FM-1 app on the host (tests/run_host.sh), the SMK-37 mapping (tests/smk_ui_test.py), the flash map, the
-# update path (ota.c, the loader, tools/fm1_install.py; from the fm1-to-smk37 kit's reference layer,
-# genkigenki/sloop-fm1 smk37) and the packages.
+# Covers: the FM-1 app on the host (tests/run_host.sh + the scripts below), the program store, the update path (ota.c,
+# the loader, tools/fm1_install.py), the browser player (docs/play) and the installer page (docs/install).
+# The SMK-37 code is frozen (not published since Batch 12B) and still tested here until it is removed.
 set -e
 export AC79_SDK="${AC79_SDK:-$HOME/fw-AC79_AIoT_SDK}"   # (fm1pkg_make.py: the SDK files of a package)
 cd "$(dirname "$0")/.."
@@ -69,7 +69,7 @@ run "M-UPGRADE entry (FM-1)" "$OUT/ota_test" build/dog5.fwsc
 head -c 60000 build/obervave.bin > "$OUT/old_app.bin"
 python3 tools/fm1pkg_make.py "$OUT/old_app.bin" build/loader/ota.bin "$OUT/old.fwsc" >/dev/null
 $CC -o "$OUT/ldr_screen_test" tests/ldr_screen_test.c
-run "update loader's screen (from Skiff): UPDATE MODE, WRITING and its bar, UPDATE FAILED" "$OUT/ldr_screen_test" "$OUT"
+run "update loader's screen (from Skiff): UPDATE MODE, WRITING and its bar, the error screen" "$OUT/ldr_screen_test" "$OUT"
 $CC -o "$OUT/ldr_test" tests/ldr_test.c
 run "update loader (FM-1): other app -> this build" "$OUT/ldr_test" "$OUT/old.fwsc" build/dog5.fwsc
 
@@ -99,10 +99,10 @@ done
 [ "$found" = 1 ] || echo "(no SMK-37 packages in build/: BOARD=smk37 sh build.sh first)"
 
 NODE=$(command -v node || true)
-if [ -n "$NODE" ] && [ -f tests/ref-sim/obervave.wasm ]; then
-    run "browser simulator (tests/ref-sim, web/sim/build.sh): boots, sounds, the screen, speed, storage, the worklet; = the host build" "$NODE" tests/sim_test.mjs
+if [ -n "$NODE" ] && [ -f docs/play/dog5.wasm ]; then
+    run "browser player (docs/play, built by web/sim/build.sh): boots, sounds, the screen, speed, storage, the worklet; = the host build" "$NODE" tests/sim_test.mjs
 else
-    echo "(no node or no tests/ref-sim/obervave.wasm: the browser simulator's test is skipped)"
+    echo "(no node or no docs/play/dog5.wasm: the browser player's test is skipped)"
 fi
 
 run "installer (tools/fm1_install.py): FM-1 and SMK-37, install and the update-mode resume check the model" python3 tests/install_test.py

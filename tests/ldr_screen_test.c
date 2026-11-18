@@ -148,7 +148,7 @@ int main(int argc, char **argv)
     check("a second write starts over (25 %: 5 segments)", lit_segs(LDR_COLOUR) == 5u);
     ldr_failed();
     ppm(dir, "ldr_failed");
-    check("UPDATE FAILED: the segments off, no percent, the way out",
+    check("the error screen (INSTALL AGAIN): the segments off, no percent, the way out",
           lit_segs(LDR_DIM) == LDR_SEGS && count(0, 170, 240, 192, LDR_INK) == 0u && count(0, 92, 240, 112, LDR_INK) > 200u);
     check("every letter in the loader's font, nothing outside the panel, only the screen's colours",
           !ldr_missing && !outside && palette_only());

@@ -1,5 +1,8 @@
 # The chip's rules
 
+> DØG-5 note (Batch 12B): moved here from `docs/RULES.md` (it was being published by GitHub Pages). From Dinghy,
+> unchanged and still true; `CLAUDE.md` §2 is the short version.
+
 The FM-1 runs a JieLi AC791N with JieLi's own clang (pi32v2). It is fast enough for a lot of synth, but it
 has habits. These are the ones that cost the SLOOP / sloopDX / zp12 people time; the build catches most of them.
 

@@ -5,9 +5,9 @@
 The fake device is the one in web/test_web.mjs: identity on the handshake,
 then "device asks, host answers" reads of the logical image. Run from the repo root:
   python3 tests/install_test.py
-Also checks logical_image/product_of against web/fm1pkg.js (needs node, web/ and
-build/dog5.fwsc, skipped otherwise: OberVave has no web installer of its own; from genkigenki/sloop-fm1 smk37), the SMK-37 Pro identities, and the 20 / 36 block
-deinterleave against the stock SMK-37 Pro packages (a directory named by SMK_STOCK_DIR, skipped when unset)."""
+Also checks the Felucca loader marker in every built package, the SMK-37 Pro identities, and the 20 / 36 block
+deinterleave against the stock SMK-37 Pro packages (a directory named by SMK_STOCK_DIR, skipped when unset).
+(The page's JavaScript image is compared with Python's by tests/install/js_side.mjs, so no JS check is needed here.)"""
 import io
 import queue
 import shutil
@@ -371,29 +371,18 @@ def smk():
            f"FM-1 package {clean.name} still parses: 20 blocks, {I.product_of(raw)}")
 
 
-def against_js():
+def markers():
     clean = ROOT / "build/dog5.fwsc"
     for f in [clean, *sorted((ROOT / "build").glob("dog5*-smk37*.fwsc"))]:   # (DØG-5: every package built)
         if f.exists():
             ok(I.LOADER_MARK in f.read_bytes(), f"{f.name} carries the Felucca loader marker")
-    if not shutil.which("node") or not clean.exists() or not (ROOT / "web/fm1pkg.js").exists():
-        print("logical image vs fm1pkg.js: skipped (needs node, web/fm1pkg.js and build/dog5.fwsc; OberVave has no web/)")
-        return
-    js = ("import { logicalImage, productOf } from %r; import { readFileSync } from 'node:fs';"
-          "const p = readFileSync(process.argv[1]); process.stderr.write(productOf(p));"
-          "process.stdout.write(logicalImage(p));") % str(ROOT / "web/fm1pkg.js")
-    r = subprocess.run(["node", "--input-type=module", "-e", js, str(clean)], capture_output=True, check=True)
-    raw = clean.read_bytes()
-    ok(I.logical_image(raw) == r.stdout and I.product_of(raw) == r.stderr.decode(),
-       f"logical_image / product_of == fm1pkg.js ({clean.name}, {I.product_of(raw)})")
-    ok(I.LOADER_MARK in raw, f"{clean.name} carries the Felucca loader marker")
 
 
 wire()
 installs()
 errors()
 smk()
-against_js()
+markers()
 shutil.rmtree(TMP, ignore_errors=True)
 # the SMK-37 Pro, Elite and MKE-P37 are one keyboard: packages install across them, never across FM-1 / SMK
 ok(I.same_keyboard("SMK-37 Elite_016", "SMK-37 Pro_900") and I.same_keyboard("ota-MKE-P37_900", "SMK-37 Elite_900")
@@ -406,7 +395,7 @@ ok(all(I.PORT_RE.search(n) for n in ("SMK-37 Elite", "MKE-P37", "STARRYKEY-37 PL
    "port names: every SMK model and every port firmware probed")
 
 def starrykey():
-    """a 21-character identity ("STARRYKEY-37 PLAY_016"): the device's and the package's (as web/fm1pkg.js)"""
+    """a 21-character identity ("STARRYKEY-37 PLAY_016"): the device's and the package's (as web/install/fm1install.js)"""
     def pkg(product, blocks, size=0x3000):
         img = bytearray((i * 7) & 0xFF for i in range(size))
         data = bytes(img[0x400:])

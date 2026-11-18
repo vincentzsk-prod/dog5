@@ -2,7 +2,7 @@
 
 **Status:** verified against hardware manual, panel photo and the FM-1 firmware ecosystem, 16 Oct 2026.
 ⚠️ **27 Oct note:** the base-lock facts in §1–§2 and the UI map in §5 are SUPERSEDED by
-`DOG-5-base-and-ui-decisions.md` (base is now OberVave v1.5.3, commit 7e1ccf9; 99 slots; 20-page UI). The
+`DOG-5-base-and-ui-decisions.md` (base is now OberVave v1.5.3, commit 7e1ccf9; 99 slots; a 21-page UI since Batch 9B, see `CLAUDE.md` §5). The
 hardware constraints (§3), IP position (§4) and DSP targets (§6) stand. This document otherwise supersedes
 the original "DØG-5 Initial overview" blueprint.
 
