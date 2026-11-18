@@ -1,6 +1,11 @@
 # GROWL on the DRIVE page (KNOB 1), its secondaries on SELECT held (DRIVE +: BIAS on KNOB 1, TONE on KNOB 2), the FX-held
 # layer's KNOB 1. Parameters: 54 GROWL, 52 BIAS, 53 TONE, 13 RESO (obv_params.h). Encoders: 2 = KNOB 1, 3 = KNOB 2;
-# buttons: 2 FX, 3 SELECT, 6 EDIT. Program 1 (Red Pill): GROWL 0, BIAS 40, TONE 50, RESO 30.
+# buttons: 2 FX, 3 SELECT, 6 EDIT. The script sets its own start (GROWL 0, BIAS 40, TONE 50, RESO 30) with param lines,
+# so a re-voiced program 1 cannot break it (it did once: Red Pill's Batch 3A voicing, found in Batch 12A).
+2900 param 54 0
+2900 param 52 40
+2900 param 53 50
+2900 param 13 30
 3000 expect param 54 0
 3000 btn 2   # FX: DRIVE
 3200 expect page 12

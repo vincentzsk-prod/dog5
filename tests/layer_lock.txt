@@ -2,7 +2,9 @@
 # press was the lock, so its release does nothing); FX's release keeps the lock; the knobs stay the layer's on any page
 # until FX is pressed again (or ENV / LFO / ARP), and only then does a HOME tap go HOME, on its release.
 # Buttons: 2 FX, 4 ENV, 6 EDIT, 8 HOME. KNOB 1 = encoder 2: on FILTER it is RESO (13), in the FX layer GROWL (54).
-# Program 1 (Red Pill): RESO 30, GROWL 0.
+# The script sets its own start (RESO 30, GROWL 0) with param lines, so a re-voiced program 1 cannot break it.
+2700 param 13 30
+2700 param 54 0
 2800 btn 6   # EDIT: OSC 1
 3000 btn 6   # OSC 2
 3200 btn 6   # MIXER

@@ -1,4 +1,8 @@
-# Dinghy API
+# Platform API (from Dinghy)
+
+> DØG-5 note (Batch 12B): moved here from `docs/API.md` (it was being published by GitHub Pages). This is Dinghy's
+> description of `platform.c`, unchanged; in DØG-5 the app that includes `platform.c` first is `firmware/src/obervave.c`,
+> so read `obervave.c` wherever it says `dinghy.c`.
 
 Everything [platform.c](../firmware/src/platform.c) gives your app. One compilation unit: `dinghy.c` includes
 `platform.c` first, so all of this is just there. Nothing here is a library you link against; read the source
@@ -42,7 +46,7 @@ static void app_main(void)
 
 Names the platform defines that you can change from the build: `APP_NAME` (the rescue and crash screens,
 default `"DINGHY"`), `APP_VER` (set by `./build.sh --release`), `FELUCCA_ID` (the package identity; see
-[MAKE-IT-YOURS.md](MAKE-IT-YOURS.md)).
+`tools/build.py`, from the family in `firmware/src/dog5_id.h`: DØG-5 is `FM-1_96N`).
 
 ## Time
 
@@ -136,7 +140,7 @@ static void app_audio(int32_t *out, uint32_t n)
 - After you: the MASTER knob, the clip, the USB audio stream (the computer records exactly this), the DAC.
   The DAC gets it 6 dB under its full scale, so the FM-1's output stage does not distort.
 - Keep it fast and simple: no flash, no screen, no waiting. Talk to the main loop through `volatile` variables
-  (one writer each). If a render runs late the sound breaks up; see [RULES.md](RULES.md).
+  (one writer each). If a render runs late the sound breaks up; see [CHIP-RULES.md](CHIP-RULES.md).
 
 Pitch: a 32-bit phase that wraps is an oscillator with no division at run time: `inc = f * 2^32 / 44100`,
 `ph += inc` each frame. `dinghy.c` keeps a table for one octave and shifts it for the others.

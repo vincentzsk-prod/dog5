@@ -1,5 +1,17 @@
 # Host CPU baseline — stock OberVave (v1.5.3, before any DØG-5 engine change)
 
+## Now (18 Nov 2026, v0.2 = `FM-1_962`, package SHA-256 `b2be33a9…6b96`)
+
+| | Used | Of | Free |
+|---|---|---|---|
+| Image | 82,352 B | 581,564 B | 499,212 B |
+| RAM (`.data` + `.bss`) | 32,432 B | 98,304 B | 65,872 B |
+| Pool (`.pool`) | 304,896 B | 344,064 B | 39,168 B |
+
+Measured on the device (GLOBAL page `CPU <n>us`, audio only, ±100 µs; budget 5,800 µs): patch 30 THE DØG at about 97 %
+of the budget with four notes and the chain pushed (Vincent, Nov 2026). The image / RAM / pool figures inside the dated
+sections below are history: they were true when each stage landed (the image has since shrunk: the sequencer went).
+
 ## Why this exists
 
 `tests/host.c`'s `OBV_PERF=1` path reads a Linux hardware performance counter

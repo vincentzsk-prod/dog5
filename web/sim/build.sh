@@ -4,7 +4,7 @@
 #   sh web/sim/build.sh [OUTDIR]   ->  docs/play/{index.html, sim.js, sim.css, worklet.js, dog5.wasm, patches.json}
 #   then: python3 -m http.server -d docs/play 8737   and open http://localhost:8737
 # (Forked from OberVave's simulator, which followed Makkuro37's web/sim by M. Geisler and winampFM's by hericdk, GPL-3.0.
-#  The stale OberVave build stays in tests/ref-sim/ as provenance; this script never writes there.)
+#  OberVave's own browser build, kept until Batch 12B in tests/ref-sim/, is in the git history only.)
 # Tools (once, nothing system-wide, nothing installed by this script; the paths can be overridden with ZIG= / WASM_OPT=):
 #   zig cc (wasm32-freestanding), the pip package ziglang:
 #     python3 -m venv ~/.local/share/obervave-wasm && ~/.local/share/obervave-wasm/bin/pip install ziglang

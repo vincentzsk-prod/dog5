@@ -1,6 +1,13 @@
 # CHEW on the TAPE page (KNOB 1), its secondaries on SELECT held (TAPE +: WOW/FLT on KNOB 1, HISS on KNOB 2, DROPS on
 # KNOB 3), and the map. Parameters: 64 CHEW, 65 WOW/FLT, 66 HISS, 67 DROPS, 54 GROWL (obv_params.h). Encoders: 2 = KNOB 1,
-# 3 = KNOB 2, 4 = KNOB 3; buttons: 2 FX, 3 SELECT, 8 HOME. Program 1 (Red Pill): CHEW 0, WOW/FLT 64, HISS 64, DROPS 64.
+# 3 = KNOB 2, 4 = KNOB 3; buttons: 2 FX, 3 SELECT, 8 HOME. The script sets its own start (CHEW 0, WOW/FLT 64, HISS 64,
+# DROPS 64, GROWL 0, BIAS 40) with param lines, so a re-voiced program 1 cannot break it.
+2900 param 64 0
+2900 param 65 64
+2900 param 66 64
+2900 param 67 64
+2900 param 54 0
+2900 param 52 40
 3000 expect param 64 0
 3000 expect param 65 64
 3000 btn 2   # FX: DRIVE
