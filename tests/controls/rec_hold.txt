@@ -1,5 +1,5 @@
 # Batch 9B: REC (WAG) = HOLD, on any page, with no layer held: one latch (hold / ctl_hold) shared with the ARP button on its
-# page, ORed with the sustain pedal (part_sus), released by STOP (PLAY) and by nothing else. "T expect voices N" = cards gated on.
+# page, ORed with the sustain pedal (part_sus), released by STOP (PLAY) and by a MIDI panic (CC 123 / 120; Batch 13), nothing else. "T expect voices N" = cards gated on.
 # Buttons: 2 FX, 8 HOME, 10 ARP, 12 PLAY, 13 REC. Keys: 0x80 = C4. MIDI CC 64 = the sustain pedal. Program 1 = POLY, no arp.
 2900 expect page 0
 3000 keys 0x80   # a note, let go with HOLD off: it ends
@@ -66,4 +66,24 @@
 18800 keys 0x80
 19100 keys 0
 19600 expect voices 0   # the latch is gone
-19800 end
+# a MIDI panic releases it too (Batch 13): all notes off (CC 123), then a note ends when its key does
+20000 btn 13
+20200 keys 0x80
+20500 keys 0
+20900 expect voices 1
+21000 midi 0xB0 123 0
+21400 expect voices 0
+21600 keys 0x80
+21900 keys 0
+22400 expect voices 0   # the latch is gone
+# the same with all sound off (CC 120)
+22600 btn 13
+22800 keys 0x80
+23100 keys 0
+23500 expect voices 1
+23600 midi 0xB0 120 0
+24000 expect voices 0
+24200 keys 0x80
+24500 keys 0
+25000 expect voices 0
+25200 end

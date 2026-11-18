@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 18 Nov 2026 (Batch 12B clean-up), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 18 Nov 2026 (Batch 13 firmware clean-up), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -136,8 +136,8 @@ is gone: the tempo is GLOBAL knob 1 and the MIDI clock. SAVE armed + SELECT pres
 the "+" knobs, both as before.
 
 **REC (WAG) = HOLD (Batch 9B):** a press with no layer held, on any page, toggles the same latch as the ARP button on its page
-(`hold_toggle`; ORed with the sustain pedal in `part_sus`); the REC LED shows it. STOP (PLAY) releases it when it engages; a patch
-change, MIDI panic and the pedal do not. REC's tap tempo (`alley_tap`) is gone; ALLEY's knob is unchanged.
+(`hold_toggle`; ORed with the sustain pedal in `part_sus`); the REC LED shows it. STOP (PLAY) releases it when it engages, and so
+does a MIDI panic, CC 123 / 120 (Batch 13); a patch change and the pedal do not. REC's tap tempo (`alley_tap`) is gone; ALLEY's knob is unchanged.
 
 **Adopted from Skiff** (the strongest navigation model in the scene; upstream already borrows from it):
 - ⭐ **Hold HOME = a live control map** showing what every button/knob does on the current page. This is the
@@ -310,8 +310,8 @@ wordmark) — full spec in the build kit.
   `dog5-X.Y.fwsc`). CI (`.github/workflows/release.yml`) builds the FM-1 only, with `get_vendored_deps.sh`, and the tests block a release.
 - **Every working session starts with `git fetch origin` and branches from `origin/main`**, never a local `main` (Batch 11 once
   built on a stale local `main`; the package sizes gave it away).
-- **SMK-37: frozen** (Batch 12B). The board code and its host tests remain until a firmware clean-up removes them; no SMK
-  package is built or published (`SMK37.md`).
+- **FM-1 only.** The SMK-37 board code, its build option and its tests were removed in Batch 13 (git history);
+  `tools/build.py` refuses any `BOARD` but `fm1`. The installer tools keep the install protocol's SMK-37 support.
 
 ---
 
@@ -370,7 +370,7 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
 - `PLATFORM-API.md` (platform.c's calls) and `CHIP-RULES.md` (the chip's habits) — Dinghy's docs, moved from `docs/` in 12B.
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
-  `BATCH-12B-CLEANUP.md` (what the clean-up removed and why, and what is left for the firmware clean-up).
+  `BATCH-12B-CLEANUP.md` (the repo clean-up) and `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs).
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

@@ -37,35 +37,8 @@
 #define HALF_FRAMES 256u
 
 static volatile uint32_t fm1_ms;
-#if BOARD_SMK37
-/* the SMK-37 (hal/smk_input.h's API, as obv_smk.h uses it): keys with velocity, pads as events, 4 faders, 2 wheels,
- * the outer keys, the pad LEDs; 8 encoders (K1 = MASTER) */
-#define FM1_NKEY 37u
-#define SMK_KEY_F3 5u
-#define HOST_NENC 8
-static struct {
-    uint32_t notes, buttons, frames, adc_ok, adc_miss;
-    uint64_t keys;
-    uint8_t key_vel[FM1_NKEY], fader[4];
-    uint16_t wheel[2], batt, pad_raw[16], pad_base[16];
-} fm1_in = {.wheel = {535, 620}};               /* (the wheels at rest, as a unit reads them) */
-static uint8_t smk_store_cleared, smk_trim_ok;
-static uint32_t smk_jedec;
-static int32_t smk_master = 724;
-static int32_t host_q[2][64];                   /* 0: pad events, 1: outer keys (key << 8 | velocity, 0 = release) */
-static uint32_t host_qw[2], host_qr[2];
-static void host_qput(int i, int32_t v) { host_q[i][host_qw[i]++ % 64u] = v; }
-static int32_t host_qtake(int i) { return host_qr[i] == host_qw[i] ? -1 : host_q[i][host_qr[i]++ % 64u]; }
-static int32_t smk_pad_take(void) { return host_qtake(0); }
-static int32_t smk_extkey_take(void) { return host_qtake(1); }
-static uint32_t padled_rgb[16];                 /* as lcd.c: g << 16 | r << 8 | b */
-static void padled_set(uint32_t pad, uint8_t r, uint8_t g, uint8_t b) { if (pad < 16u) padled_rgb[pad] = (uint32_t)g << 16 | (uint32_t)r << 8 | b; }
-static void padled_flush(void) {}
-static void host_dump(void);                    /* (obv_smk.h) */
-#else
 #define HOST_NENC 7
 static struct { uint32_t notes, buttons; } fm1_in;
-#endif
 static uint32_t host_edges, host_rel, host_rel_next;   /* press edges, release edges (a tap's release: the call after) */
 static uint32_t fm1_input_edges(uint32_t *released)
 {
@@ -144,7 +117,7 @@ static int blob_save(uint32_t i, const void *p, uint32_t n)
     printf("%6u ms  blob %u saved (%u B)\n", fm1_ms, i, n);
     return 0;
 }
-#define NPSECT 3u                               /* must track the device NPSECT (platform.c / smk_store.h) */
+#define NPSECT 3u                               /* must track the device NPSECT (platform.c) */
 static uint8_t host_psect[NPSECT][SETTINGS_MAX + 4];
 static int psect_load(uint32_t i, void *p, uint32_t n)
 {
@@ -182,16 +155,13 @@ static void platform_poll(void);                /* web/sim/sim.c: a millisecond 
 /* the script: at t ms, keys down (bit k = key k, 0 = F3), a button edge, a MIDI message. A script file (the second
  * argument) replaces it, a line each: "T keys MASK" (hex or decimal), "T btn ID", "T midi ST D1 D2", "T enc ID N"
  * (encoder ID turned N detents, + = clockwise), "T btndown ID" / "T btnup ID" (a button held, let go), "T end" */
-typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn; uint8_t smk, sa; uint16_t sb; } host_ev_t;
-/* SMK-37 builds (BOARD_SMK37) also: "T vel V" (the velocity of the keys pressed from now), "T pad P V" (hardware pad
- * P hit at velocity V, V 0 = let go), "T fader F V" (0..127), "T wheel W RAW" (0 pitch, 1 mod; raw ADC 0..1023),
- * "T xkey K V" (keybed key K 0..36 at V, 0 = let go: the outer keys 0..4, 32..36), "T dump" (pads and state);
- * any build: "T shot" (the screen at T -> OUT-T.ppm), "T expect page N" (the app must be on page N now: prints ok / FAIL
+typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn; uint8_t kind, sa; uint16_t sb; } host_ev_t;
+/* also: "T shot" (the screen at T -> OUT-T.ppm), "T expect page N" (the app must be on page N now: prints ok / FAIL
  * and the run exits 1 on a FAIL; N = the page index, PG_* in obv_params.h), "T expect idle N" (the last control-map draw
  * called app_idle() at least N times: the DRAW RULE), "T param P V" (set parameter P to V, as a knob would), "T expect voices N" (N voice cards gated on now),
  * "T expect param P V" (parameter P holds V now), "T expect peak MS MAX" / "T expect peakmin MS MIN" (the largest |sample| of
  * the output over the last MS ms is <= MAX / >= MIN), "T expect rest R" (R 1: STOP, TAPE STOP and the SLOP ride at rest, adding nothing) */
-enum { HS_NONE, HS_VEL, HS_PAD, HS_FADER, HS_WHEEL, HS_XKEY, HS_DUMP, HS_SHOT, HS_CHECK, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES,
+enum { HS_NONE, HS_SHOT, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES,
        HS_PVAL, HS_PEAK, HS_PEAKMIN, HS_REST, HS_VLOG };
 static uint32_t host_page_now(void);            /* (obervave.c: the page the panel is on) */
 static uint32_t host_map_idle_calls(void);      /* (obervave.c: app_idle calls the last control-map draw made) */
@@ -233,32 +203,25 @@ static void read_script(const char *path)
         else if (!strcmp(what, "btndown")) { sscanf(line, "%*u %*s %d", &e.btn); e.btn += 100; }   /* held ... */
         else if (!strcmp(what, "btnup")) { sscanf(line, "%*u %*s %d", &e.btn); e.btn += 200; }     /* ... let go */
         else if (!strcmp(what, "enc")) { sscanf(line, "%*u %*s %d %d", &ea, &eb); e.enc = (int8_t)ea; e.encn = (int8_t)eb; }
-        else if (!strcmp(what, "vel")) { sscanf(line, "%*u %*s %u", &a); e.smk = HS_VEL; e.sb = (uint16_t)a; }
-        else if (!strcmp(what, "pad")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_PAD; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
-        else if (!strcmp(what, "fader")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_FADER; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
-        else if (!strcmp(what, "wheel")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_WHEEL; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
-        else if (!strcmp(what, "xkey")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_XKEY; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
-        else if (!strcmp(what, "dump")) e.smk = HS_DUMP;
-        else if (!strcmp(what, "check")) e.smk = HS_CHECK;   /* (SMK: KNOB BANK pressed / let go: the panel check) */
         else if (!strcmp(what, "expect")) {         /* "T expect page N" */
             char kind[16] = "";
             sscanf(line, "%*u %*s %15s %u", kind, &a);
-            if (!strcmp(kind, "page")) { e.smk = HS_PAGE; e.sa = (uint8_t)a; }
-            else if (!strcmp(kind, "idle")) { e.smk = HS_IDLE; e.sb = (uint16_t)a; }
-            else if (!strcmp(kind, "voices")) { e.smk = HS_VOICES; e.sb = (uint16_t)a; }
+            if (!strcmp(kind, "page")) { e.kind = HS_PAGE; e.sa = (uint8_t)a; }
+            else if (!strcmp(kind, "idle")) { e.kind = HS_IDLE; e.sb = (uint16_t)a; }
+            else if (!strcmp(kind, "voices")) { e.kind = HS_VOICES; e.sb = (uint16_t)a; }
             else if (!strcmp(kind, "peak") || !strcmp(kind, "peakmin")) {   /* "T expect peak MS MAX": the output's
                                                  * largest |sample| over the last MS ms <= MAX; peakmin: >= MIN */
                 sscanf(line, "%*u %*s %*s %u %u", &a, &b);
-                e.smk = kind[4] ? HS_PEAKMIN : HS_PEAK; e.sb = (uint16_t)a; e.st = 0; e.keys = b;
+                e.kind = kind[4] ? HS_PEAKMIN : HS_PEAK; e.sb = (uint16_t)a; e.st = 0; e.keys = b;
             }
-            else if (!strcmp(kind, "rest")) { e.smk = HS_REST; e.sb = (uint16_t)a; }   /* "T expect rest 1": the tricks rest */
-            else if (!strcmp(kind, "param")) { sscanf(line, "%*u %*s %*s %u %u", &a, &b); e.smk = HS_PVAL; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
+            else if (!strcmp(kind, "rest")) { e.kind = HS_REST; e.sb = (uint16_t)a; }   /* "T expect rest 1": the tricks rest */
+            else if (!strcmp(kind, "param")) { sscanf(line, "%*u %*s %*s %u %u", &a, &b); e.kind = HS_PVAL; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }
             else { fprintf(stderr, "script: unknown expect '%s'\n", kind); continue; }
         }
-        else if (!strcmp(what, "param")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.smk = HS_PARAM; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }   /* set parameter a = b */
-        else if (!strcmp(what, "vlog")) { sscanf(line, "%*u %*s %u", &a); e.smk = HS_VLOG; e.sb = (uint16_t)a; }   /* "T vlog 1" .. "T vlog 0":
+        else if (!strcmp(what, "param")) { sscanf(line, "%*u %*s %u %u", &a, &b); e.kind = HS_PARAM; e.sa = (uint8_t)a; e.sb = (uint16_t)b; }   /* set parameter a = b */
+        else if (!strcmp(what, "vlog")) { sscanf(line, "%*u %*s %u", &a); e.kind = HS_VLOG; e.sb = (uint16_t)a; }   /* "T vlog 1" .. "T vlog 0":
                                                  * each card's vintage pitch over that span (mean, sd, range in cents) */
-        else if (!strcmp(what, "shot")) e.smk = HS_SHOT;   /* (any board: the screen now -> OUT-<ms>.ppm) */
+        else if (!strcmp(what, "shot")) e.kind = HS_SHOT;   /* (any board: the screen now -> OUT-<ms>.ppm) */
         else if (!strcmp(what, "midi")) { sscanf(line, "%*u %*s %i %u %u", (int *)&a, &b, &c); e.st = (uint8_t)a; e.d1 = (uint8_t)b; e.d2 = (uint8_t)c; }
         else continue;
         ev[n++] = e;
@@ -348,28 +311,25 @@ static void platform_poll(void)                 /* one call = one millisecond */
     static uint32_t step, shot, owed, frame;
     static int32_t blk[2u * HALF_FRAMES];
     fm1_ms++;
-#if BOARD_SMK37
-    fm1_in.frames++;                            /* (the SMK scans ~625 frames a second; enough for "settled") */
-#endif
     while (step < script_n && script[step].t <= fm1_ms) {
-        if (script[step].smk == HS_SHOT) {
+        if (script[step].kind == HS_SHOT) {
             write_ppm(fm1_ms);
-        } else if (script[step].smk == HS_PAGE) {
+        } else if (script[step].kind == HS_PAGE) {
             uint32_t now = host_page_now(), want = script[step].sa;
             printf("%6u ms  expect page %u: on page %u  %s\n", fm1_ms, want, now, now == want ? "ok" : "FAIL");
             host_fails += now != want;
-        } else if (script[step].smk == HS_PARAM) {
+        } else if (script[step].kind == HS_PARAM) {
             host_set_param(script[step].sa, (int32_t)script[step].sb);
-        } else if (script[step].smk == HS_VOICES) {
+        } else if (script[step].kind == HS_VOICES) {
             uint32_t n = host_voices_on(), want = script[step].sb;
             printf("%6u ms  expect voices %u: %u gated on  %s\n", fm1_ms, want, n, n == want ? "ok" : "FAIL");
             host_fails += n != want;
-        } else if (script[step].smk == HS_PVAL) {
+        } else if (script[step].kind == HS_PVAL) {
             uint32_t v = host_get_param(script[step].sa), want = script[step].sb;
             printf("%6u ms  expect param %u = %u: %u  %s\n", fm1_ms, script[step].sa, want, v, v == want ? "ok" : "FAIL");
             host_fails += v != want;
-        } else if (script[step].smk == HS_PEAK || script[step].smk == HS_PEAKMIN) {
-            uint32_t frames = script[step].sb * (FS / 1000u), i, pk = 0, lim = script[step].keys, mn = script[step].smk == HS_PEAKMIN;
+        } else if (script[step].kind == HS_PEAK || script[step].kind == HS_PEAKMIN) {
+            uint32_t frames = script[step].sb * (FS / 1000u), i, pk = 0, lim = script[step].keys, mn = script[step].kind == HS_PEAKMIN;
             for (i = wav_n > frames ? 2u * (wav_n - frames) : 0; i < 2u * wav_n; i++) {
                 uint32_t a = (uint32_t)(wav[i] < 0 ? -wav[i] : wav[i]);
                 if (a > pk) pk = a;
@@ -377,33 +337,16 @@ static void platform_poll(void)                 /* one call = one millisecond */
             printf("%6u ms  expect peak over the last %u ms %s %u: %u  %s\n", fm1_ms, script[step].sb, mn ? ">=" : "<=", lim, pk,
                    (mn ? pk >= lim : pk <= lim) ? "ok" : "FAIL");
             host_fails += mn ? pk < lim : pk > lim;
-        } else if (script[step].smk == HS_VLOG) {
+        } else if (script[step].kind == HS_VLOG) {
             host_vlog_set(script[step].sb);
-        } else if (script[step].smk == HS_REST) {
+        } else if (script[step].kind == HS_REST) {
             uint32_t r = host_tricks_rest(), want = script[step].sb;
             printf("%6u ms  expect rest %u: %u  %s\n", fm1_ms, want, r, r == want ? "ok" : "FAIL");
             host_fails += r != want;
-        } else if (script[step].smk == HS_IDLE) {
+        } else if (script[step].kind == HS_IDLE) {
             uint32_t n = host_map_idle_calls(), want = script[step].sb;
             printf("%6u ms  expect idle >= %u: the last map draw called app_idle %u times  %s\n", fm1_ms, want, n, n >= want ? "ok" : "FAIL");
             host_fails += n < want;
-        } else if (script[step].smk) {
-#if BOARD_SMK37
-            static uint32_t vel = 100;
-            const host_ev_t *e = &script[step];
-            uint32_t k;
-            switch (e->smk) {
-            case HS_CHECK: fm1_in.buttons ^= 1u; host_edges |= 1u; break;   /* KNOB BANK held / let go */
-            case HS_VEL: vel = e->sb ? e->sb : 1u; for (k = 0; k < FM1_NKEY; k++) fm1_in.key_vel[k] = (uint8_t)vel; break;
-            case HS_PAD: host_qput(0, (int32_t)((e->sa & 15u) << 8 | (e->sb & 0x7Fu))); break;
-            case HS_FADER: fm1_in.fader[e->sa & 3u] = (uint8_t)(e->sb > 127u ? 127u : e->sb); break;
-            case HS_WHEEL: fm1_in.wheel[e->sa & 1u] = e->sb; break;
-            case HS_XKEY: if (e->sb) fm1_in.key_vel[e->sa % FM1_NKEY] = (uint8_t)e->sb; host_qput(1, (int32_t)((e->sa % FM1_NKEY) << 8 | (e->sb & 0x7Fu))); break;
-            case HS_DUMP: host_dump(); break;
-            }
-#else
-            fprintf(stderr, "script: an SMK-37 event in an FM-1 build (BOARD_SMK37=0), ignored\n");
-#endif
         } else if (script[step].st) {
             mq[mq_w % 64u][0] = script[step].st; mq[mq_w % 64u][1] = script[step].d1; mq[mq_w % 64u][2] = script[step].d2;
             mq_w++;

@@ -4,26 +4,17 @@
  * host serves a package over the SysEx protocol, the "device" flash starts as
  * another package's flash.bin (as if that firmware were installed).
  *   ldr_test OLD.fwsc NEW.fwsc
- * With -DBOARD_SMK37=1 (packages from fm1pkg_make.py --board smk37): the SMK-37 Pro windows (app area
- * up to 0x9D000, records 0x9D000..0xBFFFF) and the protected ranges BTIF / USRTRIM 0xC0000..0xC1FFF,
- * USR 0xF4000..0xFDFFF and key_mac 0xFF000 never touched, even with a valid-looking record in them. */
+ * (DØG-5: FM-1 only; the SMK-37 windows and protected-range checks were removed in Batch 13.) */
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define FELUCCA_OTA_DRYRUN 0
-#if BOARD_SMK37
-#define FELUCCA_ID "ota-SMK-37 Pro_900"
-#define T_APP_HI 0x9D000u                   /* end of the app area the loader writes */
-#define T_REC 0xBFF00u                      /* the update record (ota.c OTA_RES) */
-#define T_ERASE_HI 0xC0000u                 /* nothing erased at or above (BTIF, USRTRIM, ...) */
-#else
 #define FELUCCA_ID "ota-FM-1_900"
 #define T_APP_HI 0x93000u
 #define T_REC 0xE4F00u
 #define T_ERASE_HI 0xFC000u
-#endif
 
 static uint8_t nor[0x100000], *logical;
 static size_t logical_len;
@@ -165,35 +156,7 @@ static void put_record_at(uint32_t at)
 }
 static void put_record(void) { put_record_at(T_REC); }   /* a valid update record (the SPL runs the loader) */
 
-#if BOARD_SMK37
-/* the SMK's protected ranges: a pattern, and a valid-looking record in the USRTRIM sector and above it */
-static const uint32_t PROT[][2] = {{0xC0000u, 0xC2000u}, {0xF4000u, 0xFE000u}, {0xFF000u, 0x100000u}};
-static uint8_t prot_img[sizeof nor];
-static void protect_fill(void)
-{
-    uint32_t i, k;
-    for (k = 0; k < sizeof PROT / sizeof PROT[0]; k++)
-        for (i = PROT[k][0]; i < PROT[k][1]; i++)
-            nor[i] = (uint8_t)(i * 13u + 5u);
-    memcpy(nor + 0xC1224u, "trimdat", 8);
-    put_record_at(0xC1F00u);                       /* USRTRIM sector: must never be erased */
-    put_record_at(0xC0F00u);                       /* BTIF */
-    put_record_at(0xF4F00u);                       /* USR */
-    memcpy(prot_img, nor, sizeof nor);
-}
-static int protect_ok(void)
-{
-    uint32_t k;
-    for (k = 0; k < sizeof PROT / sizeof PROT[0]; k++)
-        if (memcmp(nor + PROT[k][0], prot_img + PROT[k][0], PROT[k][1] - PROT[k][0]))
-            return 0;
-    return 1;
-}
-#else
 static void protect_fill(void) {}
-static int protect_ok(void) { return 1; }
-#endif
-
 int main(int argc, char **argv)
 {
     size_t olen;
@@ -277,7 +240,6 @@ int main(int argc, char **argv)
                      && nor[T_REC + 6u] == 0xFF && !memcmp(nor, old + ofo, T_APP_HI));
         flash_unknown = 0;
     }
-    bad += check("protected ranges untouched (SMK: BTIF, USRTRIM, USR, key_mac)", protect_ok());
     printf("%s\n", bad ? "LOADER TEST FAILED" : "loader test passed");
     return bad != 0;
 }

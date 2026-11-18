@@ -5,7 +5,7 @@
 The fake device is the one in web/test_web.mjs: identity on the handshake,
 then "device asks, host answers" reads of the logical image. Run from the repo root:
   python3 tests/install_test.py
-Also checks the Felucca loader marker in every built package, the SMK-37 Pro identities, and the 20 / 36 block
+Also checks the Felucca loader marker in the built package, the SMK-37 Pro identities, and the 20 / 36 block
 deinterleave against the stock SMK-37 Pro packages (a directory named by SMK_STOCK_DIR, skipped when unset).
 (The page's JavaScript image is compared with Python's by tests/install/js_side.mjs, so no JS check is needed here.)"""
 import io
@@ -373,9 +373,8 @@ def smk():
 
 def markers():
     clean = ROOT / "build/dog5.fwsc"
-    for f in [clean, *sorted((ROOT / "build").glob("dog5*-smk37*.fwsc"))]:   # (DØG-5: every package built)
-        if f.exists():
-            ok(I.LOADER_MARK in f.read_bytes(), f"{f.name} carries the Felucca loader marker")
+    if clean.exists():
+        ok(I.LOADER_MARK in clean.read_bytes(), f"{clean.name} carries the Felucca loader marker")
 
 
 wire()

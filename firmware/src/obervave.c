@@ -7,13 +7,14 @@
  *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
  *   obv_tape.h      CHEW, the tape (wow, flutter, saturation, head loss, hiss, dropouts; last, after the reverb)
  *   obv_deck.h      TAPE STOP: the whole mix slows and darkens (SEQ held), after everything, before STOP's gate
- *   obv_fx.h        ALLEY (the BBD delay), plate reverb (after the output stage, same ISR)
+ *   obv_fx.h        ALLEY (the BBD delay), DRAIN (the spring) (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
  *   this file       the panel, MIDI, the screen, the storage
  *
  * (OberVave's step sequencer, obv_seq.h, and the two-sound track B it alone drove, are gone: CLAUDE.md §5.
- * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; ALGORITHM, the SLOP ride; REC taps ALLEY's time on the BBD page.)
+ * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; ALGORITHM, the SLOP ride; REC, HOLD; SELECT on HOME, the LFO
+ * rate; EDIT held + a black key, a page jump. The tap tempo is gone.)
  *
  * Integers only (no FPU, no 64-bit division); tests/host.c runs this on a computer. */
 static void app_idle(void);
@@ -76,14 +77,8 @@ enum { L_NONE, L_FX };
 #define KILL_MOMENTARY 0
 static uint32_t killed;
 static uint32_t layer, layer_lock, layer_used, layer_t, layer_btn;
-#define SMK_PAD_HELD 0                           /* (the step pads are freed with the sequencer, both boards) */
-#if BOARD_SMK37
-#define KEY_VEL(k) fm1_in.key_vel[SMK_KEY_F3 + (k)]   /* the keys play with velocity (the unit's factory curves) */
-#define NM_PRESETS "K4"                         /* the SMK's printed knob name */
-#else
 #define KEY_VEL(k) 100
 #define NM_PRESETS "PRESETS"
-#endif
 static void say(const char *s) { toast = s; toast_t = fm1_ms; }
 static uint8_t cc_map[128];                     /* MIDI CC -> parameter + 1, 0 = none */
 
@@ -331,22 +326,6 @@ static void draw_header(void)
     ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
 }
 
-static void fmt_s(char *s, int32_t v)          /* signed: +3, -12, 0 */
-{
-    s[0] = 0;
-    if (v) scat(s, v < 0 ? "-" : "+");
-    fmt_u(s + slen(s), (uint32_t)(v < 0 ? -v : v));
-}
-
-static void fmt_note(char *s, uint32_t n)       /* C4, F#3 */
-{
-    static const char *const NN[12] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-    s[0] = 0;
-    scat(s, NN[n % 12u]);
-    if (n < 12u) scat(s, "-");
-    fmt_u(s + slen(s), n < 12u ? 1u : n / 12u - 1u);
-}
-
 /* ALLEY's knobs. The time is ALLEY (a step of BBD_T) + FINE (1/128 of a step): turning ALLEY clears FINE (the knob
  * walks clean steps); leaving SYNC (ALLEY 0) by ALLEY or FINE starts from the time that was sounding, so the echo never
  * jumps; turning SYNC (the note value, BBD +) goes back to SYNC. (REC's tap tempo went in Batch 9B: REC is HOLD now.
@@ -401,7 +380,7 @@ static void draw_page(void)
         k[i].present = 0;
         k[i].bip = 0;
         k[i].value[0] = 0;
-        if (page == PG_GLOBAL && !layer && !SMK_PAD_HELD && i != 1u) {
+        if (page == PG_GLOBAL && !layer && i != 1u) {
             static const char *const GL[4] = {"TEMPO", "", "MIDI CH", "TUNE"};
             k[i].label = GL[i];
             k[i].present = 1;
@@ -557,9 +536,6 @@ static uint32_t dirty_hdr = 1, dirty_page = 1, dirty_tags = 1;
 static uint32_t keys_prev, clk_n, clk_t0, clk_last, idle_ok;
 static uint8_t held_key[27];
 
-#if BOARD_SMK37
-#include "obv_smk.h"                            /* the SMK-37's outer keys, faders, wheels, < >, FADER BANK */
-#endif
 
 /* HOLD, one latch with two buttons (Batch 9B): the ARP button on its page and REC on any page both come here, so they
  * cannot disagree. It ORs with the sustain pedal in part_sus() (obv_engine.h); the PLAY / STOP kill switch releases it
@@ -673,7 +649,10 @@ static void midi_in(uint32_t notes_only)
         else if (kind == 0xB0u) {
             if (d1 == 7u) ctl_cc7 = d2;
             else if (d1 == 64u) ctl_sustain = d2 >= 64u;
-            else if (d1 == 120u || d1 == 123u) ctl_panic = 1;
+            else if (d1 == 120u || d1 == 123u) {   /* a panic: and a latched HOLD goes, as on STOP */
+                if (hold) { hold = 0; ctl_hold = 0; dirty_tags = 1; }
+                ctl_panic = 1;
+            }
             else if (cc_map[d1]) {
                 uint32_t p = cc_map[d1] - 1u;
                 set_param(p, PDEF[p].max == 127 ? (int32_t)d2 : ((int32_t)d2 * PDEF[p].max + 63) / 127);
@@ -832,9 +811,6 @@ static void app_main(void)
         platform_poll();
 
         keys_in();
-#if BOARD_SMK37
-        smk_extkeys(base);                      /* the outer keys */
-#endif
 
         /* buttons, as sloopDX: FX held is a layer (its knobs change job until it is let go), HOME while held
          * locks it open; EDIT, GLO and SAVE are plain taps now (their hold-layers were sequencer content: erase
@@ -856,9 +832,6 @@ static void app_main(void)
                 }
             }
         }
-#if BOARD_SMK37
-        smk_buttons(b);                         /* FADER BANK, < > */
-#endif
         if (b & (3u << BTN_OCT_DOWN)) {
             if ((fm1_in.buttons & (3u << BTN_OCT_DOWN)) == (3u << BTN_OCT_DOWN)) {   /* both: octave 0 */
                 set.oct = 0; set_dirty = 1; set_t = fm1_ms; say("OCTAVE 0");
@@ -968,7 +941,7 @@ static void app_main(void)
             int32_t p = page_now()->p[k];
             if ((e = fm1_enc_take(ENC_KNOB1 + k)) == 0) continue;
             if (e > 1 || e < -1) e *= 3;        /* a fast turn goes further */
-            if (page == PG_GLOBAL && !layer && !SMK_PAD_HELD && k != 1u) {   /* (a held layer has the knobs, on every page) */
+            if (page == PG_GLOBAL && !layer && k != 1u) {   /* (a held layer has the knobs, on every page) */
                 if (k == 0) { set.tempo = (uint8_t)clampi(set.tempo + e, 40, 240); ctl_tempo = set.tempo; }
                 else if (k == 2) set.midi_ch = (uint8_t)clampi(set.midi_ch + e, 0, 16);
                 else { set.tune = (int8_t)clampi(set.tune + e, -50, 50); ctl_tune8 = set.tune * 256 / 100; }
@@ -990,10 +963,6 @@ static void app_main(void)
             dirty_page = 1;
         }
 
-#if BOARD_SMK37
-        smk_faders(&dirty_page, &dirty_hdr, &dirty_tags);
-        smk_wheels();
-#endif
         midi_in(0);
         if (ctl_ext_quarter && fm1_ms - clk_last > 2000u) { ctl_ext_quarter = 0; clk_n = 0; }
 
@@ -1024,21 +993,7 @@ static void app_main(void)
         fm1_led_key(BTN_REC, hold);             /* WAG lit: HOLD is latched */
         fm1_led_key(BTN_PLAY, killed);          /* HEEL lit: stopped */
         fm1_led_key(BTN_SEQ, ctl_tstop);        /* FLOP lit: the tape stops */
-#if BOARD_SMK37
-        smk_leds();                             /* FADER BANK, < > */
-#endif
 
-#if BOARD_SMK37
-        {   /* KNOB BANK held: the panel check owns the screen; let go, everything is drawn again */
-            uint32_t redraw = 0;
-            if (smk_check(&redraw)) continue;
-            if (redraw) {
-                lcd_fill(0, 0, 240, 240, C_PANEL);   /* (the strips leave gaps between them) */
-                dirty_hdr = dirty_page = dirty_tags = 1; hints_key = leds_q = 0xFFFFFFFFu; scope_state = 1; t_scope = 0;
-                smk_ov_dirty = 1;
-            }
-        }
-#endif
         /* the screen: only what changed */
         idle_ok = 1;
         if (map_on) {                           /* HOME held: the map has the whole screen (notes still sound) */
@@ -1051,10 +1006,6 @@ static void app_main(void)
                 uint32_t q = 0;
                 t_led = fm1_ms;
                 for (k = 0; k < NV; k++) q = q * 9u + ((uint32_t)ui_vlevel[k] >> 12);   /* 8 steps a LED: redraw on a change */
-#if BOARD_SMK37
-                if (smk_overlay_draw(&leds_q)) ;    /* a fader's bar, a bank */
-                else
-#endif
                 if (layer) draw_hints();
                 else if (q != leds_q) { leds_q = q; draw_leds(); }
                 if (page == PG_GLOBAL && fm1_ms - t_page >= 250u) dirty_page = 1;

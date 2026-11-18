@@ -5,7 +5,7 @@ voices, a Psych Chain of GROWL / ALLEY / DRAIN / CHEW after them, 99 program slo
 open source, GPL-3.0-only. The build brief and the reasoning are in [`CLAUDE.md`](CLAUDE.md) and [`dog5-docs/`](dog5-docs/).
 
 > **Status (18 Nov 2026): a pre-release test build, v0.2, package identity `FM-1_962`**, flashed and played on a real
-> FM-1. Made and tested for the **FM-1 only** (the SMK-37 is not supported: [`SMK37.md`](SMK37.md)).
+> FM-1. Made and tested for the **FM-1 only** (the SMK-37 is not supported).
 
 **Install it:** the self-hosted installer page, [`docs/install/`](docs/install/README.md) (Chrome or Edge, over USB:
 <https://vincentzsk-prod.github.io/dog5/install/>). It carries the package inside

@@ -1,9 +1,8 @@
 # DØG-5 (fork of OberVave): build the packages on GitHub, run the host tests, and on a tag vX.Y publish the release with a build
 # attestation (actions/attest-build-provenance): the Firmware Hub shows "Built from source" for exactly these files.
 # The JieLi toolchain and the AC79 SDK come from this repo's own release build-deps-v1 (tools/get_vendored_deps.sh: the same
-# pinned pair as pkgman.jieliapp.com + gitee.com, which tools/get_toolchain.sh still fetches by hand). FM-1 only: the
-# SMK-37 code is frozen and not published since Batch 12B (SMK37.md). Run by hand (workflow_dispatch) for a test build
-# without a release.
+# pinned pair as pkgman.jieliapp.com + gitee.com, which tools/get_toolchain.sh still fetches by hand). FM-1 only (the
+# SMK-37 board was removed in Batch 13). Run by hand (workflow_dispatch) for a test build without a release.
 name: release
 
 on:
