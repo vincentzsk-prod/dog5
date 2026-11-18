@@ -181,52 +181,51 @@ static void ui_page(const char *title, const knob_view_t *k, const char *note)
     cv_blit(0, 46);
 }
 
-/* HOLD HOME: the control map of the page you are on. Three strips (the canvas is 120 rows at most on the host), each
+/* HOLD HOME: the control map of the page you are on. Two strips under a 32 px head (the canvas is 120 rows at most), each
  * followed by app_idle(), and app_idle() after every row: the DRAW RULE (CLAUDE.md section 6), a draw that takes time
  * lets the notes through.
- *   top    the page's name, and under it the four knobs (what each one is on this page; "-" = none)
- *   rows   one per button: its dog name with the label printed on the panel ("DIG (EDIT)"), and what it does (for the
- *          page buttons: where a press goes NOW, so the map stays true as the families' memories change)
- *   foot   one line */
+ *   head   the page's name, and under it the four knobs (what each one is on this page; "-" = none)
+ *   rows   MAP_ROWS lines, 16 px each, down to the bottom edge. A row is a button / control with its dog name and the label
+ *          printed on the panel ("DIG (EDIT)") and what it does (for the page buttons: where a press goes NOW, so the map
+ *          stays true as the families' memories change); a row with no `what` is a line of its own, drawn across the
+ *          screen (the EDIT-held key shortcuts) */
 typedef struct { const char *label, *what; } map_row_t;
-#define MAP_ROWS 11
-#define MAP_ROW_Y 48                            /* the first row; 16 px a row, the foot under the last (y 224) */
-static void ui_map(const char *title, const knob_view_t *k, const char *knob_note, const map_row_t *r, int32_t hi,
-                   const char *foot)
+#define MAP_ROWS 13
+#define MAP_HEAD 32                             /* the head; the rows run from here to y 240 (13 x 16 = 208) */
+static void ui_map(const char *title, const knob_view_t *k, const char *knob_note, const map_row_t *r, int32_t hi)
 {
-    int32_t i;
-    cv_begin(240, 46, C_PANEL);
-    cv_text((240 - text_w(&FONT_S, title)) / 2, 2, &FONT_S, title, C_AMBER);
-    cv_rect(0, 21, 240, 1, C_RULE);
+    int32_t i, xw = 0;
+    cv_begin(240, MAP_HEAD, C_PANEL);
+    cv_text((240 - text_w(&FONT_S, title)) / 2, 0, &FONT_S, title, C_AMBER);
     for (i = 0; i < 4; i++) {
         if (k[i].present)
-            cv_text(30 + 60 * i - text_w(&FONT_S, k[i].label) / 2, 24, &FONT_S, k[i].label, C_CREAM);
+            cv_text(30 + 60 * i - text_w(&FONT_S, k[i].label) / 2, 16, &FONT_S, k[i].label, C_CREAM);
         else if (!knob_note)
-            cv_text(30 + 60 * i - text_w(&FONT_S, "-") / 2, 24, &FONT_S, "-", C_RULE);
-        if (i && !knob_note) cv_rect(60 * i, 25, 1, 16, C_RULE);
+            cv_text(30 + 60 * i - text_w(&FONT_S, "-") / 2, 16, &FONT_S, "-", C_RULE);
+        if (i && !knob_note) cv_rect(60 * i, 18, 1, 13, C_RULE);
     }
     if (knob_note)
-        cv_text((240 - text_w(&FONT_S, knob_note)) / 2, 24, &FONT_S, knob_note, C_DIMT);
-    cv_rect(0, 44, 240, 1, C_RULE);
+        cv_text((240 - text_w(&FONT_S, knob_note)) / 2, 16, &FONT_S, knob_note, C_DIMT);
+    cv_rect(0, 31, 240, 1, C_RULE);
     cv_blit(0, 0);
     app_idle();
-    int32_t xw = 0;
     for (i = 0; i < MAP_ROWS; i++)              /* "what" starts after the widest label */
-        if (text_w(&FONT_S, r[i].label) > xw) xw = text_w(&FONT_S, r[i].label);
-    xw += 4 + 8;
+        if (r[i].what && text_w(&FONT_S, r[i].label) > xw) xw = text_w(&FONT_S, r[i].label);
+    xw += 4 + 4;
     for (i = 0; i < MAP_ROWS; i++) {
         int32_t y;
-        if (i == 0 || i == 6) {                 /* a new strip: rows 0-5 from y 46, rows 6-10 + the foot from y 144 */
-            cv_begin(240, i ? 96 : 98, C_PANEL);
+        if (i == 0 || i == 6) cv_begin(240, i ? 112 : 96, C_PANEL);   /* a new strip: rows 0-5 from y 32, rows 6-12 from y 128 */
+        y = i < 6 ? i * 16 : (i - 6) * 16;
+        if (!r[i].what)
+            cv_text((240 - text_w(&FONT_S, r[i].label)) / 2, y, &FONT_S, r[i].label, C_AMBER);
+        else {
+            cv_text(4, y, &FONT_S, r[i].label, i == hi ? C_AMBER : C_CREAM);
+            cv_text(xw, y, &FONT_S, r[i].what, i == hi ? C_AMBER : C_DIMT);
         }
-        y = i < 6 ? MAP_ROW_Y - 46 + i * 16 : (i - 6) * 16;
-        cv_text(4, y, &FONT_S, r[i].label, i == hi ? C_AMBER : C_CREAM);
-        cv_text(xw, y, &FONT_S, r[i].what, i == hi ? C_AMBER : C_DIMT);
         app_idle();                             /* (a row is ~1 ms: the keys and MIDI in between) */
-        if (i == 5) { cv_blit(0, 46); app_idle(); }
+        if (i == 5) { cv_blit(0, MAP_HEAD); app_idle(); }
     }
-    cv_text((240 - text_w(&FONT_S, foot)) / 2, 80, &FONT_S, foot, C_DIMT);
-    cv_blit(0, 144);
+    cv_blit(0, 128);
     app_idle();
 }
 

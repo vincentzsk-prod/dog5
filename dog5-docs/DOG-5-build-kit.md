@@ -287,7 +287,7 @@ What happens in what order once the fork exists. Items marked **[V]** wait on yo
 7. `P_POLY_N` on the VOICE pages
 
 **Stage 2 — the voice (no art needed, runs in parallel with your drawing)**
-8. Psych Chain: Drive and Tape built; Delay to free-ms with tap tempo; Spring re-voiced per §2.3
+8. Psych Chain: Drive and Tape built; Delay to free-ms with tap tempo (tap tempo dropped in Batch 9B); Spring re-voiced per §2.3
 9. The 32 patches voiced by ear on the host build, against the SOUND briefs
 10. A/B write-lock over the 99-slot store
 

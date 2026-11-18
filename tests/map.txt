@@ -1,5 +1,5 @@
 # HOLD HOME = the control map of the current page; a TAP still goes HOME (on its release). Page numbers = PG_* in
-# obv_params.h (HOME 0, OSC1 1, FILTER 4, FILTER+ 5, DRIVE 11, SPRING 13, ARP 15, GLOBAL 16). 'expect idle N' = the draw
+# obv_params.h (HOME 0, OSC1 1, FILTER 5, FILTER+ 6, DRIVE 12, SPRING 14, ARP 16, GLOBAL 17). 'expect idle N' = the draw
 # called app_idle() at least N times (the DRAW RULE). tests/run_host.sh tests/map.txt -> the shots are the maps.
 3000 expect page 0
 3100 btndown 8   # HOME held: HOME page
@@ -17,79 +17,81 @@
 4700 expect page 3
 4700 btn 6   # EDIT
 4900 expect page 4
-5000 btndown 8   # HOME held: FILTER
-5200 expect page 4   # not yet (350 ms): still the page, no jump HOME
-5500 expect page 4   # the map is up; the page did not change
-5600 shot
-5700 expect idle 10   # the map draw yielded to the notes
-5800 btnup 8
-6000 expect page 4   # letting go of a held HOME stays on the page
-6000 btn 6   # FILTER + (so EDIT is a live row: its target moves on)
-6200 expect page 5
-6300 btndown 8   # HOME held: FILTER +
-6500 expect page 5   # not yet (350 ms): still the page, no jump HOME
-6800 expect page 5   # the map is up; the page did not change
-6900 shot
-7000 expect idle 10   # the map draw yielded to the notes
-7100 btnup 8
-7300 expect page 5   # letting go of a held HOME stays on the page
-7300 btn 10   # ARP
-7500 expect page 15
-7600 btndown 8   # HOME held: ARP
-7800 expect page 15   # not yet (350 ms): still the page, no jump HOME
-8100 expect page 15   # the map is up; the page did not change
-8200 shot
-8300 expect idle 10   # the map draw yielded to the notes
-8400 btnup 8
-8600 expect page 15   # letting go of a held HOME stays on the page
-8600 btn 7   # GLO
-8800 expect page 16
-8900 btndown 8   # HOME held: GLOBAL
-9100 expect page 16   # not yet (350 ms): still the page, no jump HOME
-9400 expect page 16   # the map is up; the page did not change
-9500 shot
-9600 expect idle 10   # the map draw yielded to the notes
-9700 btnup 8
-9900 expect page 16   # letting go of a held HOME stays on the page
-9900 btn 2   # FX
-10100 expect page 11
-10200 btndown 8   # HOME held: DRIVE: no knobs yet
-10400 expect page 11   # not yet (350 ms): still the page, no jump HOME
-10700 expect page 11   # the map is up; the page did not change
-10800 shot
-10900 expect idle 10   # the map draw yielded to the notes
-11000 btnup 8
-11200 expect page 11   # letting go of a held HOME stays on the page
-11200 btn 2   # FX
-11400 expect page 12
-11400 btn 2   # FX
-11600 expect page 13
-11700 btndown 8   # HOME held: SPRING
-11900 expect page 13   # not yet (350 ms): still the page, no jump HOME
-12200 expect page 13   # the map is up; the page did not change
-12300 shot
-12400 expect idle 10   # the map draw yielded to the notes
-12500 btnup 8
-12700 expect page 13   # letting go of a held HOME stays on the page
-12700 btn 4   # ENV
-12900 expect page 6
-13000 btndown 8   # HOME held: FILTER ENV
-13200 expect page 6   # not yet (350 ms): still the page, no jump HOME
-13500 expect page 6   # the map is up; the page did not change
-13600 shot
-13700 expect idle 10   # the map draw yielded to the notes
-13800 btnup 8
-14000 expect page 6   # letting go of a held HOME stays on the page
-14100 btn 8   # a TAP
-14300 expect page 0   # taps go HOME on release
-14300 btn 6   # EDIT from HOME: FILTER + remembered
-14500 expect page 5
-14600 btndown 8   # hold HOME, then press EDIT: the map follows the page
-15100 btn 6
-15200 expect page 1
-15400 shot
-15500 keys 0x80   # a note played with the map up
-16300 keys 0
-16400 btnup 8
-16600 expect page 1
-16900 end
+4900 btn 6   # EDIT (OSC MOD -> FILTER: MIXER made the EDIT cycle six pages)
+5150 expect page 5
+5300 btndown 8   # HOME held: FILTER
+5500 expect page 5   # not yet (350 ms): still the page, no jump HOME
+5800 expect page 5   # the map is up; the page did not change
+5900 shot
+6000 expect idle 10   # the map draw yielded to the notes
+6100 btnup 8
+6300 expect page 5   # letting go of a held HOME stays on the page
+6300 btn 6   # FILTER + (so EDIT is a live row: its target moves on)
+6500 expect page 6
+6600 btndown 8   # HOME held: FILTER +
+6800 expect page 6   # not yet (350 ms): still the page, no jump HOME
+7100 expect page 6   # the map is up; the page did not change
+7200 shot
+7300 expect idle 10   # the map draw yielded to the notes
+7400 btnup 8
+7600 expect page 6   # letting go of a held HOME stays on the page
+7600 btn 10   # ARP
+7800 expect page 16
+7900 btndown 8   # HOME held: ARP
+8100 expect page 16   # not yet (350 ms): still the page, no jump HOME
+8400 expect page 16   # the map is up; the page did not change
+8500 shot
+8600 expect idle 10   # the map draw yielded to the notes
+8700 btnup 8
+8900 expect page 16   # letting go of a held HOME stays on the page
+8900 btn 7   # GLO
+9100 expect page 17
+9200 btndown 8   # HOME held: GLOBAL
+9400 expect page 17   # not yet (350 ms): still the page, no jump HOME
+9700 expect page 17   # the map is up; the page did not change
+9800 shot
+9900 expect idle 10   # the map draw yielded to the notes
+10000 btnup 8
+10200 expect page 17   # letting go of a held HOME stays on the page
+10200 btn 2   # FX
+10400 expect page 12
+10500 btndown 8   # HOME held: DRIVE: no knobs yet
+10700 expect page 12   # not yet (350 ms): still the page, no jump HOME
+11000 expect page 12   # the map is up; the page did not change
+11100 shot
+11200 expect idle 10   # the map draw yielded to the notes
+11300 btnup 8
+11500 expect page 12   # letting go of a held HOME stays on the page
+11500 btn 2   # FX
+11700 expect page 13
+11700 btn 2   # FX
+11900 expect page 14
+12000 btndown 8   # HOME held: SPRING
+12200 expect page 14   # not yet (350 ms): still the page, no jump HOME
+12500 expect page 14   # the map is up; the page did not change
+12600 shot
+12700 expect idle 10   # the map draw yielded to the notes
+12800 btnup 8
+13000 expect page 14   # letting go of a held HOME stays on the page
+13000 btn 4   # ENV
+13200 expect page 7
+13300 btndown 8   # HOME held: FILTER ENV
+13500 expect page 7   # not yet (350 ms): still the page, no jump HOME
+13800 expect page 7   # the map is up; the page did not change
+13900 shot
+14000 expect idle 10   # the map draw yielded to the notes
+14100 btnup 8
+14300 expect page 7   # letting go of a held HOME stays on the page
+14400 btn 8   # a TAP
+14600 expect page 0   # taps go HOME on release
+14600 btn 6   # EDIT from HOME: FILTER + remembered
+14800 expect page 6
+14900 btndown 8   # hold HOME, then press EDIT: the map follows the page
+15400 btn 6
+15500 expect page 1
+15700 shot
+15800 keys 0x80   # a note played with the map up
+16600 keys 0
+16700 btnup 8
+16900 expect page 1
+17200 end

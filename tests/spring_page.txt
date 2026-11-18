@@ -8,7 +8,7 @@
 3000 btn 2   # FX: DRIVE
 3200 btn 2   # BBD DELAY
 3400 btn 2   # SPRING
-3600 expect page 13
+3600 expect page 14
 3600 enc 2 1
 3650 enc 2 1
 3700 enc 2 1
@@ -45,14 +45,14 @@
 5200 btndown 8   # HOME held on SPRING: the map names DRAIN
 5600 shot
 5700 btnup 8
-5900 expect page 13
+5900 expect page 14
 5900 btndown 3   # SELECT held while HOME is held: the map shows SPRING +'s knobs
 6000 btndown 8
 6400 shot
 6500 btnup 8
 6600 btnup 3
 6800 btn 2   # FX again: TAPE, SELECT there is TAPE + (WOW/FLT on KNOB 1), not SPRING +
-7000 expect page 14
+7000 expect page 15
 7000 btndown 3
 7100 enc 2 1
 7300 expect param 65 66

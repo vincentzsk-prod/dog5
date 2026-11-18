@@ -50,7 +50,7 @@ def knob_sweep(t):                           # KNOB 1 (encoder 2), one detent ev
     return out
 
 
-TO_TAPE = [f"{T0 + 20 + 40 * i} btn 2" for i in range(4)] + [f"{T0 + 200} expect page 14"]   # FX x4: DRIVE..TAPE
+TO_TAPE = [f"{T0 + 20 + 40 * i} btn 2" for i in range(4)] + [f"{T0 + 200} expect page 15"]   # FX x4: DRIVE..TAPE
 
 for src, (lines, end) in SOURCES.items():
     for pct, raw in LEVEL.items():

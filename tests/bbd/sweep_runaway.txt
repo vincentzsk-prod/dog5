@@ -17,7 +17,7 @@
 2700 midi 0x90 52 100
 2700 midi 0x90 55 100
 2700 midi 0x90 59 100
-2750 expect page 12
+2750 expect page 13
 2850 midi 0x80 48 0
 2850 midi 0x80 52 0
 2850 midi 0x80 55 0

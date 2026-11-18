@@ -17,7 +17,7 @@
 2620 btn 2
 2660 btn 2
 2700 midi 0x90 79 100
-2750 expect page 12
+2750 expect page 13
 2880 midi 0x80 79 0
 3000 midi 0x90 81 100
 3180 midi 0x80 81 0

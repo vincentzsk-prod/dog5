@@ -1,0 +1,49 @@
+# Batch 9B: the SELECT dial. On HOME (no layer) a turn is LFO RATE (parameter 29), 2 a detent, clamped 0..127, a real parameter
+# (SAVE stores it); on every other page, and with a layer held, it does nothing (the old tempo scroll is gone: the tempo is
+# GLOBAL knob 1 and the MIDI clock). SAVE armed + SELECT pressed is still the dice; SELECT held on a Psych page still swaps in
+# the "+" knobs. Encoder 0 = SELECT, button 3 = SELECT's push, 9 = SAVE, 2 = FX, 6 = EDIT, 8 = HOME, 17 = GLOBAL page's number.
+2900 expect page 0
+3000 param 29 70
+3100 enc 0 3
+3300 expect param 29 76   # 2 a detent
+3400 enc 0 -1
+3600 expect param 29 74
+3700 enc 0 100
+3900 expect param 29 127   # clamped at the top
+4000 enc 0 -100   # (the script's encoder step is a signed byte: two turns)
+4050 enc 0 -100
+4200 expect param 29 0   # and at 0
+4300 shot   # the header says LFO RATE 0.1Hz (or so) for a second
+# nowhere else: EDIT -> OSC 1
+4400 param 29 70
+4500 btn 6
+4700 expect page 1
+4800 enc 0 5
+5000 expect param 29 70
+# on a Psych page, with SELECT held: the knobs swap (drive_page.txt), a SELECT turn still does nothing
+5100 btn 2
+5300 expect page 12
+5400 btndown 3
+5500 enc 0 4
+5700 expect param 29 70
+5800 btnup 3
+# a layer held on HOME: nothing
+5900 btn 8
+6100 expect page 0
+6200 btndown 2
+7000 enc 0 3
+7200 expect param 29 70
+7300 btnup 2
+# the page the tempo lives on is not touched by SELECT either (compare the two shots: TEMPO is the same)
+7500 btn 7
+7700 expect page 17
+7800 shot
+7900 enc 0 7
+8200 shot
+# SAVE armed + SELECT pushed: a new sound (the dice), LFO RATE comes out of rn(20,100)
+8500 btn 8
+8700 param 29 0
+8800 btn 9
+9000 btn 3
+9200 expect param 29 50   # the dice's value (rn(20,100) from the fixed seed; it changes only if randomize() does)
+9400 end
