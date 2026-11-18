@@ -1,24 +1,12 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
 /* The factory programs: each a name and the parameters that differ from the defaults (obv_params.h). */
 #define X 255
-/* the dark arpeggios: a four-note chord climbed in 16ths, two saws a hair apart, the 24 dB filter half shut, a
- * dotted-eighth ping-pong and a long dark plate */
-static const uint8_t PF_DARK_ARP[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 1, P_ARP_GATE, 75, P_O2_FINE, 69, P_O2_LVL, 105,
-    P_CUTOFF, 46, P_RESO, 22, P_FENV_AMT, 92, P_FA, 0, P_FD, 58, P_FS, 35, P_FR, 55, P_AA, 1, P_AD, 72, P_AS, 55, P_AR, 60,
-    P_KEYTRK, 70, P_VINTAGE, 55, P_SPREAD, 50, P_CHO_MIX, 25, P_CHO_RATE, 30, P_CHO_DEPTH, 40,
-    P_DLY_TIME, DD_8D, P_DLY_FB, 48, P_DLY_TONE, 45, P_DLY_MIX, 58, P_REV_SIZE, 100, P_REV_DAMP, 75, P_REV_PRE, 30, P_REV_MIX, 52, X};
-static const uint8_t PF_UPSIDE_ARP[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_ARP_OCT, 2, P_ARP_GATE, 60, P_O1_WAVE, W_BOTH, P_O1_PW, 40,
-    P_O2_WAVE, W_SAW, P_O2_SEMI, 12, P_O2_LVL, 70, P_O2_FINE, 72, P_FTYPE, F_SEM, P_FMORPH, 18, P_CUTOFF, 40, P_RESO, 35,
-    P_FENV_AMT, 100, P_FD, 50, P_FS, 10, P_AA, 1, P_AD, 60, P_AS, 20, P_AR, 70, P_VINTAGE, 70, P_SPREAD, 80,
-    P_DLY_TIME, DD_8, P_DLY_FB, 62, P_DLY_TONE, 35, P_DLY_MIX, 64, P_REV_SIZE, 115, P_REV_DAMP, 85, P_REV_PRE, 40, P_REV_MIX, 66, X};
 /* 24 Fugue State (Batch 5B, approved variant C: cards/24-fugue-state.md; was PF_NEON_PAD, this slot's alone): a triangle-like pad (25 % pulse + an octave-up copy through a key-tracking 12 dB low-pass), a 4.9 Hz TRI pitch LFO (PITCH 50), a 144 ms BBD echo at FEEDBK 95 */
 static const uint8_t PF_FUGUE_STATE[] = {P_O1_WAVE, W_PLS, P_O1_PW, 32, P_O2_WAVE, W_PLS, P_O2_PW, 32, P_O2_LVL, 45,
     P_O2_SEMI, 36, P_O2_FINE, 66, P_CUTOFF, 63, P_RESO, 5, P_FENV_AMT, 64, P_KEYTRK, 127, P_FTYPE, F_LP12, P_FA, 90,
     P_FD, 100, P_FS, 50, P_FR, 100, P_AA, 85, P_AD, 100, P_AS, 127, P_AR, 110, P_LFO_RATE, 91,
     P_LFO_PHASE, LP_SPREAD, P_LFO_PITCH, 50, P_VINTAGE, 60, P_SPREAD, 120, P_VOLUME, 85, P_DLY_TIME, DD_4D,
     P_DLY_FB, 95, P_DLY_TONE, 45, P_DLY_MIX, 85, P_REV_SIZE, 100, P_REV_PRE, 30, P_REV_MIX, 45, P_ALLEY, 79, X};
-static const uint8_t PF_BRASS_STAB[] = {P_O2_FINE, 72, P_CUTOFF, 60, P_FENV_AMT, 114, P_FA, 30, P_FD, 75, P_FS, 30, P_FR, 50,
-    P_AA, 12, P_AD, 60, P_AS, 90, P_AR, 45, P_RESO, 25, P_DRIVE, 20, X};
 /* 25 SAWTOOTH (voiced 4 Nov, dog5-docs/voicing/25-sawtooth.md; was PF_POLY_BRASS, this slot's alone): the stable, warm poly brass. POLY, two
  * saws 5.5 cents apart, VINTAGE left at 30, a 24 dB filter swell (CUTOFF 56, ENV AMT 100, attack 117 ms, decay 378 ms to
  * sustain 50), a fade-in vibrato, no GROWL (a touch measured -1 dB of peak for +570 instr/sample; D has the edge). No chop, no sub: where 03 Half-Life is unstable and chopped,
@@ -54,10 +42,6 @@ static const uint8_t PF_ARE_TWO_D2[] = {P_O1_LVL, 127, P_O2_LVL, 70, P_O2_SEMI, 
 static const uint8_t PF_R3V3RT[] = {P_O1_WAVE, W_PLS, P_O1_PW, 54, P_O1_LVL, 120, P_O2_WAVE, W_OFF, P_O2_PW, 50,
     P_O2_LVL, 0, P_O2_SEMI, 12, P_CUTOFF, 66, P_RESO, 0, P_FENV_AMT, 118, P_KEYTRK, 30, P_DRIVE, 30, P_FA, 0,
     P_FD, 85, P_FS, 0, P_FR, 20, P_AA, 0, P_AD, 80, P_AS, 90, P_AR, 30, P_MODE, M_MONO, P_GLIDE, 10, P_VOLUME, 98, X};
-static const uint8_t PF_ARP_SEQ[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 2, P_ARP_GATE, 50, P_O1_WAVE, W_PLS, P_O1_PW, 40,
-    P_O2_SEMI, 12, P_CUTOFF, 50, P_FENV_AMT, 124, P_FD, 45, P_FS, 0, P_AD, 50, P_AS, 0, P_AR, 40, P_RESO, 40, P_AA, 1, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 35, X};
-static const uint8_t PF_SWEEP_PAD[] = {P_O2_FINE, 74, P_CUTOFF, 30, P_FENV_AMT, 127, P_FA, 110, P_FD, 100, P_FS, 60, P_FR, 100,
-    P_AA, 90, P_AR, 105, P_RESO, 20, P_LFO_FLT, 15, P_LFO_RATE, 30, P_SPREAD, 110, P_VINTAGE, 60, P_CHO_MIX, 40, P_REV_SIZE, 110, P_REV_MIX, 45, X};
 /* 22 Melting Orb (Batch 5A, approved variant D: dog5-docs/voicing/22-melting-orb.md, cards/22-melting-orb.md; was PF_BP_QUACK, 22's alone): a dignified collapse, held. DUAL (POLY 6: a three-key chord melts together), saws on OSC 2 ONLY
  * (ENV>O2 bends OSC 2's pitch, driven by the FILTER envelope; OSC 1 is off). The filter envelope RISES over ~4 s (FA 118) and a negative ENV AMT (32) / ENV>O2 (46 = -6.9 st) turn that rise into a fall of the cutoff (about -49 st) and of the
  * pitch together; sustain 127 keeps it down while the key is held, filter release 127. LP12 RESO 75 (linear). VOLUME 97: -18.9 dBFS RMS over +9 .. +14 s of an A2 hold (the melted state), peak -4.1 (the three-key chord) */
@@ -65,8 +49,6 @@ static const uint8_t PF_MELTING_ORB[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 0, P_O2_LVL
     P_RESO, 75, P_FENV_AMT, 32, P_FTYPE, F_LP12, P_FA, 118, P_FD, 60, P_FS, 127, P_FR, 127, P_AA, 60, P_AD, 100,
     P_AS, 127, P_AR, 92, P_MODE, M_DUAL, P_UNI_N, 6, P_UNI_DET, 40, P_VINTAGE, 40, P_SPREAD, 110, P_VOLUME, 97,
     P_POLY_N, 6, X};
-static const uint8_t PF_RESO_ZAP[] = {P_MODE, M_MONO, P_RESO, 110, P_CUTOFF, 20, P_FENV_AMT, 127, P_FD, 40, P_FS, 0, P_AD, 40,
-    P_AS, 0, P_FTYPE, F_LP12, P_O1_WAVE, W_PLS, P_NOISE, 20, P_AA, 1, P_AR, 30, X};
 /* 23 Crypt Dust (Batch 5B, approved variant D3: cards/23-crypt-dust.md; was PF_NOISE_WASH, this slot's alone): a thin 12 % pulse under a trace of noise (NOISE 43, 24 dB under the pulse) through a band-pass, POLY 4, no tape (CHEW 0), a slow S&H LFO on AMP and FILTER, a 75 ms echo and the spring */
 static const uint8_t PF_CRYPT_DUST[] = {P_O1_WAVE, W_PLS, P_O1_PW, 15, P_O1_LVL, 127, P_NOISE, 43, P_O2_WAVE, W_OFF,
     P_CUTOFF, 72, P_RESO, 50, P_FENV_AMT, 64, P_FTYPE, F_BP12, P_FA, 60, P_AA, 100, P_AR, 110, P_LFO_SHAPE, L_SH,
@@ -114,10 +96,6 @@ static const uint8_t PF_ZEAROX[] = {P_O1_WAVE, W_OFF, P_O1_LVL, 40, P_O2_WAVE, W
     P_ENV_O2, 110, P_O2_FINE, 68, P_CUTOFF, 105, P_RESO, 0, P_FENV_AMT, 64, P_KEYTRK, 0, P_FTYPE, F_LP12, P_FA, 0,
     P_FD, 40, P_FS, 0, P_AA, 0, P_AD, 76, P_AS, 0, P_AR, 20, P_LFO_SHAPE, L_SH, P_LFO_RATE, 120, P_LFO_PITCH, 80,
     P_MODE, M_MONO, P_VOLUME, 123, P_TP_HISS, 0, P_TP_DROPS, 0, X};
-static const uint8_t PF_SOFT_KEYS[] = {P_O1_LVL, 90, P_O2_WAVE, W_PLS, P_O2_PW, 30, P_O2_LVL, 60, P_O2_SEMI, 36, P_CUTOFF, 60,
-    P_FENV_AMT, 99, P_FD, 70, P_FS, 20, P_AA, 3, P_AD, 90, P_AS, 60, P_AR, 60, P_VEL_FLT, 80, P_VEL_AMP, 90, P_RESO, 10, P_CHO_MIX, 30, P_REV_SIZE, 80, P_REV_MIX, 30, X};
-static const uint8_t PF_SYNC_BRASS[] = {P_SYNC, 1, P_O1_LVL, 60, P_O2_LVL, 110, P_O2_SEMI, 29, P_ENV_O2, 89, P_CUTOFF, 65,
-    P_FENV_AMT, 104, P_FA, 20, P_FD, 70, P_FS, 40, P_AA, 10, P_AR, 50, X};
 /* 18 Roto-scopo (Batch 5A, approved variant D: dog5-docs/voicing/18-roto-scopo.md, cards/18-roto-scopo.md; was PF_DRONE_UNI, 18's alone): a moaning dungeon drone. A 3-voice UNISON of two squares (the second an octave down), a resonant
  * 12 dB low-pass (CUTOFF 66, RESO 115, linear) whose cutoff is moved +-24 st by the one shared LFO, smooth RANDOM at 0.11 Hz (RATE 15); VINTAGE 127; dry (the old spring is off, its SIZE / DAMP bytes are dead values).
  * VOLUME 72: -17.9 dBFS RMS over +5 .. +14 s of an A1 hold, peak -8.0 */
@@ -125,13 +103,6 @@ static const uint8_t PF_ROTO_SCOPO[] = {P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2
     P_CUTOFF, 66, P_RESO, 115, P_FENV_AMT, 64, P_FTYPE, F_LP12, P_FA, 100, P_AA, 100, P_AR, 110, P_LFO_SHAPE, L_RND,
     P_LFO_RATE, 15, P_LFO_FLT, 90, P_MODE, M_UNISON, P_UNI_N, 3, P_UNI_DET, 14, P_VINTAGE, 127, P_SPREAD, 127,
     P_VOLUME, 72, P_REV_SIZE, 120, P_REV_DAMP, 80, X};
-static const uint8_t PF_ARP_PLUCK[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_ARP_OCT, 3, P_ARP_GATE, 40, P_O2_WAVE, W_PLS,
-    P_O2_PW, 40, P_O2_SEMI, 36, P_CUTOFF, 60, P_FENV_AMT, 114, P_FD, 40, P_FS, 0, P_AD, 45, P_AS, 0, P_AR, 50, P_RESO, 30,
-    P_SPREAD, 100, P_AA, 1, P_DLY_TIME, DD_8D, P_DLY_FB, 45, P_DLY_TONE, 50, P_DLY_MIX, 45, P_REV_SIZE, 90, P_REV_MIX, 28, X};
-static const uint8_t PF_ARP_CHORD[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP_OCT, 1, P_ARP_GATE, 80, P_MODE, M_DUAL,
-    P_UNI_DET, 40, P_CUTOFF, 70, P_AA, 5, P_AR, 60, P_DLY_TIME, DD_8, P_DLY_FB, 30, P_DLY_MIX, 30, P_REV_MIX, 25, X};
-static const uint8_t PF_RANDOM_ARP[] = {P_ARP_MODE, A_RND, P_ARP_DIV, D_16T, P_ARP_OCT, 2, P_ARP_GATE, 30, P_O1_WAVE, W_PLS,
-    P_O2_SEMI, 31, P_FTYPE, F_BP12, P_RESO, 50, P_CUTOFF, 70, P_FD, 40, P_FS, 0, P_AD, 50, P_AS, 0, P_AA, 1, P_DLY_TIME, DD_8T, P_DLY_FB, 50, P_DLY_MIX, 45, P_REV_MIX, 30, X};
 /* 31 Fi(l)fth (voiced 4 Nov, approved 5 Nov: dog5-docs/voicing/31-fifth.md; was a MONO fifths lead): the chord stab. DUAL, a detuned pair per note (DETUNE 36,
  * ~7.8 cents apart, SPREAD 90), POLY 8 so a three-note chord has its six voices, OSC 2 a fifth up in every voice (+7 st, FINE 66), a filter-envelope pluck
  * (ENV AMT 106, decay 29 ms, sustain 22) over an amp that rings on (137 ms decay to sustain 70), DRIVE 20, and a short BBD slap (ALLEY 65 = 89 ms, FEEDBK 28,
@@ -163,95 +134,6 @@ static const uint8_t PF_REEF_BREAK[] = {P_O1_WAVE, W_PLS, P_O1_LVL, 80, P_NOISE,
     P_O2_SEMI, 36, P_O2_FINE, 64, P_CUTOFF, 100, P_RESO, 10, P_FENV_AMT, 0, P_KEYTRK, 0, P_FTYPE, F_HP12, P_FA, 82,
     P_FD, 100, P_FS, 0, P_AA, 82, P_AD, 97, P_AS, 0, P_AR, 97, P_VOLUME, 116, P_DLY_FB, 100, P_DLY_MIX, 80,
     P_REV_SIZE, 90, P_ALLEY, 106, X};
-/* 33-64 (1.5): a second set in the same spirit: arpeggios, brass, pads, keys, basses, leads, effects */
-static const uint8_t PF_NIGHT_DRIVE[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 2, P_ARP_GATE, 55, P_O1_WAVE, W_BOTH, P_O1_PW, 45,
-    P_O2_FINE, 72, P_O2_LVL, 90, P_CUTOFF, 52, P_RESO, 38, P_FENV_AMT, 104, P_FA, 0, P_FD, 48, P_FS, 15, P_AA, 1, P_AD, 60, P_AS, 40,
-    P_AR, 50, P_KEYTRK, 80, P_SPREAD, 90, P_CHO_MIX, 30, P_DLY_TIME, DD_8D, P_DLY_FB, 55, P_DLY_TONE, 40, P_DLY_MIX, 55,
-    P_REV_SIZE, 95, P_REV_MIX, 40, X};
-static const uint8_t PF_MINOR_FALL[] = {P_ARP_MODE, A_DOWN, P_ARP_DIV, D_16, P_ARP_OCT, 2, P_ARP_GATE, 45, P_O2_WAVE, W_PLS, P_O2_PW, 35,
-    P_O2_FINE, 70, P_CUTOFF, 48, P_RESO, 30, P_FENV_AMT, 110, P_FD, 42, P_FS, 0, P_AA, 1, P_AD, 55, P_AS, 0, P_AR, 55,
-    P_DLY_TIME, DD_8, P_DLY_FB, 50, P_DLY_TONE, 35, P_DLY_MIX, 50, P_REV_SIZE, 105, P_REV_MIX, 45, X};
-static const uint8_t PF_SHADOW_ARP[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_8T, P_ARP_OCT, 2, P_ARP_GATE, 50, P_FTYPE, F_BP12, P_RESO, 62, P_VOLUME, 127,
-    P_CUTOFF, 62, P_FENV_AMT, 100, P_FD, 50, P_FS, 10, P_O2_SEMI, 31, P_O2_LVL, 70, P_AA, 1, P_AD, 60, P_AS, 20, P_AR, 60,
-    P_LFO_FLT, 20, P_LFO_RATE, 35, P_DLY_TIME, DD_4, P_DLY_FB, 60, P_DLY_TONE, 30, P_DLY_MIX, 55, P_REV_SIZE, 115, P_REV_MIX, 55, X};
-static const uint8_t PF_GLASS_ARP[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 3, P_ARP_GATE, 35, P_O2_SEMI, 43, P_XMOD, 55,
-    P_CUTOFF, 95, P_FENV_AMT, 90, P_FD, 50, P_FS, 0, P_AA, 1, P_AD, 70, P_AS, 0, P_AR, 70, P_SPREAD, 110,
-    P_DLY_TIME, DD_8D, P_DLY_FB, 50, P_DLY_MIX, 45, P_REV_SIZE, 115, P_REV_DAMP, 40, P_REV_MIX, 50, X};
-static const uint8_t PF_PULSE_ARP[] = {P_ARP_MODE, A_UPDN, P_ARP_DIV, D_16, P_ARP_OCT, 1, P_ARP_GATE, 60, P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS,
-    P_O2_PW, 30, P_O2_FINE, 71, P_LFO_PWM, 50, P_LFO_RATE, 45, P_CUTOFF, 62, P_RESO, 25, P_FENV_AMT, 100, P_FD, 45, P_FS, 20,
-    P_AA, 1, P_AR, 45, P_CHO_MIX, 35, P_DLY_TIME, DD_8D, P_DLY_FB, 40, P_DLY_MIX, 40, P_REV_MIX, 30, X};
-static const uint8_t PF_ARP_BASS[] = {P_ARP_MODE, A_UP, P_ARP_DIV, D_16, P_ARP_OCT, 1, P_ARP_GATE, 55, P_MODE, M_MONO, P_O2_SEMI, 12,
-    P_O2_LVL, 80, P_CUTOFF, 38, P_RESO, 40, P_FENV_AMT, 112, P_FD, 38, P_FS, 5, P_AA, 1, P_AD, 50, P_AS, 60, P_AR, 25, P_DRIVE, 35, X};
-static const uint8_t PF_STAB_CHORD[] = {P_MODE, M_DUAL, P_UNI_DET, 45, P_CUTOFF, 58, P_RESO, 20, P_FENV_AMT, 112, P_FA, 5, P_FD, 50,
-    P_FS, 20, P_AA, 2, P_AD, 55, P_AS, 30, P_AR, 40, P_DRIVE, 25, P_SPREAD, 100, P_REV_SIZE, 90, P_REV_MIX, 35, X};
-static const uint8_t PF_BIG_BRASS[] = {P_O2_FINE, 73, P_CUTOFF, 52, P_RESO, 18, P_FENV_AMT, 108, P_FA, 65, P_FD, 85, P_FS, 55, P_FR, 70,
-    P_AA, 50, P_AS, 110, P_AR, 65, P_VINTAGE, 60, P_SPREAD, 110, P_CHO_MIX, 40, P_REV_SIZE, 100, P_REV_MIX, 35, X};
-static const uint8_t PF_HORN_SECT[] = {P_O2_FINE, 71, P_CUTOFF, 62, P_RESO, 12, P_FENV_AMT, 100, P_FA, 35, P_FD, 70, P_FS, 50,
-    P_AA, 25, P_AR, 50, P_LFO_PITCH, 18, P_LFO_DELAY, 75, P_LFO_RATE, 72, P_VEL_FLT, 80, P_DRIVE, 15, P_REV_MIX, 25, X};
-static const uint8_t PF_WARM_PAD[] = {P_O1_WAVE, W_PLS, P_O1_PW, 45, P_O2_FINE, 74, P_LFO_PWM, 40, P_LFO_RATE, 35, P_LFO_PHASE, LP_SPREAD,
-    P_CUTOFF, 50, P_RESO, 10, P_FENV_AMT, 80, P_FA, 80, P_FD, 100, P_FS, 60, P_FR, 100, P_AA, 80, P_AR, 105,
-    P_VINTAGE, 55, P_SPREAD, 120, P_CHO_MIX, 60, P_REV_SIZE, 110, P_REV_MIX, 50, X};
-static const uint8_t PF_DARK_PAD[] = {P_O2_SEMI, 12, P_O2_FINE, 72, P_CUTOFF, 32, P_RESO, 30, P_FENV_AMT, 90, P_FA, 105, P_FD, 110,
-    P_FS, 40, P_FR, 105, P_AA, 95, P_AR, 112, P_LFO_FLT, 12, P_LFO_RATE, 20, P_VINTAGE, 70, P_SPREAD, 120,
-    P_REV_SIZE, 122, P_REV_DAMP, 85, P_REV_PRE, 40, P_REV_MIX, 60, P_DLY_TIME, DD_4D, P_DLY_FB, 45, P_DLY_TONE, 25, P_DLY_MIX, 25, X};
-static const uint8_t PF_AIR_CHOIR[] = {P_O1_WAVE, W_PLS, P_O1_PW, 30, P_O2_WAVE, W_PLS, P_O2_PW, 95, P_O2_FINE, 75, P_FTYPE, F_SEM,
-    P_FMORPH, 40, P_CUTOFF, 66, P_RESO, 30, P_LFO_PWM, 55, P_LFO_RATE, 30, P_LFO_PHASE, LP_SPREAD, P_NOISE, 12,
-    P_AA, 90, P_AR, 105, P_FENV_AMT, 64, P_CHO_MIX, 75, P_CHO_DEPTH, 70, P_REV_SIZE, 118, P_REV_MIX, 55, X};
-static const uint8_t PF_SLOW_SWEEP[] = {P_O2_FINE, 72, P_CUTOFF, 25, P_RESO, 70, P_FENV_AMT, 120, P_FA, 118, P_FD, 115, P_FS, 50,
-    P_FR, 110, P_AA, 70, P_AR, 110, P_SPREAD, 110, P_CHO_MIX, 35, P_REV_SIZE, 115, P_REV_MIX, 50, X};
-static const uint8_t PF_GHOST_PAD[] = {P_NOISE, 45, P_O2_FINE, 76, P_FTYPE, F_BP12, P_CUTOFF, 60, P_RESO, 60, P_LFO_SHAPE, L_RND,
-    P_LFO_FLT, 45, P_LFO_RATE, 40, P_LFO_PHASE, LP_SPREAD, P_AA, 100, P_AR, 115, P_FENV_AMT, 64,
-    P_REV_SIZE, 127, P_REV_DAMP, 50, P_REV_PRE, 60, P_REV_MIX, 70, P_DLY_TIME, DD_2, P_DLY_FB, 50, P_DLY_MIX, 30, X};
-static const uint8_t PF_ENSEMBLE[] = {P_O2_FINE, 75, P_O2_LVL, 90, P_CUTOFF, 72, P_RESO, 5, P_FENV_AMT, 70, P_FA, 60, P_AA, 55, P_AR, 85,
-    P_LFO_PITCH, 6, P_LFO_RATE, 60, P_LFO_PHASE, LP_SPREAD, P_VINTAGE, 50, P_SPREAD, 115, P_CHO_MIX, 80, P_CHO_RATE, 45,
-    P_CHO_DEPTH, 65, P_REV_SIZE, 100, P_REV_MIX, 40, X};
-static const uint8_t PF_ICE_BELLS[] = {P_O2_SEMI, 45, P_XMOD, 85, P_O1_LVL, 95, P_CUTOFF, 105, P_FENV_AMT, 96, P_FD, 95, P_FS, 0,
-    P_AA, 1, P_AD, 105, P_AS, 0, P_AR, 95, P_SPREAD, 110, P_CHO_MIX, 30, P_DLY_TIME, DD_4, P_DLY_FB, 45, P_DLY_MIX, 35,
-    P_REV_SIZE, 122, P_REV_DAMP, 35, P_REV_MIX, 60, X};
-static const uint8_t PF_SOFT_EP[] = {P_O1_WAVE, W_PLS, P_O1_PW, 60, P_O2_WAVE, W_PLS, P_O2_PW, 25, P_O2_SEMI, 36, P_O2_LVL, 45,
-    P_FTYPE, F_LP12, P_CUTOFF, 55, P_FENV_AMT, 100, P_FD, 75, P_FS, 25, P_AA, 2, P_AD, 95, P_AS, 40, P_AR, 60,
-    P_VEL_FLT, 95, P_VEL_AMP, 100, P_KEYTRK, 90, P_CHO_MIX, 55, P_CHO_RATE, 50, P_REV_SIZE, 80, P_REV_MIX, 30, X};
-static const uint8_t PF_PULSE_ORGN[] = {P_O1_WAVE, W_PLS, P_O1_PW, 64, P_O2_WAVE, W_PLS, P_O2_PW, 64, P_O2_SEMI, 36, P_O2_LVL, 80,
-    P_FTYPE, F_LP12, P_CUTOFF, 85, P_RESO, 0, P_FENV_AMT, 64, P_AA, 2, P_AS, 127, P_AR, 20, P_LFO_PITCH, 5, P_LFO_RATE, 80,
-    P_CHO_MIX, 60, P_CHO_RATE, 70, P_REV_MIX, 25, X};
-static const uint8_t PF_TAPE_KEYS[] = {P_VINTAGE, 110, P_O2_WAVE, W_PLS, P_O2_PW, 40, P_O2_FINE, 72, P_CUTOFF, 58, P_FENV_AMT, 96,
-    P_FD, 80, P_FS, 30, P_AA, 4, P_AD, 90, P_AS, 50, P_AR, 70, P_LFO_PITCH, 4, P_LFO_RATE, 25, P_VEL_FLT, 70,
-    P_CHO_MIX, 40, P_DLY_TIME, DD_8D, P_DLY_FB, 45, P_DLY_TONE, 30, P_DLY_MIX, 35, P_REV_MIX, 30, X};
-static const uint8_t PF_ACID_LINE[] = {P_MODE, M_MONO, P_O2_WAVE, W_OFF, P_CUTOFF, 30, P_RESO, 95, P_FENV_AMT, 118, P_FD, 45, P_FS, 0,
-    P_AA, 1, P_AS, 110, P_AR, 20, P_GLIDE, 25, P_DRIVE, 55, P_VEL_FLT, 90, P_FTYPE, F_LP24, P_DLY_TIME, DD_8D, P_DLY_FB, 30, P_DLY_MIX, 20, X};
-static const uint8_t PF_PLUCK_BASS[] = {P_O2_SEMI, 12, P_O2_WAVE, W_PLS, P_O2_PW, 45, P_CUTOFF, 34, P_RESO, 25, P_FENV_AMT, 115,
-    P_FD, 40, P_FS, 0, P_AA, 1, P_AD, 60, P_AS, 0, P_AR, 25, P_DRIVE, 30, X};
-static const uint8_t PF_DEEP_BASS[] = {P_MODE, M_MONO, P_O1_WAVE, W_BOTH, P_O2_SEMI, 12, P_O2_LVL, 110, P_O2_FINE, 66, P_CUTOFF, 30,
-    P_RESO, 15, P_FENV_AMT, 96, P_FD, 70, P_FS, 30, P_AA, 1, P_AR, 25, P_DRIVE, 60, P_GLIDE, 8, X};
-static const uint8_t PF_SYNC_BASS[] = {P_MODE, M_MONO, P_SYNC, 1, P_O2_SEMI, 33, P_ENV_O2, 96, P_O1_LVL, 80, P_CUTOFF, 45, P_RESO, 20,
-    P_FENV_AMT, 108, P_FD, 45, P_FS, 20, P_AA, 1, P_AR, 25, P_DRIVE, 40, P_GLIDE, 10, X};
-static const uint8_t PF_SOLO_LEAD[] = {P_MODE, M_MONO, P_O2_FINE, 70, P_CUTOFF, 80, P_RESO, 25, P_FENV_AMT, 92, P_FD, 70, P_FS, 50,
-    P_GLIDE, 35, P_AA, 3, P_AR, 45, P_LFO_PITCH, 14, P_LFO_DELAY, 80, P_LFO_RATE, 72, P_DRIVE, 35,
-    P_DLY_TIME, DD_8D, P_DLY_FB, 45, P_DLY_MIX, 35, P_REV_SIZE, 95, P_REV_MIX, 30, X};
-static const uint8_t PF_PWM_LEAD[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O2_WAVE, W_PLS, P_O2_PW, 40, P_O2_FINE, 68, P_LFO_PWM, 65,
-    P_LFO_RATE, 55, P_CUTOFF, 85, P_RESO, 15, P_GLIDE, 25, P_AA, 2, P_AR, 40, P_DLY_TIME, DD_8, P_DLY_FB, 40, P_DLY_MIX, 30, P_REV_MIX, 20, X};
-static const uint8_t PF_SCREAM_LD[] = {P_MODE, M_UNISON, P_UNI_N, 4, P_UNI_DET, 35, P_CUTOFF, 75, P_RESO, 85, P_FENV_AMT, 100,
-    P_FD, 80, P_FS, 60, P_DRIVE, 80, P_GLIDE, 20, P_AA, 2, P_AR, 40, P_LFO_PITCH, 12, P_LFO_DELAY, 70,
-    P_DLY_TIME, DD_8D, P_DLY_FB, 45, P_DLY_MIX, 35, P_REV_MIX, 25, X};
-static const uint8_t PF_SOFT_FLUTE[] = {P_MODE, M_MONO, P_O1_WAVE, W_PLS, P_O1_PW, 64, P_O2_WAVE, W_OFF, P_NOISE, 18, P_FTYPE, F_LP12,
-    P_CUTOFF, 60, P_RESO, 10, P_FENV_AMT, 75, P_FA, 30, P_AA, 30, P_AR, 50, P_KEYTRK, 100, P_LFO_PITCH, 10, P_LFO_DELAY, 85,
-    P_LFO_RATE, 70, P_GLIDE, 15, P_REV_SIZE, 100, P_REV_MIX, 40, X};
-static const uint8_t PF_LASER[] = {P_MODE, M_MONO, P_SYNC, 1, P_O2_SEMI, 48, P_ENV_O2, 127, P_O1_LVL, 90, P_CUTOFF, 100, P_RESO, 40, P_VOLUME, 120,
-    P_FENV_AMT, 64, P_FA, 0, P_FD, 55, P_FS, 0, P_AA, 1, P_AD, 70, P_AS, 0, P_AR, 40,
-    P_DLY_TIME, DD_8D, P_DLY_FB, 60, P_DLY_MIX, 45, P_REV_MIX, 30, X};
-static const uint8_t PF_WIND_RISE[] = {P_NOISE, 110, P_O1_WAVE, W_OFF, P_O2_WAVE, W_OFF, P_FTYPE, F_BP12, P_RESO, 75, P_CUTOFF, 30,
-    P_FENV_AMT, 124, P_FA, 120, P_FD, 120, P_FS, 100, P_FR, 110, P_AA, 110, P_AR, 115, P_LFO_FLT, 15, P_LFO_RATE, 50,
-    P_REV_SIZE, 125, P_REV_MIX, 65, P_DLY_TIME, DD_4, P_DLY_FB, 55, P_DLY_MIX, 30, X};
-static const uint8_t PF_SPACE_DRONE[] = {P_MODE, M_UNISON, P_UNI_N, 8, P_UNI_DET, 95, P_O2_SEMI, 31, P_O2_LVL, 70, P_CUTOFF, 54,
-    P_RESO, 45, P_LFO_SHAPE, L_SH, P_LFO_FLT, 35, P_LFO_RATE, 30, P_FENV_AMT, 64, P_AA, 90, P_AR, 120, P_VOLUME, 120, P_VINTAGE, 90,
-    P_SPREAD, 127, P_DLY_TIME, DD_4D, P_DLY_FB, 70, P_DLY_TONE, 30, P_DLY_MIX, 40, P_REV_SIZE, 127, P_REV_MIX, 65, X};
-static const uint8_t PF_SYNC_PAD[] = {P_SYNC, 1, P_O2_SEMI, 31, P_O1_LVL, 70, P_O2_LVL, 100, P_LFO_PITCH, 30, P_LFO_PITCH_TO, TO_O2,
-    P_LFO_RATE, 25, P_LFO_PHASE, LP_SPREAD, P_CUTOFF, 60, P_RESO, 15, P_FENV_AMT, 80, P_FA, 70, P_AA, 70, P_AR, 100,
-    P_SPREAD, 115, P_CHO_MIX, 50, P_REV_SIZE, 112, P_REV_MIX, 50, X};
-static const uint8_t PF_DREAM_ARP[] = {P_ARP_MODE, A_PLAY, P_ARP_DIV, D_8, P_ARP_OCT, 2, P_ARP_GATE, 85, P_O1_WAVE, W_PLS, P_O1_PW, 40,
-    P_O2_FINE, 74, P_LFO_PWM, 35, P_LFO_RATE, 40, P_CUTOFF, 60, P_RESO, 20, P_FENV_AMT, 90, P_FA, 20, P_FD, 80, P_FS, 40,
-    P_AA, 15, P_AR, 90, P_SPREAD, 120, P_CHO_MIX, 55, P_DLY_TIME, DD_4D, P_DLY_FB, 60, P_DLY_TONE, 35, P_DLY_MIX, 50,
-    P_REV_SIZE, 120, P_REV_MIX, 60, X};
 /* 03 Half-Life (voiced 4 Nov, dog5-docs/voicing/03-half-life.md; PF_DUAL_SAW, its old base, was 17 Titanic's until Batch 2A gave 17 its own PF_TITANIC): DUAL pair a few cents
  * either side of true over a sub-octave saw, VINTAGE 90 (the SLOP ride goes on top: 90 + 254 = 344 of 381), and the VCA's
  * LFO a 20 Hz SQUARE gate on AMP 100 that fades in over ~110 ms (LFO DELAY): a staccato note's body is clean and its
@@ -349,10 +231,10 @@ static const uint8_t PF_INIT_BRUV[] = {P_VOLUME, 97, X};
 static const factory_t FACT_INIT = {"INIT", PF_INIT};   /* 33-99 */
 
 /* The DØG-5 factory: the 32 patches of dog5-docs/DOG-5-presets.md §3, in its slot order, their final names
- * (14-char field; "THE DØG" needs the Ø byte 0xD8, so it is written "\xD8", not a UTF-8 literal). The SOUND of
- * each is, for now, its documented "nearest base patch" (the PF_* above, kept as the starting point) -- the
- * final by-ear voicing is Stage 2 (presets §6), so several slots that share a base sound alike today. Slots
- * 33-99 fall back to FACT_INIT (prog_get). */
+ * (14-char field; "THE DØG" needs the Ø byte 0xD8, so it is written "\xD8", not a UTF-8 literal). Every slot has
+ * its own array above, voiced by ear (Stage 2; the cards in dog5-docs/voicing/cards/). OberVave's base patches,
+ * which those arrays started from, were removed in Batch 13 (git history). Slots 33-99 fall back to FACT_INIT
+ * (prog_get). */
 static const factory_t FACTORY[NFACT] = {
     {"Red Pill", PF_RED_PILL},      {"Cement Grind", PF_CEMENT_GRIND}, {"Half-Life", PF_HALF_LIFE},    {"V-Sync", PF_V_SYNC},
     {"ZEAROX", PF_ZEAROX},        {"zzuFuzz", PF_ZZUFUZZ},         {"Tape Splice", PF_TAPE_SPLICE},{"Wire Bite", PF_WIRE_BITE},

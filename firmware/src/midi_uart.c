@@ -3,8 +3,8 @@
 /* MIDI IN on the TRS jack: PH8 -> input channel 1 -> UART1 RX, 31250 baud,
  * RX DMA into a 128-byte ring, polled from the TIMER5 ISR (no UART IRQ).
  * Built only with FELUCCA_UART=1. Channel messages go into midi_in_q next to
- * USB, as USB-MIDI packets (cable 0, CIN = status >> 4), so seq.c routes them by
- * channel as it does USB; clock and transport (F8 FA FB FC) are queued with cable 1 (seq.c: SYNC TRS);
+ * USB, as USB-MIDI packets (cable 0, CIN = status >> 4); clock and transport (F8 FA FB FC) are queued
+ * with cable 1. (DØG-5: midi_get in platform.c ignores the cable, so the app treats the jack as USB.)
  * other realtime, system common and SysEx are dropped.
  *
  * The ring is read by content, not by the DMA count: every slot the parser has
@@ -41,7 +41,7 @@ static void um_byte(uint32_t b)
 {
     if (b >= 0xF8u) {                              /* realtime: the state is kept; clock and transport */
         if ((b == 0xF8u || b == 0xFAu || b == 0xFBu || b == 0xFCu) && mi_w - mi_r < MQ) {
-            midi_in_q[mi_w % MQ] = 0x1Fu | b << 8; /* (cable 1: from the TRS jack; seq.c mclk_event) */
+            midi_in_q[mi_w % MQ] = 0x1Fu | b << 8; /* (cable 1: from the TRS jack) */
             RING_PUBLISH();
             mi_w++;
         }

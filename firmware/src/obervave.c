@@ -7,13 +7,14 @@
  *   obv_drive.h     GROWL, the preamp drive (on the voice bus, before the output stage)
  *   obv_tape.h      CHEW, the tape (wow, flutter, saturation, head loss, hiss, dropouts; last, after the reverb)
  *   obv_deck.h      TAPE STOP: the whole mix slows and darkens (SEQ held), after everything, before STOP's gate
- *   obv_fx.h        ALLEY (the BBD delay), plate reverb (after the output stage, same ISR)
+ *   obv_fx.h        ALLEY (the BBD delay), DRAIN (the spring) (after the output stage, same ISR)
  *   obv_engine.h    the voices, envelopes, LFO, arpeggiator: all in the audio ISR
  *   obv_patches.h   the factory programs
  *   this file       the panel, MIDI, the screen, the storage
  *
  * (OberVave's step sequencer, obv_seq.h, and the two-sound track B it alone drove, are gone: CLAUDE.md §5.
- * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; ALGORITHM, the SLOP ride; REC taps ALLEY's time on the BBD page.)
+ * PLAY is STOP, the kill switch; SEQ held, TAPE STOP; ALGORITHM, the SLOP ride; REC, HOLD; SELECT on HOME, the LFO
+ * rate; EDIT held + a black key, a page jump. The tap tempo is gone.)
  *
  * Integers only (no FPU, no 64-bit division); tests/host.c runs this on a computer. */
 static void app_idle(void);
@@ -76,7 +77,6 @@ enum { L_NONE, L_FX };
 #define KILL_MOMENTARY 0
 static uint32_t killed;
 static uint32_t layer, layer_lock, layer_used, layer_t, layer_btn;
-#define SMK_PAD_HELD 0                           /* (the step pads are freed with the sequencer, both boards) */
 #if BOARD_SMK37
 #define KEY_VEL(k) fm1_in.key_vel[SMK_KEY_F3 + (k)]   /* the keys play with velocity (the unit's factory curves) */
 #define NM_PRESETS "K4"                         /* the SMK's printed knob name */
@@ -338,15 +338,6 @@ static void fmt_s(char *s, int32_t v)          /* signed: +3, -12, 0 */
     fmt_u(s + slen(s), (uint32_t)(v < 0 ? -v : v));
 }
 
-static void fmt_note(char *s, uint32_t n)       /* C4, F#3 */
-{
-    static const char *const NN[12] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-    s[0] = 0;
-    scat(s, NN[n % 12u]);
-    if (n < 12u) scat(s, "-");
-    fmt_u(s + slen(s), n < 12u ? 1u : n / 12u - 1u);
-}
-
 /* ALLEY's knobs. The time is ALLEY (a step of BBD_T) + FINE (1/128 of a step): turning ALLEY clears FINE (the knob
  * walks clean steps); leaving SYNC (ALLEY 0) by ALLEY or FINE starts from the time that was sounding, so the echo never
  * jumps; turning SYNC (the note value, BBD +) goes back to SYNC. (REC's tap tempo went in Batch 9B: REC is HOLD now.
@@ -401,7 +392,7 @@ static void draw_page(void)
         k[i].present = 0;
         k[i].bip = 0;
         k[i].value[0] = 0;
-        if (page == PG_GLOBAL && !layer && !SMK_PAD_HELD && i != 1u) {
+        if (page == PG_GLOBAL && !layer && i != 1u) {
             static const char *const GL[4] = {"TEMPO", "", "MIDI CH", "TUNE"};
             k[i].label = GL[i];
             k[i].present = 1;
@@ -968,7 +959,7 @@ static void app_main(void)
             int32_t p = page_now()->p[k];
             if ((e = fm1_enc_take(ENC_KNOB1 + k)) == 0) continue;
             if (e > 1 || e < -1) e *= 3;        /* a fast turn goes further */
-            if (page == PG_GLOBAL && !layer && !SMK_PAD_HELD && k != 1u) {   /* (a held layer has the knobs, on every page) */
+            if (page == PG_GLOBAL && !layer && k != 1u) {   /* (a held layer has the knobs, on every page) */
                 if (k == 0) { set.tempo = (uint8_t)clampi(set.tempo + e, 40, 240); ctl_tempo = set.tempo; }
                 else if (k == 2) set.midi_ch = (uint8_t)clampi(set.midi_ch + e, 0, 16);
                 else { set.tune = (int8_t)clampi(set.tune + e, -50, 50); ctl_tune8 = set.tune * 256 / 100; }

@@ -24,12 +24,6 @@ enum {
     P_ALLEY, P_ALLEY_FINE, P_BBD_SPREAD,        /* ALLEY, the BBD (obv_fx.h): bytes 68-70, CC 87-89 (appended) */
     NPARAM
 };
-/* the chorus is gone (the Psych Chain, CLAUDE.md section 6): its bytes 52-54 and CC 67-69 are GROWL's now. The old
- * names stay for obv_patches.h's base patches outside the DØG-5 32 (the six of the 32 that had chorus on were
- * re-voiced at GROWL 0 on 2 Nov). */
-#define P_CHO_RATE P_GRL_BIAS
-#define P_CHO_DEPTH P_GRL_TONE
-#define P_CHO_MIX P_GROWL
 #define P_DRAIN P_REV_MIX                       /* DRAIN, the Psych Chain's stage 3: the reverb's MIX byte (62), renamed */
 #define PATCH_NAME 14u                          /* DØG-5: widened 10 -> 14 */
 #define PATCH_BYTES 96u                         /* DØG-5: grown 80 -> 96 (the "DOG5" program format) */
