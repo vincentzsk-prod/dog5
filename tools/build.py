@@ -4,18 +4,15 @@
 """Build DØG-5 (forked from OberVave v1.5.3, on Felucca / SLOOP's platform): the app, the update loader and an installable
 .fwsc package.
 
-  tools/build.py [--release X.Y[-suffix]] [--board fm1|smk37] [--model pro|elite|mke]
+  tools/build.py [--release X.Y[-suffix]]
 
 Outputs in build/: obervave.bin (app; the file name is the fork's source name), loader/ota.bin (update loader),
 dog5.fwsc (package; dog5-X.Y.fwsc for a release). See README.md for the toolchain and the SDK.
 The product's name, package identity and file stem are read from firmware/src/dog5_id.h: that file is the one place.
 
-BOARD=smk37 (or --board smk37) builds for the M-Vave SMK-37 (SMK37.md): -DBOARD_SMK37=1 for the app and the loader,
-identity SMK-37 Pro_960 (release X.Y: SMK-37 Pro_96Y, as the FM-1's FM-1_96Y), the SMK flash layout (fm1pkg_make.py,
-app slot 0x97400), the package build/dog5-smk37.fwsc (dog5-X.Y-smk37.fwsc for a release). MODEL=elite / mke
-(or --model) with smk37: the same build under the SMK-37 Elite's or the MKE-P37's model name (identity SMK-37
-Elite_96Y / MKE-P37_96Y, the loader's and the update record's name too; -DSMK_MODEL), so M-Vave's updater still takes
-that unit's factory package: dog5-smk37-elite.fwsc, -mke.fwsc. The default stays the FM-1, built exactly as before.
+FM-1 only. (OberVave's SMK-37 board option, BOARD=smk37 / --board / --model, was removed in DØG-5 Batch 13; the FM-1
+build is byte-identical to before. tools/fm1pkg_make.py and tools/fm1_install.py keep their SMK-37 package support:
+that is the install protocol's, not this build's.)
 
 The JieLi toolchain is Linux x86-64 only. JIELI_TOOLCHAIN points at it; on
 macOS (or with JIELI_DOCKER=1) each tool runs in a linux/amd64 container.
@@ -64,7 +61,7 @@ def dog5_id():
     """the product's identity strings: the #define DOG5_* lines of firmware/src/dog5_id.h (the one place)"""
     txt = (FW / "src" / "dog5_id.h").read_text(encoding="utf-8")
     d = dict(re.findall(r'^#define\s+(DOG5_\w+)\s+"((?:[^"\\]|\\.)*)"', txt, re.M))
-    for k in ("DOG5_ID_FM1", "DOG5_ID_SMK", "DOG5_PACKAGE"):
+    for k in ("DOG5_ID_FM1", "DOG5_PACKAGE"):
         if k not in d:
             raise SystemExit(f"firmware/src/dog5_id.h: no #define {k} \"...\"")
     return d
@@ -72,12 +69,7 @@ def dog5_id():
 
 ID = dog5_id()
 PRODUCT = ID["DOG5_ID_FM1"] + "0"   # DØG-5: FM-1_96N (the installer wants FM-1_9NN). Taken: SLOOP 900, 91N, 93N, 95N OberVave, 97N, 98N, 99N
-BOARD = "fm1"                       # fm1 (default) or smk37: BOARD env or --board
-BOARD_PREFIX = {"fm1": ID["DOG5_ID_FM1"], "smk37": ID["DOG5_ID_SMK"]}   # identity: prefix + the minor version (0: a dev build)
-BOARD_DEFS = {"fm1": [], "smk37": ["-DBOARD_SMK37=1"]}       # the FM-1 build gets no new flag (byte-identical)
-# smk37: the keyboard's model name (MODEL env or --model); one hardware, three names. pro adds no flag
-MODELS = {"pro": "SMK-37 Pro", "elite": "SMK-37 Elite", "mke": "MKE-P37"}
-SMK_DATA_FAMILY = "OBERVAV"         # the SMK store's owner tag (platform.c smk_owner_check): 1..7 of A-Z 0-9
+BOARD = "fm1"                       # the one board (fm1pkg_make.set_board)
 VERSION = None                      # APP_VER for release builds
 
 
@@ -152,7 +144,7 @@ def ldr_wrap(image):
 def build_loader():
     LDR.mkdir(parents=True, exist_ok=True)
     src = FW / "loader"
-    flags = [*CFLAGS, *BOARD_DEFS[BOARD], "-Ifirmware/hal", "-Ifirmware/src"]
+    flags = [*CFLAGS, "-Ifirmware/hal", "-Ifirmware/src"]
     tc_all(("cc", "-c", src / "crt0_ldr.S", "-o", LDR / "crt0_ldr.o"),
            ("cc", *flags, "-c", src / "loader.c", "-o", LDR / "loader.o"))
     elf = LDR / "loader.elf"
@@ -181,12 +173,7 @@ def build_loader():
 # ---- app
 
 def build_app():
-    flags = [*APP_CFLAGS, *BOARD_DEFS[BOARD], "-Ifirmware/hal", "-Ifirmware/src", "-Ifirmware/gen", f'-DFELUCCA_ID="{PRODUCT}"', f'-DAPP_VER="{VERSION or "0.0"}"']
-    if BOARD == "smk37":
-        fam = os.environ.get("OBV_DATA_FAMILY", SMK_DATA_FAMILY)
-        if not re.fullmatch(r"[A-Z0-9]{1,7}", fam):
-            raise SystemExit("OBV_DATA_FAMILY: 1..7 of A-Z 0-9")
-        flags.append(f'-DOBV_DATA_FAMILY="{fam}"')
+    flags = [*APP_CFLAGS, "-Ifirmware/hal", "-Ifirmware/src", "-Ifirmware/gen", f'-DFELUCCA_ID="{PRODUCT}"', f'-DAPP_VER="{VERSION or "0.0"}"']
     flags += os.environ.get("OBV_DEFS", "").split()   # (a test build: OBV_DEFS=-DFELUCCA_UAC=0 ./build.sh)
     cmds = [("cc", "-c", FW / "crt0.S", "-o", OUT / "crt0.o"),
             ("cc", "-c", FW / "hal" / "fm1_vec.S", "-o", OUT / "fm1_vec.o"),
@@ -195,12 +182,6 @@ def build_app():
     tc_all(*cmds)
     elf = OUT / "obervave.elf"
     ld = FW / "app.ld"
-    if APP_SLOT != 0x8DFBC:          # another board's app slot (SMK-37): the same script, its XIP length
-        txt = ld.read_text()
-        if txt.count("LENGTH = 0x8DFBC") != 1:
-            raise SystemExit("app.ld: the XIP LENGTH line was not found")
-        ld = OUT / "app.ld"
-        ld.write_text(txt.replace("LENGTH = 0x8DFBC", f"LENGTH = {APP_SLOT:#X}".replace("0X", "0x")))
     tc("pi32v2/bin/ld", "--gc-sections", "-e", "_start", "-T", ld, OUT / "crt0.o", OUT / "fm1_vec.o",
        OUT / "fm1_isr.o", OUT / "obervave.o", "-o", elf)
     for sect in ("text.bin", "data.bin", "ramtext.bin"):
@@ -314,33 +295,20 @@ def main():
     global PRODUCT, VERSION, BOARD, APP_SLOT
     ap = argparse.ArgumentParser()
     ap.add_argument("--release", metavar="X.Y", help="release build: identity FM-1_96Y, version string X.Y")
-    ap.add_argument("--board", choices=sorted(BOARD_PREFIX), default=None,
-                    help="target board: fm1 (default) or smk37 (default: $BOARD, else fm1)")
-    ap.add_argument("--model", choices=sorted(MODELS), default=None,
-                    help="smk37: the model name, pro (default), elite or mke (default: $MODEL, else pro)")
     ap.add_argument("--sdk", type=Path, help="JieLi AC79 SDK checkout (default: $AC79_SDK)")
     a = ap.parse_args()
-    BOARD = (a.board or os.environ.get("BOARD") or "fm1").lower().replace("-", "")
-    if BOARD not in BOARD_PREFIX:
-        raise SystemExit(f"BOARD={BOARD}: use fm1 or smk37")
-    model = (a.model or os.environ.get("MODEL") or "pro").lower()
-    if model not in MODELS or (model != "pro" and BOARD != "smk37"):
-        raise SystemExit(f"MODEL={model}: pro, elite or mke, with BOARD=smk37")
+    if (os.environ.get("BOARD") or "fm1").lower() != "fm1":
+        raise SystemExit("BOARD: DØG-5 builds for the FM-1 only (the SMK-37 option was removed in Batch 13)")
     fm1pkg_make.set_board(BOARD)
     APP_SLOT = fm1pkg_make.APP_SLOT
-    suffix = "" if BOARD == "fm1" else "-" + BOARD
-    PRODUCT = BOARD_PREFIX[BOARD] + "0"
-    if model != "pro":              # another model name: identity, loader and update record (fm1_cc.h SMK_MODEL)
-        BOARD_DEFS[BOARD] = [*BOARD_DEFS[BOARD], f'-DSMK_MODEL="{MODELS[model]}"']
-        BOARD_PREFIX[BOARD] = BOARD_PREFIX[BOARD].replace(MODELS["pro"], MODELS[model])
-        PRODUCT = BOARD_PREFIX[BOARD] + "0"
-        suffix += "-" + model
+    suffix = ""
+    PRODUCT = ID["DOG5_ID_FM1"] + "0"
     name = f"{ID['DOG5_PACKAGE']}{suffix}.fwsc"
     if a.release:                   # one digit each: the identity has room for two (X.Y; a .Z only in the text)
         m = re.fullmatch(r"(\d)\.(\d)(\.\d)?(-[A-Za-z0-9]+)?", a.release)
         if not m:
             raise SystemExit(f"--release {a.release}: use X.Y, X.Y.Z or X.Y-suffix, one digit each")
-        PRODUCT = BOARD_PREFIX[BOARD] + m[2]
+        PRODUCT = ID["DOG5_ID_FM1"] + m[2]
         VERSION = m[1] + "." + m[2] + (m[3] or "")
         name = f"{ID['DOG5_PACKAGE']}-{a.release}{suffix}.fwsc"
     fm1pkg_make.SDK = a.sdk

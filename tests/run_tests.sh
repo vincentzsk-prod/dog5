@@ -2,11 +2,10 @@
 # SPDX-License-Identifier: GPL-3.0-only
 # DØG-5's host tests (no hardware). Run from the repo root after a plain FM-1 build, which must be the LAST build
 # (the tests read build/dog5.fwsc and the FM-1 intermediates; `./build.sh --release X.Y` writes only dog5-X.Y.fwsc):
-#   sh build.sh                 (optionally first: BOARD=smk37 [MODEL=elite|mke] sh build.sh, for the SMK package checks)
+#   sh build.sh
 #   sh tests/run_tests.sh
 # Covers: the FM-1 app on the host (tests/run_host.sh + the scripts below), the program store, the update path (ota.c,
 # the loader, tools/fm1_install.py), the browser player (docs/play) and the installer page (docs/install).
-# The SMK-37 code is frozen (not published since Batch 12B) and still tested here until it is removed.
 set -e
 export AC79_SDK="${AC79_SDK:-$HOME/fw-AC79_AIoT_SDK}"   # (fm1pkg_make.py: the SDK files of a package)
 cd "$(dirname "$0")/.."
@@ -19,7 +18,6 @@ run() { echo "== $1"; shift; "$@" || fail=1; }
 [ -f build/dog5.fwsc ] || { echo "run ./build.sh first"; exit 1; }
 
 run "FM-1 app on the host: the default script plays, screens and sound" sh tests/run_host.sh
-run "SMK-37 app on the host: the default script" env BOARD=smk37 sh tests/run_host.sh
 # page families remember their last page: "T expect page N" lines in the script fail the run (exit 1) on a miss
 run "FM-1 page families: EDIT to FILTER, HOME, EDIT returns to FILTER" sh tests/run_host.sh tests/families.txt
 # HOLD HOME = the control map; a tap still goes HOME; the map draw yields to the notes (app_idle, the DRAW RULE)
@@ -52,17 +50,10 @@ run "FM-1 STOP (PLAY): a 3 s spring tail + CHEW, cleared: no tail, no hiss after
 run "FM-1 TAPE STOP (SEQ held): a chord dives and falls silent, let go it is back at once, nothing left behind" sh tests/run_host.sh tests/trick/tapestop_chord.txt
 run "FM-1 TAPE STOP on the whole mix: a spring + BBD tail dives and stops with the rest, back on release" sh tests/run_host.sh tests/trick/tapestop_tail.txt
 run "FM-1 SLOP ride (ALGORITHM): on top of VINTAGE on any page, the patch byte untouched, back to 0 adds nothing" sh tests/run_host.sh tests/trick/slop_ride.txt
-run "SMK-37 mapping: step pads, REC pads, fader banks, wheels, outer keys" python3 tests/smk_ui_test.py
-# the 96-byte / 3-sector / DOG5 program store (the FM-1 and SMK-37 host binaries from run_host.sh above):
+# the 96-byte / 3-sector / DOG5 program store (the host binary from run_host.sh above):
 # 99 distinct patches round-trip byte-exact across a power cycle, one save touches only its sector, an old
 # 80-byte "BOVP" sector is rejected. Runnable on its own too: build/host/obervave selftest
 run "FM-1 program store: 99 patches round-trip, save isolation, old format rejected" "$OUT/obervave" selftest
-run "SMK-37 program store: same checks" "$OUT/obervave-smk37" selftest
-
-$CC -DBOARD_SMK37=1 -Ifirmware/hal -o "$OUT/smk_flash_test" tests/smk_flash_test.c
-run "SMK-37 flash map: settings, patterns, owner tag in the store; never the head, BTIF/USRTRIM, USR, key_mac" "$OUT/smk_flash_test"
-$CC -o "$OUT/smk_wheel_test" tests/smk_wheel_test.c
-run "SMK-37 pitch wheel: the bend is back to 0 at rest, however slowly the wheel was moved" "$OUT/smk_wheel_test"
 
 $CC -o "$OUT/ota_test" tests/ota_test.c
 run "M-UPGRADE entry (FM-1)" "$OUT/ota_test" build/dog5.fwsc
@@ -72,31 +63,6 @@ $CC -o "$OUT/ldr_screen_test" tests/ldr_screen_test.c
 run "update loader's screen (from Skiff): UPDATE MODE, WRITING and its bar, the error screen" "$OUT/ldr_screen_test" "$OUT"
 $CC -o "$OUT/ldr_test" tests/ldr_test.c
 run "update loader (FM-1): other app -> this build" "$OUT/ldr_test" "$OUT/old.fwsc" build/dog5.fwsc
-
-# SMK-37: the OTA staging and the loader windows on SMK-layout packages (made here from the FM-1 binaries: only the
-# layout and the protocol are under test), then the real SMK packages
-python3 tools/fm1pkg_make.py --board smk37 build/obervave.bin build/loader/ota.bin "$OUT/smk_new.fwsc" >/dev/null
-python3 tools/fm1pkg_make.py --board smk37 "$OUT/old_app.bin" build/loader/ota.bin "$OUT/smk_old.fwsc" >/dev/null
-run "SMK-37 package layout (fm1pkg_make --board smk37): PRCT 0x9D000, stock region table" \
-    python3 tests/smk_pkg_test.py "$OUT/smk_new.fwsc" "SMK-37 Pro_900"
-$CC -DBOARD_SMK37=1 -o "$OUT/ota_test_smk" tests/ota_test.c
-run "M-UPGRADE entry, SMK-37 Pro (staging 0xBB000, parm ota-SMK-37 Pro_016)" "$OUT/ota_test_smk" "$OUT/smk_new.fwsc"
-for m in 1 2; do
-    $CC -DBOARD_SMK37=1 -DT_MODEL=$m -o "$OUT/ota_test_smk_m$m" tests/ota_test.c
-    run "M-UPGRADE entry, SMK-37 model $m (1 Elite, 2 MKE-P37): identity and parm under its name" "$OUT/ota_test_smk_m$m" "$OUT/smk_new.fwsc"
-done
-$CC -DBOARD_SMK37=1 -o "$OUT/ldr_test_smk" tests/ldr_test.c
-run "update loader, SMK-37: app area 0x4000-0x9CFFF, protected ranges untouched" "$OUT/ldr_test_smk" "$OUT/smk_old.fwsc" "$OUT/smk_new.fwsc"
-found=0
-for m in ":SMK-37 Pro_96" "-elite:SMK-37 Elite_96" "-mke:MKE-P37_96"; do
-    for f in build/dog5*-smk37${m%%:*}.fwsc; do
-        [ -f "$f" ] || continue
-        found=1
-        v=$(echo "$f" | sed -n 's/.*dog5-[0-9]\.\([0-9]\).*/\1/p'); v=${v:-0}
-        run "SMK-37 package $f: layout, identity ${m#*:}$v, the loader marker" python3 tests/smk_pkg_test.py "$f" "${m#*:}$v"
-    done
-done
-[ "$found" = 1 ] || echo "(no SMK-37 packages in build/: BOARD=smk37 sh build.sh first)"
 
 NODE=$(command -v node || true)
 if [ -n "$NODE" ] && [ -f docs/play/dog5.wasm ]; then

@@ -310,8 +310,8 @@ wordmark) — full spec in the build kit.
   `dog5-X.Y.fwsc`). CI (`.github/workflows/release.yml`) builds the FM-1 only, with `get_vendored_deps.sh`, and the tests block a release.
 - **Every working session starts with `git fetch origin` and branches from `origin/main`**, never a local `main` (Batch 11 once
   built on a stale local `main`; the package sizes gave it away).
-- **SMK-37: frozen** (Batch 12B). The board code and its host tests remain until a firmware clean-up removes them; no SMK
-  package is built or published (`SMK37.md`).
+- **FM-1 only.** The SMK-37 board code, its build option and its tests were removed in Batch 13 (git history);
+  `tools/build.py` refuses any `BOARD` but `fm1`. The installer tools keep the install protocol's SMK-37 support.
 
 ---
 

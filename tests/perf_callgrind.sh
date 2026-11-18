@@ -9,13 +9,11 @@
 # relative yardstick, not the device number.
 #
 #   tests/perf_callgrind.sh [script]
-#   BOARD=smk37 tests/perf_callgrind.sh [script]     the SMK-37 build, same as tests/run_host.sh
 set -e
 cd "$(dirname "$0")/.."
 mkdir -p build/host
-N=obervave; D=
-if [ "${BOARD:-fm1}" = smk37 ]; then N=obervave-smk37; D=-DBOARD_SMK37=1; fi
-cc -O2 -Wall -Wno-unused-function -DOBV_HOST -DOBV_CALLGRIND $D -DAPP_VER="\"${APP_VER:-dev}\"" \
+N=obervave
+cc -O2 -Wall -Wno-unused-function -DOBV_HOST -DOBV_CALLGRIND -DAPP_VER="\"${APP_VER:-dev}\"" \
    -Ifirmware/src -Ifirmware/gen -o "build/host/$N-cg" firmware/src/obervave.c
 valgrind --tool=callgrind --collect-atstart=no --combine-dumps=yes \
    --callgrind-out-file="build/host/$N-cg-callgrind.out" \

@@ -8,7 +8,7 @@
  *   20 segments: a light running to and fro while it waits (ldr_anim), the share written while it writes, the percent
  *   thefirmwarehub.com at the foot, in the hub's lila
  * Drawn with the loader's own letters (the app area may be half written: never read), before USB starts (USB is
- * polled: the panel's ~0.3 s init would leave the host's enumeration unanswered). FM-1 only (the SMK-37's stays dark).
+ * polled: the panel's ~0.3 s init would leave the host's enumeration unanswered). FM-1 only.
  * LDR_NAME / LDR_COLOUR: the firmware's name (at most 9 letters at size 4, more get smaller) and colour (RGB565). */
 #include "../src/dog5_id.h"
 #ifndef LDR_NAME
