@@ -1,0 +1,48 @@
+/* SPDX-License-Identifier: GPL-3.0-only */
+/* DØG-5 brand: the fonts and colours both web pages share (the installer inlines this file; the player links it).
+ * Colours: the brand palette (Chapter II + Acid Chartreuse + Grime Olive). Fonts: SIL OFL 1.1, see OFL-*.txt here.
+ *   Yatra One            display: page titles, section heads
+ *   Space Mono 400/700   labels, buttons, numbers, data
+ *   Cormorant Garamond   body text (Light; SemiBold for bold) */
+@font-face { font-family: "Yatra One"; src: url(YatraOne-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Space Mono"; src: url(SpaceMono-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Space Mono"; src: url(SpaceMono-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url(CormorantGaramond-Light.woff2) format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url(CormorantGaramond-SemiBold.woff2) format("woff2"); font-weight: 600; font-display: swap; }
+
+:root {
+  --black: #000000;
+  --plum: #320444;        /* Plum Night: panels */
+  --violet: #621C5D;      /* Sky Violet: lines, borders */
+  --red: #E20D1D;         /* Ray Red: alarm borders, LEDs */
+  --pink: #EC5579;        /* Ray Pink: alarm text, the tagline */
+  --yellow: #F8CD30;      /* Sun Yellow */
+  --glow: #FFFF93;        /* Sun Glow */
+  --turq: #10C5AF;        /* Wave Turquoise */
+  --teal: #007289;        /* Deep Teal */
+  --white: #FFFFFF;       /* Foam White */
+  --lime: #A3FF52;        /* Palm Lime: done, ok */
+  --jungle: #033504;
+  --jungle-deep: #001913;
+  --acid: #DEF402;        /* Acid Chartreuse: the accent, focus, links */
+  --olive: #84926C;       /* Grime Olive: secondary text */
+  --display: "Yatra One", serif;
+  --mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --body: "Cormorant Garamond", Georgia, serif;
+  color-scheme: dark;
+}
+
+/* the lockup at the top of both pages: the head mark, the pixel wordmark, the tagline */
+.lockup { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; text-align: left; }
+.lockup .mark { width: 120px; height: 120px; flex: none; }     /* the 240 px favicon: exact on a 2x screen */
+.lockup .word { margin: 0; line-height: 0; }
+.lockup .word img { width: 370px; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; }   /* 2 x the 185 px grid */
+.lockup .tagline { margin: 6px 0 0; font: 400 20px/1.1 var(--display); color: var(--pink); }
+.lockup .what { margin: 4px 0 0; font: 400 13px/1.4 var(--mono); color: var(--olive); }
+@media (max-width: 520px) {
+  .lockup { gap: 10px; flex-direction: column; text-align: center; }
+  .lockup .mark { width: 80px; height: 80px; }
+  .lockup .word img { width: 185px; }
+  .lockup .tagline { font-size: 17px; }
+}
+:focus-visible { outline: 2px solid var(--acid); outline-offset: 2px; }

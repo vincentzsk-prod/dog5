@@ -47,5 +47,6 @@ nice -n 15 $ZIG cc --target=wasm32-freestanding -mcpu=generic+bulk_memory -O2 -f
 nice -n 15 "$WASM_OPT" build/sim/raw.wasm --enable-bulk-memory --asyncify -O2 --strip-debug --strip-producers \
     -o "$OUT/dog5.wasm"
 cp web/sim/index.html web/sim/sim.js web/sim/sim.css web/sim/worklet.js "$OUT/"
+mkdir -p "$OUT/brand" && cp web/brand/*.css web/brand/*.woff2 web/brand/*.png web/brand/OFL-*.txt "$OUT/brand/"   # the DØG-5 brand (fonts: SIL OFL)
 python3 web/sim/gen_patches.py "$OUT/patches.json"
 echo "sim: $OUT ($(wc -c < "$OUT/dog5.wasm" | tr -d ' ') B wasm)"

@@ -5,35 +5,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DØG-5 installer</title>
 <style>
-  :root { --bg:#111316; --panel:#1a1d22; --line:#2b3038; --fg:#e6e8eb; --dim:#9aa3ad; --ok:#58c47a; --warn:#e6b84a; --bad:#ef6a62; --acc:#8ab4ff; }
+{{BRAND_CSS}}
+  :root { --bg:var(--black); --panel:var(--plum); --line:var(--violet); --fg:var(--white); --dim:var(--olive); --ok:var(--lime); --warn:var(--yellow); --bad:var(--pink); --acc:var(--acid); }
   * { box-sizing:border-box; }
   html { color-scheme:dark; }
-  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
-  main { max-width:1040px; margin:0 auto; padding:16px; }
-  h1 { font-size:22px; margin:4px 0 2px; } h2 { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--dim); margin:0 0 8px; }
-  .sub { color:var(--dim); margin:0 0 14px; }
-  .grid { display:grid; gap:12px; grid-template-columns:1fr 1fr; align-items:start; } @media (max-width:820px) { .grid { grid-template-columns:1fr; } }
-  section { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:12px; }
-  .grid section { margin-bottom:0; }
-  dl { display:grid; grid-template-columns:auto 1fr; gap:3px 12px; margin:0; } dt { color:var(--dim); } dd { margin:0; overflow-wrap:anywhere; } dd.mono { word-break:break-all; }
-  code, pre, .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px; }
-  .badge { display:inline-block; padding:1px 8px; border-radius:10px; font-size:12px; border:1px solid var(--line); margin:0 4px 4px 0; }
-  .ok { color:var(--ok); border-color:var(--ok); } .warn { color:var(--warn); border-color:var(--warn); } .bad { color:var(--bad); border-color:var(--bad); }
-  .box { border:1px solid var(--line); border-radius:6px; padding:8px 10px; margin:8px 0; } .box.bad { border-color:var(--bad); color:var(--fg); } .box.ok { border-color:var(--ok); color:var(--fg); } .box.warn { border-color:var(--warn); color:var(--fg); }
-  table { border-collapse:collapse; width:100%; font-size:13px; } td, th { text-align:left; padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:top; } th { color:var(--dim); font-weight:500; }
-  label.chk { display:flex; gap:8px; align-items:flex-start; margin:4px 0; cursor:pointer; } input[type=checkbox] { margin-top:4px; width:16px; height:16px; }
-  button { font:inherit; color:var(--fg); background:#252a31; border:1px solid #3a414b; border-radius:6px; padding:7px 14px; cursor:pointer; margin:2px 6px 2px 0; }
-  button:hover:enabled { border-color:var(--acc); } button:disabled { opacity:.4; cursor:not-allowed; }
-  button.go { background:#1f3a2a; border-color:var(--ok); } button.stop { background:#3a2220; border-color:var(--bad); }
-  select { font:inherit; color:var(--fg); background:#252a31; border:1px solid #3a414b; border-radius:6px; padding:6px; max-width:100%; }
-  .bar { height:14px; background:#0c0e10; border:1px solid var(--line); border-radius:7px; overflow:hidden; margin:6px 0; } .bar > div { height:100%; width:0; background:var(--acc); transition:width .15s; }
-  #log, #frames { background:#0c0e10; border:1px solid var(--line); border-radius:6px; padding:6px 8px; height:150px; overflow:auto; white-space:pre; margin:6px 0; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:300 18px/1.45 var(--body); }
+  b, strong { font-weight:600; }
+  main { max-width:1040px; margin:0 auto; padding:20px 16px 32px; }
+  header.top { margin:4px 0 18px; }
+  .ver { text-align:center; margin:10px 0 2px; font:400 13px var(--mono); color:var(--dim); }
+  h2 { font:400 20px/1.2 var(--display); color:var(--yellow); margin:0 0 8px; }
+  .sub { color:var(--fg); margin:0 auto 18px; max-width:720px; text-align:center; }
+  .grid { display:grid; gap:14px; grid-template-columns:1fr 1fr; align-items:start; } @media (max-width:820px) { .grid { grid-template-columns:1fr; } }
+  section { background:var(--panel); border:2px solid var(--black); box-shadow:5px 5px 0 var(--violet); padding:12px 16px 14px; margin-bottom:16px; }
+  .grid section { margin-bottom:0; } .grid > div > section + section { margin-top:16px; }
+  dl { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin:0; font:400 13px/1.5 var(--mono); } dt { color:var(--dim); } dd { margin:0; overflow-wrap:anywhere; } dd.mono { word-break:break-all; }
+  dd small { font-family:var(--body); font-size:15px; }
+  code, pre, .mono { font-family:var(--mono); font-size:13px; }
+  a { color:var(--acid); }
+  .badge { display:inline-block; padding:1px 8px; font:700 12px var(--mono); border:2px solid var(--line); margin:0 4px 4px 0; }
+  .ok { color:var(--ok); border-color:var(--ok); } .warn { color:var(--warn); border-color:var(--warn); } .bad { color:var(--bad); border-color:var(--red); }
+  .box { border:2px solid var(--line); padding:8px 12px; margin:10px 0; background:var(--black); } .box.bad { border-color:var(--red); color:var(--fg); } .box.ok { border-color:var(--ok); color:var(--fg); } .box.warn { border-color:var(--warn); color:var(--fg); }
+  table { border-collapse:collapse; width:100%; font:400 13px/1.4 var(--mono); } td, th { text-align:left; padding:4px 6px; border-bottom:1px solid var(--line); vertical-align:top; } th { color:var(--dim); font-weight:400; }
+  label.chk { display:flex; gap:10px; align-items:flex-start; margin:6px 0; cursor:pointer; } input[type=checkbox] { margin-top:5px; width:16px; height:16px; accent-color:var(--acid); flex:none; }
+  button { font:700 13px var(--mono); letter-spacing:.02em; color:var(--fg); background:var(--black); border:2px solid var(--white); padding:8px 14px; cursor:pointer; margin:2px 6px 2px 0; }
+  button:hover:enabled { border-color:var(--acid); color:var(--acid); } button:disabled { opacity:.35; cursor:not-allowed; }
+  button.go { background:var(--acid); color:var(--black); border-color:var(--black); box-shadow:3px 3px 0 var(--black); } button.go:hover:enabled { background:var(--yellow); color:var(--black); border-color:var(--black); }
+  button.stop { background:var(--red); color:var(--white); border-color:var(--black); box-shadow:3px 3px 0 var(--black); } button.stop:hover:enabled { background:var(--pink); color:var(--black); border-color:var(--black); }
+  select { font:400 13px var(--mono); color:var(--fg); background:var(--black); border:2px solid var(--line); padding:6px; max-width:100%; }
+  .bar { height:16px; background:var(--black); border:2px solid var(--line); overflow:hidden; margin:8px 0; } .bar > div { height:100%; width:0; background:var(--acid); transition:width .15s; }
+  #log, #frames { background:var(--black); border:2px solid var(--line); padding:6px 8px; height:150px; overflow:auto; white-space:pre; margin:6px 0; font:400 12px/1.45 var(--mono); }
+  #stage, #counter { font:400 13px/1.5 var(--mono); }
   .hide { display:none; } .dim { color:var(--dim); } small { color:var(--dim); }
+  footer.foot { text-align:center; margin-top:8px; font:400 12px/1.6 var(--mono); color:var(--dim); }
 </style>
 </head>
 <body>
 <main>
-  <h1>DØG-5 installer <small id="ver">{{VERSION}} · {{DATE}}</small></h1>
+  <header class="top">
+    <div class="lockup">
+      <img class="mark" src="{{IMG_HEAD}}" width="120" height="120" alt="">
+      <div>
+        <h1 class="word"><img src="{{IMG_WORD}}" width="370" height="122" alt="DØG-5 installer"></h1>
+        <p class="tagline">the runt bastard no one wanted</p>
+        <p class="what">installer · M-VAVE FM-1</p>
+      </div>
+    </div>
+    <p class="ver" id="ver">{{VERSION}} · {{DATE}}</p>
+  </header>
   <p class="sub">Installs the DØG-5 firmware on an M-VAVE FM-1 over USB-MIDI. One page, no server: the package is inside this file. Chrome or Edge only.</p>
 
   <section id="env"><h2>This browser</h2><div id="envbadges"></div><div id="envtext" class="dim"></div></section>
@@ -63,11 +82,11 @@
 
     <div>
       <section><h2>Before you start</h2>
-        <label class="chk"><input type="checkbox" class="pre"> A USB <b>data</b> cable, straight into the computer (no hub).</label>
-        <label class="chk"><input type="checkbox" class="pre"> The cable stays plugged in until this page says it is done (about 3 minutes).</label>
-        <label class="chk"><input type="checkbox" class="pre"> I will not touch the keys, knobs or buttons while it runs.</label>
-        <label class="chk"><input type="checkbox" class="pre"> Power stays on: the computer will not sleep, no other MIDI program is open.</label>
-        <label class="chk"><input type="checkbox" class="pre"> I have M-Flasher and my backup of the stock firmware ready.</label>
+        <label class="chk"><input type="checkbox" class="pre"> <span>A USB <b>data</b> cable, straight into the computer (no hub).</span></label>
+        <label class="chk"><input type="checkbox" class="pre"> <span>The cable stays plugged in until this page says it is done (about 3 minutes).</span></label>
+        <label class="chk"><input type="checkbox" class="pre"> <span>I will not touch the keys, knobs or buttons while it runs.</span></label>
+        <label class="chk"><input type="checkbox" class="pre"> <span>Power stays on: the computer will not sleep, no other MIDI program is open.</span></label>
+        <label class="chk"><input type="checkbox" class="pre"> <span>I have M-Flasher and my backup of the stock firmware ready.</span></label>
       </section>
 
       <section><h2>The unit</h2>

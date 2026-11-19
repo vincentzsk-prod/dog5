@@ -15,7 +15,7 @@ names = [re.sub(r"\\x([0-9A-Fa-f]{2})", lambda m: "Ø" if m.group(1).upper() == 
 nfact = int(re.search(r"#define\s+NFACT\s+(\d+)", (root / "firmware/src/obv_params.h").read_text()).group(1))
 if len(names) != nfact or any("\\" in n or '"' in n for n in names):
     sys.exit(f"gen_patches: found {len(names)} names for NFACT {nfact}, or an escape left: {names}")
-chapters = ["The Wasteland Arsenal", "The Tidal Hexes", "The Bakshi Tomes", "The Ancient Relics"]   # 8 slots each
+chapters = ["I · Jalopy", "II · Bee-tch", "III · Moonshine", "IV · Acid Can"]   # 8 slots each (chapter names locked 17 Nov 2026)
 out = [{"chapter": chapters[i // 8], "slot": i + 1, "name": n} for i, n in enumerate(names)]
 Path(sys.argv[1]).write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 print(f"patches: {len(out)} names -> {sys.argv[1]}")

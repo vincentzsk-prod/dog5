@@ -14,8 +14,9 @@
 
 Writes, in docs/install/ (served by GitHub Pages from main /docs):
   dog5-X.Y-YYYYMMDD.fwsc   a copy of the package (any older dog5-*.fwsc there is removed)
-  index.html               web/install/index.template.html with web/install/fm1install.js and the package
-                           (base64) embedded: one file, no external request
+  index.html               web/install/index.template.html with web/install/fm1install.js, the package (base64) and the
+                           brand (web/brand/brand.css, its fonts and the two pictures, as data: URLs) embedded:
+                           one file, no external request
 The package is checked with the Python reference (tools/fm1_install.py load_package) before it is embedded; the page's
 own JavaScript checks it again and compares it with the SHA-256 recorded here. tests/install/run.sh re-checks it all."""
 import argparse
@@ -32,6 +33,17 @@ sys.path.insert(0, str(ROOT / "tools"))
 import fm1_install  # noqa: E402
 
 
+def brand():
+    """web/brand/brand.css with its fonts inlined, and the head mark and wordmark as data: URLs"""
+    d = ROOT / "web" / "brand"
+    def data(name, mime):
+        return f"data:{mime};base64," + base64.b64encode((d / name).read_bytes()).decode("ascii")
+    css = (d / "brand.css").read_text(encoding="utf-8")
+    css = re.sub(r"url\(([A-Za-z0-9._-]+\.woff2)\)", lambda m: f"url({data(m[1], 'font/woff2')})", css)
+    assert "url(" not in re.sub(r"url\(data:", "", css), "brand.css: an asset that is not inlined"
+    return css, data("dog5-favicon-240.png", "image/png"), data("dog5-wordmark-pixel.png", "image/png")
+
+
 def build_page(pkg_path, version, date):
     raw = Path(pkg_path).read_bytes()
     product, image = fm1_install.load_package(str(pkg_path), False)       # the Python reference's own checks
@@ -39,7 +51,8 @@ def build_page(pkg_path, version, date):
     core = (ROOT / "web" / "install" / "fm1install.js").read_text(encoding="utf-8")
     assert "</script" not in core
     page = (ROOT / "web" / "install" / "index.template.html").read_text(encoding="utf-8")
-    subst = {"{{VERSION}}": f"v{version}", "{{DATE}}": date, "{{PKG_NAME}}": name, "{{PRODUCT}}": product,
+    css, head, word = brand()
+    subst = {"{{BRAND_CSS}}": css, "{{IMG_HEAD}}": head, "{{IMG_WORD}}": word, "{{VERSION}}": f"v{version}", "{{DATE}}": date, "{{PKG_NAME}}": name, "{{PRODUCT}}": product,
              "{{PKG_SHA256}}": hashlib.sha256(raw).hexdigest(), "{{PKG_BYTES}}": str(len(raw)),
              "{{PKG_B64}}": base64.b64encode(raw).decode("ascii")}
     page = page.replace("/*__FM1_JS__*/", core)
