@@ -1,0 +1,10 @@
+{
+  "what": "A loud, live analog-style synth for the FM-1, made for the egg punk band DØGS. 32 patches in four chapters, a drive, BBD delay, spring and tape chain, a kill switch, tape stop and hold, and a street dog whose bark is your live waveform.",
+  "kinds": [
+    "synth"
+  ],
+  "image": "assets/brand/dog5-hub-card.png",
+  "color": "#DEF402",
+  "play": "https://vincentzsk-prod.github.io/dog5/play/",
+  "sounds": "own"
+}
