@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 18 Nov 2026 (Batch 13 firmware clean-up), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 18 Nov 2026 (Batch 15 write-lock), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -242,7 +242,11 @@ loop.** No new drawing code may block without yielding to notes. That is the who
 - **99 slots** (inherited). **A/B as a write-lock, not a store expansion:** lock slots 1–32 (factory, THE
   POUND, write-protected) vs 33–99 (live, THE PACK). The factory bank is now the 32 DØG-5 patches
   (`NFACT 32`); the old "expand to 64" plan is obsolete — 99 is bigger, and the factory half tracks the
-  32-patch bank, not 64. (The write-lock itself is Stage 2 — the bytes/sectors below are done.)
+  32-patch bank, not 64. **The write-lock is DONE (Batch 15, `prog_get` / `pack_free` / `pound_rescue` in `obervave.c`;
+  tests/controls/write_lock.txt, the store selftest):** programs 1–32 always read the factory (a firmware update brings its
+  voicing); SAVE armed on a POUND slot offers the first free PACK slot, on a PACK slot that slot; PRESETS while armed moves
+  through 33–99 only (99 ↔ 33). The store below the lock is unchanged (all 99 slots, 3 sectors). Once at power-on, a save
+  over 1–32 from before the lock (v0.1 / v0.2) moves to the first free PACK slot; with THE PACK full it stays, unread.
 - **Name field widened 10 → 14 characters and `PATCH_BYTES` grown 80 → 96 — DONE** (§4, committed). The
   14-char name plus DØG-5's new params (Tape 2nd macro, `P_POLY_N`) hit 79/80 at 80 bytes — one spare,
   which a planned v1.1 couldn't extend without migrating every patch. The 96-byte record (name at a fixed
@@ -292,7 +296,7 @@ wordmark) — full spec in the build kit.
   `npm install --prefix ~/.local/share/obervave-wasm/npm binaryen` (wasm-opt 132; the script finds it there). Test:
   `node tests/sim_test.mjs` (default `docs/play/dog5.wasm`; sound is checked bit-for-bit against the host build). The sim keeps
   **12 storage blobs** (settings, 8 pattern sectors, 3 program sectors; a store of any other length is ignored) in localStorage
-  key `dog5-sim-store-1`. The page picks a patch with a MIDI program change (works while the MIDI channel is OMNI). No analytics.
+  key `dog5-sim-store-1`. The page picks a patch with a MIDI program change on the MIDI channel set on GLOBAL (`sim_pick`, Batch 14). No analytics.
   (OberVave's own simulator build, `tests/ref-sim/`, was removed in Batch 12B; it is in the git history.)
 - **The device build (`.fwsc`) needs two JieLi downloads.** Re-tested 2026-11-02: the original hosts work
   fine from this cloud environment once `pkgman.jieliapp.com`, `gitee.com` and
@@ -322,7 +326,7 @@ font Ø fix → name 10→14 & `PATCH_BYTES` 80→96 (done; 14-char name, 96-byt
 delete sequencer → 20-page table (21 since Batch 9B) + hold-HOME map +
 families-remember → `P_POLY_N` (done; byte 63, CC 82, VOICE +).
 **Stage 2 — the voice (no art, runs parallel to drawing):** Psych Chain (Drive, Tape, free-ms BBD, spring
-re-voice) → voice the 32 patches by ear → A/B write-lock.
+re-voice) → voice the 32 patches by ear → A/B write-lock. **Stage 2 is DONE** (the write-lock in Batch 15).
 **Stage 3 — the screen (needs the art):** dog (REST+BARK registered redraw) → beam → bottom bar + transient
 readout → JALOPY proof scene → the other 3 fields + props (Moonshine magenta) → HOWL + nose → FLEAS + fence
 fracture.
@@ -342,6 +346,7 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
    `"DOG5"` store tag, 3 program sectors (42/sector). Proven by the host self-test (99 patches round-trip
    byte-exact across a power cycle, save-isolation, old 80-byte "BOVP" sector rejected as empty INIT).
 3. **FM-1** — arrived; **v0.2 (`FM-1_962`, package SHA-256 `b2be33a9…6b96`) flashed and tested on the unit 18 Nov**.
+   **v0.3 (`FM-1_963`, package SHA-256 `293d7890…f763`, Batch 15: write-lock + panic) is on the installer page, not yet on the unit.**
    v0.1 as published is commit `7a1fba8` (the installer page with `dog5-0.1-20261112.fwsc`, sha256 `3de092d5…7f6a`).
    Never push a `v*` tag casually: `release.yml` builds and publishes a release on `v*` tags.
 4. **The 15–16 hand-drawn assets** (build kit §1) — the only thing gating Stage 3.
@@ -370,7 +375,8 @@ Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art.
 - `PLATFORM-API.md` (platform.c's calls) and `CHIP-RULES.md` (the chip's habits) — Dinghy's docs, moved from `docs/` in 12B.
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
-  `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs) and `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes).
+  `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
+  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK).
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

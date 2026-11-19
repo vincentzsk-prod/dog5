@@ -162,8 +162,9 @@ typedef struct { uint32_t t, keys; int btn; uint8_t st, d1, d2; int8_t enc, encn
  * "T expect param P V" (parameter P holds V now), "T expect peak MS MAX" / "T expect peakmin MS MIN" (the largest |sample| of
  * the output over the last MS ms is <= MAX / >= MIN), "T expect rest R" (R 1: STOP, TAPE STOP and the SLOP ride at rest, adding nothing) */
 enum { HS_NONE, HS_SHOT, HS_PAGE, HS_IDLE, HS_PARAM, HS_VOICES,
-       HS_PVAL, HS_PEAK, HS_PEAKMIN, HS_REST, HS_VLOG };
+       HS_PVAL, HS_PEAK, HS_PEAKMIN, HS_REST, HS_VLOG, HS_SLOT };
 static uint32_t host_page_now(void);            /* (obervave.c: the page the panel is on) */
+static uint32_t host_slot_now(void);            /* (obervave.c: the program sounding, 1-99) */
 static uint32_t host_map_idle_calls(void);      /* (obervave.c: app_idle calls the last control-map draw made) */
 static void host_set_param(uint32_t p, int32_t v);   /* (obervave.c: set a parameter, as a knob would) */
 static uint32_t host_voices_on(void);           /* (obervave.c: how many voice cards are gated on) */
@@ -207,6 +208,7 @@ static void read_script(const char *path)
             char kind[16] = "";
             sscanf(line, "%*u %*s %15s %u", kind, &a);
             if (!strcmp(kind, "page")) { e.kind = HS_PAGE; e.sa = (uint8_t)a; }
+            else if (!strcmp(kind, "slot")) { e.kind = HS_SLOT; e.sa = (uint8_t)a; }   /* "T expect slot N": the program, 1-99 */
             else if (!strcmp(kind, "idle")) { e.kind = HS_IDLE; e.sb = (uint16_t)a; }
             else if (!strcmp(kind, "voices")) { e.kind = HS_VOICES; e.sb = (uint16_t)a; }
             else if (!strcmp(kind, "peak") || !strcmp(kind, "peakmin")) {   /* "T expect peak MS MAX": the output's
@@ -317,6 +319,10 @@ static void platform_poll(void)                 /* one call = one millisecond */
         } else if (script[step].kind == HS_PAGE) {
             uint32_t now = host_page_now(), want = script[step].sa;
             printf("%6u ms  expect page %u: on page %u  %s\n", fm1_ms, want, now, now == want ? "ok" : "FAIL");
+            host_fails += now != want;
+        } else if (script[step].kind == HS_SLOT) {
+            uint32_t now = host_slot_now(), want = script[step].sa;
+            printf("%6u ms  expect slot %u: on slot %u  %s\n", fm1_ms, want, now, now == want ? "ok" : "FAIL");
             host_fails += now != want;
         } else if (script[step].kind == HS_PARAM) {
             host_set_param(script[step].sa, (int32_t)script[step].sb);

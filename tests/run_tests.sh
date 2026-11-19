@@ -41,6 +41,7 @@ run "FM-1 BBD DELAY page: ALLEY from SYNC, BBD +, REC no longer taps (it is HOLD
 run "FM-1 EDIT held + keys: OP1-OP6 PIT GLO jump (toggles on OP4 / GLO), MONO / POLY set the mode, no notes, no stuck notes, the tap acts on release" sh tests/run_host.sh tests/controls/edit_keys.txt
 run "FM-1 SELECT dial: LFO RATE on HOME (2 a detent, clamped), nothing on other pages or with a layer held, the dice and the + knobs intact" sh tests/run_host.sh tests/controls/select_dial.txt
 run "FM-1 REC = HOLD: one latch with the ARP button, ORed with the pedal, released by STOP only" sh tests/run_host.sh tests/controls/rec_hold.txt
+run "FM-1 write-lock: THE POUND (1-32) reads the factory, SAVE goes to THE PACK (33-99) only, PRESETS while armed stays in 33-99" sh tests/run_host.sh tests/controls/write_lock.txt
 # layer-lock with HOME acting on its release: hold FX + tap HOME locks; the tap never goes HOME; FX / ENV let it go
 run "FM-1 layer-lock: FX held + HOME tapped locks (no jump HOME), the lock outlives FX's release, FX or ENV ends it" sh tests/run_host.sh tests/layer_lock.txt
 # the live tricks (tests/trick): PLAY = STOP, the kill switch ("T expect peak MS MAX": the output's peak over the last MS ms)
@@ -53,7 +54,7 @@ run "FM-1 SLOP ride (ALGORITHM): on top of VINTAGE on any page, the patch byte u
 # the 96-byte / 3-sector / DOG5 program store (the host binary from run_host.sh above):
 # 99 distinct patches round-trip byte-exact across a power cycle, one save touches only its sector, an old
 # 80-byte "BOVP" sector is rejected. Runnable on its own too: build/host/obervave selftest
-run "FM-1 program store: 99 patches round-trip, save isolation, old format rejected" "$OUT/obervave" selftest
+run "FM-1 program store: 99 patches round-trip, save isolation, old format rejected, the POUND lock, the power-on rescue of old POUND saves" "$OUT/obervave" selftest
 
 $CC -o "$OUT/ota_test" tests/ota_test.c
 run "M-UPGRADE entry (FM-1)" "$OUT/ota_test" build/dog5.fwsc

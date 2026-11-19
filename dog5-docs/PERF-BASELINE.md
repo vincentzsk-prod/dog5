@@ -1,10 +1,10 @@
 # Host CPU baseline — stock OberVave (v1.5.3, before any DØG-5 engine change)
 
-## Now (18 Nov 2026, `main` after Batch 13; v0.2 = `FM-1_962`, package SHA-256 `b2be33a9…6b96`, had image 82,352 B)
+## Now (18 Nov 2026, after Batch 15, the write-lock; v0.2 = `FM-1_962`, package SHA-256 `b2be33a9…6b96`, had image 82,352 B)
 
 | | Used | Of | Free |
 |---|---|---|---|
-| Image | 82,264 B | 581,564 B | 499,300 B |
+| Image | 82,536 B | 581,564 B | 499,028 B |
 | RAM (`.data` + `.bss`) | 32,432 B | 98,304 B | 65,872 B |
 | Pool (`.pool`) | 304,896 B | 344,064 B | 39,168 B |
 
