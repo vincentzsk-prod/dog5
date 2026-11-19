@@ -29,7 +29,7 @@
     }
     cx.putImageData(img, 0, 0);
   };
-  cx.fillStyle = '#0b0e16'; cx.fillRect(0, 0, 240, 240);
+  cx.fillStyle = '#000000'; cx.fillRect(0, 0, 240, 240);
 
   // ---- storage (programs, settings, patterns: the firmware's flash sectors, kept in localStorage)
   const toB64 = (buf) => { const u = new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
