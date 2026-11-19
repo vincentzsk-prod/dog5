@@ -1,27 +1,27 @@
 /* SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2026 zvenson (OberVave; the Firmware Hub's look)
- * Copyright (C) 2026 illuminus5 (Skiff: the idea, a loader that draws, its 5 x 7 letters and the order of things) */
+ * Copyright (C) 2026 illuminus5 (Skiff: the idea, a loader that draws, its 5 x 7 letters and the order of things)
+ * Copyright (C) 2026 Vincent Kruger (DØG-5: the dog head, the wordmark and the brand colours) */
 /* The update loader's screen (loader.c; tests/ldr_screen_test.c). A unit whose install was cut off comes back to the
- * loader at every power-on and showed a black screen; now it says what it does, in the Firmware Hub's colours:
- *   the firmware's name, big, in its colour, a thin line under it
- *   what happens (UPDATE MODE, WRITING, UPDATE FAILED) and what to do, white and grey
- *   20 segments: a light running to and fro while it waits (ldr_anim), the share written while it writes, the percent
- *   thefirmwarehub.com at the foot, in the hub's lila
+ * loader at every power-on and showed a black screen; now it says what it does, in DØG-5's brand colours on black:
+ *   the dog head and the DØG-5 wordmark (ldr_art.h, pictures drawn row by row)
+ *   what happens (UPDATE MODE, WRITING and its percent, UPDATE FAILED in red) and what to do, white and olive
+ *   20 segments: a light running to and fro while it waits (ldr_anim), the share written while it writes
+ *   thefirmwarehub.com at the foot, in pink
  * Drawn with the loader's own letters (the app area may be half written: never read), before USB starts (USB is
  * polled: the panel's ~0.3 s init would leave the host's enumeration unanswered). FM-1 only.
- * LDR_NAME / LDR_COLOUR: the firmware's name (at most 9 letters at size 4, more get smaller) and colour (RGB565). */
-#include "../src/dog5_id.h"
-#ifndef LDR_NAME
-#define LDR_NAME DOG5_NAME_LOADER
-#endif
+ * LDR_COLOUR: the lit segments and the waiting light (RGB565). Colours: claude/DOG-5-brand-palette.md. */
+#include "ldr_art.h"
 #ifndef LDR_COLOUR
-#define LDR_COLOUR 0x3C1Du               /* the blue the loader's name has always had, #3C82EB */
+#define LDR_COLOUR 0xDFA0u               /* Acid Chartreuse, #DEF402 */
 #endif
-#define LDR_BG 0x1082u                   /* the hub's background, #151213 */
-#define LDR_INK 0xEF5Cu                  /* its text, #EFE8E1 */
-#define LDR_SUB 0xA4D2u                  /* its grey, #A39A94 */
-#define LDR_DIM 0x39A6u                  /* a segment off, #3A3435 */
-#define LDR_HUB 0xAB9Du                  /* the hub's lila, #A870E8 */
+#define LDR_BG 0x0000u                   /* Black */
+#define LDR_INK 0xFFFFu                  /* Foam White */
+#define LDR_SUB 0x848Du                  /* Grime Olive, #84926C */
+#define LDR_DIM 0x3028u                  /* a segment off: Plum Night, #320444 */
+#define LDR_HUB 0xEAAFu                  /* Ray Pink, #EC5579 */
+#define LDR_BAD 0xE063u                  /* Ray Red, #E20D1D: UPDATE FAILED */
+#define LDR_YEL 0xFE66u                  /* Sun Yellow, #F8CD30: the wordmark */
 #define LDR_MIX(a, b) ((((a) >> 11) + ((b) >> 11)) / 2u << 11 | ((((a) >> 5) & 63u) + (((b) >> 5) & 63u)) / 2u << 5 | \
                        (((a) & 31u) + ((b) & 31u)) / 2u)
 #define LDR_TAIL LDR_MIX(LDR_COLOUR, LDR_DIM)   /* the waiting light's afterglow: halfway to a segment off */
@@ -58,8 +58,12 @@ static const uint8_t LDR_FONT[sizeof LDR_CH - 1u][7] = {         /* rows, bit 4 
 #define LDR_SEGS 20u                     /* the segments: 9 px and a 2 px gap, 218 px, centred */
 #define LDR_SEG_W 9u
 #define LDR_SEG_X 11u
-#define LDR_SEG_Y 150u
-#define LDR_SEG_H 10u
+#define LDR_SEG_Y 206u
+#define LDR_SEG_H 9u
+#define LDR_HEAD_Y 6u                    /* the head, centred; the wordmark under it */
+#define LDR_WORD_Y 110u
+#define LDR_SAY_Y 166u                   /* the status (size 2) and what to do (size 1) */
+#define LDR_SUB_Y 188u
 
 static uint32_t ldr_missing;                        /* letters drawn as gaps: 0 (ldr_screen_test) */
 static uint32_t ldr_len(const char *t)
@@ -96,19 +100,33 @@ static void ldr_seg(uint32_t i, uint16_t c)
 {
     lcd_fill(LDR_SEG_X + i * (LDR_SEG_W + 2u), LDR_SEG_Y, LDR_SEG_W, LDR_SEG_H, c);
 }
-static void ldr_say(const char *what, const char *sub)   /* the status and what to do */
-{
-    lcd_fill(0, 92, 240, 46, LDR_BG);
-    ldr_text(94, 2, LDR_INK, what);
-    ldr_text(122, 1, LDR_SUB, sub);
+static uint16_t ldr_row[240];                     /* one picture row, as the panel takes it (bytes swapped) */
+static void ldr_pic(uint32_t y, uint32_t w, uint32_t h, uint32_t bpp, const uint8_t *p, const uint16_t *pal)
+{                                                   /* a picture from ldr_art.h, centred, one row a transfer */
+    uint32_t x0 = (240u - w) / 2u, bpr = (w * bpp + 7u) / 8u, r, x, v, c;
+    for (r = 0; r < h; r++, p += bpr) {
+        lcd_sync();                                 /* (the last row's transfer reads ldr_row) */
+        for (x = 0; x < w; x++) {
+            v = p[x * bpp / 8u] >> (8u - bpp - x * bpp % 8u) & ((1u << bpp) - 1u);
+            c = pal[v];
+            ldr_row[x] = (uint16_t)(c >> 8 | c << 8);
+        }
+        lcd_blit(x0, y + r, w, 1, ldr_row);
+    }
 }
-static void ldr_percent(uint32_t p)                  /* "57%" under the segments; 0xFFFF: none */
+static void ldr_say(const char *what, const char *sub, uint16_t c)   /* the status and what to do */
 {
-    char t[5];
-    uint32_t n = 0;
-    lcd_fill(0, 170, 240, 22, LDR_BG);
+    lcd_fill(0, LDR_SAY_Y, 240, LDR_SUB_Y + 7u - LDR_SAY_Y, LDR_BG);
+    ldr_text(LDR_SAY_Y, 2, c, what);
+    ldr_text(LDR_SUB_Y, 1, LDR_SUB, sub);
+}
+static void ldr_percent(uint32_t p)                  /* the status line while it writes: "WRITING 57%" */
+{
+    char t[13] = "WRITING ";
+    uint32_t n = 8;
     if (p > 100u)
         return;
+    lcd_fill(0, LDR_SAY_Y, 240, 14, LDR_BG);
     if (p >= 100u)
         t[n++] = '1';
     if (p >= 10u)
@@ -116,7 +134,7 @@ static void ldr_percent(uint32_t p)                  /* "57%" under the segments
     t[n++] = (char)('0' + p % 10u);
     t[n++] = '%';
     t[n] = 0;
-    ldr_text(170, 3, LDR_INK, t);
+    ldr_text(LDR_SAY_Y, 2, LDR_INK, t);
 }
 
 static uint32_t ldr_lit;                            /* segments lit for the write */
@@ -126,12 +144,13 @@ static uint8_t ldr_idle = 1;                        /* the waiting light runs (n
 static uint32_t ldr_pos, ldr_next;                  /* the waiting light: its segment (0..37, to and fro), its next move */
 static void ldr_screen(void)
 {
-    uint32_t i, s = ldr_len(LDR_NAME) <= 9u ? 4u : ldr_len(LDR_NAME) <= 12u ? 3u : 2u;
+    static const uint16_t head[2] = {LDR_BG, LDR_INK}, word[4] = {LDR_BG, LDR_BG, LDR_YEL, LDR_COLOUR};
+    uint32_t i;
     lcd_init();                                     /* (the panel cleared, on) */
     lcd_fill(0, 0, 240, 240, LDR_BG);
-    ldr_text(48u - 7u * s / 2u, s, LDR_COLOUR, LDR_NAME);
-    lcd_fill(60, 76, 120, 2, LDR_COLOUR);
-    ldr_say("UPDATE MODE", "WAITING FOR THE INSTALL");
+    ldr_pic(LDR_HEAD_Y, LDR_HEAD_W, LDR_HEAD_H, 1, LDR_HEAD, head);
+    ldr_pic(LDR_WORD_Y, LDR_WORD_W, LDR_WORD_H, 2, LDR_WORD, word);
+    ldr_say("UPDATE MODE", "WAITING FOR THE INSTALL", LDR_INK);
     for (i = 0; i < LDR_SEGS; i++)
         ldr_seg(i, LDR_DIM);
     ldr_text(222, 1, LDR_HUB, "thefirmwarehub.com");
@@ -156,7 +175,7 @@ static void ldr_bar(uint32_t done, uint32_t total)
     uint32_t p = done * 100u / total;               /* (the app area * 100: below 2^32) */
     if (!ldr_writing || n < ldr_lit) {              /* a write starts (again) */
         ldr_idle = 0;
-        ldr_say("WRITING", "DO NOT SWITCH OFF");
+        ldr_say("WRITING", "DO NOT SWITCH OFF", LDR_INK);
         for (i = 0; i < LDR_SEGS; i++)
             ldr_seg(i, LDR_DIM);
         ldr_lit = 0;
@@ -174,7 +193,7 @@ static void ldr_bar(uint32_t done, uint32_t total)
 static void ldr_failed(void)                        /* a session that wrote nothing or stopped: the way out */
 {
     uint32_t i;
-    ldr_say("UPDATE FAILED", "INSTALL AGAIN");
+    ldr_say("UPDATE FAILED", "INSTALL AGAIN", LDR_BAD);
     for (i = 0; i < LDR_SEGS; i++)
         ldr_seg(i, LDR_DIM);
     ldr_percent(ldr_pct = 0xFFFFu);
