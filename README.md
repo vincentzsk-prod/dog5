@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/brand/dog5-github-banner.png" alt="DØG-5: the dog head mark and the pixel wordmark. The runt bastard no one wanted. Free firmware for the M-VAVE FM-1 synth." width="100%"></p>
+
 # DØG-5
 
 **Custom firmware for the M-VAVE FM-1 pocket synth, for the band DØGS.** An aggressive, live, virtual-analog voice (8
