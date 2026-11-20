@@ -209,6 +209,7 @@ static void randomize(void)
 
 /* ---- the screen (obv_ui.h draws; this decides what and when) */
 #include "obv_ui.h"
+#include "dog5_scene.h"
 
 static void fmt_u(char *s, uint32_t v)          /* decimal, no leading zeros */
 {
@@ -299,6 +300,12 @@ static void readout(const char *label, uint32_t p)
     ro_t = fm1_ms + 1u;
 }
 static uint32_t slop, slop_shown_t;             /* ALGORITHM's ride (obv_engine.h ctl_slop), 0..127; shown a second */
+/* the header: on the scene (HOME, Batch 20) the bars, a toast on top while it shows; elsewhere the panel's header */
+static void hdr(uint32_t pn, const uint8_t *name, uint32_t ed, const char *tags)
+{
+    if (sc_k != 0xFFu) sc_bars(pn, name, ed, toast && fm1_ms - toast_t < 1500u ? toast : tags);
+    else ui_header(pn, name, ed, tags);
+}
 static void draw_header(void)
 {
     char tags[40];
@@ -307,22 +314,22 @@ static void draw_header(void)
         patch_t t;
         prog_get(save_to, &t);
         scat(tags, "SAVE HERE? " NM_PRESETS);
-        ui_header(save_to, t.v + PATCH_NAME_AT, 0, tags);
+        hdr(save_to, t.v + PATCH_NAME_AT, 0, tags);
         return;
     }
     if (killed) {                               /* STOP: says so until it is let go (the art is Stage 3) */
-        ui_header(prog, live.v + PATCH_NAME_AT, edited, "STOPPED (PLAY)");
+        hdr(prog, live.v + PATCH_NAME_AT, edited, "STOPPED (PLAY)");
         return;
     }
     if (slop_shown_t && fm1_ms + 1u - slop_shown_t < 1000u) {   /* SLOP +40 = VINTAGE 95: the ride and what sounds */
         uint32_t sum = live.v[P_VINTAGE] + (uint32_t)SLOP_RIDE(slop);
         scat(tags, "SLOP +"); fmt_u(tags + slen(tags), (uint32_t)SLOP_RIDE(slop));
         scat(tags, " = VINTAGE "); fmt_u(tags + slen(tags), sum > (uint32_t)SLOP_MAX ? (uint32_t)SLOP_MAX : sum);
-        ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
+        hdr(prog, live.v + PATCH_NAME_AT, edited, tags);
         return;
     }
     if (ro_t && fm1_ms + 1u - ro_t < 1000u) {   /* LFO RATE 4.2Hz, MODE MONO */
-        ui_header(prog, live.v + PATCH_NAME_AT, edited, ro_msg);
+        hdr(prog, live.v + PATCH_NAME_AT, edited, ro_msg);
         return;
     }
     if (cut_shown_t && fm1_ms + 1u - cut_shown_t < 1000u) {
@@ -330,7 +337,7 @@ static void draw_header(void)
         param_value(v, P_CUTOFF, live.v[P_CUTOFF]);
         scat(tags, "CUTOFF ");
         scat(tags, v);
-        ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
+        hdr(prog, live.v + PATCH_NAME_AT, edited, tags);
         return;
     }
     {   /* short words; mode, filter, HOLD always (at most 14 characters: MONO NOTCH HOLD); then, as far as it fits, ARP, FX */
@@ -348,7 +355,7 @@ static void draw_header(void)
         if (fx) scat(tags, " FX");
         if (hold) scat(tags, " HOLD");
     }
-    ui_header(prog, live.v + PATCH_NAME_AT, edited, tags);
+    hdr(prog, live.v + PATCH_NAME_AT, edited, tags);
 }
 
 /* ALLEY's knobs. The time is ALLEY (a step of BBD_T) + FINE (1/128 of a step): turning ALLEY clears FINE (the knob
@@ -832,6 +839,58 @@ static void store_selftest(void)
 }
 #endif
 
+/* HOME's scene, once a pass of the main loop: the chapter, the bars, the dog's pose and sway, the beam */
+static uint32_t sc_on_t, sc_off_t, sc_sound, sc_toast_key, t_sway, sway_i, t_beam;
+static const int8_t SWAY[10] = {0, 0, 1, 1, 1, 0, 0, -1, -1, -1};   /* 200 ms a step: a ~2 s rock */
+static void scene_tick(uint32_t *t_hdr)
+{
+    uint32_t k = prog % NFACT / 8u, v, best = 0, bl = 0, pose, tk;
+    if (k > 3u) k = 3u;
+    if (sc_k != k) {                            /* a new chapter (or coming HOME): the whole screen */
+#ifdef OBV_HOST
+        uint32_t idle0 = host_idle_n;
+        sc_enter(k);
+        host_map_idle = host_idle_n - idle0;    /* (tests: "expect idle N" reads the last full-screen draw) */
+#else
+        sc_enter(k);
+#endif
+        dirty_hdr = 1; *t_hdr = fm1_ms - 30u; sc_sound = 0; sway_i = 0; t_sway = sc_off_t = fm1_ms;
+    }
+    tk = toast && fm1_ms - toast_t < 1500u ? 1u + (toast_t & 0xFFFFu) : 0u;
+    if (tk != sc_toast_key) { sc_toast_key = tk; dirty_hdr = 1; }
+    if ((dirty_hdr || dirty_tags) && fm1_ms - *t_hdr >= 30u) { dirty_hdr = dirty_tags = 0; *t_hdr = fm1_ms; draw_header(); }
+    dirty_page = 0;
+    for (v = 0; v < NV; v++)                    /* the loudest voice: its period sets the scope's stride */
+        if ((uint32_t)ui_vlevel[v] > bl) { bl = (uint32_t)ui_vlevel[v]; best = ui_vnote[v]; }
+    if (killed) bl = 0;
+    if ((bl > 600u) != sc_sound) {
+        sc_sound = bl > 600u;
+        if (sc_sound) sc_on_t = fm1_ms; else sc_off_t = fm1_ms;
+    }
+    if (sc_sound) {
+        uint32_t held = fm1_ms - sc_on_t;
+        pose = SC_POSE_BARK;                    /* MOONSHINE howls a held note: bark, draw breath, howl */
+        if (SA_SCENE[sc_k].pose[SC_POSE_HOWL] && held >= 350u) pose = held < 900u ? SC_POSE_INHALE : SC_POSE_HOWL;
+        if (pose != sc_pose || sc_dx) { sc_set_pose(pose, 0); sc_beam(scope, SCOPE_N); t_beam = fm1_ms; }
+        if (scope_state == 3u && fm1_ms - t_beam >= 50u) {   /* a fresh capture: the beam carries it */
+            uint32_t inc = pitch_inc((int32_t)best << 8), period = inc ? 0xFFFFFFFFu / inc : 1000u;
+            t_beam = fm1_ms;
+            sc_beam(scope, SCOPE_N);
+            scope_stride = clampi((int32_t)(period * 2u / SCOPE_N), 1, 64);
+            scope_state = 1;
+        }
+    } else {
+        if (bm_n) sc_beam(0, 0);
+        if (sc_pose != SC_POSE_REST) { sc_set_pose(SC_POSE_REST, 0); sway_i = 0; t_sway = fm1_ms; }
+        if (fm1_ms - sc_off_t >= 500u && fm1_ms - t_sway >= 200u) {   /* at rest: the sway */
+            t_sway = fm1_ms;
+            sway_i = sway_i + 1u >= sizeof SWAY ? 0u : sway_i + 1u;
+            sc_set_pose(SC_POSE_REST, SWAY[sway_i]);
+        }
+        if (scope_state == 3u) scope_state = 1;
+    }
+}
+
 static void app_main(void)
 {
     uint32_t k, i, t_led = 0, t_scope = 0, t_page = 0, t_hdr = 0, leds_q = 1;
@@ -1067,8 +1126,16 @@ static void app_main(void)
         /* the screen: only what changed */
         idle_ok = 1;
         if (map_on) {                           /* HOME held: the map has the whole screen (notes still sound) */
+            sc_leave();
             if (map_dirty && fm1_ms - t_page >= 30u) { map_dirty = 0; t_page = fm1_ms; draw_map(); }
+        } else if (page == PG_PERFORM && !layer) {   /* HOME: the scene (dog5_scene.h) */
+            scene_tick(&t_hdr);
         } else {
+            if (sc_k != 0xFFu) {                /* leaving the scene: the panel back */
+                sc_leave();
+                lcd_fill(0, 0, 240, 240, C_PANEL);
+                dirty_hdr = dirty_page = dirty_tags = 1; hints_key = leds_q = 0xFFFFFFFFu; scope_state = 1; t_scope = 0;
+            }
             if (dirty_hdr && fm1_ms - t_hdr >= 30u) { dirty_hdr = 0; t_hdr = fm1_ms; draw_header(); }
             if (dirty_page && fm1_ms - t_page >= 30u) { dirty_page = 0; t_page = fm1_ms; draw_page(); }
             if (dirty_tags) { dirty_tags = 0; draw_tags(); }
