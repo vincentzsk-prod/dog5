@@ -3,15 +3,16 @@
 # Copyright (C) 2026 Vincent Kruger (DØG-5)
 """Generate firmware/loader/ldr_art.h: the update loader's two pictures.
 
-  LDR_HEAD  the dog head mark: the 240 px black-and-white favicon, cropped to its ring and reduced to 96 px,
-            1 bit a pixel (white)
+  LDR_HEAD  the dog head mark, 96 px, 1 bit a pixel (white): Vincent's hand-pixelled head
+            (assets/brand/dog5-head-96.png, exported from DOG-5-head-96.pxo, 20 Nov), taken as drawn. Any other size (the
+            240 px favicon) is cropped to its ring and reduced, as the first loader screen did (Batch 16)
   LDR_WORD  the DØG-5 pixel wordmark: Yatra One at 48 px on a 1-bit grid, Sun Yellow letters, a 1 px black
             outline, a hard Acid Chartreuse shadow 4 px down and right; 2 bits a pixel
             (0 background or outline, 2 yellow, 3 chartreuse)
 
 Rows are MSB first. Needs Pillow, NumPy and SciPy (host only; nothing here runs on the unit).
 
-  tools/make_ldr_art.py FAVICON_240.png YatraOne-Regular.ttf [OUT.h]
+  tools/make_ldr_art.py assets/brand/dog5-head-96.png web/brand/YatraOne-Regular.woff2 [OUT.h]
 """
 import sys
 from pathlib import Path
@@ -26,7 +27,10 @@ WORD_PX, SHADOW = 48, 4
 
 
 def head(path):
-    a = np.asarray(Image.open(path).convert("L"))[CROP[0]:CROP[1], CROP[0]:CROP[1]]
+    a = np.asarray(Image.open(path).convert("L"))
+    if a.shape == (HEAD, HEAD):          # hand-pixelled at the size it is shown: every pixel as drawn
+        return a > 127
+    a = a[CROP[0]:CROP[1], CROP[0]:CROP[1]]
     im = Image.fromarray(a).resize((HEAD, HEAD), Image.BOX)
     return np.asarray(im) > 127
 

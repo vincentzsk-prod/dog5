@@ -1,0 +1,17 @@
+# The boot animation (Batch 21, firmware/src/dog5_splash.h), whole ("splash": without it the host stops it at 2.4 s, the
+# old splash's length, so every other script keeps its timing). tests/run_host.sh tests/splash.txt -> the shots; with an
+# FPS (build/host/obervave OUT tests/splash.txt 25) a film.
+0 splash full
+300 shot   # the favicon, white
+1500 shot   # its white areas cycling
+3800 shot   # the cross-fade to the word
+4600 shot   # DØG-5, cycling
+5300 shot   # the melt
+5800 shot   # the burn, the scene fading up
+5980 expect page 0
+6100 shot   # HOME: the scene, the bars
+6100 expect voices 0
+6200 keys 0x1   # and it plays
+6300 expect voices 1
+6400 keys 0
+6600 end

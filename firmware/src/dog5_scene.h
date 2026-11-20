@@ -140,6 +140,21 @@ static void sc_enter(uint32_t k)
 
 static void sc_leave(void) { sc_k = 0xFFu; bm_n = 0; }
 
+/* one pixel of scene k as HOME first draws it (the field, the dog at rest, no sway), stored byte-swapped as cv_px; the
+ * bars' rows are black. The boot animation (dog5_splash.h) reveals the scene through its burn with this */
+static uint16_t sc_px_rest(uint32_t k, int32_t x, int32_t y)
+{
+    const sa_scene_t *S = &SA_SCENE[k & 3u];
+    const sa_sprite_t *d = S->pose[SC_POSE_REST];
+    int32_t sx = x - d->x, sy = y - d->y;
+    if (y < SA_FIELD_Y || y >= SA_FIELD_Y + SA_FIELD_H || x < 0 || x >= 240) return 0;
+    if (sx >= 0 && sy >= 0 && sx < (int32_t)d->w && sy < (int32_t)d->h) {
+        uint32_t i = d->px[(uint32_t)sy * d->w + (uint32_t)sx];
+        if (i) return d->pal[i - 1u];
+    }
+    return S->pal[S->px[(uint32_t)(y - SA_FIELD_Y) * 240u + (uint32_t)x]];
+}
+
 /* a new pose (and sway): repaints only what changes. REST <-> BARK at no sway: the head's rectangle */
 static void sc_set_pose(uint32_t pose, int32_t dx)
 {

@@ -68,6 +68,7 @@ static volatile uint32_t fm1_ms;                /* milliseconds since power-on (
 #include "lcd.c"
 #define CV_MAX (240u * 120u)                    /* the biggest strip drawn at once (OberVave: the knob page) */
 #include "gfx.c"
+#include "dog5_palette.h"                       /* DØG-5: the platform's own screens in the brand colours */
 
 #define FS 44100u                               /* the sample rate */
 #define HALF_FRAMES 256u                        /* I2S half buffer: 5.8 ms (as sloopDX: the USB audio band is set for it) */
@@ -150,11 +151,11 @@ static void ota_show(uint32_t step, int32_t code)
     static const char *const STEP[] = {"", "PACKAGE", "CHECK HEAD", "LOADER", "CONFIRM", "RESTART"};
     if (recovery_active) return;
     lcd_fill(0, 0, 240, 240, C_BLACK);
-    draw_text_box(0, 92, 240, &FONT_S, "UPDATE", C_WHITE, 1);
+    draw_text_box(0, 92, 240, &FONT_S, "UPDATE", BR_FOAM_WHITE, 1);
     if (step < 9u)
-        draw_text_box(0, 124, 240, &FONT_S, STEP[step < 6u ? step : 0], C_WHITE, 1);
+        draw_text_box(0, 124, 240, &FONT_S, STEP[step < 6u ? step : 0], BR_GRIME_OLIVE, 1);
     else
-        draw_text_box(0, 124, 240, &FONT_S, code == 1 ? "DRY RUN OK" : "FAILED", C_WHITE, 1);
+        draw_text_box(0, 124, 240, &FONT_S, code == 1 ? "DRY RUN OK" : "FAILED", code == 1 ? BR_ACID_CHARTREUSE : BR_RAY_RED, 1);
 }
 static void ota_commit(const uint8_t *parm)
 {
@@ -353,7 +354,7 @@ static void fm1_fault(const fm1_crash_t *c)
     char b[12];
     uint32_t i, t0, v[3] = {c->vec, c->pc, c->rets};
     fm1_audio_stop();
-    lcd_fill(0, 0, 240, 240, RGB(160, 0, 0));
+    lcd_fill(0, 0, 240, 240, BR_RAY_RED);
     draw_text_box(0, 20, 240, &FONT_S, APP_NAME " CRASH", C_WHITE, 1);
     for (i = 0; i < 3u; i++) {
         uint32_t k;

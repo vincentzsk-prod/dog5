@@ -132,6 +132,7 @@ static int psect_save(uint32_t i, const void *p, uint32_t n)
     printf("%6u ms  programs %u saved (%u B)\n", fm1_ms, i, n);
     return 0;
 }
+static int host_splash_full;                    /* dog5_splash.h: run the whole boot animation (a script's "splash") */
 static int host_selftest;                       /* "selftest" argv: run store_selftest() (obervave.c) instead of the app */
 
 static uint8_t mq[64][3];
@@ -199,6 +200,8 @@ static void read_script(const char *path)
         int ea = 0, eb = 0;
         if (line[0] == '#' || sscanf(line, "%u %15s", &e.t, what) != 2) continue;
         if (!strcmp(what, "end")) { end_ms = e.t; continue; }
+        if (!strcmp(what, "splash")) { host_splash_full = 1; continue; }   /* "0 splash full": the whole boot animation
+                                                                            (otherwise it stops at 2.4 s, the old splash) */
         if (!strcmp(what, "keys")) { sscanf(line, "%*u %*s %i", (int *)&e.keys); }
         else if (!strcmp(what, "btn")) { sscanf(line, "%*u %*s %d", &e.btn); }          /* a tap */
         else if (!strcmp(what, "btndown")) { sscanf(line, "%*u %*s %d", &e.btn); e.btn += 100; }   /* held ... */

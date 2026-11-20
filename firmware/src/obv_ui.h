@@ -1,24 +1,30 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
-/* The screen: an own design (no copied trade dress). A blue-black panel with light blue legends, as the classic
- * American polys had them, a red LED program number drawn as 7-segment digits, "OBERVAVE" with three blue bands
- * through the lower half of the letters, four anti-aliased round knobs with a blue value arc, a scope strip, eight
- * round voice LEDs. 240 x 240:
- *   0..43    header: program number, name, tags, the logo
+/* The screen of every page but HOME (HOME is the scene: dog5_scene.h). DØG-5's look since Batch 21, in the brand palette
+ * (dog5_palette.h): black, the legends Foam White, the dim ones Grime Olive, the accent (the page's name, the knobs' value
+ * arcs, the scope's trace) Acid Chartreuse, the program number as 7-segment digits in Acid Chartreuse over unlit Plum
+ * Night segments (as the update screen's bar), the rules and the knobs' tracks Sky Violet, the scope on Jungle Deep, the
+ * voice LEDs Ray Pink, the pixel wordmark (Sun Yellow, outlined, an Acid Chartreuse shadow) in the header. The layout is
+ * OberVave's (zvenson); its blue-black panel, red digits and banded logo are gone. 240 x 240:
+ *   0..43    header: program number, name, tags, the wordmark
  *   46..143  the page: title between rules, four knobs (label above, value below)
  *   146..195 the scope
  *   200..236 the voice LEDs */
-#define C_PANEL RGB(14, 18, 28)                 /* blue-black */
-#define C_CREAM RGB(226, 232, 240)              /* the legends: near white, a little cold */
-#define C_AMBER RGB(96, 176, 255)               /* the accent: the light blue of the originals' silkscreen */
-#define C_RED RGB(255, 44, 32)
-#define C_RED_DIM RGB(62, 18, 14)
-#define C_DIMT RGB(120, 142, 172)
-#define C_RULE RGB(48, 60, 84)
-#define C_KNOB RGB(38, 44, 56)
-#define C_KNOB_HI RGB(84, 96, 118)
-#define C_SCOPE_BG RGB(8, 12, 22)
-#define C_SCOPE_MID RGB(28, 40, 64)
-static const uint16_t STRIPE[3] = {RGB(30, 70, 190), RGB(60, 130, 235), RGB(120, 190, 255)};
+#include "dog5_palette.h"
+#include "dog5_ui_art.h"
+#define C_PANEL BR_BLACK                        /* the background */
+#define C_TEXT BR_FOAM_WHITE                    /* the legends and values */
+#define C_ACCENT BR_ACID_CHARTREUSE             /* what is being touched / where we are */
+#define C_ALERT BR_RAY_PINK                     /* SAVE?, the CPU readout */
+#define C_DIM BR_GRIME_OLIVE                    /* the knobs' labels, the tags, the second hint line */
+#define C_RULE BR_SKY_VIOLET                    /* rules, the knobs' tracks */
+#define C_KNOB BR_PLUM_NIGHT
+#define C_KNOB_HI BR_SKY_VIOLET
+#define C_DIGIT BR_ACID_CHARTREUSE
+#define C_DIGIT_OFF BR_PLUM_NIGHT
+#define C_SCOPE_BG BR_JUNGLE_DEEP
+#define C_SCOPE_MID BR_JUNGLE
+#define C_LED_OFF BR_PLUM_NIGHT
+#define C_LED_ON BR_RAY_PINK
 
 /* a * (1 - t) + b * t for RGB565, t = 0..256 */
 static uint16_t blend565(uint16_t a, uint16_t b, uint32_t t)
@@ -91,19 +97,19 @@ static void cv_arc(int32_t cx, int32_t cy, int32_t rad, int32_t deg0, int32_t de
 static void cv_knob(int32_t cx, int32_t cy, const char *label, const char *value, int32_t v, int32_t max, int32_t bip)
 {
     int32_t ang = 225 - (max ? 270 * v / max : 0), px, py, qx, qy, r = 15;
-    cv_text(cx - text_w(&FONT_S, label) / 2, cy - 44, &FONT_S, label, C_DIMT);
+    cv_text(cx - text_w(&FONT_S, label) / 2, cy - 44, &FONT_S, label, C_DIM);
     cv_arc(cx, cy, r + 6, 225, -45, C_RULE);
     if (bip) {
-        if (ang < 90) cv_arc(cx, cy, r + 6, 90, ang, C_AMBER);
-        else cv_arc(cx, cy, r + 6, ang, 90, C_AMBER);
+        if (ang < 90) cv_arc(cx, cy, r + 6, 90, ang, C_ACCENT);
+        else cv_arc(cx, cy, r + 6, ang, 90, C_ACCENT);
     } else
-        cv_arc(cx, cy, r + 6, 225, ang, C_AMBER);
+        cv_arc(cx, cy, r + 6, 225, ang, C_ACCENT);
     cv_disc(cx, cy, r, 0, C_KNOB);
     cv_disc(cx, cy, r, 2, C_KNOB_HI);
     knob_xy(cx, cy, 5, ang, &px, &py);
     knob_xy(cx, cy, r - 2, ang, &qx, &qy);
-    cv_line2(px, py, qx, qy, C_CREAM);
-    cv_text(cx - text_w(&FONT_S, value) / 2, cy + 24, &FONT_S, value, C_CREAM);
+    cv_line2(px, py, qx, qy, C_TEXT);
+    cv_text(cx - text_w(&FONT_S, value) / 2, cy + 24, &FONT_S, value, C_TEXT);
 }
 
 /* 7-segment digit, w 16 x h 28, thickness 4: segments a (top) b c d (bottom) e f g (middle) */
@@ -121,28 +127,15 @@ static void cv_seg7(int32_t x, int32_t y, uint32_t digit, uint16_t on, uint16_t 
     cv_rect(x + 2, y + h / 2 - 2, w - 4, t, m & 64u ? on : off);          /* g */
 }
 
-/* the stripes: three bands of `band` px from row y0. In the letters (text_only, the logo) the text takes the
- * band's colour by its brightness; across the screen (the splash) the band runs up to x_to and the letters
- * stand in it as dark cut-outs */
-static void cv_stripes(int32_t y0, int32_t band, int32_t gap, int32_t x_to, int32_t text_only)
+/* the pixel wordmark (dog5_ui_art.h, 2 bits a pixel: 0 clear, 2 Sun Yellow, 3 Acid Chartreuse) with its top left at x, y */
+static void draw_wordmark(int32_t x, int32_t y)
 {
-    int32_t b, y, x;
-    for (b = 0; b < 3; b++)
-        for (y = y0 + b * (band + gap); y < y0 + b * (band + gap) + band; y++)
-            for (x = 0; x < (int32_t)cv_w; x++) {
-                uint16_t c = cv_get(x, y);
-                uint32_t g = (c >> 5) & 63u, is_text = c != C_PANEL && c != C_BLACK && g > 14u;   /* brighter than the panel */
-                if (text_only) {
-                    if (is_text) cv_pset(x, y, blend565(C_PANEL, STRIPE[b], g * 256u / 63u));
-                } else if (x < x_to)
-                    cv_pset(x, y, is_text ? blend565(STRIPE[b], C_PANEL, g * 256u / 63u) : STRIPE[b]);
-            }
-}
-
-static void draw_logo_small(int32_t x, int32_t y)   /* the name in FONT_S with the bands through the lower half */
-{
-    cv_text(x, y, &FONT_S, DOG5_NAME, C_CREAM);
-    cv_stripes(y + 10, 2, 0, 0, 1);
+    uint32_t i, j;
+    for (j = 0; j < UI_WORD_H; j++)
+        for (i = 0; i < UI_WORD_W; i++) {
+            uint32_t v = UI_WORD[j * ((UI_WORD_W + 3u) / 4u) + i / 4u] >> (6u - 2u * (i & 3u)) & 3u;
+            if (v >= 2u) cv_pset(x + (int32_t)i, y + (int32_t)j, v == 2u ? BR_SUN_YELLOW : BR_ACID_CHARTREUSE);
+        }
 }
 
 /* ---- the parts of the screen (the app decides when) */
@@ -151,14 +144,14 @@ static void ui_header(uint32_t prog, const uint8_t *name, uint32_t edited, const
     char n[PATCH_NAME + 2];
     uint32_t i;
     cv_begin(240, 44, C_PANEL);
-    cv_seg7(6, 6, (prog + 1u) / 10u, C_RED, C_RED_DIM);
-    cv_seg7(26, 6, (prog + 1u) % 10u, C_RED, C_RED_DIM);
+    cv_seg7(6, 6, (prog + 1u) / 10u, C_DIGIT, C_DIGIT_OFF);
+    cv_seg7(26, 6, (prog + 1u) % 10u, C_DIGIT, C_DIGIT_OFF);
     for (i = 0; i < PATCH_NAME; i++) n[i] = (char)name[i];
     n[PATCH_NAME] = edited ? '*' : 0;
     n[PATCH_NAME + 1] = 0;
-    cv_text(54, 4, &FONT_S, n, C_CREAM);
-    cv_text(54, 22, &FONT_S, tags, C_DIMT);
-    draw_logo_small(240 - 4 - text_w(&FONT_S, DOG5_NAME), 4);
+    cv_text(54, 4, &FONT_S, n, C_TEXT);
+    cv_text(54, 22, &FONT_S, tags, C_DIM);
+    draw_wordmark(240 - 4 - (int32_t)UI_WORD_W, 5);
     cv_rect(0, 42, 240, 1, C_RULE);
     cv_blit(0, 0);
 }
@@ -169,7 +162,7 @@ static void ui_page(const char *title, const knob_view_t *k, const char *note)
     int32_t tw = text_w(&FONT_S, title), i;
     cv_begin(240, 98, C_PANEL);
     cv_rect(6, 9, (240 - tw) / 2 - 14, 1, C_RULE);
-    cv_text((240 - tw) / 2, 1, &FONT_S, title, C_AMBER);
+    cv_text((240 - tw) / 2, 1, &FONT_S, title, C_ACCENT);
     cv_rect((240 + tw) / 2 + 8, 9, (240 - tw) / 2 - 14, 1, C_RULE);
     for (i = 0; i < 4; i++)
         if (k[i].present) {
@@ -177,7 +170,7 @@ static void ui_page(const char *title, const knob_view_t *k, const char *note)
             app_idle();                         /* (a knob is ~1 ms: the keys and MIDI in between) */
         }
     if (note)
-        cv_text(240 - 4 - text_w(&FONT_S, note), 1, &FONT_S, note, C_RED);
+        cv_text(240 - 4 - text_w(&FONT_S, note), 1, &FONT_S, note, C_ALERT);
     cv_blit(0, 46);
 }
 
@@ -196,16 +189,16 @@ static void ui_map(const char *title, const knob_view_t *k, const char *knob_not
 {
     int32_t i, xw = 0;
     cv_begin(240, MAP_HEAD, C_PANEL);
-    cv_text((240 - text_w(&FONT_S, title)) / 2, 0, &FONT_S, title, C_AMBER);
+    cv_text((240 - text_w(&FONT_S, title)) / 2, 0, &FONT_S, title, C_ACCENT);
     for (i = 0; i < 4; i++) {
         if (k[i].present)
-            cv_text(30 + 60 * i - text_w(&FONT_S, k[i].label) / 2, 16, &FONT_S, k[i].label, C_CREAM);
+            cv_text(30 + 60 * i - text_w(&FONT_S, k[i].label) / 2, 16, &FONT_S, k[i].label, C_TEXT);
         else if (!knob_note)
             cv_text(30 + 60 * i - text_w(&FONT_S, "-") / 2, 16, &FONT_S, "-", C_RULE);
         if (i && !knob_note) cv_rect(60 * i, 18, 1, 13, C_RULE);
     }
     if (knob_note)
-        cv_text((240 - text_w(&FONT_S, knob_note)) / 2, 16, &FONT_S, knob_note, C_DIMT);
+        cv_text((240 - text_w(&FONT_S, knob_note)) / 2, 16, &FONT_S, knob_note, C_DIM);
     cv_rect(0, 31, 240, 1, C_RULE);
     cv_blit(0, 0);
     app_idle();
@@ -217,10 +210,10 @@ static void ui_map(const char *title, const knob_view_t *k, const char *knob_not
         if (i == 0 || i == 6) cv_begin(240, i ? 112 : 96, C_PANEL);   /* a new strip: rows 0-5 from y 32, rows 6-12 from y 128 */
         y = i < 6 ? i * 16 : (i - 6) * 16;
         if (!r[i].what)
-            cv_text((240 - text_w(&FONT_S, r[i].label)) / 2, y, &FONT_S, r[i].label, C_AMBER);
+            cv_text((240 - text_w(&FONT_S, r[i].label)) / 2, y, &FONT_S, r[i].label, C_ACCENT);
         else {
-            cv_text(4, y, &FONT_S, r[i].label, i == hi ? C_AMBER : C_CREAM);
-            cv_text(xw, y, &FONT_S, r[i].what, i == hi ? C_AMBER : C_DIMT);
+            cv_text(4, y, &FONT_S, r[i].label, i == hi ? C_ACCENT : C_TEXT);
+            cv_text(xw, y, &FONT_S, r[i].what, i == hi ? C_ACCENT : C_DIM);
         }
         app_idle();                             /* (a row is ~1 ms: the keys and MIDI in between) */
         if (i == 5) { cv_blit(0, MAP_HEAD); app_idle(); }
@@ -235,7 +228,7 @@ static void ui_scope(const int16_t *s, uint32_t n)
     cv_begin(240, 50, C_SCOPE_BG);
     cv_rect(0, 25, 240, 1, C_SCOPE_MID);
     for (i = 1; i < n; i++)
-        cv_line((int32_t)i - 1, 25 - clampi(s[i - 1u] >> 9, -23, 23), (int32_t)i, 25 - clampi(s[i] >> 9, -23, 23), C_AMBER);
+        cv_line((int32_t)i - 1, 25 - clampi(s[i - 1u] >> 9, -23, 23), (int32_t)i, 25 - clampi(s[i] >> 9, -23, 23), C_ACCENT);
     cv_blit(0, 146);
 }
 
@@ -245,7 +238,7 @@ static void ui_leds(const volatile int32_t *level, uint32_t n)
     cv_begin(240, 36, C_PANEL);
     for (v = 0; v < n; v++) {
         uint32_t l = (uint32_t)level[v] >> 7;   /* 0..255 */
-        uint16_t c = blend565(C_RED_DIM, RGB(255, 70, 40), l), halo = blend565(C_PANEL, RGB(255, 70, 40), l / 4u);
+        uint16_t c = blend565(C_LED_OFF, C_LED_ON, l), halo = blend565(C_PANEL, C_LED_ON, l / 4u);
         int32_t cx = 22 + (int32_t)v * 28;
         if (l > 8u) cv_disc(cx, 17, 10, 0, halo);
         cv_disc(cx, 17, 6, 0, c);
@@ -259,43 +252,6 @@ static void ui_hints(const char *l1, const char *l2, uint16_t c1)
 {
     cv_begin(240, 36, C_PANEL);
     cv_text((240 - text_w(&FONT_S, l1)) / 2, 1, &FONT_S, l1, c1);
-    cv_text((240 - text_w(&FONT_S, l2)) / 2, 19, &FONT_S, l2, C_DIMT);
+    cv_text((240 - text_w(&FONT_S, l2)) / 2, 19, &FONT_S, l2, C_DIM);
     cv_blit(0, 200);
-}
-
-/* the splash: the name, plain, struck like a neon tube (a few flickers, then full), the line under it fades in.
- * ~2.4 s, polls meanwhile. The first splash was the OberVave wordmark (firmware/gen/obv_splash.h, tools/make_logo.py
- * --splash: both stay in the tree, no longer included); a richer one comes with the artwork. x_to is kept for that
- * (the bands' sweep, unused now) so ui_splash's timing stays as it was */
-#define SPLASH_H 49
-#define SPLASH_Y 70
-static void splash_frame(uint32_t fade, int32_t x_to, uint32_t sub)
-{
-    uint16_t c = fade >= 256u ? C_CREAM : blend565(C_PANEL, C_CREAM, fade);
-    (void)x_to;
-    cv_begin(240, SPLASH_H + 40, C_PANEL);
-    cv_text((240 - text_w(&FONT_S, DOG5_NAME)) / 2, 16, &FONT_S, DOG5_NAME, c);
-    if (sub) {                                      /* the line under the name, in two rows */
-        const char *t1 = "8-VOICE ANALOG POLY", *t2 = "M-VAVE FM-1";
-        uint16_t c2 = sub >= 256u ? C_AMBER : blend565(C_PANEL, C_AMBER, sub);
-        cv_text((240 - text_w(&FONT_S, t1)) / 2, SPLASH_H + 14, &FONT_S, t1, c2);
-        cv_text((240 - text_w(&FONT_S, t2)) / 2, SPLASH_H + 28, &FONT_S, t2, c2);
-    }
-    cv_blit(0, SPLASH_Y);
-}
-
-static void ui_splash(void)
-{
-    /* the strike: dark, two short flashes, a dip, then it holds (per 40 ms frame, 0..256) */
-    static const uint16_t STRIKE[12] = {0, 90, 20, 0, 200, 60, 30, 256, 180, 256, 256, 256};
-    uint32_t t0 = fm1_ms, k;
-    lcd_fill(0, 0, 240, 240, C_PANEL);
-    for (k = 0; k < 30u; k++) {
-        uint32_t fade = k < 12u ? STRIKE[k] : 256u, sub = k < 16u ? 0u : (k - 16u) * 32u;
-        int32_t x_to = k < 10u ? 0 : (int32_t)((k - 10u) * (k - 10u) * 240u / 196u) + 2;   /* eases in, 10 .. 24 */
-        splash_frame(fade, x_to, sub);
-        while (fm1_ms - t0 < 40u * (k + 1u)) platform_poll();
-    }
-    while (fm1_ms - t0 < 2400u) platform_poll();     /* it stands for a while: 2.4 s from power-on */
-    lcd_fill(0, 0, 240, 240, C_PANEL);
 }

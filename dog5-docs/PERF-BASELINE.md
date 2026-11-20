@@ -1,12 +1,17 @@
 # Host CPU baseline — stock OberVave (v1.5.3, before any DØG-5 engine change)
 
-## Now (18 Nov 2026, after Batch 15, the write-lock; v0.2 = `FM-1_962`, package SHA-256 `b2be33a9…6b96`, had image 82,352 B)
+## Now (20 Nov 2026, after Batch 21, the branding: v0.4 = `FM-1_964`)
 
 | | Used | Of | Free |
 |---|---|---|---|
-| Image | 82,536 B | 581,564 B | 499,028 B |
-| RAM (`.data` + `.bss`) | 32,432 B | 98,304 B | 65,872 B |
-| Pool (`.pool`) | 304,896 B | 344,064 B | 39,168 B |
+| Image | 388,952 B | 581,564 B | 192,612 B |
+| RAM (`.data` + `.bss`) | 34,512 B | 98,304 B | 63,792 B |
+| Pool (`.pool`) | 308,496 B | 344,064 B | 35,568 B |
+
+Where the image went: the four scenes and the dog (Batch 20) 265,489 B of tables; the boot animation's favicon, word and
+tables (Batch 21) ~33 KB; the code ~90 KB. The boot animation costs no audio time (it runs before any note can play) and
+about 10 M host instructions a frame (the device draws ~8-10 frames a second of it; the SPI link, 77 ms a full screen, is
+most of a frame). Before the art (18 Nov, Batch 15): image 82,536 B, RAM 32,432 B, pool 304,896 B.
 
 Measured on the device (GLOBAL page `CPU <n>us`, audio only, ±100 µs; budget 5,800 µs): patch 30 THE DØG at about 97 %
 of the budget with four notes and the chain pushed (Vincent, Nov 2026). The image / RAM / pool figures inside the dated

@@ -43,6 +43,8 @@ run "FM-1 SELECT dial: LFO RATE on HOME (2 a detent, clamped), nothing on other 
 run "FM-1 REC = HOLD: one latch with the ARP button, ORed with the pedal, released by STOP only" sh tests/run_host.sh tests/controls/rec_hold.txt
 run "FM-1 write-lock: THE POUND (1-32) reads the factory, SAVE goes to THE PACK (33-99) only, PRESETS while armed stays in 33-99" sh tests/run_host.sh tests/controls/write_lock.txt
 # layer-lock with HOME acting on its release: hold FX + tap HOME locks; the tap never goes HOME; FX / ENV let it go
+run "FM-1 boot animation: the whole ~6 s, ending on HOME, which then plays" sh tests/run_host.sh tests/splash.txt
+run "FM-1 boot animation: a key pressed during it ends it and sounds at once" sh tests/run_host.sh tests/splash_skip.txt
 run "FM-1 HOME scene: the four chapters, REST / BARK + the beam, MOONSHINE's howl, out to EDIT and back, PACK slots follow the chapters" sh tests/run_host.sh tests/scene.txt
 run "FM-1 layer-lock: FX held + HOME tapped locks (no jump HOME), the lock outlives FX's release, FX or ENV ends it" sh tests/run_host.sh tests/layer_lock.txt
 # the live tricks (tests/trick): PLAY = STOP, the kill switch ("T expect peak MS MAX": the output's peak over the last MS ms)
