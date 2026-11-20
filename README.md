@@ -8,7 +8,7 @@ open source, GPL-3.0-only. The build brief and the reasoning are in [`CLAUDE.md`
 
 > **Status (20 Nov 2026): a pre-release test build, v0.4, package identity `FM-1_964`** (v0.2, `FM-1_962`, was flashed and
 > played on a real FM-1; v0.3 added the POUND write-lock and the MIDI-panic HOLD release; v0.4 adds the screen art: HOME is
-> the chapter's scene, the dog, and his bark as the live scope. Not yet on the unit). Made and tested for the **FM-1 only** (the SMK-37 is not supported).
+> the chapter's scene, the dog, and his bark as the live scope; the boot animation; the DØG-5 look on every screen. Not yet on the unit). Made and tested for the **FM-1 only** (the SMK-37 is not supported).
 
 **Install it:** the self-hosted installer page, [`docs/install/`](docs/install/README.md) (Chrome or Edge, over USB:
 <https://vincentzsk-prod.github.io/dog5/install/>). It carries the package inside

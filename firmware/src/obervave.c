@@ -210,6 +210,7 @@ static void randomize(void)
 /* ---- the screen (obv_ui.h draws; this decides what and when) */
 #include "obv_ui.h"
 #include "dog5_scene.h"
+#include "dog5_splash.h"
 
 static void fmt_u(char *s, uint32_t v)          /* decimal, no leading zeros */
 {
@@ -450,8 +451,8 @@ static void draw_hints(void)
     key = toasting ? 100u + ((toast_t / 7u) & 0xFFu) : 400u + layer;
     if (key == hints_key) return;
     hints_key = key;
-    if (toasting) ui_hints(toast, "", C_AMBER);
-    else if (layer == L_FX) ui_hints("KNOBS: GROWL ALLEY", "DRAIN CHEW (THE CHAIN)", C_AMBER);
+    if (toasting) ui_hints(toast, "", C_ACCENT);
+    else if (layer == L_FX) ui_hints("KNOBS: GROWL ALLEY", "DRAIN CHEW (THE CHAIN)", C_ACCENT);
 }
 
 #ifdef OBV_HOST
@@ -926,7 +927,7 @@ static void app_main(void)
     ctl_panic = 0;
     for (k = 0; k < NFAM; k++) fam_last[k] = FAM[k].first;
 
-    ui_splash();
+    dog5_splash(prog % NFACT / 8u);            /* the boot animation, ending on this program's scene */
     scope_state = 1;
 
     for (;;) {

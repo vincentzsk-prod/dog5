@@ -22,8 +22,10 @@ check(WebAssembly.Module.imports(new WebAssembly.Module(fs.readFileSync(WASM))).
 check(ex.sim_init(44100) === 0, 'sim_init(44100)');
 ex.sim_master(1024);                                    // unity, as the host's WAV
 
-// the script, in tests/host.c's words (T ms: keys MASK / btn ID / enc ID N / midi ST D1 D2 / shot / end)
+// the script, in tests/host.c's words (T ms: keys MASK / btn ID / enc ID N / midi ST D1 D2 / shot / end; "splash":
+// the host runs the whole boot animation, as the browser always does)
 const SCRIPT = `
+0 splash full
 2600 shot
 3000 keys 0x4880
 3400 shot

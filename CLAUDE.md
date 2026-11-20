@@ -336,7 +336,9 @@ fracture.
 
 Stages 1–2 need nothing but the repo. Stage 3 gates on the hand-drawn art. **Stage 3 started (Batch 20, v0.4):** the four
 fields, the dog (REST / BARK, MOONSHINE's howl), the beam and the rest sway on HOME, with the top/bottom bars
-(`dog5_scene.h`, `dog5-docs/BATCH-20-SCREEN-ART.md`). Still to come: FLEAS + fracture, chapter accents, boot splash.
+(`dog5_scene.h`, `dog5-docs/BATCH-20-SCREEN-ART.md`). **Batch 21:** the boot animation (Vincent's launch screen: `dog5_splash.h`), the
+panel pages and map in the brand palette (`dog5_palette.h`), the hand-pixelled head on the update screen, the OberVave logo files
+gone (`dog5-docs/BATCH-21-BRANDING.md`). Still to come: FLEAS + fracture, chapter accents.
 
 ---
 
@@ -348,8 +350,8 @@ fields, the dog (REST / BARK, MOONSHINE's howl), the beam and the rest sway on H
    `"DOG5"` store tag, 3 program sectors (42/sector). Proven by the host self-test (99 patches round-trip
    byte-exact across a power cycle, save-isolation, old 80-byte "BOVP" sector rejected as empty INIT).
 3. **FM-1** — arrived; **v0.2 (`FM-1_962`, package SHA-256 `b2be33a9…6b96`) flashed and tested on the unit 18 Nov**.
-   v0.3 (`FM-1_963`, Batch 15: write-lock + panic) was never flashed. **v0.4 (`FM-1_964`, package SHA-256 `34a0a4e7…809d`, Batch 20:
-   the screen art on HOME) is on the installer page, not yet on the unit.**
+   v0.3 (`FM-1_963`, Batch 15: write-lock + panic) was never flashed. **v0.4 (`FM-1_964`, package SHA-256 `f5ceddc4…a033`, Batches 20 + 21:
+   the screen art on HOME, the boot animation and the brand look everywhere) is on the installer page, not yet on the unit.**
    v0.1 as published is commit `7a1fba8` (the installer page with `dog5-0.1-20261112.fwsc`, sha256 `3de092d5…7f6a`).
    Never push a `v*` tag casually: `release.yml` builds and publishes a release on `v*` tags.
 4. **The 15–16 hand-drawn assets** (build kit §1) — the only thing gating Stage 3.
@@ -379,7 +381,7 @@ fields, the dog (REST / BARK, MOONSHINE's howl), the beam and the rest sway on H
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
-  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK) and `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4).
+  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look).
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

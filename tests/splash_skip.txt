@@ -1,0 +1,7 @@
+# The boot animation ends at a press: a key at 1.5 s plays at once (no waiting out the ~6 s animation), a button too.
+0 splash full
+1500 keys 0x1
+1520 expect voices 1   # the key ended the animation and sounds
+1520 shot
+1600 keys 0
+2000 end

@@ -89,7 +89,7 @@ GPL-3.0. Identity `FM-1_95N`. Name by the user ("OberVave": Ober... + M-VAVE).
   it (its screen takes no time): sound and screens there are bit-identical to before.
 - `tools/gen_tables.py` -> `firmware/gen/obv_tables.h` (committed): pitch, SVF g, tanh, envelope / LFO / glide
   coefficients, pan, cos.
-- The logo: `tools/make_logo.py` -> `assets/logo*.svg|png` (red glowing serif outlines, three blue bands through the
+- (Removed in DØG-5 Batch 21, in the git history: the OberVave logo, `assets/logo*`, `tools/make_logo.py` and `firmware/gen/obv_splash.h`; DØG-5 has its own wordmark and boot animation.) The logo was: `tools/make_logo.py` -> `assets/logo*.svg|png` (red glowing serif outlines, three blue bands through the
   letters; `logo_svg()` draws it with parameters). `--splash` -> `firmware/gen/obv_splash.h` (committed): the boot
   screen, 240 x 49, two layers (letters; letters + bands) RLE over one RGB565 palette, ~31 KB; `ui_splash` strikes
   it like a neon tube (flicker), sweeps the bands in, fades the line under it in, 2.4 s. Pillow's quantizer + the
