@@ -1,0 +1,34 @@
+# HOME's scene (Batch 20): the four chapters, the dog at rest and barking (the beam from his mouth), MOONSHINE's howl,
+# leaving HOME and coming back. tests/run_host.sh tests/scene.txt -> shots; with an FPS, a film.
+1000 expect page 0
+1900 shot   # I JALOPY, at rest
+2000 midi 0x90 60 100
+2200 shot   # barking: the beam
+2300 midi 0x80 60 0
+2600 midi 0xC0 8 0   # II BEE-TCH
+2900 expect idle 2   # the whole-scene draw yields to the notes after each strip (and lcd_blit inside each wait)
+3000 shot
+3100 midi 0x90 52 110
+3300 shot
+3400 midi 0x80 52 0
+4200 midi 0xC0 16 0   # III MOONSHINE
+4600 shot
+4700 midi 0x90 48 110
+4900 shot   # bark
+5300 shot   # drawing breath
+6000 shot   # the howl
+6100 midi 0x80 48 0
+7000 midi 0xC0 24 0   # IV ACID CAN
+7400 shot
+7500 midi 0x90 64 100
+7700 shot
+7800 midi 0x80 64 0
+8600 btn 6   # EDIT: the panel
+8700 expect page 1
+8900 shot
+9000 btn 8   # HOME again (on release): the scene
+9300 expect page 0
+9500 shot
+9600 midi 0xC0 40 0   # program 41: THE PACK follows the POUND's chapters (41 = 9 + 32: II)
+10000 shot
+10500 end

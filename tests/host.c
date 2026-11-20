@@ -351,7 +351,7 @@ static void platform_poll(void)                 /* one call = one millisecond */
             host_fails += r != want;
         } else if (script[step].kind == HS_IDLE) {
             uint32_t n = host_map_idle_calls(), want = script[step].sb;
-            printf("%6u ms  expect idle >= %u: the last map draw called app_idle %u times  %s\n", fm1_ms, want, n, n >= want ? "ok" : "FAIL");
+            printf("%6u ms  expect idle >= %u: the last full-screen draw called app_idle %u times  %s\n", fm1_ms, want, n, n >= want ? "ok" : "FAIL");
             host_fails += n < want;
         } else if (script[step].st) {
             mq[mq_w % 64u][0] = script[step].st; mq[mq_w % 64u][1] = script[step].d1; mq[mq_w % 64u][2] = script[step].d2;

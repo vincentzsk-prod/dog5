@@ -1,0 +1,123 @@
+{
+ "note": "Exported from the art pass of 20 Nov 2026, approved by Vincent. x, y: the sprite's top-left on the screen; beam: where the beam leaves the mouth, in sprite pixels.",
+ "scenes": {
+  "I": {
+   "field": "field-1-jalopy.png",
+   "poses": {
+    "1-REST": {
+     "sprite": "dog-1-rest.png",
+     "x": 96,
+     "y": 41,
+     "w": 104,
+     "h": 109,
+     "beam": null
+    },
+    "2-BARK": {
+     "sprite": "dog-2-bark.png",
+     "x": 96,
+     "y": 42,
+     "w": 106,
+     "h": 108,
+     "beam": [
+      91,
+      47
+     ]
+    }
+   }
+  },
+  "II": {
+   "field": "field-2-bee-tch.png",
+   "poses": {
+    "1-REST": {
+     "sprite": "dog-1-rest-beetch.png",
+     "x": 33,
+     "y": 55,
+     "w": 112,
+     "h": 107,
+     "beam": null
+    },
+    "2-BARK": {
+     "sprite": "dog-2-bark-beetch.png",
+     "x": 33,
+     "y": 55,
+     "w": 115,
+     "h": 107,
+     "beam": [
+      93,
+      56
+     ]
+    }
+   }
+  },
+  "III": {
+   "field": "field-3-moonshine.png",
+   "poses": {
+    "1-REST": {
+     "sprite": "dog-1-rest.png",
+     "x": 7,
+     "y": 94,
+     "w": 104,
+     "h": 109,
+     "beam": null
+    },
+    "2-BARK": {
+     "sprite": "dog-2-bark.png",
+     "x": 7,
+     "y": 95,
+     "w": 106,
+     "h": 108,
+     "beam": [
+      91,
+      47
+     ]
+    },
+    "3-HOWL-INHALE": {
+     "sprite": "dog-3-howl-inhale.png",
+     "x": 6,
+     "y": 97,
+     "w": 96,
+     "h": 106,
+     "beam": [
+      89,
+      32
+     ]
+    },
+    "4-HOWL": {
+     "sprite": "dog-4-howl.png",
+     "x": -21,
+     "y": 94,
+     "w": 116,
+     "h": 106,
+     "beam": [
+      113,
+      12
+     ]
+    }
+   }
+  },
+  "IV": {
+   "field": "field-4-acid-can.png",
+   "poses": {
+    "1-REST": {
+     "sprite": "dog-1-rest.png",
+     "x": 15,
+     "y": 83,
+     "w": 104,
+     "h": 109,
+     "beam": null
+    },
+    "2-BARK": {
+     "sprite": "dog-2-bark.png",
+     "x": 15,
+     "y": 84,
+     "w": 106,
+     "h": 108,
+     "beam": [
+      91,
+      47
+     ]
+    }
+   }
+  }
+ }
+}
