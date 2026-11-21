@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 18 Nov 2026 (Batch 15 write-lock), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 21 Nov 2026 (Batch 25: SELECT's LFO dial, housekeeping), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -81,10 +81,9 @@ its DSP (`obv_dsp.h`) is self-contained, but the engine hookup needs a manual po
 | Patch size | **`PATCH_BYTES 96`** (was 80; grown — §7, done) — 42 patches per 4 KiB sector, 3 sectors | `obv_params.h` |
 | Patch name field | **`PATCH_NAME 14`** (was 10; widened — §7, done), at a fixed offset `PATCH_NAME_AT 80` | `obv_params.h` |
 | Pages | 19 in base (DØG-5 → **21**, see §5), a table of `{title,{4 param ids}}` | `obv_params.h` PG_* |
-| Font | **ASCII 32–126 only**; anything else draws as `?` | `gfx.c`, `felucca_font.h` |
-| ⚠️ Ø renders as `?` | `THE DØG` currently shows `THE D?G` — **fix via `tools/gen_font.py`** (Terminus has Ø) | — |
+| Font | **ASCII 32–126 + Ø** (byte `0xD8`, written `\xD8` in C strings, not UTF-8); anything else draws as `?` | `gfx.c`, `tools/gen_font.py` |
 | Scope capture | already exists: zero-crossing-triggered, stride from the note's period | `obv_engine.h` (`scope[]`) |
-| Transient message | `say(s)` → `toast`/`toast_t` (used for the knob-readout popup) | `obervave.c` |
+| Transient message | `say(s)` → `toast`/`toast_t` (header messages; on HOME the top bar). HOME's knob readout is the dial, `sc_dial` (Batch 24) | `obervave.c`, `dog5_scene.h` |
 | HOME = PERFORM | already in base (`np = PG_PERFORM`); HOME LED lights on it | `obervave.c` |
 | Layer-lock | already in base: hold a layer + tap HOME = lock open; its button releases | `obervave.c` |
 
@@ -96,8 +95,8 @@ its DSP (`obv_dsp.h`) is self-contained, but the engine hookup needs a manual po
 chapter. Pressing HOME from anywhere snaps back to it. This is inherited and already works — do not change it.
 
 **The knob readout is Monologue-style (transient), NOT a permanent HUD.** The art (dog, beam, field, bottom
-bar) is the resting HOME screen. Turn a knob → its value pops over the art briefly (via `say()`/`toast`),
-then decays and the art returns. The bar is never permanently filled with live values.
+bar) is the resting HOME screen. Turn a knob → its dial (the panel's knob: label, arc, value) pops on a plate at the top left
+(`sc_dial`, Batch 24; SELECT's LFO RATE too, labelled `LFO`) and the art returns 1.2 s after the last turn. The bar is never permanently filled with live values.
 
 **The bottom bar carries ONLY the preset number + preset name** (e.g. `17 TITANIC`). No dog name (we know
 his name), no knob values. Legible 16px font (`FONT_S`/Terminus). It is the one element that never degrades
@@ -131,7 +130,7 @@ sends no MIDI; the key right of POLY (F#5) stays a note. A jump updates the fami
 the family, now **on release** (suppressed if a shortcut was used during the hold).
 
 **SELECT (Batch 9B):** on HOME with no layer held, a turn is `P_LFO_RATE`, 2 a detent, clamped 0..127, a real parameter (SAVE
-stores it), header readout `LFO RATE 4.2Hz` for a second; on every other page it does nothing. The old always-on tempo scroll
+stores it), shown as a dial on HOME's plate (`LFO`, 1.2 s, Batch 25); on every other page it does nothing. The old always-on tempo scroll
 is gone: the tempo is GLOBAL knob 1 and the MIDI clock. SAVE armed + SELECT pressed = the dice, and SELECT held on a Psych page =
 the "+" knobs, both as before.
 
@@ -259,7 +258,7 @@ loop.** No new drawing code may block without yielding to notes. That is the who
 - **4 names changed** for the 14-char fit (and taste): 09 Skinhead Bubble→**Skeenhead**, 17 North Water
   Ice→**Titanic**, 18 Rotoscoped Void→**Roto-scopo**, 19 Blackwater Tank→**Blackwater**→(dropped 6 Nov) **Micro-mist**. All other names fit
   at 14 untouched. Longest in the bank: Atlantic Swell / Slapback Strut (14).
-- **Fix the font for Ø first** (§4) or `THE DØG` shows as `THE D?G`.
+- The font has Ø (§4): `THE DØG` reads right.
 
 ---
 
@@ -272,10 +271,10 @@ Governing docs: **`dog5-docs/DOG-5-character-brief.md`** (the world, the dog, th
 (the procedural engines, dials, budget, safety clamps — still canon; ignore their reaper framing).
 
 Key points: the beam is the live scope fired from the dog's mouth (straight only — a bent waveform is mush);
-four scenes JALOPY / BEE-TCH / MOONSHINE / LE GATO; the dog sits left-third, the beam flies to the top-right
-corner, the fields must read in silhouette and keep the beam corridor clear. **Moonshine's colour: purple is
-OUT, replaced by hot bubblegum magenta `#FF2FA0`** (brightest hue RGB565 has after white; can't muddy like
-purple). Hand-drawn art list: ~15–16 drawings (3 dog poses, nose ×2, head-mark, 4 fields, bin ×2, cat ×2,
+four scenes JALOPY / BEE-TCH / MOONSHINE / ACID CAN (Le Gato renamed; `SC_CHAPTER`); the dog sits left-third, the beam flies to the top-right
+corner, the fields must read in silhouette and keep the beam corridor clear. **Colour as built (Batch 23):** the beam is Acid
+Chartreuse in every chapter; the chapter accents are Sun Yellow / Wave Turquoise / Foam White / Acid Chartreuse
+(`SC_ACCENT`, `dog5_palette.h`). The old Moonshine-magenta rule is superseded (purple stays out). Hand-drawn art list: ~15–16 drawings (3 dog poses, nose ×2, head-mark, 4 fields, bin ×2, cat ×2,
 wordmark) — full spec in the build kit.
 
 ---
@@ -328,7 +327,7 @@ families-remember → `P_POLY_N` (done; byte 63, CC 82, VOICE +).
 **Stage 2 — the voice (no art, runs parallel to drawing):** Psych Chain (Drive, Tape, free-ms BBD, spring
 re-voice) → voice the 32 patches by ear → A/B write-lock. **Stage 2 is DONE** (the write-lock in Batch 15).
 **Stage 3 — the screen (needs the art):** dog (REST+BARK registered redraw) → beam → bottom bar + transient
-readout → JALOPY proof scene → the other 3 fields + props (Moonshine magenta) → HOWL + nose → FLEAS + fence
+readout → JALOPY proof scene → the other 3 fields + props (built from Vincent's repaints) → HOWL + nose → FLEAS + fence
 fracture.
 **Stage 4 — release:** head-mark + wordmark → boot splash + update-loader reskin → sim page + installer page
 → GPL `.fwsc` on GitHub → submit to zven@thefirmwarehub.com.
@@ -344,7 +343,9 @@ after TAPE STOP while it runs, a patch carries its chapter (byte 94, `PATCH_CHAP
 the fence and breaks where the bark lands (I scorch, II soak, III fog, IV wreck), healing within 1.2 s; FLEAS on GLOBAL
 knob 2 (CLEAN / ITCH / SCRATCH / MANGE, `set.fleas`); chapter accents Sun Yellow / Wave Turquoise / Foam White / Acid
 Chartreuse (`dog5-docs/BATCH-23-FLEAS-FENCE.md`). **Batch 24:** a knob turned on HOME shows as a dial (the panel's knob: label, arc,
-value) on a plate at the top left for 1.2 s, replacing Batch 22's top-bar number (`sc_dial`). **Stage 3 is done** pending
+value) on a plate at the top left for 1.2 s, replacing Batch 22's top-bar number (`sc_dial`). **Batch 25:** SELECT's LFO RATE on HOME
+shows on the same plate (`LFO`), and the housekeeping: the flash-chip note up front, stale brief lines fixed
+(`dog5-docs/BATCH-25-LFO-DIAL-HOUSEKEEPING.md`). **Stage 3 is done** pending
 Vincent's look on the unit.
 
 ---
@@ -360,12 +361,14 @@ Vincent's look on the unit.
    v0.3 (`FM-1_963`, Batch 15: write-lock + panic) was never flashed. **v0.4 (`FM-1_964`, `f5ceddc4…a033`, Batches 20 + 21: the screen art, the boot animation, the brand look) flashed and
    tested on the unit 20 Nov** (and the leave-for-a-Hub-firmware-and-return cycle, 21 Nov). v0.4.1 (Batch 22: HOME knob readout,
    beam through TAPE STOP, patches keep their scene) was not flashed. v0.4.2 (Batch 23: the fence, FLEAS, the Acid Chartreuse beam,
-   chapter accents) was not flashed. **v0.4.3 (`FM-1_964`, `23a851b7…84b9`, Batch 24: the HOME knob dial; carries Batches 22–23) is on
-   the installer page.**
-   Tested on the older flash chip only (`0x856014`); the newer chip (`0xB36014`) is untested — say so up front in releases.
+   chapter accents) was not flashed. v0.4.3 (Batch 24: the HOME knob dial) was not flashed. **v0.4.4 (`FM-1_964`, Batch 25:
+   SELECT's LFO RATE as a dial; carries Batches 22–24) is on the installer page.**
+   **Tested on the older flash chip only (`0x856014`); the newer chip (`0xB36014`) is untested.** This is said up front in the
+   README, on the installer page (a box under the intro) and its README, and in every GitHub release (`.github/release-header.md`,
+   the workflow's `body_path`). Keep it there until a newer-chip unit has been tested.
    v0.1 as published is commit `7a1fba8` (the installer page with `dog5-0.1-20261112.fwsc`, sha256 `3de092d5…7f6a`).
    Never push a `v*` tag casually: `release.yml` builds and publishes a release on `v*` tags.
-4. **The 15–16 hand-drawn assets** (build kit §1) — the only thing gating Stage 3.
+4. **The hand-drawn assets** — DONE: Vincent's four fields, dog poses and 96 px head are in (Batches 20–21); Stage 3 is built.
 
 ---
 
@@ -382,7 +385,7 @@ Vincent's look on the unit.
   it's a write-lock over 99 slots now).
 - `DOG-5-art-direction.md` + `DOG-5-chapter-specs.md` — procedural engines, dials, dirty-area budget, strobe
   clamps, per-patch rows (⚠️ ignore the reaper/orb/Fifth-Seal framing — the mechanics are canon, the
-  packaging is the dog now, per the character brief; Moonshine is magenta not purple).
+  packaging is the dog now, per the character brief; the colours as built are in §8).
 - `voicing/README.md` (+ `voicing/03-half-life.md`, one log per voiced patch) — the by-ear voicing kit: audition phrases
   (`tests/voicing/phrases/`), the **bank reference level (−18.0 dBFS RMS on the stabs phrase)**, the VINTAGE-in-cents table,
   the measurement tools (`tests/voicing/`), approved-variant renders in `reference-renders/`. Read before voicing any patch.
@@ -392,7 +395,7 @@ Vincent's look on the unit.
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
-  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3).
+  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4).
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

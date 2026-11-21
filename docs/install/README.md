@@ -1,11 +1,17 @@
 # DØG-5 installer (self-hosted page)
 
 `index.html` here installs DØG-5 on an **M-VAVE FM-1** over USB-MIDI, from **Chrome or Edge**. It is one file: the
-package (`dog5-0.4.3-20261121.fwsc`, identity `FM-1_964`) is inside it, and it makes no network request of any kind. It is
+package (`dog5-0.4.4-20261121.fwsc`, identity `FM-1_964`) is inside it, and it makes no network request of any kind. It is
 served by GitHub Pages from `main` `/docs`; the expected address is <https://vincentzsk-prod.github.io/dog5/install/>
 (GitHub's usual form; confirm it once Pages is on). WebMIDI itself needs `https://` or `http://localhost`.
 
-12 Nov 2026. **Not tested against a real unit.** What was tested, and what was not, is at the end.
+> **Tested on one unit, with the older flash chip.** DØG-5 was built and tested on a real FM-1 with the Puya P25Q80 flash
+> chip (JEDEC `0x856014`). This page installed it from the stock firmware (12 Nov 2026, v0.1, Chrome on macOS); v0.4 went on
+> over another Hub firmware and back again (20–21 Nov). Newer FM-1s carry the UC25HQ80 (JEDEC `0xB36014`): the loader
+> accepts it, but **DØG-5 has never been installed or played on one**, so its behaviour there is unknown. On a newer unit,
+> keep M-Flasher and your backup ready, and report what happens.
+
+What the repository's own tests show, and what they do not, is at the end.
 
 ## Using it
 
@@ -20,7 +26,7 @@ served by GitHub Pages from `main` `/docs`; the expected address is <https://vin
 5. **Install…** shows a last box (unit, package, what will be written). Nothing is sent before **Yes, start**.
 6. The page shows step 1 (the running firmware checks the package and switches to the update loader), step 2 (the loader
    writes; percent, one log line per chunk) and then waits for the unit to restart and checks that it reports
-   the package identity (`FM-1_964` for v0.4 to v0.4.3). That is all it can check: it does not test the sound.
+   the package identity (`FM-1_964` for v0.4 to v0.4.4). That is all it can check: it does not test the sound.
 
 If it is interrupted, **unplug, power-cycle, and run the page again**. A unit cut off during step 2 comes back in update
 mode; the page then shows **Resume**, which skips step 1 and serves the package again. The loader skips sectors that
@@ -86,8 +92,8 @@ App-level USB rescue (holding OCT− at power-on) is **unproven on this hardware
 ## Rebuild and tests
 
 ```sh
-./build.sh --release 0.4.3                        # build/dog5-0.4.3.fwsc (needs the JieLi toolchain + SDK)
-python3 tools/make_installer_page.py --release 0.4.3 --date 2026-11-21   # the package and index.html, together
+./build.sh --release 0.4.4                        # build/dog5-0.4.4.fwsc (needs the JieLi toolchain + SDK)
+python3 tools/make_installer_page.py --release 0.4.4 --date 2026-11-21   # the package and index.html, together
 python3 tools/make_installer_page.py --check    # fails if the page or the package beside it have drifted
 sh tests/install/run.sh                         # the proof below
 ```
@@ -104,6 +110,6 @@ What `tests/install/run.sh` shows, without a device:
 - headless Chromium drives the page itself against a fake WebMIDI unit: dry run (no MIDI access), the confirm step (no
   `UPGRADE` byte before it), a full install, a cut-off with the failure text, and the resume.
 
-**Not shown:** anything on a real FM-1 or a real WebMIDI stack (port names and re-enumeration on macOS, Windows, Linux;
+**Not shown by these tests** (the real unit above covers some of it, for the older chip and Chrome on macOS only): anything on a real FM-1 or a real WebMIDI stack (port names and re-enumeration on macOS, Windows, Linux;
 how Chrome delivers large SysEx), the stock firmware's step 1, and the timing under real USB. The fake device asks for
 the real loader's requests but answers instantly.

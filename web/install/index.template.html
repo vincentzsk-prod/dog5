@@ -54,6 +54,7 @@
     <p class="ver" id="ver">{{VERSION}} · {{DATE}}</p>
   </header>
   <p class="sub">Installs the DØG-5 firmware on an M-VAVE FM-1 over USB-MIDI. One page, no server: the package is inside this file. Chrome or Edge only.</p>
+  <div class="box warn" id="tested" style="max-width:720px;margin:0 auto 18px"><b>Tested on one unit, with the older flash chip.</b> DØG-5 was built and tested on a real FM-1 whose flash chip is the Puya P25Q80 (JEDEC <code>0x856014</code>): installed with this page from the stock firmware, over another firmware from the Firmware Hub and back again, and played across several test builds (12–21 Nov 2026). Newer FM-1s carry a UC25HQ80 chip (JEDEC <code>0xB36014</code>). The update loader accepts it, but <b>nobody has installed or played DØG-5 on one yet</b>, so how it behaves there (saving, updates, everything) is unknown. If you have a newer unit, keep M-Flasher and your backup ready, and please report what happens.</div>
 
   <section id="env"><h2>This browser</h2><div id="envbadges"></div><div id="envtext" class="dim"></div></section>
 
@@ -117,7 +118,7 @@
 
   <section><h2>If something goes wrong</h2>
     <p style="margin:0">Unplug the USB cable, power-cycle the FM-1, and run this page again. A unit that was cut off in step 2 starts in update mode; this page then offers <b>Resume</b>. If the unit will not boot, use <b>M-Flasher</b> with your backup. Nothing more ambitious than that is promised here: app-level USB rescue is unproven on this hardware.</p>
-    <p class="dim" style="margin:8px 0 0">Not tested against a real unit by the author of this page. It runs from <code>https://</code> or <code>http://localhost</code> (WebMIDI's rule); a downloaded copy of this file works the same when served that way, and makes no network request of any kind.</p>
+    <p class="dim" style="margin:8px 0 0">Used on a real FM-1 (older flash chip, see the top of the page) from Chrome on macOS. It runs from <code>https://</code> or <code>http://localhost</code> (WebMIDI's rule); a downloaded copy of this file works the same when served that way, and makes no network request of any kind.</p>
   </section>
 </main>
 

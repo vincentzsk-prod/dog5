@@ -302,7 +302,7 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
 
 static uint32_t cut_shown_t;                    /* the header shows the cutoff for a second after it moved */
 static char ro_msg[24];                         /* Batch 9B: a transient readout in the header's tag line, a second: what a control
-                                                 * without a knob on the screen just changed (SELECT's LFO RATE, the MONO / POLY keys) */
+                                                 * without a knob on the screen just changed (the MONO / POLY keys; SELECT's LFO RATE is a dial since Batch 24) */
 static uint32_t ro_t;
 static void readout(const char *label, uint32_t p)
 {
@@ -900,7 +900,8 @@ static void scene_tick(uint32_t *t_hdr)
         knob_view_t kv;
         int32_t p = home_dial_p;
         home_dial_dirty = 0; t_dial = fm1_ms;
-        kv.label = PDEF[p].name; kv.v = live.v[p]; kv.max = PDEF[p].max; kv.present = 1;
+        kv.label = p == P_LFO_RATE ? "LFO" : PDEF[p].name;   /* (no LFO page on HOME: "LFO" over a value in Hz; "LFO RATE" overruns the plate) */
+        kv.v = live.v[p]; kv.max = PDEF[p].max; kv.present = 1;
         kv.bip = PDEF[p].kind == K_BIP || PDEF[p].kind == K_SEMI || PDEF[p].kind == K_MORPH;
         kv.value[0] = 0;
         param_value(kv.value, (uint32_t)p, (uint32_t)live.v[p]);
@@ -1098,8 +1099,8 @@ static void app_main(void)
                                                  * lives on GLOBAL knob 1 and the MIDI clock, as before) */
             if (page == PG_PERFORM && !layer) {
                 set_param(P_LFO_RATE, (int32_t)live.v[P_LFO_RATE] + e * 2);
-                readout("LFO RATE", P_LFO_RATE);
-                dirty_hdr = dirty_page = 1;
+                home_dial_p = P_LFO_RATE; home_dial_t = fm1_ms; home_dial_dirty = 1;   /* the dial, as a HOME knob (Batch 24) */
+                dirty_page = 1;
             }
         }
         if ((e = fm1_enc_take(ENC_ALGORITHM)) != 0) {   /* SLOBBER: the SLOP ride, on any page, on top of the sound's
