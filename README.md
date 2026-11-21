@@ -6,19 +6,19 @@
 voices, a Psych Chain of GROWL / ALLEY / DRAIN / CHEW after them, 99 program slots with 32 factory patches). Free and
 open source, GPL-3.0-only. The build brief and the reasoning are in [`CLAUDE.md`](CLAUDE.md) and [`dog5-docs/`](dog5-docs/).
 
-> **Status (21 Nov 2026): a pre-release test build, v0.4.2, package identity `FM-1_964`** (v0.2, `FM-1_962`, was flashed and
+> **Status (21 Nov 2026): a pre-release test build, v0.4.3, package identity `FM-1_964`** (v0.2, `FM-1_962`, was flashed and
 > played on a real FM-1; v0.3 added the POUND write-lock and the MIDI-panic HOLD release; v0.4 adds the screen art: HOME is
 > the chapter's scene, the dog, and his bark as the live scope; the boot animation; the DØG-5 look on every screen (flashed and played on the unit 20 Nov); v0.4.1 shows the knob values on
 > HOME, dives the beam with TAPE STOP and keeps a saved patch's scene; v0.4.2 adds the fence, FLEAS and the Acid Chartreuse
-> beam, not yet on the unit). Made and tested for the **FM-1 only** (the SMK-37 is not supported).
+> beam; v0.4.3 shows a turned HOME knob as a dial; not yet on the unit). Made and tested for the **FM-1 only** (the SMK-37 is not supported).
 
 **Install it:** the self-hosted installer page, [`docs/install/`](docs/install/README.md) (Chrome or Edge, over USB:
 <https://vincentzsk-prod.github.io/dog5/install/>). It carries the package inside
 the page, shows what it will write, has a dry run, and resumes an interrupted install. From a terminal:
-`python3 tools/fm1_install.py docs/install/dog5-0.4.2-20261121.fwsc`. If the unit will not boot: M-Flasher and your backup.
+`python3 tools/fm1_install.py docs/install/dog5-0.4.3-20261121.fwsc`. If the unit will not boot: M-Flasher and your backup.
 
-**Build it:** `./build.sh --release 0.4.2` makes `build/dog5-0.4.2.fwsc` (identity `FM-1_964`; a dev build is `build/dog5.fwsc`,
-`FM-1_960`); `python3 tools/make_installer_page.py --release 0.4.2` regenerates the installer page and its package together.
+**Build it:** `./build.sh --release 0.4.3` makes `build/dog5-0.4.3.fwsc` (identity `FM-1_964`; a dev build is `build/dog5.fwsc`,
+`FM-1_960`); `python3 tools/make_installer_page.py --release 0.4.3` regenerates the installer page and its package together.
 The product's name and identity live in one file, [`firmware/src/dog5_id.h`](firmware/src/dog5_id.h).
 
 **Play it in your browser:** <https://vincentzsk-prod.github.io/dog5/play/> is the firmware itself (the same C sources,

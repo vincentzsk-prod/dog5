@@ -343,7 +343,9 @@ after TAPE STOP while it runs, a patch carries its chapter (byte 94, `PATCH_CHAP
 (`dog5-docs/BATCH-22-HOME-READOUT-CHAPTERS.md`). **Batch 23:** the beam is Acid Chartreuse in every chapter; the top bar is
 the fence and breaks where the bark lands (I scorch, II soak, III fog, IV wreck), healing within 1.2 s; FLEAS on GLOBAL
 knob 2 (CLEAN / ITCH / SCRATCH / MANGE, `set.fleas`); chapter accents Sun Yellow / Wave Turquoise / Foam White / Acid
-Chartreuse (`dog5-docs/BATCH-23-FLEAS-FENCE.md`). **Stage 3 is done** pending Vincent's look on the unit.
+Chartreuse (`dog5-docs/BATCH-23-FLEAS-FENCE.md`). **Batch 24:** a knob turned on HOME shows as a dial (the panel's knob: label, arc,
+value) on a plate at the top left for 1.2 s, replacing Batch 22's top-bar number (`sc_dial`). **Stage 3 is done** pending
+Vincent's look on the unit.
 
 ---
 
@@ -357,8 +359,9 @@ Chartreuse (`dog5-docs/BATCH-23-FLEAS-FENCE.md`). **Stage 3 is done** pending Vi
 3. **FM-1** — arrived; **v0.2 (`FM-1_962`, package SHA-256 `b2be33a9…6b96`) flashed and tested on the unit 18 Nov**.
    v0.3 (`FM-1_963`, Batch 15: write-lock + panic) was never flashed. **v0.4 (`FM-1_964`, `f5ceddc4…a033`, Batches 20 + 21: the screen art, the boot animation, the brand look) flashed and
    tested on the unit 20 Nov** (and the leave-for-a-Hub-firmware-and-return cycle, 21 Nov). v0.4.1 (Batch 22: HOME knob readout,
-   beam through TAPE STOP, patches keep their scene) was not flashed. **v0.4.2 (`FM-1_964`, `2c733bfc…17c6`, Batch 23: the fence,
-   FLEAS, the Acid Chartreuse beam, chapter accents; carries Batch 22) is on the installer page.**
+   beam through TAPE STOP, patches keep their scene) was not flashed. v0.4.2 (Batch 23: the fence, FLEAS, the Acid Chartreuse beam,
+   chapter accents) was not flashed. **v0.4.3 (`FM-1_964`, `23a851b7…84b9`, Batch 24: the HOME knob dial; carries Batches 22–23) is on
+   the installer page.**
    Tested on the older flash chip only (`0x856014`); the newer chip (`0xB36014`) is untested — say so up front in releases.
    v0.1 as published is commit `7a1fba8` (the installer page with `dog5-0.1-20261112.fwsc`, sha256 `3de092d5…7f6a`).
    Never push a `v*` tag casually: `release.yml` builds and publishes a release on `v*` tags.
@@ -389,7 +392,7 @@ Chartreuse (`dog5-docs/BATCH-23-FLEAS-FENCE.md`). **Stage 3 is done** pending Vi
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
-  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2).
+  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3).
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

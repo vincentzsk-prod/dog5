@@ -1,8 +1,13 @@
-# Batch 22: on HOME, a knob shows its value in the top bar for a second (as SELECT's LFO RATE), then the tags come back.
-# Encoders 2-5 = the four knobs (HOME: CUTOFF, RESO, ENV AMT, RELEASE).
+# HOME's knob dial (Batch 22 readout, Batch 24 dial): on HOME a knob shows as a dial (label, the value's arc, the value) on
+# a plate at the top left for 1.2 s after the last turn, over the art; the beam and the sway repaint under it and it stays
+# on top; then the art comes back. Encoders 2-5 = the four knobs (HOME: CUTOFF, RESO, ENV AMT, RELEASE).
 3000 enc 3 3   # RESO (knob 2)
-3100 shot   # "RESO .." over the scene
+3100 shot   # its dial
 3300 enc 5 -2   # RELEASE (knob 4)
 3400 shot
-4600 shot   # a second later: the tags again
-4800 end
+3600 keys 0x1
+3700 enc 2 -4   # CUTOFF (knob 1) while he barks
+3900 shot   # the dial on top of the barking scene
+4200 keys 0
+5400 shot   # 1.2 s after the last turn: the art again
+5600 end
