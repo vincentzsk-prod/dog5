@@ -31,6 +31,9 @@ enum {
                                                  * parameters (71 used: 0-63, TAPE's 64-67, ALLEY's 68-70; 71-79
                                                  * free for v1.1), the 14-char name 80-93, 2 spare (94-95). Adding a
                                                  * parameter (always at the end of the table) never moves the name. */
+#define PATCH_CHAPTER_AT 94u                    /* DØG-5 Batch 22: the scene a patch shows on HOME, 1-4 = chapters I-IV (a factory
+                                                 * patch's own; it travels with the patch when it is saved into THE PACK); 0 =
+                                                 * none recorded (INIT, a save from before Batch 22): the slot's chapter */
 #if NPARAM > PATCH_NAME_AT
 #error "the parameters run into the name field"
 #endif
@@ -197,7 +200,7 @@ static const struct { uint8_t first, count; } FAM[NFAM] = {
     [FAM_FX] = {PG_DRIVE, 4}, [FAM_ARP] = {PG_ARP, 1}, [FAM_GLO] = {PG_GLOBAL, 4},
 };
 
-typedef struct { uint8_t v[PATCH_BYTES]; } patch_t;   /* v[0..79] parameters, v[80..93] name, v[94..95] spare */
+typedef struct { uint8_t v[PATCH_BYTES]; } patch_t;   /* v[0..79] parameters, v[80..93] name, v[94] chapter, v[95] spare */
 
 static void patch_defaults(patch_t *p)
 {

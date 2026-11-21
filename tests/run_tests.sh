@@ -45,6 +45,9 @@ run "FM-1 write-lock: THE POUND (1-32) reads the factory, SAVE goes to THE PACK 
 # layer-lock with HOME acting on its release: hold FX + tap HOME locks; the tap never goes HOME; FX / ENV let it go
 run "FM-1 boot animation: the whole ~6 s, ending on HOME, which then plays" sh tests/run_host.sh tests/splash.txt
 run "FM-1 boot animation: a key pressed during it ends it and sounds at once" sh tests/run_host.sh tests/splash_skip.txt
+run "FM-1 HOME knob readout: the value in the top bar for a second" sh tests/run_host.sh tests/home_readout.txt
+run "FM-1 HOME beam with SEQ held: it reads the mix after TAPE STOP" sh tests/run_host.sh tests/scene_tapestop.txt
+run "FM-1 a saved patch keeps its chapter's scene" sh tests/run_host.sh tests/controls/chapter_save.txt
 run "FM-1 HOME scene: the four chapters, REST / BARK + the beam, MOONSHINE's howl, out to EDIT and back, PACK slots follow the chapters" sh tests/run_host.sh tests/scene.txt
 run "FM-1 layer-lock: FX held + HOME tapped locks (no jump HOME), the lock outlives FX's release, FX or ENV ends it" sh tests/run_host.sh tests/layer_lock.txt
 # the live tricks (tests/trick): PLAY = STOP, the kill switch ("T expect peak MS MAX": the output's peak over the last MS ms)

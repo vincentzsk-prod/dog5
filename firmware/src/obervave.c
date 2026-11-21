@@ -90,7 +90,17 @@ static void prog_get(uint32_t n, patch_t *p)    /* program n: 1-32 the factory's
 {
     n %= NPROG;
     if (n >= NFACT && psect[n / PS_N].used[n % PS_N]) *p = psect[n / PS_N].p[n % PS_N];
-    else patch_from_factory(p, n < NFACT ? &FACTORY[n] : &FACT_INIT);
+    else {
+        patch_from_factory(p, n < NFACT ? &FACTORY[n] : &FACT_INIT);
+        if (n < NFACT) p->v[PATCH_CHAPTER_AT] = (uint8_t)(n / 8u + 1u);   /* the factory patch's own scene (Batch 22) */
+    }
+}
+
+/* the scene HOME shows for a patch in slot n: the chapter it carries, else the slot's (1-8 I, 9-16 II, ..., THE PACK cycling) */
+static uint32_t patch_chapter(const patch_t *p, uint32_t n)
+{
+    uint32_t c = p->v[PATCH_CHAPTER_AT];
+    return c >= 1u && c <= 4u ? c - 1u : n % NFACT / 8u;
 }
 
 static void prog_put(uint32_t n, const patch_t *p)   /* program n is the user's now; saved when quiet */
@@ -117,6 +127,8 @@ static void pound_rescue(void)
     for (n = 0; n < NFACT; n++) {
         if (!psect[n / PS_N].used[n % PS_N]) continue;
         if ((d = pack_free()) == NFACT && psect[NFACT / PS_N].used[NFACT % PS_N]) break;   /* THE PACK is full */
+        if (!psect[n / PS_N].p[n % PS_N].v[PATCH_CHAPTER_AT])   /* (it keeps the scene of the slot it was saved over) */
+            psect[n / PS_N].p[n % PS_N].v[PATCH_CHAPTER_AT] = (uint8_t)(n / 8u + 1u);
         prog_put(d, &psect[n / PS_N].p[n % PS_N]);
         psect[n / PS_N].used[n % PS_N] = 0;
         ps_dirty |= 1u << (n / PS_N);
@@ -772,7 +784,7 @@ static void store_selftest(void)
     {
         int pound = 1, pack = 1;
         patch_t f;
-        for (n = 0; n < NFACT; n++) { prog_get(n, &got); patch_from_factory(&f, &FACTORY[n]); if (memcmp(&got, &f, PATCH_BYTES)) pound = 0; }
+        for (n = 0; n < NFACT; n++) { prog_get(n, &got); patch_from_factory(&f, &FACTORY[n]); f.v[PATCH_CHAPTER_AT] = (uint8_t)(n / 8u + 1u); if (memcmp(&got, &f, PATCH_BYTES)) pound = 0; }
         for (n = NFACT; n < NPROG; n++) { prog_get(n, &got); if (memcmp(&got, &sf_expect[n], PATCH_BYTES)) pack = 0; }
         sf_check("THE POUND: with saves stored over 1-32, programs 1-32 still read the factory", pound);
         sf_check("THE PACK: programs 33-99 read the user's saves", pack);
@@ -845,8 +857,7 @@ static uint32_t sc_on_t, sc_off_t, sc_sound, sc_toast_key, t_sway, sway_i, t_bea
 static const int8_t SWAY[10] = {0, 0, 1, 1, 1, 0, 0, -1, -1, -1};   /* 200 ms a step: a ~2 s rock */
 static void scene_tick(uint32_t *t_hdr)
 {
-    uint32_t k = prog % NFACT / 8u, v, best = 0, bl = 0, pose, tk;
-    if (k > 3u) k = 3u;
+    uint32_t k = patch_chapter(&live, prog), v, best = 0, bl = 0, pose, tk;
     if (sc_k != k) {                            /* a new chapter (or coming HOME): the whole screen */
 #ifdef OBV_HOST
         uint32_t idle0 = host_idle_n;
@@ -879,6 +890,11 @@ static void scene_tick(uint32_t *t_hdr)
             sc_beam(scope, SCOPE_N);
             scope_stride = clampi((int32_t)(period * 2u / SCOPE_N), 1, 64);
             scope_state = 1;
+        } else if (scope_state == 1u && fm1_ms - t_beam >= 150u) {   /* no crossing to trigger on (a tape stop's silence):
+                                                                       * the beam goes flat, as a scope's does */
+            static const int16_t FLAT[2] = {0, 0};
+            t_beam = fm1_ms;
+            sc_beam(FLAT, 2);
         }
     } else {
         if (bm_n) sc_beam(0, 0);
@@ -927,7 +943,7 @@ static void app_main(void)
     ctl_panic = 0;
     for (k = 0; k < NFAM; k++) fam_last[k] = FAM[k].first;
 
-    dog5_splash(prog % NFACT / 8u);            /* the boot animation, ending on this program's scene */
+    dog5_splash(patch_chapter(&live, prog));            /* the boot animation, ending on this program's scene */
     scope_state = 1;
 
     for (;;) {
@@ -1087,6 +1103,8 @@ static void app_main(void)
             } else if (p >= 0) {
                 int32_t step = PDEF[p].max >= 100 ? 2 : 1;
                 set_param((uint32_t)p, (int32_t)live.v[p] + e * step);
+                if (page == PG_PERFORM && !layer) readout(PDEF[p].name, (uint32_t)p);   /* HOME: the value over the art, a
+                                                                                            second (Batch 22) */
                 if (p == P_MODE || p == P_FTYPE || p == P_ARP_MODE || p >= P_GRL_BIAS) dirty_tags = 1;
                 dirty_hdr = 1;
             }
