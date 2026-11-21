@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 21 Nov 2026 (Batch 25: SELECT's LFO dial, housekeeping), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 21 Nov 2026 (Batch 27: the identity FM-1_3645, test build 0.4.5), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -345,7 +345,8 @@ knob 2 (CLEAN / ITCH / SCRATCH / MANGE, `set.fleas`); chapter accents Sun Yellow
 Chartreuse (`dog5-docs/BATCH-23-FLEAS-FENCE.md`). **Batch 24:** a knob turned on HOME shows as a dial (the panel's knob: label, arc,
 value) on a plate at the top left for 1.2 s, replacing Batch 22's top-bar number (`sc_dial`). **Batch 25:** SELECT's LFO RATE on HOME
 shows on the same plate (`LFO`), and the housekeeping: the flash-chip note up front, stale brief lines fixed
-(`dog5-docs/BATCH-25-LFO-DIAL-HOUSEKEEPING.md`). **Stage 3 is done** pending
+(`dog5-docs/BATCH-25-LFO-DIAL-HOUSEKEEPING.md`). **Batch 27:** DØG-5's own identity, `FM-1_3645XYZ`; release assets
+named `dog5.fwsc`; the README's line on other firmwares' saves (`dog5-docs/BATCH-27-IDENTITY.md`). **Stage 3 is done** pending
 Vincent's look on the unit.
 
 ---
@@ -361,8 +362,17 @@ Vincent's look on the unit.
    v0.3 (`FM-1_963`, Batch 15: write-lock + panic) was never flashed. **v0.4 (`FM-1_964`, `f5ceddc4…a033`, Batches 20 + 21: the screen art, the boot animation, the brand look) flashed and
    tested on the unit 20 Nov** (and the leave-for-a-Hub-firmware-and-return cycle, 21 Nov). v0.4.1 (Batch 22: HOME knob readout,
    beam through TAPE STOP, patches keep their scene) was not flashed. v0.4.2 (Batch 23: the fence, FLEAS, the Acid Chartreuse beam,
-   chapter accents) was not flashed. v0.4.3 (Batch 24: the HOME knob dial) was not flashed. **v0.4.4 (`FM-1_964`, Batch 25:
-   SELECT's LFO RATE as a dial; carries Batches 22–24) is on the installer page.**
+   chapter accents) was not flashed. v0.4.3 (Batch 24: the HOME knob dial) was not flashed. **v0.4.4 (`FM-1_964`, `2da5430e…f758`,
+   Batch 25: SELECT's LFO RATE as a dial; carries Batches 22–24) flashed and tested on the unit 21 Nov** (a save keeps its scene
+   across a power cycle, the beam dives with SEQ held, the fence, FLEAS at all four stages with the CPU readout under ~3,000 µs
+   at MANGE, the dials; each tested several times, all clear). **The stock restore is proven (21 Nov):** M-Flasher's DOWNLOAD
+   MODE works from DØG-5, and RESTORE FULL FLASH put the 11 Nov stock backup back; the unit booted as stock.
+   **FLEAS stays screen-only** (Vincent, 21 Nov): it never touches the sound; a sound tie-in is a later-version idea.
+   **The identity is `FM-1_3645XYZ` since Batch 27 (v0.4.5 = `FM-1_3645045`; Vincent, 21 Nov).** `FM-1_964` was taken on
+   the Firmware Hub (SIDOU), and so was the whole `FM-1_96N` family. 3645 = DØG-5 on a phone keypad; XYZ = vX.Y.Z (one
+   digit each, `tools/build.py`); a dev build is `FM-1_3645000`. **Digits only after the one underscore**: every FM-1
+   installer reads `NAME_digits` (Vincent asked for `FM-1_3645_V6.3.5`; it would leave the unit unrecognised). GitHub
+   releases carry the package as `dog5.fwsc` every time (`release.yml`). See the Project doc `DOG-5-hub-readiness.md`.
    **Tested on the older flash chip only (`0x856014`); the newer chip (`0xB36014`) is untested.** This is said up front in the
    README, on the installer page (a box under the intro) and its README, and in every GitHub release (`.github/release-header.md`,
    the workflow's `body_path`). Keep it there until a newer-chip unit has been tested.
@@ -395,7 +405,7 @@ Vincent's look on the unit.
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
-  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4).
+  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`).
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

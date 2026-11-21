@@ -160,7 +160,7 @@
     }
     return { image, blocks: n };
   }
-  function productOf(raw) {                       // the package identity, e.g. "FM-1_960"
+  function productOf(raw) {                       // the package identity, e.g. "FM-1_3645045"
     if (raw.length < BLOCKS * BLK) throw new InstallError("badpkg", "not an FM-1 package (too short)");
     const ib = identityBlocks(raw);
     const n = ib === BLOCKS ? BLOCKS : Math.min(ib, deinterleave(raw).blocks);
