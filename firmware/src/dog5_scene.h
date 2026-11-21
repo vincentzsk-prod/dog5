@@ -46,6 +46,16 @@ static int8_t sc_boil[32];                       /* ITCH: the dog's rows, 8 at a
 static int8_t sc_shear[240];                     /* SCRATCH: each screen row of the field shifted sideways (even px) */
 #define SC_MUS_N 6u
 static struct { int16_t x, y, r; } sc_mus[SC_MUS_N];   /* MANGE: mustard blotches (r 0: none) */
+/* HOME's knob dial (Batch 24): a knob turned on HOME shows as the panel pages draw it (label, the value's arc and pointer,
+ * the value) on a small black plate at the top left, over the art, for 1.2 s after the last turn; then the art comes
+ * back. Top left: clear of the beam (it flies to the top right) and of every dog's head but a corner of III's and IV's.
+ * The plate is kept (in the pool) so that whatever repaints the scene under it draws it back on top */
+#define SC_DIAL_X 2
+#define SC_DIAL_Y 22
+#define SC_DIAL_W 64
+#define SC_DIAL_H 88
+static uint16_t sc_dial_px[SC_DIAL_W * SC_DIAL_H] __attribute__((section(".pool")));
+static uint32_t sc_dial_on;
 static uint32_t sc_hash(uint32_t a) { a ^= a >> 16; a *= 0x7FEB352Du; a ^= a >> 15; a *= 0x846CA68Bu; a ^= a >> 16; return a; }
 
 static uint32_t sc_k = 0xFFu;                    /* the scene drawn (0..3), 0xFF: none */
@@ -133,9 +143,37 @@ static void sc_paint(int32_t x0, int32_t y0, int32_t x1, int32_t y1)
             }
             cv_oy = 0;
         }
+        if (sc_dial_on) {                       /* the knob dial stays on top */
+            int32_t ya = sy > SC_DIAL_Y ? sy : SC_DIAL_Y, yb = sy + h < SC_DIAL_Y + SC_DIAL_H ? sy + h : SC_DIAL_Y + SC_DIAL_H;
+            int32_t xa = x0 > SC_DIAL_X ? x0 : SC_DIAL_X, xb = x1 < SC_DIAL_X + SC_DIAL_W ? x1 : SC_DIAL_X + SC_DIAL_W, yy, xx;
+            for (yy = ya; yy < yb; yy++)
+                for (xx = xa; xx < xb; xx++)
+                    cv_px[(uint32_t)(yy - sy) * (uint32_t)w + (uint32_t)(xx - x0)] =
+                        sc_dial_px[(uint32_t)(yy - SC_DIAL_Y) * SC_DIAL_W + (uint32_t)(xx - SC_DIAL_X)];
+        }
         cv_blit((uint32_t)x0, (uint32_t)sy);
         app_idle();
     }
+}
+
+/* the knob dial: draw k on its plate (a Sky Violet edge), keep it, show it */
+static void sc_dial(const knob_view_t *k)
+{
+    uint32_t i;
+    cv_begin(SC_DIAL_W, SC_DIAL_H, C_PANEL);
+    cv_rect(0, 0, SC_DIAL_W, 1, C_RULE); cv_rect(0, SC_DIAL_H - 1, SC_DIAL_W, 1, C_RULE);
+    cv_rect(0, 0, 1, SC_DIAL_H, C_RULE); cv_rect(SC_DIAL_W - 1, 0, 1, SC_DIAL_H, C_RULE);
+    cv_knob(SC_DIAL_W / 2, 48, k->label, k->value, k->v, k->max, k->bip);
+    for (i = 0; i < SC_DIAL_W * SC_DIAL_H; i++) sc_dial_px[i] = cv_px[i];
+    cv_blit(SC_DIAL_X, SC_DIAL_Y);
+    sc_dial_on = 1;
+}
+
+static void sc_dial_off(void)
+{
+    if (!sc_dial_on) return;
+    sc_dial_on = 0;
+    sc_paint(SC_DIAL_X, SC_DIAL_Y, SC_DIAL_X + SC_DIAL_W, SC_DIAL_Y + SC_DIAL_H);
 }
 
 /* the fence's damage, drawn into the top bar's canvas (240 x 20: the bar and its rule). fd 0..256 how broken; seed: this
@@ -230,7 +268,7 @@ static void sc_bars(uint32_t prog_n, const uint8_t *name, uint32_t edited, const
 /* enter (or change) the scene: the whole field, the dog at rest */
 static void sc_enter(uint32_t k)
 {
-    sc_k = k; sc_pose = SC_POSE_REST; sc_dx = 0; bm_n = 0;
+    sc_k = k; sc_pose = SC_POSE_REST; sc_dx = 0; bm_n = 0; sc_dial_on = 0;
     sc_paint(0, SA_FIELD_Y, 240, SA_FIELD_Y + SA_FIELD_H);
 }
 

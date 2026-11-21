@@ -302,7 +302,7 @@ static void param_value(char *s, uint32_t p, uint32_t v)   /* <= 7 characters */
 
 static uint32_t cut_shown_t;                    /* the header shows the cutoff for a second after it moved */
 static char ro_msg[24];                         /* Batch 9B: a transient readout in the header's tag line, a second: what a control
-                                                 * without a knob on the screen just changed (SELECT's LFO RATE, the MONO / POLY keys) */
+                                                 * without a knob on the screen just changed (the MONO / POLY keys; SELECT's LFO RATE is a dial since Batch 24) */
 static uint32_t ro_t;
 static void readout(const char *label, uint32_t p)
 {
@@ -859,6 +859,8 @@ static void store_selftest(void)
 
 /* HOME's scene, once a pass of the main loop: the chapter, the bars, the dog's pose and sway, the beam */
 static uint32_t sc_on_t, sc_off_t, sc_sound, sc_toast_key, t_sway, sway_i, t_beam;
+static int32_t home_dial_p = -1;
+static uint32_t home_dial_t, home_dial_dirty, t_dial;
 static const int8_t SWAY[10] = {0, 0, 1, 1, 1, 0, 0, -1, -1, -1};   /* 200 ms a step: a ~2 s rock */
 static void scene_tick(uint32_t *t_hdr)
 {
@@ -894,6 +896,17 @@ static void scene_tick(uint32_t *t_hdr)
         if (sc_fd || fd_drawn || sc_fleas > 90u) { sc_fd_seed++; sc_top(); fd_drawn = sc_fd; }
     }
     sc_fleas_tick(set.fleas, fm1_ms);
+    if (home_dial_dirty && home_dial_p >= 0 && fm1_ms - t_dial >= 30u) {   /* a HOME knob turned: its dial (30 ms at most) */
+        knob_view_t kv;
+        int32_t p = home_dial_p;
+        home_dial_dirty = 0; t_dial = fm1_ms;
+        kv.label = p == P_LFO_RATE ? "LFO" : PDEF[p].name;   /* (no LFO page on HOME: "LFO" over a value in Hz; "LFO RATE" overruns the plate) */
+        kv.v = live.v[p]; kv.max = PDEF[p].max; kv.present = 1;
+        kv.bip = PDEF[p].kind == K_BIP || PDEF[p].kind == K_SEMI || PDEF[p].kind == K_MORPH;
+        kv.value[0] = 0;
+        param_value(kv.value, (uint32_t)p, (uint32_t)live.v[p]);
+        sc_dial(&kv);
+    } else if (sc_dial_on && fm1_ms - home_dial_t >= 1200u) sc_dial_off();   /* 1.2 s after the last turn: the art */
     if (sc_sound) {
         uint32_t held = fm1_ms - sc_on_t;
         pose = SC_POSE_BARK;                    /* MOONSHINE howls a held note: bark, draw breath, howl */
@@ -1086,8 +1099,8 @@ static void app_main(void)
                                                  * lives on GLOBAL knob 1 and the MIDI clock, as before) */
             if (page == PG_PERFORM && !layer) {
                 set_param(P_LFO_RATE, (int32_t)live.v[P_LFO_RATE] + e * 2);
-                readout("LFO RATE", P_LFO_RATE);
-                dirty_hdr = dirty_page = 1;
+                home_dial_p = P_LFO_RATE; home_dial_t = fm1_ms; home_dial_dirty = 1;   /* the dial, as a HOME knob (Batch 24) */
+                dirty_page = 1;
             }
         }
         if ((e = fm1_enc_take(ENC_ALGORITHM)) != 0) {   /* SLOBBER: the SLOP ride, on any page, on top of the sound's
@@ -1120,8 +1133,8 @@ static void app_main(void)
             } else if (p >= 0) {
                 int32_t step = PDEF[p].max >= 100 ? 2 : 1;
                 set_param((uint32_t)p, (int32_t)live.v[p] + e * step);
-                if (page == PG_PERFORM && !layer) readout(PDEF[p].name, (uint32_t)p);   /* HOME: the value over the art, a
-                                                                                            second (Batch 22) */
+                if (page == PG_PERFORM && !layer) { home_dial_p = p; home_dial_t = fm1_ms; home_dial_dirty = 1; }   /* HOME:
+                                                                     the knob's dial over the art (Batch 24; scene_tick) */
                 if (p == P_MODE || p == P_FTYPE || p == P_ARP_MODE || p >= P_GRL_BIAS) dirty_tags = 1;
                 dirty_hdr = 1;
             }

@@ -64,4 +64,5 @@ jobs:
           files: |
             build/dog5-*.fwsc
             build/SHA256SUMS
+          body_path: .github/release-header.md   # the flash-chip note, up front (GitHub's own notes follow it)
           generate_release_notes: true

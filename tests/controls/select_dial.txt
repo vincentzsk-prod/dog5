@@ -13,7 +13,7 @@
 4000 enc 0 -100   # (the script's encoder step is a signed byte: two turns)
 4050 enc 0 -100
 4200 expect param 29 0   # and at 0
-4300 shot   # the header says LFO RATE 0.1Hz (or so) for a second
+4300 shot   # the LFO RATE dial on the plate, top left, for 1.2 s (Batch 24)
 # nowhere else: EDIT -> OSC 1
 4400 param 29 70
 4500 btn 6
