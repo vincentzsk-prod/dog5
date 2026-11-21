@@ -45,8 +45,9 @@ static void app_audio(int32_t *out, uint32_t n)
 static struct {
     uint8_t version, prog, tempo, midi_ch;      /* midi_ch 0 = omni, else 1..16 */
     int8_t tune, oct;
-    uint8_t pat, click;                         /* unused: freed with the sequencer (DØG-5 deleted it); kept so the
-                                                  * settings sector's layout, and SET_VERSION, don't have to change */
+    uint8_t fleas, click;                       /* fleas: FLEAS, the screen's rot, 0..100 (Batch 23: the byte the sequencer's
+                                                  * pattern number had); click: unused (the sequencer's). The layout and
+                                                  * SET_VERSION are unchanged */
 } set;
 #define MIDI_OUT_CH (set.midi_ch ? set.midi_ch - 1u : 0u)   /* the keys go out on the MIDI channel set (OMNI: 1) */
 /* (the OberVave SET_VERSION 2 migration that brought 32 old programs over embedded an 80-byte patch_t; with the
@@ -425,11 +426,15 @@ static void draw_page(void)
         k[i].present = 0;
         k[i].bip = 0;
         k[i].value[0] = 0;
-        if (page == PG_GLOBAL && !layer && i != 1u) {
-            static const char *const GL[4] = {"TEMPO", "", "MIDI CH", "TUNE"};
+        if (page == PG_GLOBAL && !layer) {
+            static const char *const GL[4] = {"TEMPO", "FLEAS", "MIDI CH", "TUNE"};
             k[i].label = GL[i];
             k[i].present = 1;
             if (i == 0) { fmt_u(k[i].value, set.tempo); k[i].v = set.tempo - 40; k[i].max = 200; }
+            else if (i == 1) {                  /* FLEAS (Batch 23): the stage and the dial, "ITCH 40" */
+                scat(k[i].value, set.fleas <= 15u ? "CLEAN " : set.fleas <= 65u ? "ITCH " : set.fleas <= 90u ? "SCRATCH " : "MANGE ");
+                fmt_u(k[i].value + slen(k[i].value), set.fleas); k[i].v = set.fleas; k[i].max = 100;
+            }
             else if (i == 2) { if (set.midi_ch) fmt_u(k[i].value, set.midi_ch); else scat(k[i].value, "OMNI"); k[i].v = set.midi_ch; k[i].max = 16; }
             else { scat(k[i].value, set.tune < 0 ? "-" : "+"); fmt_u(k[i].value + 1, (uint32_t)(set.tune < 0 ? -set.tune : set.tune)); scat(k[i].value, "c"); k[i].v = set.tune + 50; k[i].max = 100; k[i].bip = 1; }
         } else if (layer == L_FX) {
@@ -533,8 +538,8 @@ static void draw_map(void)
         int32_t p = page_now()->p[i];
         k[i].present = 0;
         if (page == PG_GLOBAL) {                /* (the globals are drawn by hand: tempo, -, MIDI channel, tune) */
-            static const char *const GL[4] = {"TEMPO", "", "MIDI CH", "TUNE"};
-            k[i].label = GL[i]; k[i].present = i != 1;
+            static const char *const GL[4] = {"TEMPO", "FLEAS", "MIDI CH", "TUNE"};
+            k[i].label = GL[i]; k[i].present = 1;
         } else if (p >= 0) { k[i].label = PDEF[p].name; k[i].present = 1; }
         none &= !k[i].present;
     }
@@ -858,6 +863,8 @@ static const int8_t SWAY[10] = {0, 0, 1, 1, 1, 0, 0, -1, -1, -1};   /* 200 ms a 
 static void scene_tick(uint32_t *t_hdr)
 {
     uint32_t k = patch_chapter(&live, prog), v, best = 0, bl = 0, pose, tk;
+    static uint32_t t_fence, fd_drawn;
+    if (sc_fleas != set.fleas) sc_fleas = set.fleas;   /* (FLEAS: the full repaint below draws it, the tick keeps it) */
     if (sc_k != k) {                            /* a new chapter (or coming HOME): the whole screen */
 #ifdef OBV_HOST
         uint32_t idle0 = host_idle_n;
@@ -877,8 +884,16 @@ static void scene_tick(uint32_t *t_hdr)
     if (killed) bl = 0;
     if ((bl > 600u) != sc_sound) {
         sc_sound = bl > 600u;
-        if (sc_sound) sc_on_t = fm1_ms; else sc_off_t = fm1_ms;
+        if (sc_sound) { sc_on_t = fm1_ms; if (sc_fd < 160u) sc_fd = 160u; t_fence = fm1_ms - 1000u; }   /* the bark hits the fence */
+        else sc_off_t = fm1_ms;
     }
+    if (fm1_ms - t_fence >= 150u) {             /* THE FENCE (and MANGE's scramble): 6.7 Hz at most, the top bar only */
+        t_fence = fm1_ms;
+        if (sc_sound) sc_fd = sc_fd + 12u > 256u ? 256u : sc_fd + 12u;   /* chipped while the bark sounds */
+        else sc_fd = sc_fd > 32u ? sc_fd - 32u : 0u;   /* healed within 1.2 s of the sound stopping (canon U1) */
+        if (sc_fd || fd_drawn || sc_fleas > 90u) { sc_fd_seed++; sc_top(); fd_drawn = sc_fd; }
+    }
+    sc_fleas_tick(set.fleas, fm1_ms);
     if (sc_sound) {
         uint32_t held = fm1_ms - sc_on_t;
         pose = SC_POSE_BARK;                    /* MOONSHINE howls a held note: bark, draw breath, howl */
@@ -937,6 +952,7 @@ static void app_main(void)
     if (set.tempo < 40u || set.tempo > 240u) set.tempo = 120;
     if (set.oct < -2 || set.oct > 2) set.oct = 0;
     if (set.midi_ch > 16u) set.midi_ch = 0;
+    if (set.fleas > 100u) set.fleas = 0;          /* (an old sequencer pattern number reads as CLEAN) */
     ctl_tempo = set.tempo;
     ctl_tune8 = set.tune * 256 / 100;
     load_program(set.prog);
@@ -1087,8 +1103,9 @@ static void app_main(void)
             int32_t p = page_now()->p[k];
             if ((e = fm1_enc_take(ENC_KNOB1 + k)) == 0) continue;
             if (e > 1 || e < -1) e *= 3;        /* a fast turn goes further */
-            if (page == PG_GLOBAL && !layer && k != 1u) {   /* (a held layer has the knobs, on every page) */
+            if (page == PG_GLOBAL && !layer) {  /* (a held layer has the knobs, on every page) */
                 if (k == 0) { set.tempo = (uint8_t)clampi(set.tempo + e, 40, 240); ctl_tempo = set.tempo; }
+                else if (k == 1) set.fleas = (uint8_t)clampi(set.fleas + e * 2, 0, 100);   /* FLEAS, 2 a detent */
                 else if (k == 2) set.midi_ch = (uint8_t)clampi(set.midi_ch + e, 0, 16);
                 else { set.tune = (int8_t)clampi(set.tune + e, -50, 50); ctl_tune8 = set.tune * 256 / 100; }
                 set_dirty = 1; set_t = fm1_ms;

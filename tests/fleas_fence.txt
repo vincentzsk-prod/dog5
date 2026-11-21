@@ -1,0 +1,43 @@
+# Batch 23: the fence and FLEAS. The bark breaks the top bar (THE FENCE) from the top-right corner where the beam lands,
+# each chapter its own way, and it heals within ~1.2 s of the sound stopping; FLEAS (GLOBAL knob 2) rots the picture in
+# four stages. Neither ever touches the beam or the bottom bar. Buttons: 7 = GLO, 8 = HOME. Encoder 3 = knob 2 (a turn
+# of N > 1 detents counts 3N, 2 a detent: "enc 3 7" = +42).
+3000 keys 0x1   # I JALOPY, FLEAS CLEAN: the bark hits the fence (scorch)
+3300 shot
+3400 keys 0
+4800 shot   # 1.4 s later: healed
+4900 midi 0xC0 8 0   # II BEE-TCH: soak
+5300 keys 0x10
+5600 shot
+5700 keys 0
+6100 midi 0xC0 16 0   # III MOONSHINE: fog
+6500 keys 0x100
+6800 shot
+6900 keys 0
+7300 midi 0xC0 24 0   # IV ACID CAN: wreck
+7700 keys 0x1000
+8000 shot
+8100 keys 0
+8500 midi 0xC0 0 0
+8700 btn 7   # GLOBAL: FLEAS
+8900 enc 3 7   # 42: ITCH
+9100 shot   # the knob: "ITCH 42"
+9200 expect page 17
+9300 btn 8   # HOME
+9900 shot   # ITCH: the dog's edges boil
+10000 btn 7
+10200 enc 3 6   # 78: SCRATCH
+10400 btn 8
+11000 shot   # + the field shears
+11100 btn 7
+11300 enc 3 5   # 100: MANGE
+11500 btn 8
+12600 shot   # + mustard, the fence's text scrambled
+12700 keys 0x1
+13000 shot   # the beam untouched; the bottom bar untouched
+13100 keys 0
+13300 btn 7
+13500 enc 3 -20   # back to CLEAN: the rot clears
+13700 btn 8
+14500 shot
+14600 end
