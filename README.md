@@ -11,11 +11,11 @@ open source, GPL-3.0-only. The build brief and the reasoning are in [`CLAUDE.md`
 > DØG-5 has **never been installed or played on one**, so we cannot speak to how it behaves there. On a newer unit, keep
 > M-Flasher and your backup ready, and please report what happens.
 
-**Status (21 Nov 2026): a pre-release test build, v0.4.4, package identity `FM-1_964`.** On the unit: v0.1 (12 Nov), v0.2 (18 Nov) and
-v0.4 (20 Nov: HOME is the chapter's scene, the dog and his bark as the live scope; the boot animation; the DØG-5 look on
-every screen), installed over another Hub firmware and back again. Since v0.4, not yet on the unit: the knob you turn on
-HOME (and SELECT's LFO rate) shows as a dial over the scene, the beam dives with TAPE STOP, a saved patch keeps its scene,
-the fence, FLEAS and the Acid Chartreuse beam. Made for the **FM-1 only** (the SMK-37 is not supported).
+**Status (21 Nov 2026): a pre-release test build, v0.4.4, package identity `FM-1_964`, on the unit and tested.** HOME is
+the chapter's scene, with the dog and his bark as the live scope; a turned knob shows as a dial; the fence breaks where the
+bark lands; FLEAS dirties the screen (never the sound); the boot animation; the DØG-5 look on every screen. Installed
+from stock, over another Hub firmware and back again, and the stock backup restored with M-Flasher. Made for the
+**FM-1 only** (the SMK-37 is not supported).
 
 **Install it:** the self-hosted installer page, [`docs/install/`](docs/install/README.md) (Chrome or Edge, over USB:
 <https://vincentzsk-prod.github.io/dog5/install/>). It carries the package inside

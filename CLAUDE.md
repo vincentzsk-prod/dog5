@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 21 Nov 2026 (Batch 25: SELECT's LFO dial, housekeeping), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 21 Nov 2026 (0.4.4 on the unit, the stock restore proven, the Hub inventory), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -361,8 +361,14 @@ Vincent's look on the unit.
    v0.3 (`FM-1_963`, Batch 15: write-lock + panic) was never flashed. **v0.4 (`FM-1_964`, `f5ceddc4…a033`, Batches 20 + 21: the screen art, the boot animation, the brand look) flashed and
    tested on the unit 20 Nov** (and the leave-for-a-Hub-firmware-and-return cycle, 21 Nov). v0.4.1 (Batch 22: HOME knob readout,
    beam through TAPE STOP, patches keep their scene) was not flashed. v0.4.2 (Batch 23: the fence, FLEAS, the Acid Chartreuse beam,
-   chapter accents) was not flashed. v0.4.3 (Batch 24: the HOME knob dial) was not flashed. **v0.4.4 (`FM-1_964`, Batch 25:
-   SELECT's LFO RATE as a dial; carries Batches 22–24) is on the installer page.**
+   chapter accents) was not flashed. v0.4.3 (Batch 24: the HOME knob dial) was not flashed. **v0.4.4 (`FM-1_964`, `2da5430e…f758`,
+   Batch 25: SELECT's LFO RATE as a dial; carries Batches 22–24) flashed and tested on the unit 21 Nov** (a save keeps its scene
+   across a power cycle, the beam dives with SEQ held, the fence, FLEAS at all four stages with the CPU readout under ~3,000 µs
+   at MANGE, the dials; each tested several times, all clear). **The stock restore is proven (21 Nov):** M-Flasher's DOWNLOAD
+   MODE works from DØG-5, and RESTORE FULL FLASH put the 11 Nov stock backup back; the unit booted as stock.
+   **FLEAS stays screen-only** (Vincent, 21 Nov): it never touches the sound; a sound tie-in is a later-version idea.
+   **⚠️ `FM-1_964` is taken on the Firmware Hub (SIDOU), and so is the whole `FM-1_96N` family** (catalogue read 21 Nov):
+   DØG-5 needs a new identity before it is submitted. See the Project doc `DOG-5-hub-readiness.md`.
    **Tested on the older flash chip only (`0x856014`); the newer chip (`0xB36014`) is untested.** This is said up front in the
    README, on the installer page (a box under the intro) and its README, and in every GitHub release (`.github/release-header.md`,
    the workflow's `body_path`). Keep it there until a newer-chip unit has been tested.
