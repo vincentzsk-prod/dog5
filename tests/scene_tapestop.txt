@@ -1,0 +1,12 @@
+# Batch 22: SEQ held (TAPE STOP) and the beam: while the deck runs, the scope reads the mix after it, so the waveform from
+# the dog's mouth stretches as the tape slows and goes flat when it stops. Button 11 = SEQ.
+3000 keys 0x1
+3400 shot   # barking, the note at speed
+3500 btndown 11
+3800 shot   # the dive: longer waves, lower
+4200 shot
+4700 shot   # stopped: a flat beam
+4900 btnup 11
+5200 shot   # back at speed
+5400 keys 0
+5800 end

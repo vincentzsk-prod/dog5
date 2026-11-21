@@ -83,6 +83,7 @@ static volatile uint32_t ui_render_us, ui_arp_step;
 #define SCOPE_N 240u
 static int16_t scope[SCOPE_N];
 static volatile uint32_t scope_state, scope_stride = 4;   /* 0 idle, 1 armed, 2 running, 3 done */
+static uint32_t deck_quiet = 1;                 /* this block: TAPE STOP at rest (the scope reads the voices before the effects) */
 
 /* ---- the held notes (ISR): in order of pressing, physically down or held by the pedal / latch */
 static struct { uint8_t note, vel, phys; } held[NHELD];
@@ -646,11 +647,25 @@ static __attribute__((noinline)) void kill_gate(int32_t *out, uint32_t n)   /* (
     if (k && !g) { kill_clear(); kill_dead = 1; }
 }
 
+static inline uint32_t deck_rest(void);         /* (obv_deck.h) */
+static volatile uint32_t ctl_tstop;             /* (obv_deck.h: SEQ held) */
+static int32_t sc_prev;
+static uint32_t sc_i, sc_sub;
+static inline void scope_feed(int32_t m)        /* one sample to the scope: armed, it waits for a rising zero crossing */
+{
+    if (scope_state == 1u) {
+        if (sc_prev < 0 && m >= 0) { scope_state = 2; sc_i = 0; sc_sub = 0; }
+    } else if (scope_state == 2u) {
+        if (!sc_sub++) scope[sc_i++] = (int16_t)m;
+        if (sc_sub >= scope_stride) sc_sub = 0;
+        if (sc_i >= SCOPE_N) scope_state = 3;
+    }
+    sc_prev = m;
+}
+
 static void engine_audio(int32_t *out, uint32_t n)
 {
     uint32_t b, v, i;
-    static int32_t sc_prev;
-    static uint32_t sc_i, sc_sub;
     if (kill_dead) {                            /* STOP: down, silence; let go, live again from the silence */
         if (ctl_kill) {
             nq_r = nq_w;
@@ -659,6 +674,7 @@ static void engine_audio(int32_t *out, uint32_t n)
         }
         kill_dead = 0;
     }
+    deck_quiet = deck_rest() && !ctl_tstop;     /* (read once a block: where the scope listens) */
     fx_block(&live, ctl_ext_quarter ? ctl_ext_quarter : 60u * FS / clampi(ctl_tempo, 40, 240));
     drive_block(&live);
     tape_block(&live);
@@ -686,20 +702,16 @@ static void engine_audio(int32_t *out, uint32_t n)
         int32_t m = (l + r) >> 1;
         out[2u * i] = l;
         out[2u * i + 1u] = r;
-        if (scope_state == 1u) {                /* armed: wait for a rising zero crossing */
-            if (sc_prev < 0 && m >= 0) { scope_state = 2; sc_i = 0; sc_sub = 0; }
-        } else if (scope_state == 2u) {
-            if (!sc_sub++) scope[sc_i++] = (int16_t)m;
-            if (sc_sub >= scope_stride) sc_sub = 0;
-            if (sc_i >= SCOPE_N) scope_state = 3;
-        }
-        sc_prev = m;
+        if (deck_quiet) scope_feed(m);          /* the scope: the voices, dry (TAPE STOP running: after it, below) */
     }
     fx_to_tape = tape_on();                     /* CHEW on: the effects hand it their sum unclipped (on a 2x rail), its
                                                  * record knee rounds the overs; CHEW 0: the effects' sat16, as before */
     fx_process(out, n);
     if (fx_to_tape) tape_process(out, n);       /* TAPE last (CHEW 0: skipped, bit for bit) */
     deck_process(out, n);                       /* TAPE STOP, the whole mix (at rest: it only listens, bit for bit) */
+    if (!deck_quiet)                            /* SEQ held (Batch 22): the scope reads the mix after the deck, so the beam
+                                                 * from the dog's mouth dives with it */
+        for (i = 0; i < n; i++) scope_feed((out[2u * i] + out[2u * i + 1u]) >> 1);
     if (ctl_kill || kill_g != KILL_ONE) kill_gate(out, n);   /* STOP: the master gate (open: skipped, bit for bit) */
 }
 

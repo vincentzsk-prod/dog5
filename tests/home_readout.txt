@@ -1,0 +1,8 @@
+# Batch 22: on HOME, a knob shows its value in the top bar for a second (as SELECT's LFO RATE), then the tags come back.
+# Encoders 2-5 = the four knobs (HOME: CUTOFF, RESO, ENV AMT, RELEASE).
+3000 enc 3 3   # RESO (knob 2)
+3100 shot   # "RESO .." over the scene
+3300 enc 5 -2   # RELEASE (knob 4)
+3400 shot
+4600 shot   # a second later: the tags again
+4800 end

@@ -1,0 +1,22 @@
+# Batch 22: a patch keeps its scene. A factory patch carries its chapter (patch byte 94: 1-4 = I-IV); saved into THE PACK
+# it shows the same scene there (it showed the PACK slot's before: slot 33 = I). INIT and older saves: the slot's chapter.
+# Buttons: 9 = SAVE. "expect param 94 N" reads the chapter byte.
+2900 expect param 94 1   # program 1: chapter I
+3000 midi 0xC0 18 0   # program 19 (MOONSHINE, chapter III)
+3200 expect param 94 3
+3300 param 12 40   # an edit
+3400 btn 9   # SAVE armed: the first free PACK slot, 33
+3600 btn 9   # saved
+3800 expect slot 33
+3900 expect param 94 3   # it carries chapter III
+4000 shot   # slot 33, the MOONSHINE scene (was JALOPY)
+4100 midi 0xC0 32 0   # away and back: it is in the stored patch
+4300 midi 0xC0 0 0
+4500 midi 0xC0 32 0
+4700 expect slot 33
+4800 expect param 94 3
+4900 shot
+5000 midi 0xC0 33 0   # slot 34, INIT: no chapter of its own, the slot's (34 -> I)
+5200 expect param 94 0
+5300 shot
+5600 end
