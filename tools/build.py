@@ -68,7 +68,7 @@ def dog5_id():
 
 
 ID = dog5_id()
-PRODUCT = ID["DOG5_ID_FM1"] + "0"   # DØG-5: FM-1_96N (the installer wants FM-1_9NN). Taken: SLOOP 900, 91N, 93N, 95N OberVave, 97N, 98N, 99N
+PRODUCT = ID["DOG5_ID_FM1"] + "000"   # DØG-5: FM-1_3645XYZ = vX.Y.Z, a dev build 000 (digits only: installers read NAME_digits)
 BOARD = "fm1"                       # the one board (fm1pkg_make.set_board)
 VERSION = None                      # APP_VER for release builds
 
@@ -294,7 +294,7 @@ def mmio_check():
 def main():
     global PRODUCT, VERSION, BOARD, APP_SLOT
     ap = argparse.ArgumentParser()
-    ap.add_argument("--release", metavar="X.Y", help="release build: identity FM-1_96Y, version string X.Y")
+    ap.add_argument("--release", metavar="X.Y", help="release build X.Y or X.Y.Z: identity FM-1_3645XYZ, version string X.Y[.Z]")
     ap.add_argument("--sdk", type=Path, help="JieLi AC79 SDK checkout (default: $AC79_SDK)")
     a = ap.parse_args()
     if (os.environ.get("BOARD") or "fm1").lower() != "fm1":
@@ -302,13 +302,13 @@ def main():
     fm1pkg_make.set_board(BOARD)
     APP_SLOT = fm1pkg_make.APP_SLOT
     suffix = ""
-    PRODUCT = ID["DOG5_ID_FM1"] + "0"
+    PRODUCT = ID["DOG5_ID_FM1"] + "000"
     name = f"{ID['DOG5_PACKAGE']}{suffix}.fwsc"
-    if a.release:                   # one digit each: the identity has room for two (X.Y; a .Z only in the text)
+    if a.release:                   # one digit each: the identity carries all three (X.Y.Z; .Z absent = 0)
         m = re.fullmatch(r"(\d)\.(\d)(\.\d)?(-[A-Za-z0-9]+)?", a.release)
         if not m:
             raise SystemExit(f"--release {a.release}: use X.Y, X.Y.Z or X.Y-suffix, one digit each")
-        PRODUCT = ID["DOG5_ID_FM1"] + m[2]
+        PRODUCT = ID["DOG5_ID_FM1"] + m[1] + m[2] + (m[3][1:] if m[3] else "0")
         VERSION = m[1] + "." + m[2] + (m[3] or "")
         name = f"{ID['DOG5_PACKAGE']}-{a.release}{suffix}.fwsc"
     fm1pkg_make.SDK = a.sdk

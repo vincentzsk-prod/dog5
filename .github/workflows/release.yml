@@ -43,7 +43,8 @@ jobs:
           V="${GITHUB_REF_NAME#v}"
           sh build.sh --release "$V"
           ls -l build/dog5-"$V"*.fwsc
-          (cd build && sha256sum dog5-"$V"*.fwsc > SHA256SUMS)
+          mkdir -p dist && cp build/dog5-"$V".fwsc dist/dog5.fwsc   # one stable asset name every release (the Hub updates in place)
+          (cd dist && sha256sum dog5.fwsc > SHA256SUMS)
 
       - uses: actions/upload-artifact@v4
         with:
@@ -55,14 +56,14 @@ jobs:
         if: github.ref_type == 'tag'
         uses: actions/attest-build-provenance@v2
         with:
-          subject-path: build/dog5-*.fwsc
+          subject-path: dist/dog5.fwsc
 
       - name: Release (tags only)
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/dog5-*.fwsc
-            build/SHA256SUMS
+            dist/dog5.fwsc
+            dist/SHA256SUMS
           body_path: .github/release-header.md   # the flash-chip note, up front (GitHub's own notes follow it)
           generate_release_notes: true
