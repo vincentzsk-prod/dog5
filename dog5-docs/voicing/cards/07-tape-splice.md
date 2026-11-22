@@ -1,4 +1,4 @@
-# 07 · Tape Splice · Chapter I Wasteland
+# 07 · Tape Splice · Chapter I · JALOPY
 
 *Voiced 5 Nov 2026, approved as rendered (variant B of Batch 3B). Renders: `reference-renders/07-tape-splice_B_*.wav` (B is this patch). Log: `../07-tape-splice.md`.*
 

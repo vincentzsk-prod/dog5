@@ -1,4 +1,4 @@
-# 24 · Fugue State · Chapter III · The Bakshi Tomes
+# 24 · Fugue State · Chapter III · MOONSHINE
 
 *Voiced 6 Nov 2026 (Batch 5B), approved after listening: variant C ("24 Fugue State C"). Renders: `reference-renders/24-fugue-state_C_*.wav`. Tables (on the voicing branch): `listen/voicing/batch-05b/24-fugue-state/README.md`.*
 

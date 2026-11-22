@@ -1,4 +1,4 @@
-# 23 · Crypt Dust · Chapter III · The Bakshi Tomes
+# 23 · Crypt Dust · Chapter III · MOONSHINE
 
 *Voiced 6 Nov 2026 (Batch 5B), approved after listening: variant D3 (Vincent: "D3 sounds great"). Renders: `reference-renders/23-crypt-dust_D3_*.wav`. Tables (on the voicing branch): `listen/voicing/batch-05b/23-crypt-dust/README.md` and `round2/README.md`. **The brief changed after listening** (see section 4): the brief asked for noise with a thin pulse and heavy tape wow; the final patch has a trace of noise and no tape.*
 
@@ -19,7 +19,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 ## 4. How to play it
 
 - **The brief changed.** The brief was "noise + thin pulse, heavy tape wow, no drive". The final patch has **no tape at all (CHEW 0)**, and the noise is a trace. Vincent found that the noise drowned out the pulse and asked for it to be removed except for a tiny trace of dust. **Not in the final patch: the heavy tape wow and the warped tape character.** No drive (GROWL 0).
-- **Hold the chord.** There is no Drone Latch: a held pad needs the key or a sustain pedal.
+- **Hold the chord.** A held pad needs the key, a sustain pedal or REC (HOLD), which latches the notes until REC again or STOP.
 - **Polyphony:** POLY 4. All three keys of the A3 C#4 E4 triad sound (with POLY 2 the first key, A3, is stolen: C#4 and E4 only). CPU worst case **2065 host instr/sample** (POLY 3 1939, POLY 5 2065; the stress chord has four notes). The device render time is not measured.
 - **Level:** VOLUME 120, −18.89 dBFS RMS over +4 s to +10 s of the held triad (K-weighted −17.98); the chord peaks at **−4.0 dBFS, which limits VOLUME**.
 - **The noise:** NOISE 43 (a square law: −18.8 dB against 127). Noise-only against pulse-only in the settled chord: −24.4 dB. The pulse's pitch s.d. is 1.9 cents on a held A3 (no tape: this is the floor of the voices' VINTAGE and the slow filter movement).

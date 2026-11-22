@@ -1,4 +1,4 @@
-# 30 · THE DØG · Chapter IV The Ancient Relics (the signature patch)
+# 30 · THE DØG · Chapter IV · ACID CAN (the signature patch)
 
 *Voiced 4–5 Nov 2026, approved (variant H of round 2). Renders: `reference-renders/30-the-dog_H_*.wav` (H is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../30-the-dog.md`.*
 
@@ -30,7 +30,7 @@ Closest to: **a Minimoog in unison with Taurus weight**.
   - **ALGORITHM slop ride (SLOBBER):** loosens the stack further, from controlled to loose. Untested on this patch; the patch's own slop is mild, so there is room.
   - **Tape Stop (SEQ held)** as an ending: the whole low stack dives. Untested on this patch.
   - **Kill switch (HEEL)** for a dead stop; the patch has no tail to hide behind.
-  - **Filter DRIVE (the FILTER + page):** the gentler route to more grit. It is already part of the sound; pushing it adds harmonics without squashing the dynamics.
+  - **Filter DRIVE (the MIXER page, knob 4):** the gentler route to more grit. It is already part of the sound; pushing it adds harmonics without squashing the dynamics.
   - **GROWL (adding it live):** the Psych Chain macros are 0 on purpose. GROWL only starts to do something above about 28 and compresses past about 40, so it is a
     big step, not a touch; it also costs noticeably more CPU than the filter drive.
   - **ALLEY, DRAIN, CHEW:** at 0 on purpose (dry and punchy is the sound); untested on this patch, and a wash will blur the chop.

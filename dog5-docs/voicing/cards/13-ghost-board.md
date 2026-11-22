@@ -1,4 +1,4 @@
-# 13 · Ghost Board · Chapter II · The Tidal Hexes
+# 13 · Ghost Board · Chapter II · BEE-TCH
 
 *Voiced 6 Nov 2026 (Batch 4B, round 2), approved after listening: variant C2 of round 2. Renders: `reference-renders/13-ghost-board_C2_*.wav` (C2 is this patch). Log: `../13-ghost-board.md`.*
 

@@ -1,4 +1,4 @@
-# 20 · Fire & Ice · Chapter III · The Bakshi Tomes
+# 20 · Fire & Ice · Chapter III · MOONSHINE
 
 *Voiced 6 Nov 2026 (Batch 5B), approved after listening: variant D ("20 Fire & Ice D"). Renders: `reference-renders/20-fire-and-ice_D_*.wav`. Tables (on the voicing branch): `listen/voicing/batch-05b/20-fire-ice/README.md`.*
 

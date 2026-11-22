@@ -204,3 +204,38 @@ footer { max-width: 1280px; margin: 0 auto; padding: 14px 16px 32px; color: var(
   .info { grid-template-columns: 1fr; }
 }
 body { overflow-x: hidden; }
+
+/* ---- the voice card (Batch 28): under the patch list; on a narrow screen, under the device */
+.toplinks { margin: 10px 0 4px; }
+.vcard { margin: 14px 0 0; border: 2px solid var(--black); background: var(--panel); box-shadow: 5px 5px 0 var(--violet);
+  border-left: 6px solid var(--acid); }
+.vcard[hidden] { display: none; }
+.vcard.pop { animation: vpop .28s ease-out; }
+@keyframes vpop { from { transform: translateY(8px); opacity: .2; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .vcard.pop { animation: none; } }
+.vcard header { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px 6px; border-bottom: 1px solid var(--line); }
+.vcard .vno { font: 700 22px/1 var(--mono); color: var(--acid); padding-top: 4px; }
+.vcard .vhead { flex: 1; min-width: 0; }
+.vcard h3 { margin: 0; font: 400 24px/1.15 var(--display); color: var(--fg); }
+.vcard .vchap { margin: 2px 0 0; font: 400 11px/1.3 var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+.vcard .vclose { background: none; border: 2px solid var(--line); color: var(--fg); font: 700 18px/1 var(--mono); width: 32px; height: 32px;
+  cursor: pointer; flex: none; }
+.vcard .vclose:hover, .vcard .vclose:focus-visible { border-color: var(--acid); color: var(--acid); }
+.vcard .vbody { padding: 4px 12px 8px; max-height: 420px; overflow: auto; font-size: 16px; line-height: 1.45; }
+.vcard h4 { margin: 10px 0 4px; font: 700 11px/1.3 var(--mono); color: var(--yellow); text-transform: uppercase; letter-spacing: .05em; }
+.vcard p { margin: 0 0 8px; }
+.vcard ul { margin: 0 0 8px; padding-left: 18px; }
+.vcard li { margin: 0 0 6px; }
+.vcard code { font: 12px var(--mono); color: var(--glow); }
+.vcard details { margin: 8px 0 4px; }
+.vcard summary { cursor: pointer; font: 700 11px/1.6 var(--mono); color: var(--turq); text-transform: uppercase; letter-spacing: .05em; }
+.vcard .vsmall { color: var(--dim); text-transform: none; letter-spacing: 0; font-weight: 400; }
+.vcard .vfoot { margin: 0; padding: 6px 12px 10px; border-top: 1px solid var(--line); font-size: 14px; }
+.vcard { margin: 0; }
+.vcard .vbody { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 4px 22px; max-height: 360px; }
+@media (min-width: 1240px) {
+  .stage { grid-template-areas: "dev list" "card list"; }
+  .stage > .device { grid-area: dev; } .stage > .vcard { grid-area: card; } .stage > .patches { grid-area: list; }
+}
+@media (max-width: 760px) { .vcard .vbody { grid-template-columns: minmax(0, 1fr); max-height: none; } }
+@media (max-width: 980px) { .vcard { margin: 0 auto 20px; } }

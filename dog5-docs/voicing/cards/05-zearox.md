@@ -1,4 +1,4 @@
-# 05 · ZEAROX · Chapter I Wasteland
+# 05 · ZEAROX · Chapter I · JALOPY
 
 *Voiced 5 Nov 2026, approved as rendered (variant D of round 2; round 1 was rejected). Renders: `reference-renders/05-zearox_D_*.wav` (D is this patch). Log: `../05-zearox.md`.*
 

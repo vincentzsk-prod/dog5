@@ -1,4 +1,4 @@
-# 28 · Arr 2 Dee 2 · Chapter IV · The Ancient Relics
+# 28 · Arr 2 Dee 2 · Chapter IV · ACID CAN
 
 *Voiced 11–12 Nov 2026 (Batch 6B round 2), approved after listening: variant D2 (Vincent: "I choose D2"). **Renamed from Bell Tolls at his request** ("The previous Bell Tolls name really doesn't suit the sound anymore"); he asked for "Arr Two Dee Two", which is 15 characters against the 14-character name field, so the on-screen name is "Arr 2 Dee 2" (his choice from the options given; the font shows it in capitals). Renders: `reference-renders/28-are-two-d2_D2_*.wav`. Tables (on the listen branch): `listen/voicing/batch-06b2/28/README.md`.*
 

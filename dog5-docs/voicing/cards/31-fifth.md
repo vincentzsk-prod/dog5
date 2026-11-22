@@ -1,4 +1,4 @@
-# 31 · Fi(l)fth · Chapter IV The Ancient Relics
+# 31 · Fi(l)fth · Chapter IV · ACID CAN
 
 *Voiced 4–5 Nov 2026, approved as is (variant C, the DUAL stab). Renders: `reference-renders/31-fifth_C_*.wav` (C is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../31-fifth.md`.*
 

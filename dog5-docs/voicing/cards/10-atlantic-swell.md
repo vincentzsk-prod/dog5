@@ -1,4 +1,4 @@
-# 10 · Atlantic Swell · Chapter II · The Tidal Hexes
+# 10 · Atlantic Swell · Chapter II · BEE-TCH
 
 *Voiced 6 Nov 2026 (Batch 4A), approved after listening: variant A, the starting point unchanged. Renders: `reference-renders/10-atlantic-swell_A_*.wav` (A is this patch). Log: `../10-atlantic-swell.md`.*
 

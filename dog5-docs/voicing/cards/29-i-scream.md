@@ -1,4 +1,4 @@
-# 29 · i scream · Chapter IV · The Ancient Relics
+# 29 · i scream · Chapter IV · ACID CAN
 
 *Voiced 11 Nov 2026 (Batch 6A2), approved: variant D with CHEW 0 (Vincent: "29 D, but take off the CHEW completely"). **This exact version was not heard before approval**: Vincent heard D with the tape on and approved it without it; the reference renders are how he checks it. Renders: `reference-renders/29-i-scream_D_*.wav`. Tables (on the voicing branch): `listen/voicing/batch-06a2/29/README.md` (variant `Dfinal`).*
 

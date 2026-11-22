@@ -1,4 +1,4 @@
-# 01 · Red Pill · Chapter I Wasteland
+# 01 · Red Pill · Chapter I · JALOPY
 
 *Voiced 5 Nov 2026, approved as rendered (variant C of Batch 3A). Renders: `reference-renders/01-red-pill_C_*.wav` (C is this patch). Log: `../01-red-pill.md`.*
 

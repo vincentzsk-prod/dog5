@@ -1,4 +1,4 @@
-# 09 · Skeenhead · Chapter II THE TIDAL HEXES
+# 09 · Skeenhead · Chapter II · BEE-TCH
 
 *Voiced Nov 2026, approved as is (variant E of Batch 2A round 2). Renders: `reference-renders/09-skeenhead_E_*.wav` (E is this patch); the other variants and the held renders are in `listen/voicing/batch-02a/round2/09-skeenhead/` on the `listen/batch-02a-weight-and-space` branch. Log: `../09-skeenhead.md`.*
 

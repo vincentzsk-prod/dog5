@@ -1,4 +1,4 @@
-# 04 · V-Sync · Chapter I Wasteland
+# 04 · V-Sync · Chapter I · JALOPY
 
 *Voiced 4–5 Nov 2026, approved as is (variant D, the fat two-voice lead). Renders: `reference-renders/04-v-sync_D_*.wav` (D is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../04-v-sync.md`.*
 

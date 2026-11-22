@@ -1,12 +1,16 @@
 # Host CPU baseline — stock OberVave (v1.5.3, before any DØG-5 engine change)
 
-## Now (20 Nov 2026, after Batch 21, the branding: v0.4 = `FM-1_964`)
+## Now (22 Nov 2026, v0.4.5 = `FM-1_3645045`: Batches 22–27 on top of the branding)
 
 | | Used | Of | Free |
 |---|---|---|---|
-| Image | 388,952 B | 581,564 B | 192,612 B |
-| RAM (`.data` + `.bss`) | 34,512 B | 98,304 B | 63,792 B |
-| Pool (`.pool`) | 308,496 B | 344,064 B | 35,568 B |
+| Image | 392,148 B | 581,564 B | 189,416 B |
+| RAM (`.data` + `.bss`) | 34,928 B | 98,304 B | 63,376 B |
+| Pool (`.pool`) | 319,760 B | 344,064 B | 24,304 B |
+
+Since Batch 21 (image 388,952 B, RAM 34,512 B, pool 308,496 B): the fence, FLEAS and the chapter byte (Batches 22–23)
+and the dial plate's pixels in `.pool` (Batch 24, `sc_dial_px`). **The pool has 24 KB left: check before any new
+buffer-hungry feature.** On the unit (v0.4.4, 21 Nov) ordinary playing reads under about 3,000 µs, with FLEAS at MANGE too.
 
 Where the image went: the four scenes and the dog (Batch 20) 265,489 B of tables; the boot animation's favicon, word and
 tables (Batch 21) ~33 KB; the code ~90 KB. The boot animation costs no audio time (it runs before any note can play) and

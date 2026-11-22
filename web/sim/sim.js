@@ -45,16 +45,37 @@
   // ---- the patch list: patches.json (the firmware's 32 factory names, made by web/sim/gen_patches.py). A click sends the
   // MIDI program change the firmware already takes (it loads the slot, and its screen follows), on the MIDI channel set on
   // GLOBAL (sim_pick), so it works with a channel set too
-  const patchEls = [];
+  const patchEls = [], cards = [];
   let progNow = -1;
+  // ---- the voice card (patches.json carries each factory patch's card, sections 2-4, as HTML made from the repo's
+  // dog5-docs/voicing/cards by gen_patches.py): it pops up when the patch changes, from the list, the PRESETS knob or MIDI
+  const vcard = $('#vcard');
+  const showCard = (p) => {
+    const c = cards[p];
+    if (!vcard || !c) { if (vcard) vcard.hidden = true; return; }
+    $('#vcNo').textContent = String(p + 1).padStart(2, '0');
+    $('#vcName').textContent = c.name;
+    $('#vcChap').textContent = 'Chapter ' + c.chapter;
+    $('#vcSound').innerHTML = c.card.sound;            // (our own repo text, rendered by gen_patches.py; no outside input)
+    $('#vcPlay').innerHTML = c.card.play;
+    $('#vcGear').innerHTML = c.card.gear;
+    vcard.hidden = false;
+    vcard.classList.remove('pop'); void vcard.offsetWidth; vcard.classList.add('pop');
+    vcard.querySelector('.vbody').scrollTop = 0;
+  };
+  if (vcard) $('#vcClose').addEventListener('click', () => { vcard.hidden = true; });
   const showProg = (p) => {
     if (p === undefined || p === progNow) return;
     progNow = p;
+    if (S.wantCard != null && p !== S.wantCard && performance.now() < S.wantUntil) return;   // (booting: the clicked card stays)
+    S.wantCard = null;
+    showCard(p);
     patchEls.forEach((el, i) => { const on = i === p; el.classList.toggle('on', on); el.setAttribute('aria-pressed', on ? 'true' : 'false'); });
     const n = $('#slotNow');
     if (n) n.textContent = p < patchEls.length ? '' : 'Slot ' + String(p + 1).padStart(2, '0') + (p >= 32 ? ' (yours: 33-99)' : '');
   };
-  const pickPatch = (i) => { if (!S.on) start(); send({ t: 'pick', p: i }); };
+  // a pick while the player is still off is kept and sent once the firmware is running (before, it was lost)
+  const pickPatch = (i) => { if (!S.on) { S.pendingPick = i; S.wantCard = i; S.wantUntil = performance.now() + 12000; start(); return; } send({ t: 'pick', p: i }); };
   fetch('patches.json').then((r) => r.json()).then((list) => {
     const host = $('#patchList'); let sec = null, last = '';
     for (const it of list) {
@@ -68,9 +89,10 @@
       b.type = 'button'; b.className = 'patch';
       const no = document.createElement('span'); no.className = 'no'; no.textContent = String(it.slot).padStart(2, '0');
       b.append(no, document.createTextNode(it.name));
-      b.addEventListener('click', () => pickPatch(it.slot - 1));
+      b.addEventListener('click', () => { pickPatch(it.slot - 1); showCard(it.slot - 1); });
       sec.querySelector('.pgrid').append(b);
       patchEls[it.slot - 1] = b;
+      if (it.card) cards[it.slot - 1] = it;
     }
     progNow = -1;
   }).catch(() => { $('#patchList').textContent = 'The patch list could not be loaded; turn the PRESETS knob instead.'; });
@@ -78,7 +100,11 @@
   // without scrolling between them; wider, it sits beside (or under) the device as before
   {
     const list = $('.patches'), keysAt = $('#keys'), stage = $('.stage'), narrow = matchMedia('(max-width: 980px)');
-    const place = () => { if (narrow.matches) { if (list.nextElementSibling !== keysAt) keysAt.before(list); } else if (list.parentElement !== stage) stage.append(list); };
+    const dev = $('#device');                 // the voice card sits right under the device (never over the keys)
+    const place = () => {
+      if (narrow.matches) { if (list.nextElementSibling !== keysAt) keysAt.before(list); } else if (list.parentElement !== stage) stage.append(list);
+      if (vcard && vcard.previousElementSibling !== dev) dev.after(vcard);
+    };
     if (narrow.addEventListener) narrow.addEventListener('change', place); else narrow.addListener(place);
     place();
   }
@@ -107,7 +133,7 @@
         const m = msg.data;
         if (m.t === 'frame') { if (m.fb) draw(m.fb); leds(m.leds, m.keys, m.glow); showProg(m.prog); }
         else if (m.t === 'store') saveStore(m.data);
-        else if (m.t === 'ready') { S.on = true; power.hidden = true;  }
+        else if (m.t === 'ready') { S.on = true; power.hidden = true; if (S.pendingPick != null) { send({ t: 'pick', p: S.pendingPick }); S.pendingPick = null; } }
         else if (m.t === 'error') { say('Error', m.message); S.starting = false; }
       };
       S.node.connect(S.ctx.destination);

@@ -21,6 +21,8 @@
     </div>
   </div>
   <p class="tag">Free, open-source custom firmware for the M-VAVE FM-1. Pick a patch, play it.</p>
+  <p class="links toplinks"><a href="../manual/">Driver Manual</a> <a href="../install/">Install on your FM-1</a>
+    <a class="cta" href="https://github.com/vincentzsk-prod/dog5/issues/new?template=feedback.md" target="_blank" rel="noopener" id="feedback">Send feedback</a></p>
   <p class="notice" role="note">This is the real DØG-5 firmware running in your browser. It sounds like the firmware's engine; the FM-1 itself has
     real-time limits (its CPU budget) that a browser does not model, so a patch with everything pushed can sound different on the device.</p>
 </header>
@@ -78,6 +80,25 @@
       <h2>Patches</h2>
       <div id="patchList"></div>
       <p class="hint" id="slotNow"></p>
+      <section class="vcard" id="vcard" hidden aria-live="polite" aria-label="The patch's voice card">
+        <header>
+          <span class="vno" id="vcNo"></span>
+          <div class="vhead"><h3 id="vcName"></h3><p class="vchap" id="vcChap"></p></div>
+          <button type="button" class="vclose" id="vcClose" aria-label="Close the voice card">&times;</button>
+        </header>
+        <div class="vbody">
+          <div class="vcol">
+            <h4>What it sounds like</h4>
+            <div id="vcSound"></div>
+            <details><summary>Gear inspirations <span class="vsmall">(inspired by, not modelled)</span></summary><div id="vcGear"></div></details>
+          </div>
+          <div class="vcol">
+            <h4>How to play it</h4>
+            <div id="vcPlay"></div>
+          </div>
+        </div>
+        <p class="hint vfoot">The patch's voice card. All of them, and the controls, are in the <a href="../manual/">Driver Manual</a>.</p>
+      </section>
     </aside>
   </div>
 
@@ -138,7 +159,8 @@
 </main>
 
 <footer>
-  <p class="links"><a href="https://github.com/vincentzsk-prod/dog5">Source code</a> &middot; <a href="../install/">Install on your FM-1</a> &middot;
+  <p class="links"><a href="../manual/">Driver Manual</a> &middot; <a href="https://github.com/vincentzsk-prod/dog5/issues/new?template=feedback.md" target="_blank" rel="noopener">Send feedback</a> &middot;
+    <a href="https://github.com/vincentzsk-prod/dog5">Source code</a> &middot; <a href="../install/">Install on your FM-1</a> &middot;
     GPL-3.0-only</p>
   <p>DØG-5 by ZIGGY (DØGS). DØG-5 is a fork of OberVave v1.5.3 (pinned) by
     <a href="https://github.com/zvenson/obervave">zvenson</a>, which stands on
