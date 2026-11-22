@@ -1,4 +1,4 @@
-# 25 · SAWTOOTH · Chapter IV The Ancient Relics
+# 25 · SAWTOOTH · Chapter IV · ACID CAN
 
 *Voiced 4–5 Nov 2026, approved as is (variant B). Renders: `reference-renders/25-sawtooth_B_*.wav` (B is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../25-sawtooth.md`.*
 

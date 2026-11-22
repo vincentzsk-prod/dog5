@@ -1,4 +1,4 @@
-# 12 · Kelp Tangle · Chapter II · The Tidal Hexes
+# 12 · Kelp Tangle · Chapter II · BEE-TCH
 
 *Voiced 6 Nov 2026 (Batch 4A), approved after listening: variant C (CUTOFF 98) of Batch 4A. Renders: `reference-renders/12-kelp-tangle_C_*.wav` (C is this patch). Log: `../12-kelp-tangle.md`.*
 

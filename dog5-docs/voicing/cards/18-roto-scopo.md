@@ -1,4 +1,4 @@
-# 18 · Roto-scopo · Chapter III · The Bakshi Tomes
+# 18 · Roto-scopo · Chapter III · MOONSHINE
 
 *Voiced 6 Nov 2026 (Batch 5A), approved after listening: variant D (the slow, deep, sloppiest one; Vincent: "sounds awesome"). Renders: `reference-renders/18-roto-scopo_D_*.wav`. Log: `../18-roto-scopo.md`.*
 
@@ -18,7 +18,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 
 ## 4. How to play it
 
-- **It needs a held key or the sustain pedal.** There is no Drone Latch; the sound ends with the key (AMP release about 2.7 s nominal; on A1 the tail is 20 dB down at 1.75 s and 40 dB down at 3.31 s, 60 dB is not reached in the 4.5 s render).
+- **It needs a held key, the sustain pedal or REC (HOLD).** REC latches the held notes until REC again or STOP; otherwise the sound ends with the key (AMP release about 2.7 s nominal; on A1 the tail is 20 dB down at 1.75 s and 40 dB down at 3.31 s, 60 dB is not reached in the 4.5 s render).
 - **One note at a time.** The patch is a 3-voice UNISON: a chord plays only its last key (three keys gate three voices, not nine). Legato: a key struck while another is held slides and does not restart the envelopes (MONO and UNISON behave so; known engine fact, README section 8).
 - **Best in the low register.** Judged on A1 (55 Hz) and A2 (110 Hz) holds of 15 s. A short tap is much quieter than the held note because the amp attack is slow (AA 100): a 150 ms tap reads 16.1 / 13.1 / 17.9 dB under the held level on A1 / A2 / A3, centroid 684 / 830 / 1644 Hz.
 - **The wander is one shared LFO on the cutoff, and nothing else.** A smooth random LFO at 0.11 Hz (RATE 15), FILTER depth ±23.9 st, PHASE FREE. There is **no Poly-Mod** in this engine: the movement cannot follow OSC 2, it is not tied to any oscillator, and the one LFO rate is the same for everything the LFO touches (here only the filter; LFO PITCH is 0). The wander is common to all voices. Measured over 0.5 s windows from 2 s to 14.5 s of the hold: spectral centroid on A1 316 to 708 Hz (s.d. 100 Hz, a 14.0 semitone range), on A2 479 to 1003 Hz (s.d. 152 Hz, 12.8 semitones); the level moves 0.8 dB s.d. (A1) and 1.0 dB (A2).

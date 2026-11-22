@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 21 Nov 2026 (Batch 27: the identity FM-1_3645, test build 0.4.5), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 22 Nov 2026 (Batch 28: the v1.1 backlog, the voice cards in the web player, the manual page, feedback), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -290,7 +290,8 @@ wordmark) — full spec in the build kit.
   **Browser player (Batch 8B, live at `docs/play/` = `https://vincentzsk-prod.github.io/dog5/play/`):** `sh web/sim/build.sh`
   builds the unchanged firmware + `web/sim/sim.c` to `docs/play/dog5.wasm` (zig cc, then Binaryen `wasm-opt --asyncify`) and copies
   the page (`index.html`, `sim.js`, `sim.css`, `worklet.js`) and `patches.json` (the 32 factory names, read from
-  `obv_patches.h` by `web/sim/gen_patches.py`). Tools, installed by hand once (the script installs nothing and prints the
+  `obv_patches.h` by `web/sim/gen_patches.py`, plus each patch's voice card from `dog5-docs/voicing/cards/`, shown under the
+  unit when a patch is picked, Batch 28). Tools, installed by hand once (the script installs nothing and prints the
   commands): `python3 -m venv ~/.local/share/obervave-wasm && ~/.local/share/obervave-wasm/bin/pip install ziglang`, and
   `npm install --prefix ~/.local/share/obervave-wasm/npm binaryen` (wasm-opt 132; the script finds it there). Test:
   `node tests/sim_test.mjs` (default `docs/play/dog5.wasm`; sound is checked bit-for-bit against the host build). The sim keeps
@@ -346,7 +347,9 @@ Chartreuse (`dog5-docs/BATCH-23-FLEAS-FENCE.md`). **Batch 24:** a knob turned on
 value) on a plate at the top left for 1.2 s, replacing Batch 22's top-bar number (`sc_dial`). **Batch 25:** SELECT's LFO RATE on HOME
 shows on the same plate (`LFO`), and the housekeeping: the flash-chip note up front, stale brief lines fixed
 (`dog5-docs/BATCH-25-LFO-DIAL-HOUSEKEEPING.md`). **Batch 27:** DØG-5's own identity, `FM-1_3645XYZ`; release assets
-named `dog5.fwsc`; the README's line on other firmwares' saves (`dog5-docs/BATCH-27-IDENTITY.md`). **Stage 3 is done** pending
+named `dog5.fwsc`; the README's line on other firmwares' saves (`dog5-docs/BATCH-27-IDENTITY.md`). **Batch 28:** one backlog for v1.1 and later (`dog5-docs/V1.1-BACKLOG.md`), the voice cards brought up to date and shown in the
+web player, the Driver Manual as a page (`docs/manual/`, `tools/make_manual_page.py`), a feedback form (GitHub Issues)
+(`dog5-docs/BATCH-28-V11-CARDS-PLAYER.md`). **Stage 3 is done** pending
 Vincent's look on the unit.
 
 ---
@@ -405,7 +408,11 @@ Vincent's look on the unit.
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
-  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`).
+  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`), `BATCH-28-V11-CARDS-PLAYER.md` (the backlog, the card in the player, the manual page, feedback).
+- ⭐ `V1.1-BACKLOG.md` — **every open item, idea and note for this release and v1.1+ in one place** (mirrored as the Project doc
+  `DOG-5-v1.1-backlog.md`). New ideas go there; done or dropped items are marked, not deleted.
+- `manual/` — repo copies of the Project's Driver Manual docs; `tools/make_manual_page.py` builds `docs/manual/index.html`
+  from them (`--check`). Edit the Project doc, copy it here, rebuild.
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),

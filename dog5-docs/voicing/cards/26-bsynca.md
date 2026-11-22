@@ -1,4 +1,4 @@
-# 26 · BSyncA · Chapter IV · The Ancient Relics
+# 26 · BSyncA · Chapter IV · ACID CAN
 
 *Voiced 11 Nov 2026 (Batch 6A), approved after listening: variant D (Vincent: "26 D"). Renders: `reference-renders/26-bsynca_D_*.wav`. Tables (on the voicing branch): `listen/voicing/batch-06a/26-bsynca/README.md`.*
 

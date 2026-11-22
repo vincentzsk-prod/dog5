@@ -1,4 +1,4 @@
-# 22 · Melting Orb · Chapter III · The Bakshi Tomes
+# 22 · Melting Orb · Chapter III · MOONSHINE
 
 *Voiced 6 Nov 2026 (Batch 5A), approved after listening: variant D (the DUAL one, where a chord melts together; Vincent: "sounds incredible"). Renders: `reference-renders/22-melting-orb_D_*.wav`. Log: `../22-melting-orb.md`.*
 
@@ -18,7 +18,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 
 ## 4. How to play it
 
-- **Hold the key.** The melt happens while the key is down; there is no Drone Latch. A short tap hears the open start and none of the melt (a 150 ms tap reads −1.1 / −0.6 / 0.0 dB re the held level on A1 / A2 / A3, centroid 839 / 1266 / 1729 Hz).
+- **Hold the key.** The melt happens while the key is down (or while REC (HOLD) latches it, until REC again or STOP). A short tap hears the open start and none of the melt (a 150 ms tap reads −1.1 / −0.6 / 0.0 dB re the held level on A1 / A2 / A3, centroid 839 / 1266 / 1729 Hz).
 - **OSC 1 is off.** ENV>O2 bends OSC 2's pitch only (and from the filter envelope, never the amp envelope), so the stack that melts is OSC 2 alone. With OSC 1 on it would stay at pitch while OSC 2 sank.
 - **How it melts (A2 held, 0.5 s windows):** the pitch ends −678 cents (−6.8 st, the formula gives −6.86 st), reaching 90 % of the fall at 4.0 s and 98 % at 5.0 s; the centroid falls 1323 → 204 Hz, 90 % of the fall at 3.5 s, 98 % at 5.5 s. The fall is front-loaded (suggests an analog-style attack curve; not isolated): −436 of −678 cents in the window starting at 2.0 s. Level windows 0–1 / 1–3 / 3–6 / 6–8 / 9–14 s: −19.2 / −19.1 / −18.6 / −18.8 / −18.9 dBFS. Almost all the energy ends in 60 to 400 Hz (74 % / 26 %).
 - **Chords:** DUAL with POLY 6, so three keys gate six voices. The melt itself was measured on a single held A2; a chord melting together as one stack was not measured. A three-key chord (A2 E3 A3) reads −14.2 dBFS RMS and **peaks at −4.1 dBFS**, 4.7 dB louder than one held note; this is what limits VOLUME (97). Phrase (b) stabs peak at −6.6 dBFS.

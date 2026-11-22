@@ -1,4 +1,4 @@
-# 21 · Cowl Shadow · Chapter III The Bakshi Tomes
+# 21 · Cowl Shadow · Chapter III · MOONSHINE
 
 *Voiced Nov 2026, approved as is (variant C of Batch 2A). Renders: `reference-renders/21-cowl-shadow_C_*.wav` (C is this patch); the other variants and the held renders are in `listen/voicing/batch-02a/21-cowl-shadow/` on the `listen/batch-02a-weight-and-space` branch. Log: `../21-cowl-shadow.md`.*
 
@@ -19,8 +19,8 @@ Closest to: **a CS-80 brass swell, stretched**.
 ## 4. How to play it
 
 - **Hold the note.** The bloom happens while the key is down and takes about five seconds (measured on A2: the sound is a tenth of the way open at under a second and nine-tenths open at about four
-  seconds). A **sustain pedal** should hold it open the same way (the engine has a sustain pedal; not tried on this patch). There is **no drone latch** (the ENV "Drone Latch" control does not exist), so
-  there is no way to keep the gate open except the key or the pedal.
+  seconds). A **sustain pedal** or **REC (HOLD)** should hold it open the same way (REC latches the held notes until REC again or
+  STOP; neither was tried on this patch).
 - **Release early and it never opens.** Let go after a couple of seconds and you get a dark, soft swell that just fades (measured: at a 2.4 s key-up it is still dark, about a fifth as bright as the
   full bloom, and dies away in about two seconds). Let go after a long hold and the release takes about a second to drop 20 dB and about four to vanish, with the brightness leaving with the level.
 - **Legato does not restart the bloom.** It is a five-voice unison, and the engine does not re-fire the envelopes on a legato note (an engine rule found in Batch 1A; not re-tested on this patch): a

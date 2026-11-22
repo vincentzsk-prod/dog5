@@ -1,4 +1,4 @@
-# 03 · Half-Life · Chapter I Wasteland
+# 03 · Half-Life · Chapter I · JALOPY
 
 *Voiced 4 Nov 2026, approved as is. Renders: `reference-renders/03-half-life_B_*.wav` (B is this patch); the rejected variants are in the git history before `e40f5d5`. Log: `../03-half-life.md`.*
 

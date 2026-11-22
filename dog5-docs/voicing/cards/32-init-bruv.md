@@ -1,4 +1,4 @@
-# 32 · Init bruv? · Chapter IV · The Ancient Relics
+# 32 · Init bruv? · Chapter IV · ACID CAN
 
 *Voiced 11 Nov 2026 (Batch 6B), approved after listening: variant B (Vincent: "option B"). He chose it by ear over the MONO variant C and the raw-saw calibration render Craw. Renders: `reference-renders/32-init-bruv_B_*.wav`. Tables (on the voicing branch): `listen/voicing/batch-06b/32/README.md`.*
 

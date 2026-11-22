@@ -7,7 +7,7 @@ sounds like, so nobody has to remember — and its text becomes the player-facin
 
 ## Format (follow it exactly)
 
-1. **HEADER** — `NN · Name · Chapter <numeral> <chapter name>` as the title (plus one italic line: date, where the renders and log are).
+1. **HEADER** — `NN · Name · Chapter <numeral> · <CHAPTER NAME>` (JALOPY · BEE-TCH · MOONSHINE · ACID CAN, since 17 Nov) as the title (plus one italic line: date, where the renders and log are).
 2. **WHAT IT SOUNDS LIKE** — 2–3 plain sentences for a player, in the dictionary vocabulary (fat, slop, seasick, choppy…).
    No parameter numbers. Someone who has never heard the patch must know what to expect.
 3. **GEAR INSPIRATIONS** — 3–6 items from the approved list, each with the trait it carries, then one line `Closest to: …`.

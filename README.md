@@ -32,7 +32,14 @@ three digits; a dev build is `build/dog5.fwsc`, `FM-1_3645000`); `python3 tools/
 GitHub releases carry it as `dog5.fwsc` (one name every release). The product's name and identity live in one file, [`firmware/src/dog5_id.h`](firmware/src/dog5_id.h).
 
 **Play it in your browser:** <https://vincentzsk-prod.github.io/dog5/play/> is the firmware itself (the same C sources,
-compiled to WebAssembly). Rebuild it with `sh web/sim/build.sh` (the two tools it needs are listed in that script).
+compiled to WebAssembly). Pick a patch and its voice card opens under the unit. Rebuild it with `sh web/sim/build.sh`
+(the two tools it needs are listed in that script).
+
+**Read the manual:** <https://vincentzsk-prod.github.io/dog5/manual/> (the Driver Manual, a draft for v0.4; source in
+[`dog5-docs/manual/`](dog5-docs/manual/), page rebuilt with `python3 tools/make_manual_page.py`).
+
+**Tell us what happened:** [send feedback](https://github.com/vincentzsk-prod/dog5/issues/new?template=feedback.md)
+(a GitHub issue with a short form: version, flash chip, patch, what you did, what you heard).
 
 **Test it:** a plain `./build.sh` last, then `sh tests/run_tests.sh` (host app, program store, update path, browser player,
 installer page; no hardware). `CLAUDE.md` §9 has the whole dev setup.

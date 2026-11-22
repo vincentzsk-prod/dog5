@@ -1,4 +1,4 @@
-# 08 · Wire Bite · Chapter I Wasteland
+# 08 · Wire Bite · Chapter I · JALOPY
 
 *Voiced 5 Nov 2026, approved as rendered (variant D of Batch 3A). Renders: `reference-renders/08-wire-bite_D_*.wav` (D is this patch). Log: `../08-wire-bite.md`.*
 

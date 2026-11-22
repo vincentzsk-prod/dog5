@@ -1,4 +1,4 @@
-# 16 · Tidal Pull · Chapter II · The Tidal Hexes
+# 16 · Tidal Pull · Chapter II · BEE-TCH
 
 *Voiced 6 Nov 2026 (Batch 4A), approved after listening: variant D (the triangle-like oscillator stack). Renders: `reference-renders/16-tidal-pull_D_*.wav` (D is this patch). Log: `../16-tidal-pull.md`.*
 

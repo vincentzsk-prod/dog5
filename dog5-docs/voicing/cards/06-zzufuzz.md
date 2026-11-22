@@ -1,4 +1,4 @@
-# 06 · zzuFuzz · Chapter I Wasteland
+# 06 · zzuFuzz · Chapter I · JALOPY
 
 *Voiced 5 Nov 2026, approved as rendered (variant C of Batch 3A). Renders: `reference-renders/06-zzufuzz_C_*.wav` (C is this patch). Log: `../06-zzufuzz.md`.*
 

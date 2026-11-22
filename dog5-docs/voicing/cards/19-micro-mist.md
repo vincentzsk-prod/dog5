@@ -1,4 +1,4 @@
-# 19 · Micro-mist · Chapter III · The Bakshi Tomes
+# 19 · Micro-mist · Chapter III · MOONSHINE
 
 *Voiced 6 Nov 2026 (Batch 5A), approved after listening: variant D, "tunnel" (Vincent: "sounds incredible, exactly what I was imagining"). Renders: `reference-renders/19-micro-mist_D_*.wav`. Log: `../19-micro-mist.md`. Slot 19 was Blackwater until the same day; that patch was dropped.*
 
@@ -19,7 +19,7 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 ## 4. How to play it
 
 - **Chords work.** POLY with 6 voices, one per note. POLY is not MONO or UNISON, so the no-retrigger rule for legato does not apply (engine fact; not tested on this patch). Best in the mid-to-upper register: judged on A3 C#4 E4 (held 10 s) and a single A4.
-- **The mist after the key-up is the effect tail, not a latch.** There is no Drone Latch: a held chord needs the key or a sustain pedal. After a 10 s chord the tail is 20 / 40 / 60 dB down at 1596 / 4132 / 5788 ms (the dry voice alone: 734 / 1304 / 1730 ms). After a 150 ms chord tap the tail is 20 dB down at 2280 ms; 40 dB is not reached inside the 4.5 s window.
+- **The mist after the key-up is the effect tail, not a latch.** A held chord needs the key, a sustain pedal or REC (HOLD), which latches the notes until REC again or STOP. After a 10 s chord the tail is 20 / 40 / 60 dB down at 1596 / 4132 / 5788 ms (the dry voice alone: 734 / 1304 / 1730 ms). After a 150 ms chord tap the tail is 20 dB down at 2280 ms; 40 dB is not reached inside the 4.5 s window.
 - **Echo and spring.** ALLEY 100 = 294 ms, FEEDBK 105, TONE 100, MIX 95, PINGPONG 127; spring DRAIN 80, SIZE 110, DAMP 20, PRE-DLY 10. On an isolated 300 ms A4 the first repeat is −9.6 dB re the note and **3.9 dB under the spring: the spring leads the echo**. The repeats re the first: 0 / +1.6 / +0.2 / −1.5 / −3.4 / −5.3 / −7.6 / −9.9 dB; **14 of 14 repeats are above −40 dB, so this measure is saturated** (a longer window would count more). The spring is after the echo and rings the repeats.
 - **Attack and taps.** A 150 ms chord tap reads 8.7 dB under the held level (centroid 2566 Hz); a 150 ms A4 tap 13.4 dB under. The slow attack makes short notes quiet.
 - **Where the energy is.** Settled chord (4 to 10 s): centroid 2300 Hz, energy under 150 Hz 0 %, 150 to 400 Hz 8 %, 400 to 1.2k 54 %, over 1.2k 39 %. At the strike (first second): centroid 2403 Hz, 0 / 6 / 61 / 33 %. A single A4, settled: centroid 3023 Hz, 0 / 0 / 55 / 45 %. Nothing sits under 150 Hz.

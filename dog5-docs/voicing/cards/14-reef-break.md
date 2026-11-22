@@ -1,4 +1,4 @@
-# 14 · Reef Break · Chapter II · The Tidal Hexes
+# 14 · Reef Break · Chapter II · BEE-TCH
 
 *Voiced 6 Nov 2026 (Batch 4B), approved after listening: round-1 variant C (the quick swell). **Changed 18 Nov 2026 (Batch 11, test build 0.2), on Vincent's instruction after he found the old attack too harsh: the attack of both envelopes is now 299 ms (FILTER ENV A 0 → 82, AMP ENV A 52 → 82) and VOLUME 121 → 116. It was not auditioned before merge; Vincent then played v0.2 on his FM-1 on 18 Nov and approved it ("reef break sounds spot on", his words).** The 6 Nov approval covers the old attack; the 18 Nov approval covers this one. Renders: `reference-renders/14-reef-break_C_*.wav` (the 6 Nov approved version, old attack, kept as history) and `reference-renders/14-reef-break_C-0.2_*.wav` (this version, approved on the unit 18 Nov). Log: `../14-reef-break.md`; the Batch 11 numbers: `../../BATCH-11-TEST-BUILD-0.2.md`.*
 
