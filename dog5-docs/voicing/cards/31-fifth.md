@@ -4,11 +4,41 @@
 
 ## 2. What it sounds like
 
+The aggressive chord stab: a fifth built into every note, a hard filter pluck, and a short slap-back echo right behind it. Each note is a detuned pair, so it is fat and punchy, with a bright snap on the front that settles into a solid body. Dry apart from the slap. The top-voted DØG-5 sound.
+
+## 3. Gear inspirations (docs only, "inspired by")
+
+- **Sequential Prophet-5** — the stab itself, with weight behind it: *punchy, fat, warm*.
+- **Roland Juno-60** — the short, snappy pluck: *plucky, punchy*.
+- **Roland Jupiter-8** — the open top on the attack: *bright, full*.
+- **Korg MS-20** — the bite when you dig in: *biting*.
+- **Roland RE-201 Space Echo** — the short slap: *slap, warm*.
+
+Closest to: **a Prophet-5 stab through a Space Echo**.
+
+## 4. Sound design notes
+
+- **One finger is a power chord:** every note carries its own fifth. Roots and octaves around A1 to A2 are home.
+- **Short and hard:** stabs of about 150 to 200 ms. The stab is as long as you hold the key.
+- **Chords stack fifths on fifths** into sus2-style clusters. That's the patch, not a fault: use real chords sparingly, three notes at most (every note is two voices).
+- **The slap is ALLEY:** turn it up on the BBD DELAY page for a longer echo. A spring blurs the stab.
+- It is heavier on the CPU than a single-voice stab.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE DUAL, DETUNE 36 (~7.8 cents between the pair), POLY 8, SPREAD 90, VINTAGE 35, OSC1 SAW 110, OSC2 SAW +7st FINE 66 LVL 100, CUTOFF 92, RESO 22, ENV AMT 106, FILTER LP24 DRIVE 20, FILTER ENV A0 D52 S22 R50, AMP ENV A0 D72 S70 R52, ALLEY 65 (89 ms) FEEDBK 28 TONE 55 MIX 36 PINGPONG 60, VOLUME 92 (-18.0 dBFS RMS bank reference, phrase b); GROWL/DRAIN/CHEW 0, no LFO, no arp` — `PF_FIFTH` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
 The aggressive chord stab: a fifth built into every note, a hard filter pluck, and a short slap-back echo right behind it. Each note is a detuned pair,
 so it is fat and punchy rather than thin, warm rather than icy, with a bright snap on the front that settles into a solid body. It is dry apart from the
 slap: no spring, no long wash, just the stab and its quick echo.
 
-## 3. Gear inspirations (docs only, "inspired by")
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Sequential Prophet-5** — the stab itself, with weight behind it: *punchy, fat, warm*.
 - **Roland Juno-60** — the short, snappy pluck: *plucky, punchy*.
@@ -18,7 +48,7 @@ slap: no spring, no long wash, just the stab and its quick echo.
 
 Closest to: **a Prophet-5 stab through a Space Echo**.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Register:** low to low-mid. Single notes and fifth-based riffs (roots and octaves around A1 to A2) are its home ground: every note already carries its own
   fifth, so one finger plays a power chord.
@@ -35,7 +65,3 @@ Closest to: **a Prophet-5 stab through a Space Echo**.
   - **Kill switch (HEEL)** for a dead stop: it clears the echo as well, so nothing rings on. Untested on this patch.
   - **Tape Stop (SEQ held)** as an ending. Untested on this patch.
   - **GROWL / DRAIN / CHEW:** at 0 on purpose (the patch's drive is the filter DRIVE, already in the sound). A spring will blur the stab; untested here.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE DUAL, DETUNE 36 (~7.8 cents between the pair), POLY 8, SPREAD 90, VINTAGE 35, OSC1 SAW 110, OSC2 SAW +7st FINE 66 LVL 100, CUTOFF 92, RESO 22, ENV AMT 106, FILTER LP24 DRIVE 20, FILTER ENV A0 D52 S22 R50, AMP ENV A0 D72 S70 R52, ALLEY 65 (89 ms) FEEDBK 28 TONE 55 MIX 36 PINGPONG 60, VOLUME 92 (-18.0 dBFS RMS bank reference, phrase b); GROWL/DRAIN/CHEW 0, no LFO, no arp` — `PF_FIFTH` in `firmware/src/obv_patches.h`.

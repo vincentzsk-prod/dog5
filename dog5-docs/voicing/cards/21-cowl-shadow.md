@@ -4,10 +4,39 @@
 
 ## 2. What it sounds like
 
+A brass wall that starts dark and soft and swells open while you hold the note: a quiet, murky hum that, over a few seconds, blooms into a wide, full, glowing brass, with a slow drift inside the stack. Dry. When you let go it fades out slowly and darkens as it goes.
+
+## 3. Gear inspirations (docs only, "inspired by")
+
+- **Yamaha CS-80** — the slow brass swell: *soft, slow, swelling*.
+- **Oberheim OB-Xa** — the brassy body: *brassy, full*.
+- **Roland Jupiter-8** — the bright blare at the top of a swell: *bright*.
+- **Korg Mono/Poly (in unison)** — the stacked, drifting oscillators: *fat, drifting*.
+
+Closest to: **a CS-80 brass swell, stretched**.
+
+## 4. Sound design notes
+
+- **Hold the note:** the bloom takes about five seconds. Let go early and it never opens, it just fades dark.
+- **It sounds quiet if you tap a note.** Hold it and it comes up to full level. The sustain pedal or REC (HOLD) should keep it open the same way.
+- **One note at a time:** five voices in unison.
+- **Legato does not restart the bloom:** release and play again to bloom again.
+- It ships dry; a little DRAIN adds depth.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE UNISON, VOICES 5, DETUNE 40 (spread +-9.8 cents), VINTAGE 45, SPREAD 100, OSC1 SAW 110, OSC2 SAW 0st FINE +1.6 cents LVL 100, CUTOFF 40, RESO 14, ENV AMT 118, KEY TRK 127, FILTER LP24, FILTER ENV A119 (5.3 s) S127 R110, AMP ENV A90 S127 R108, VOLUME 79 (-18.0 dBFS RMS over +6..+10 s of the A2 hold; phrase (b) -31.3); GROWL/ALLEY/DRAIN/CHEW 0, no LFO, no arp` — `PF_COWL_SHADOW` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
 A brass wall that starts dark and soft and swells open while you hold the note. It begins as a quiet, murky hum and, slowly, blooms into a wide, full, glowing brass, with a slow
 drift inside the stack. It is dry. When you let go it fades out slowly and darkens as it goes.
 
-## 3. Gear inspirations (docs only, "inspired by")
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Yamaha CS-80** — the slow brass swell: *soft, slow, swelling*.
 - **Oberheim OB-Xa** — the brassy body: *brassy, full*.
@@ -16,7 +45,7 @@ drift inside the stack. It is dry. When you let go it fades out slowly and darke
 
 Closest to: **a CS-80 brass swell, stretched**.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Hold the note.** The bloom happens while the key is down and takes about five seconds (measured on A2: the sound is a tenth of the way open at under a second and nine-tenths open at about four
   seconds). A **sustain pedal** or **REC (HOLD)** should hold it open the same way (REC latches the held notes until REC again or
@@ -30,7 +59,3 @@ Closest to: **a CS-80 brass swell, stretched**.
 - **Register:** it was voiced and measured on A2 only; other registers are untested.
 - **One note at a time:** unison, all five voices on the note you hold; chords are not available.
 - **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (SEQ held), the kill switch (HEEL). It ships dry; a little DRAIN would add depth (untested).
-
-## 5. Final values (for debugging, not for players)
-
-`MODE UNISON, VOICES 5, DETUNE 40 (spread +-9.8 cents), VINTAGE 45, SPREAD 100, OSC1 SAW 110, OSC2 SAW 0st FINE +1.6 cents LVL 100, CUTOFF 40, RESO 14, ENV AMT 118, KEY TRK 127, FILTER LP24, FILTER ENV A119 (5.3 s) S127 R110, AMP ENV A90 S127 R108, VOLUME 79 (-18.0 dBFS RMS over +6..+10 s of the A2 hold; phrase (b) -31.3); GROWL/ALLEY/DRAIN/CHEW 0, no LFO, no arp` — `PF_COWL_SHADOW` in `firmware/src/obv_patches.h`.

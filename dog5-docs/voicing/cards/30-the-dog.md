@@ -4,9 +4,7 @@
 
 ## 2. What it sounds like
 
-A dry, punchy unison bass: every voice stacked on a single note, fat and thick, loosened just enough that the stack breathes without ever going seasick. It is warm
-with a driven edge that stops short of fuzz, and each note is chopped hard on release: no spring, no echo, no tail, only the silence after the hit. This is the
-flagship, the DØG-5 signature, and it has presence: it sits forward and fills the room.
+A dry, punchy unison bass: every voice stacked on one note, fat and thick, loosened just enough that the stack breathes without going seasick. Warm, with a driven edge that stops short of fuzz, and each note is chopped hard on release: no spring, no echo, no tail, only the silence after the hit. The flagship, the DØG-5 signature: it sits forward and fills the room.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
@@ -19,6 +17,40 @@ flagship, the DØG-5 signature, and it has presence: it sits forward and fills t
 Closest to: **a Minimoog in unison with Taurus weight**.
 
 ## 4. Sound design notes
+
+- **Where it lives:** low, A1 to A2. It suits single-note bass lines and chopped roots; eighth-note chops are home, and it holds as a wall too.
+- **One note at a time:** it's a unison, every voice on one key, so it plays no chords.
+- **On small speakers** the very bottom (A0, low A1) partly drops out.
+- **It's a touch louder than the rest of the bank on purpose:** it jumps forward when you switch to it.
+- **More grit:** MIXER's DRIVE (knob 4) is the gentle route. GROWL is the big step and does nothing below about 28.
+- **Keep it dry:** delay or spring blurs the chop. SLOBBER loosens the stack, Tape Stop dives it, and HEEL stops it dead.
+- **Watch the CPU here:** with all four effects pushed and four notes held it reads about 5,600 of the 5,800 µs budget, the highest in the bank.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE UNISON, VOICES 8, DETUNE 35 (~15 cents end to end), VINTAGE 40, SPREAD 50, OSC1 SAW LVL 114, OSC2 SAW -12st LVL 94, CUTOFF 104, RESO 12, ENV AMT 88, KEY TRK 60, FILTER LP24 DRIVE 100, FILTER ENV A10 D58 S40 R50, AMP ENV A4 D70 S127 R48, VOLUME 56 (-16.5 dBFS RMS on the low-unison phrase; deliberately +1.5 dB over the -18.0 bank reference); GROWL/ALLEY/DRAIN/CHEW 0, no LFO, no arp` — `PF_THE_DOG` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A dry, punchy unison bass: every voice stacked on a single note, fat and thick, loosened just enough that the stack breathes without ever going seasick. It is warm
+with a driven edge that stops short of fuzz, and each note is chopped hard on release: no spring, no echo, no tail, only the silence after the hit. This is the
+flagship, the DØG-5 signature, and it has presence: it sits forward and fills the room.
+
+### 3. Gear inspirations (docs only, "inspired by")
+
+- **Minimoog in unison** — the stacked saws and the octave-down body: *fat, sub-heavy, thick*.
+- **Moog Taurus bass pedals** — the weight at the bottom: *deep, floor-shaking*.
+- **Roland SH-101** — the quick attack and the hard stop: *tight, punchy*.
+- **Oberheim OB-Xa in unison** — the wide, full stack with its warmth: *fat, full, warm*.
+- **Korg MS-20** — the grit in the filter when it is pushed: *nasty, biting*.
+
+Closest to: **a Minimoog in unison with Taurus weight**.
+
+### 4. Sound design notes
 
 - **Register:** low. Roots and octaves from about A1 to A2 are the sweet spot, and it is built for single-note bass lines and chopped roots.
   The very bottom (A0, and the A1 below it) is partly under what small speakers and many PAs reproduce: most of the audible weight is in the 60–150 Hz
@@ -35,7 +67,3 @@ Closest to: **a Minimoog in unison with Taurus weight**.
     big step, not a touch; it also costs noticeably more CPU than the filter drive.
   - **ALLEY, DRAIN, CHEW:** at 0 on purpose (dry and punchy is the sound); untested on this patch, and a wash will blur the chop.
 - **Level:** it deliberately sits about 1.5 dB above the bank's usual level, for presence. Expect it to jump out a little when you switch to it.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE UNISON, VOICES 8, DETUNE 35 (~15 cents end to end), VINTAGE 40, SPREAD 50, OSC1 SAW LVL 114, OSC2 SAW -12st LVL 94, CUTOFF 104, RESO 12, ENV AMT 88, KEY TRK 60, FILTER LP24 DRIVE 100, FILTER ENV A10 D58 S40 R50, AMP ENV A4 D70 S127 R48, VOLUME 56 (-16.5 dBFS RMS on the low-unison phrase; deliberately +1.5 dB over the -18.0 bank reference); GROWL/ALLEY/DRAIN/CHEW 0, no LFO, no arp` — `PF_THE_DOG` in `firmware/src/obv_patches.h`.

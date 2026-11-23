@@ -4,9 +4,37 @@
 
 ## 2. What it sounds like
 
-A thick stack of detuned saw tones that opens bright when the key goes down and then slowly sinks: the filter closes and the pitch falls together over a few seconds, until the sound settles low and dark. It is a held collapse, not a zap. It takes chords (three keys gate six voices). It is dry: no echo, no spring. Held, it stays down; a short tap gives only the bright opening.
+A thick stack of detuned saws that opens bright when the key goes down and then slowly sinks: the filter closes and the pitch falls together over a few seconds, until the sound settles low and dark. A held collapse, not a zap. It takes chords. Dry.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Oberheim OB-Xa** — a fat unison source.
+- **Sequential Prophet-5** — the slow filter-envelope sweep.
+- **Korg MS-20** — *resonant*.
+
+Closest to: **an OB-Xa-style fat stack whose filter and pitch both sink slowly downward**.
+
+## 4. Sound design notes
+
+- **Hold the key:** the melt happens while it is down; the pitch ends almost seven semitones lower after about four seconds. A short tap gives only the bright opening.
+- **Chords: three notes** (every note is two voices). A chord is loud: it is what sets the patch's level.
+- **When you let go, the melt partly runs back up** as the note fades.
+- **Deeper or shallower melt:** ENV>O2 on the OSC MOD page. OSC 1 is off on purpose: it would stay at pitch while the rest sinks.
+- It is the heaviest patch on the CPU in the host tests; watch the reading on GLOBAL if you add effects.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE DUAL (POLY 6, DETUNE 40 = ±9.8 cents), OSC1 OFF, OSC2 SAW LVL 110 SEMI 0, ENV>O2 46 (−6.86 st at the envelope's top), FILTER LP12 CUTOFF 100 (4186 Hz) RESO 75 KEY TRK 64 ENV AMT 32 (−32 = about −49 st at the top), FILTER ENV A118 (4.96 s nominal) D60 S127 R127, AMP ENV A60 D100 S127 R92, no LFO, VINTAGE 40, SPREAD 110, VOLUME 97 (−18.9 dBFS RMS on the A2 hold, chord peak −4.1); no echo, no spring, CHEW 0, GROWL 0, no arp` — `PF_MELTING_ORB` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A thick stack of detuned saw tones that opens bright when the key goes down and then slowly sinks: the filter closes and the pitch falls together over a few seconds, until the sound settles low and dark. It is a held collapse, not a zap. It takes chords (three keys gate six voices). It is dry: no echo, no spring. Held, it stays down; a short tap gives only the bright opening.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Oberheim OB-Xa** — *a fat unison source* (a DUAL pair of saws per key, 9.8 cents apart plus the patch's slop; a width measurement was not made, so "fat" is not measured).
 - **Sequential Prophet-5** — *the slow filter-envelope sweep* (measured: the centroid falls from 1323 Hz to 204 Hz, 32.4 semitones, reaching 90 % of the fall at 3.5 s on A2).
@@ -16,7 +44,7 @@ Closest to: **an OB-Xa-style fat stack whose filter and pitch both sink slowly d
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Hold the key.** The melt happens while the key is down (or while REC (HOLD) latches it, until REC again or STOP). A short tap hears the open start and none of the melt (a 150 ms tap reads −1.1 / −0.6 / 0.0 dB re the held level on A1 / A2 / A3, centroid 839 / 1266 / 1729 Hz).
 - **OSC 1 is off.** ENV>O2 bends OSC 2's pitch only (and from the filter envelope, never the amp envelope), so the stack that melts is OSC 2 alone. With OSC 1 on it would stay at pitch while OSC 2 sank.
@@ -26,7 +54,3 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **Level and cost:** VOLUME 97, −18.9 dBFS RMS over +9 s to +14 s of the A2 hold (K-weighted −20.3; the first second −19.2). **About 2489 host instr/sample worst case (idle 1164 + 1325 under load), the highest of any voiced patch** (15 D: 2375). The device render time is not measured.
 - **Legato:** DUAL is polyphonic, so the MONO / UNISON no-retrigger rule does not apply (engine fact; not tested on this patch).
 - **Tricks:** untested on this patch: SLOBBER, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, CHEW.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE DUAL (POLY 6, DETUNE 40 = ±9.8 cents), OSC1 OFF, OSC2 SAW LVL 110 SEMI 0, ENV>O2 46 (−6.86 st at the envelope's top), FILTER LP12 CUTOFF 100 (4186 Hz) RESO 75 KEY TRK 64 ENV AMT 32 (−32 = about −49 st at the top), FILTER ENV A118 (4.96 s nominal) D60 S127 R127, AMP ENV A60 D100 S127 R92, no LFO, VINTAGE 40, SPREAD 110, VOLUME 97 (−18.9 dBFS RMS on the A2 hold, chord peak −4.1); no echo, no spring, CHEW 0, GROWL 0, no arp` — `PF_MELTING_ORB` in `firmware/src/obv_patches.h`.

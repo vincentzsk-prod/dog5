@@ -4,9 +4,38 @@
 
 ## 2. What it sounds like
 
-A pad of pulse waves whose pulse widths are swept slowly and steadily by a single triangle LFO, through a steep low-pass that leaves little in the high register, with a spring tail behind it. The sweep is measurable on held notes; on short notes only a slice of it is heard. No LFO pitch vibrato and no echo are set (the slop setting still adds its usual slop).
+A pad of pulse waves whose widths are swept slowly and steadily by one triangle LFO, through a steep low-pass that leaves little up top, with a spring tail behind it. Dark and moving on held notes; on short notes you only hear a slice of the sweep. No vibrato, no echo.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Moog Prodigy** — *dark, raw, murky*.
+- **Fender spring reverb tank** — *springy*.
+- **Roland Juno-60** — the pulse-width sweep: *PWM*.
+- **Korg Polysix** — *fat, PWM*.
+
+Closest to: **a Polysix PWM pad into a spring tank**.
+
+## 4. Sound design notes
+
+- **Hold the notes:** the sweep takes about a second, so it is a held-note effect. Short notes barely move.
+- **Where it lives:** held notes and chords from A2 up; up to five notes.
+- **Each detached note restarts the sweep,** so every note begins the same way.
+- **Brighter:** CUTOFF up opens the top. **Deeper movement:** more DRIVE (MIXER page) deepens the sweep's colour but flattens its level swing.
+- One LFO moves both oscillators at the same rate; there is no Poly-Mod here.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), OSC1 PULSE PW 42 (33 %) LVL 110, OSC2 PULSE PW 42 FINE 73 (+7.0 cents) LVL 100, CUTOFF 98 (3729 Hz at C4), RESO 30, ENV AMT 64 (0), KEY TRK 127, FILTER LP24, AMP ENV A52 D70 S127 R88, LFO TRI RATE 60 (1.03 Hz) PHASE SYNC PWM 100 (±15.2 points) PITCH 0 AMP 0, VINTAGE 50, SPREAD 100, VOLUME 74 (−18.0 dBFS RMS on the tangle phrase, peak −5.3); DRAIN 55, SIZE 75, DAMP 30, PRE-DLY 20; DLY MIX 0, CHEW 0, GROWL 0, no arp` — `PF_KELP_TANGLE` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A pad of pulse waves whose pulse widths are swept slowly and steadily by a single triangle LFO, through a steep low-pass that leaves little in the high register, with a spring tail behind it. The sweep is measurable on held notes; on short notes only a slice of it is heard. No LFO pitch vibrato and no echo are set (the slop setting still adds its usual slop).
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Moog Prodigy** — *dark, raw, murky* (dark: the held A2's centroid is 531 Hz; raw and murky are not measured as such).
 - **Fender spring reverb tank** — *springy* (the tail's measured return is in section 4).
@@ -17,7 +46,7 @@ Closest to: **a Polysix PWM pad into a spring tank**.
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **What C measured (held A2, dry, after the filter):** the PWM moves the band energies by 10.1 dB in 150 to 400 Hz, 7.6 dB in 400 to 1.2k and 7.4 dB in 1.2k to 3k (95th to 5th percentile of 23 ms frames); the level itself moves 5.7 dB (5.9 dB with the spring). The strongest modulation is 0.9 Hz in 150 to 400 Hz and 1.6 Hz in 400 to 1.2k; the LFO runs at 1.03 Hz (triangle, RATE 60) and sweeps the pulse widths 18 to 48 % (±15.2 points around 33 %, one side of 50 %). On the held chord A2 E3 C4 the depths are 9.0 / 6.4 / 5.6 dB and the level moves 4.3 dB.
 - **Cutoff 98:** a 24 dB low-pass at 100 % key tracking, CUTOFF 98 = 3729 Hz at C4, RESO 30. Held A2: centroid 531 Hz, 0.8 % of its energy above 1.2 kHz; held chord: centroid 879 Hz, 3.5 % above 1.2 kHz; note-on region MUD ratio (150 to 400 over 1.2k+) 12.3. The rendered variant B (CUTOFF 86) measured 339 Hz and 540 Hz and a note-on MUD of 38.8.
@@ -31,7 +60,3 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **Program-load check:** the program-load render and the render built over INIT are bit-identical, from the boot patch and from INIT.
 - **Costs:** about 2042 host instr/sample worst case (idle 1164 + 878 under load). The device build was not run and the device render time is not measured.
 - **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, CHEW, ALLEY.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), OSC1 PULSE PW 42 (33 %) LVL 110, OSC2 PULSE PW 42 FINE 73 (+7.0 cents) LVL 100, CUTOFF 98 (3729 Hz at C4), RESO 30, ENV AMT 64 (0), KEY TRK 127, FILTER LP24, AMP ENV A52 D70 S127 R88, LFO TRI RATE 60 (1.03 Hz) PHASE SYNC PWM 100 (±15.2 points) PITCH 0 AMP 0, VINTAGE 50, SPREAD 100, VOLUME 74 (−18.0 dBFS RMS on the tangle phrase, peak −5.3); DRAIN 55, SIZE 75, DAMP 30, PRE-DLY 20; DLY MIX 0, CHEW 0, GROWL 0, no arp` — `PF_KELP_TANGLE` in `firmware/src/obv_patches.h`.

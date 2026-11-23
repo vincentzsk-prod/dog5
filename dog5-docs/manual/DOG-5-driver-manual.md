@@ -5,6 +5,7 @@
 **Draft 1 — 3 Nov 2026.**
 - **12 Nov, the Chapter IV checkpoint.** All four chapters are complete and all 32 patches are voiced. DØG-5 v0.1 was installed on Vincent's FM-1. The controls, keybed, CPU-meter and dictionary sections below carry what that showed. The dictionary gained Bell, Ring, Chime (band-limited) and Blank slate. Part 4 gear inspirations and Part 5 voicing notes now cover all 32.
 - **18 Nov, v0.2** (`FM-1_962`, flashed and tested on the unit). Parts 1.1, 1.2 and 1.5 were rewritten for the Batch 9B controls (21 pages with MIXER, REC = HOLD, SELECT = LFO RATE on HOME, hold EDIT + a black key). Part 1.7 was added (plain-language knob hints), and the dictionary's DRIVE and MORPH pointers were corrected.
+- **23 Nov, Batch 30.** Parts 2 and 2B rewritten for players: each word's meaning and how to get more of it, with the measurements moved to the records doc (`DOG-5-driver-manual-records.md`). Parts 3–4 are now generated from the voice cards.
 - **23 Nov, bullet pass.** Every list in Parts 0–2 read for need and order: dev notes out of Part 0, the filter and LFO lines in 1.4 corrected, the bank line points to 1.9, 1.9 reordered, 1.10 gains "keep the installer tab in front", Dirt & aggression reordered. The cards' "How to play it" is now **Sound design notes** (Part 3 too).
 - **21 Nov, v0.4.4** (flashed and tested on the unit). Parts 1.1, 1.2, 1.4 and 1.6 were updated: the SAVE lock, a MIDI panic releasing HOLD, FLEAS on the GLOBAL page, and the CPU reading at the top of GLOBAL. Part 1.8 was added (the screen: the boot animation, HOME's scene, the dial, the fence, FLEAS), and so were Part 1.9 (saving: THE POUND and THE PACK) and Part 1.10 (installing, leaving, coming back).
 
@@ -285,297 +286,168 @@ Turn it down and the rot clears. The beam and the bottom bar are never touched. 
 
 ## PART 2 — THE VOICING DICTIONARY
 
-The shared language for describing and shaping tone. Each term gives the plain meaning and the controls that
-move it, so a direction like "fatter and nastier, but less wet" has one agreed reading. This is the contract
-for the voicing process and the vocabulary the patch descriptions are written in.
+The words this manual uses for sound, and the controls that move each one. When a note says a patch is "seasick" or
+"springy", this is what it means and where to reach. *(The measurements behind these words are kept in the voicing
+records, not here.)*
 
 ### Body & weight
-- **Fat / thick** — more body and width. *More:* OSC 2 LEVEL up, slight DETUNE, UNISON or DUAL mode, sub/low
-  register, both oscillators on. *The DØG-5 method: start fat, then drive — never a thin source pushed loud.*
-  *(Measured on stacked-saw patches: once the oscillators are stacked, rebalancing levels or filter barely
-  changes the spectrum; what changes the feel is **stack width (DETUNE), level and harmonic density
-  (filter DRIVE).**)*
-- **Thin / hollow** — narrow, reedy, little body. *More:* single oscillator, pulse with narrow PW, higher
-  register, less detune. *(Diagnosis tip: very low notes put most of their energy under about 60 Hz, which
-  small speakers and many PAs don't reproduce — "thin" on a low patch is often the 60–400 Hz band, not the
-  sub.)*
-- **Sub-heavy / deep** — weight in the low end. *More:* low octave, OSC 2 down an octave, low cutoff with the
-  filter drive doing the work (bass-comp). *(At the very bottom, A0–A1, an octave-down oscillator is below
-  audible range — it costs headroom without adding weight.)*
-- **Full vs empty** — how much of the spectrum is filled. Fuller = both oscs + noise; emptier = one osc, no
-  noise.
-- **Muddy** *(added 5 Nov, from 05 ZEAROX round 1; extended 6 Nov)* — energy piled up in 150–400 Hz with
-  almost nothing above 1.2 kHz, and a long tail: a smear, not a punch. *Cause found:* a saw wave through a
-  24 dB low-pass at a low cutoff, plus GROWL's compression lengthening the tail. *Cure:* square/pulse
-  oscillators, an open 12 dB filter, no GROWL, a short decay. Diagnose with the 150–400 Hz share against the
-  1.2 kHz+ share ("MUD ratio") in time windows. *Scale (6 Nov, from Chapter II):* 10 A 2.5; 12 C 12.3 (tail
-  10 / 15 / 77); a "medium muddy" target is about 10–40 on the note, tail windows no worse than about 80; 13
-  (final) 315 with tails over 1000 — very muddy, chosen by ear; 16 D 133 (almost nothing above 1.2 kHz).
-  *A soft, triangle-like tone is not "medium muddy" by this ratio on its own (245 with the second oscillator
-  off in 13's round 1); the ratio is a diagnostic, and the owner's ear decides.*
-- **Blank slate / init** *(added 12 Nov, from 32 Init bruv?)* — a plain starting voice with nothing added: no
-  modulation, no echo, no spring, no tape, no drive. In this bank it is the engine's own default program (two
-  saws 4.7 cents apart through a 24 dB low-pass at CUTOFF 80, RESO 20), not a single raw saw with an open filter
-  (the saw's harmonics follow 1/n only with OSC 2 off, CUTOFF 127, RESO 0 and flat envelopes, which is a
-  separate "raw saw" render kept for later).
+- **Fat / thick** — body and width. *More:* OSC 2's level up, a little DETUNE, UNISON or DUAL mode, both oscillators
+  on. The DØG-5 way: start fat, then drive; a thin sound pushed loud never gets there. Once a sound is stacked, width
+  (DETUNE) and per-voice DRIVE change its feel more than levels or filter do.
+- **Thin / hollow** — narrow and reedy. *More:* one oscillator, a narrow pulse, a higher register, less detune.
+- **Sub-heavy / deep** — weight in the low end. *More:* a low octave, OSC 2 down an octave, a low cutoff with the
+  filter's DRIVE doing the work. At the very bottom (A0–A1) an octave-down oscillator is below hearing and only costs
+  headroom.
+- **Small speakers:** very low notes put most of their energy under about 60 Hz, which laptops, phones and many PAs
+  don't play. "Thin" on a low patch is usually the 60–400 Hz band missing, not the sub.
+- **Full vs empty** — how much of the spectrum is filled. Fuller: both oscillators plus noise; emptier: one, no noise.
+- **Muddy** — a pile-up in the low mids with almost no top and a long tail: a smear, not a punch. *Cure:* square or
+  pulse waves, an open 12 dB filter, less GROWL, a shorter decay. Some patches are muddy on purpose (13 Ghost Board).
+- **Blank slate** — a plain voice with nothing added: 32 Init bruv?, and every empty PACK slot.
 
 ### Brightness & tone
-- **Bright** — more high end, more presence. *More:* CUTOFF up (HOME/FILTER), ENV AMT up, less SPRING DAMP,
-  less BBD TONE roll-off, less TAPE head-loss.
-- **Presence** *(added 4 Nov, from 30 THE DØG)* — the patch sits forward and fills the room without simply
-  being louder or fuzzier. *More:* a wider stack (DETUNE), a touch more CUTOFF, per-voice filter DRIVE
-  (warms without compressing), and — for a flagship only — sitting at the top of the loudness tolerance.
-- **Dark / murky** — rolled-off top. *More:* CUTOFF down, more DAMP, more TONE roll-off on the delay.
-- **Distant / "at the bottom of a well"** *(added 4 Nov, from 09 Skeenhead)* — the note's body vanishes and
-  only the effects remain, so note and effect feel like two separate events. *Cause found:* the filter's
-  cutoff resting **below the played notes** (a resonant plop closing under them), leaving a dark hum with no
-  top, while the spring stays bright. *Cure:* raise the CUTOFF floor and the FILTER sustain so the filter
-  rests above the notes; check the effect level relative to the dry note per time window (a single average
-  hides it).
-- **Warm** — soft top without going dull; gentle saturation. *More:* a little per-voice **filter DRIVE**
-  (MIXER page, knob 4), LP filter, modest cutoff. *(Not "a touch of GROWL": GROWL does almost nothing below
-  about 28.)*
-- **Harsh / brittle / piercing** — aggressive, possibly fatiguing highs. *More:* high RESO near self-osc, high
-  cutoff, hard sync, GROWL with high BIAS. Usually a thing to dial *back*.
-- **Nasal / honky** — mid-forward, vowel-like. *More:* band-pass filter type, narrow PW, or TYPE SEM with
-  MORPH toward notch.
-- **Zap** *(added 5 Nov, from 08 Wire Bite)* — a burst of top end at the strike, like biting a live wire.
-  *More:* narrow pulses, resonance, a fast filter envelope. *Limit:* a generally brighter cutoff **shrinks**
-  the measured burst (the body is already bright), so "zappier" and "brighter" pull against each other.
-- **Soft / triangle-like** *(added 6 Nov, from 11, 16 D and 13)* — there is no triangle or sine oscillator.
-  The nearest is a narrow pulse (about 25%) through a key-tracking 12 dB low-pass: harmonics 3 / 5 / 7 read
-  about −17 / −27 / −37 dB against an ideal triangle's −19 / −28 / −34. It is dark (centroid about 600 Hz,
-  almost nothing above 1.2 kHz) and the ratio calls it muddy. An octave-up copy of the pulse brings the ratio
-  down (13's round 1). It is a triangle-like stack, not a sine.
-- **Chime (band-limited)** *(added 12 Nov, from 29 i scream)* — a bright struck ping inside a narrow band, like
-  a small horn speaker. *How it is built:* a 12 dB band-pass at CUTOFF 77, RESO 105, KEY TRK 0 (peaks at 1099 Hz,
-  −3 dB width 898–1345 Hz; 0.4% of its energy under 400 Hz and 4.1% above 4 kHz, measured with white noise),
-  a pulse at 50% for OSC 1, and a second oscillator +15 semitones with X-MOD 25 and ENV>O2 76 for the zing at
-  the strike. *Limit:* the +15 semitone partial is faint at the top of the keybed (−34 dB at C#6, −18 dB at C#5).
+- **Bright** — more top and presence. *More:* CUTOFF up, ENV AMT up, less SPRING DAMP, less BBD TONE roll-off.
+- **Presence** — the patch sits forward and fills the room without just being louder or fuzzier. *More:* a wider stack
+  (DETUNE), a touch more CUTOFF, per-voice DRIVE.
+- **Dark / murky** — the top rolled off. *More:* CUTOFF down, more DAMP, more TONE roll-off on the delay.
+- **Distant ("at the bottom of a well")** — the note's body vanishes and only the effects remain. *Cause:* the cutoff
+  resting below the notes you play. *Cure:* raise CUTOFF and the filter envelope's SUSTAIN so the filter sits above them.
+- **Warm** — a soft top that isn't dull, gentle saturation. *More:* a little per-voice DRIVE (MIXER page, knob 4), a
+  low-pass, a modest cutoff. Not "a touch of GROWL": GROWL does almost nothing below about 28.
+- **Harsh / piercing** — aggressive, tiring highs. *More:* RESO near the top, a high cutoff, hard sync, GROWL with high
+  BIAS. Usually something to dial back.
+- **Nasal / honky** — mid-forward and vowel-like. *More:* the band-pass filter, a narrow pulse, or TYPE SEM with MORPH
+  toward notch.
+- **Zap** — a burst of top end at the strike. *More:* narrow pulses, resonance, a fast filter envelope. A brighter
+  cutoff overall makes the zap stand out *less*.
+- **Soft / triangle-like** — there is no triangle or sine oscillator. The nearest: a narrow pulse (about 25%) through a
+  key-tracking 12 dB low-pass, perhaps with an octave-up copy (16 Tidal Pull, 24 Fugue State). Dark by nature.
+- **Chime** — a bright struck ping inside a narrow band, like a small horn speaker: a band-pass filter with high RESO
+  and a second oscillator zinging down at the strike (29 i scream).
 
 ### Dirt & aggression
-- **Clean** — no added grit. GROWL at 0 (a true bypass).
-- **Driven / pushed** — console-into-the-red warmth to crunch. *More:* **filter DRIVE** for the gentle route
-  (adds harmonics without squashing dynamics; it sits before the filter, so the filter takes some of the edge
-  back); GROWL for the big step (inert up to about 28, compresses past about 40, fuzzy by about 70); BIAS
-  (inside GROWL) adds peaks and even-harmonic buzz. *(12 Nov, from 26 BSyncA: GROWL also darkens a sync strike —
-  the centroid over the first 50 ms is 2662 Hz with GROWL 44 against 4165 Hz with no drive — so the rip's
-  brightness trades against the drive.)*
-- **Nasty / gnarly / blown** — full aggression. *More:* GROWL high, resonant filter, hard-chop gate. The
-  Chapter I register.
-- **Fuzzy / voltage-starved** — gated, spitting fuzz like a dying battery. *More:* GROWL maxed into a thick
-  source, cutoff open, fast gate. *(Measured on 06: held-note crest factor falls 5.8 dB at GROWL 0, 3.7 at 55,
-  2.3 at 76, 1.5 at 100. Sustain comes from the amp envelope, not from GROWL. TONE is the audible one of
-  GROWL's secondary controls; BIAS barely changes the peak.)*
-- **Pixelated / black-and-white** *(added 5 Nov, from 05 ZEAROX)* — a hard two-level wave, like a photocopy
-  reduced to pure black and white: harsh, glitchy, not smeared. *More:* pulse/square oscillators only, a
-  12 dB filter held open, no GROWL, no tape. *Measured as* the share of samples within 10% of the rail:
-  pulse waves 54% against 24% for saws; 05's final patch reads 94–98%.
-- **Spitting / biting** — nervous, articulate attack grit. *More:* VINTAGE slop + a snappy gate + drive;
-  comes from drive biting a thick source, not a thin one.
-- **Gritty / crunchy** — midway dirt. GROWL in the 30–40 zone, or heavy filter DRIVE. *(12 Nov, from 28 round 2:
-  on an FM bell the top grit was the FM itself — X-MOD 64 → 32 lowered the 2–10 kHz roughness, spectral flatness
-  at A4 −16.9 → −25.4 dB — not CHEW, GROWL or drive. The share of energy above 4 kHz did not move: that is the
-  saw's harmonics through an open filter at the strike, which suggests it moves with CUTOFF and the filter
-  envelope.)*
-- **Dust (trace noise)** *(added 7 Nov, from 23 Crypt Dust)* — noise present only as a faint dust under the tone.
-  *Measured:* the owner heard full-level noise (NOISE 127) as drowning a thin pulse even though the noise was only
-  about 6 dB under the pulse by level, because it fills the spectrum between the pulse's harmonics; the final
-  patch has the noise 24.4 dB under the pulse (NOISE 43; the NOISE knob is a square law: 43 against 127 is
-  −18.8 dB). Removing the noise lowered the centroid by about 1.2 kHz and the 4 kHz+ share from 2.5% to 0.7%.
+- **Clean** — no added grit: GROWL at 0 (a true bypass).
+- **Driven / pushed** — warm to crunchy. *More:* per-voice **DRIVE** for the gentle route (adds harmonics without
+  squashing the dynamics); **GROWL** for the big step (nothing up to about 28, compressing past 40, fuzzy by about 70);
+  BIAS adds peaks and buzz. GROWL also darkens a sync rip a little.
+- **Nasty / gnarly / blown** — full aggression: GROWL high, a resonant filter, a hard-chop gate. The Chapter I register.
+- **Fuzzy** — a flat, relentless wall: GROWL high into a thick source, the cutoff open (06 zzuFuzz). The held note's
+  length comes from the amp envelope, not from GROWL.
+- **Pixelated / black-and-white** — a hard two-level wave, harsh and glitchy, not smeared: pulse or square only, an open
+  12 dB filter, no GROWL, no tape (05 ZEAROX).
+- **Spitting / biting** — nervous grit on the attack: slop, a snappy gate and drive biting a thick source.
+- **Gritty / crunchy** — midway dirt: GROWL around 30–40, or heavy per-voice DRIVE. On an FM sound (X-MOD) the grit is
+  often the FM itself: lower X-MOD before reaching for GROWL.
+- **Dust** — noise as a faint trace under the tone. Keep NOISE low: full noise drowns a thin pulse even when it isn't
+  louder, because it fills the gaps between the pulse's harmonics (23 Crypt Dust).
 
 ### Movement & instability
-- **Tight / stable** — locked, in tune, steady. *More:* VINTAGE/slop low, no LFO pitch, SYNC phase.
-- **Slop** — the DØG-5 instability macro: per-voice tuning drift and wander. Low = solid, mid = seasick, high
-  = dying tape motor. Rideable live on ALGORITHM. *(Measured: the patch's own VINTAGE is gentle — at 127 each
-  voice wanders only about 6 cents. The dying-tape-motor territory comes mostly from the ALGORITHM ride,
-  which multiplies the patch's own slop: about 5.6× at VINTAGE 55, 3.8× at 90 and 3.0× at 127.)*
-- **Seasick / woozy** — slow pitch sway that unsettles. *More:* VINTAGE up, slow LFO→PITCH, slow TAPE wow.
-- **Warped / chewed** — tape-style wobble and dropouts. *More:* CHEW up (wow/flutter/dropouts). Costs
-  noticeably more CPU (about +770–784 host instr/sample at high CHEW; a Titanic variant with CHEW measured
-  2371 vs 1594). *(Measured on 05 round 1: CHEW at maximum barely changed level, crest or click — it mostly
-  smeared the top end. Measured on 13 round 1: the deck's wobble is about 2.3 / 4.1 / 6.2 / 6.5 cents s.d. at
-  CHEW 40 / 70 / 100 / 127, slow wow only (0.3–0.5 Hz), and it added hiss that lifts the centroid. The owner
-  heard the wobble as "killing the overall tone" and dropped it, so CHEW 0 on 13. On 29 the owner also took the
-  tape off after hearing it: CHEW 65 cost 2647 host instr/sample against 1863 with CHEW 0.)*
-- **Melt** *(added 7 Nov, from 22 Melting Orb)* — the filter closing and the pitch sinking together over a few
-  seconds while the key is held. *How:* a rising filter envelope (FA 118, 4.96 s nominal) with a negative ENV
-  AMT, plus ENV>O2 below centre (it bends OSC 2 only, from the filter envelope: (value − 64) × 24/63 semitones at
-  the top; value 46 = −6.86 st). *Measured:* −678 cents final, 90% of the fall at 4.0 s, centroid 1323 → 204 Hz.
-  *Limit:* on key-up the filter envelope releases and the melt partly runs backwards through the fade.
-- **Wobble** — regular pitch or PWM movement. *More:* LFO→PITCH or LFO→PWM, moderate rate. *(PWM: the pulse
-  width sweep runs at the LFO rate. A sweep that crosses 50% sounds like it doubles its rate, because a pulse
-  and its mirror width sound alike; keep the sweep on one side of 50%, or only just across it. Through a
-  murky low-pass the PWM movement is a ceiling of about 10 dB in the 150–400 Hz band whatever the depth or
-  cutoff (12 Kelp Tangle); a faster, wider sweep or more per-voice DRIVE trades level swing for band depth.)*
-- **Beating / shimmer** *(added 6 Nov, from 10 and 13)* — two oscillators a few cents apart drift in and out
-  of phase, so the low-mid band swells and dips about once a second without any LFO. *Measured:* 10 A (a pulse
-  pair with one 85% pulse nearly the inverse of the 16% one, +9.4 cents) swings its A3 band 17.9 dB at 1.01 Hz;
-  13 (pair +7.0 cents) moves the 150–400 Hz band 13.6–13.8 dB at 0.9 Hz on one voice (6.2 dB on the held
-  chord). Removing the detune (OSC 2 FINE 64) takes it to 0.3 dB; removing the PWM LFO leaves it. Slow PWM
-  sweeps are a different movement, mostly in the 400–1.2k band (3.9 dB on 13's original).
-- **Drifting** — slow, unrepeating wander (not a steady LFO). *More:* VINTAGE slop, a slow smooth-random
-  LFO→PITCH (08 Wire Bite: ±19 cents at 0.28 Hz). *(There is no Poly-Mod control: X-MOD is OSC 2 → OSC 1 FM;
-  checked again 6 Nov for 18.)* **Wander** *(added 7 Nov, from 18 Roto-scopo)* — the Poly-Mod substitute: the one
-  shared smooth-random LFO (0.11 Hz) on the FILTER (±23.9 st) over a resonant low-pass, plus VINTAGE slop 127.
-  Measured on A1: the centroid ranges 316–708 Hz (14 st); the level moves only about 1 dB. The wander is common to
-  all voices and cannot follow OSC 2.
-- **Glitchy** *(added 5 Nov, from 07 Tape Splice)* — nervous, broken, unreliable pitch and level. *More:* a
-  fast random or sample-and-hold LFO to PITCH (5–21 Hz, ±19 cents up to several semitones), tape dropouts
-  (CHEW high with DROPS up). *(Measured: the random pitch LFO carries the pitch jitter; tape carries the
-  dips; X-MOD adds sidebands and low-end energy but does not move the measured pitch.)*
-- **Chorus (clear, wide)** *(added 6 Nov, from 10 round 1)* — the engine has no chorus effect. A chorus is
-  built from a DUAL pair (SPREAD 127) with a slow TRI pitch LFO in PHASE SPREAD, so the two voices of each
-  note sit 45° apart in the LFO and their pitch difference swings. *Measured on 10 B:* ±19 cents at 0.72 Hz,
-  L/R correlation 0.48 (0.78 without), band beating 29 dB. It costs about +490 host instr/sample over POLY
-  (10 B 2294). A short BBD delay cannot be a chorus, because its time has no LFO.
-- **Leslie-style (rotary)** *(added 6 Nov)* — vibrato plus tremolo from the one LFO routed to PITCH and AMP in
-  PHASE FREE. Only an in-phase approximation: a real rotor's pitch and level are 90° apart and the engine has
-  one LFO. With SPREAD the tremolo cancels in the sum (2.2 dB at AMP 45 with SPREAD, 2.9 FREE, 3.9 SYNC on a
-  held chord).
+- **Tight / stable** — locked and in tune: VINTAGE low, no LFO on pitch.
+- **Slop** — DØG-5's instability: each voice drifts on its own. Low = solid, middle = seasick, high = dying tape motor.
+  The patch's VINTAGE is gentle on its own; the **SLOBBER ride** (ALGORITHM) multiplies it, live.
+- **Seasick / woozy** — a slow pitch sway: VINTAGE up, a slow LFO on PITCH, tape wow (CHEW).
+- **Warped / chewed** — tape wobble and dropouts: CHEW up (wow first, then flutter, then dropouts from about the middle of the knob). It costs more CPU than any other
+  stage.
+- **Melt** — the filter closing and the pitch sinking together while you hold the key: a slow filter envelope, ENV
+  AMT below centre and ENV>O2 below centre (22 Melting Orb). On release it partly climbs back.
+- **Wobble** — regular pitch or pulse-width movement: the LFO on PITCH or PWM. A pulse-width sweep that crosses the
+  halfway point sounds twice as fast; keep it on one side.
+- **Beating / shimmer** — two oscillators a few cents apart drift in and out of phase, so the sound swells and dips
+  about once a second with no LFO at all. OSC 2's FINE sets the speed; centring it stops it.
+- **Drifting / wander** — slow, unrepeating movement: VINTAGE, or the LFO's smooth random shape, slow, on PITCH or
+  FILTER (18 Roto-scopo). There is no Poly-Mod: the one LFO moves every voice the same way.
+- **Glitchy** — nervous, broken pitch and level: a fast random or sample-and-hold LFO on PITCH, and tape dropouts.
+- **Chorus** — there is no chorus effect. The nearest: DUAL mode with SPREAD up and a slow triangle LFO on PITCH with
+  PHASE SPREAD. A short delay can't do it (the BBD time has no LFO).
+- **Leslie-style** — vibrato plus tremolo from the one LFO on PITCH and AMP. Only an approximation: a real rotor moves
+  them out of step, and there is one LFO.
 
 ### Space & wetness
-- **Dry** — no effects tail. The chain mixes/macros at 0.
-- **Wet / washed / drenched** — lots of tail. *More:* SPRING DRAIN up, BBD MIX + FEEDBK up.
-- **Wash (washy, not punchy)** *(added 6 Nov, from 16 Tidal Pull)* — a chord that blooms in, trails into its
-  own echo and spring and moves. *More:* a medium amp attack (AA 82 reads 17 / 93 / 219 ms to 10 / 50 / 90%;
-  the envelope's nominal time is 1.3–1.4× its time to 90%), a slow TRI pitch LFO (±19 cents), a spread of
-  detuned voices, echo at about 337 ms with FEEDBK 78 and MIX 110, DRAIN 45 SIZE 90. Keep the echo audibly
-  above the spring (16 D: first repeat −8.6 dB re the note, 7.7 dB above the spring).
-- **Hover** *(added 7 Nov, from 19 Micro-mist and 24 Fugue State)* — a chord that keeps hanging in the air on its
-  own echo and spring after the key is up. *More:* echo FEEDBK near 100 or above with ALLEY 100–144 ms, a large
-  spring (SIZE 100–110), a slow release. *Measured:* 19 D falls 20 / 40 / 60 dB in 1596 / 4132 / 5788 ms after a
-  10 s chord; 24 C in 1648 / 3520 / 4624 ms. *Limits:* it is a decaying hover, not a freeze (no freeze, reverse or
-  pitch-shifted repeats exist); FEEDBK 122 on 24 would peak at −2.1 dBFS, 127 clips.
-- **Slap / slapback** — one short, loud echo. *More:* ALLEY short (free ms), FEEDBK low, MIX up. *(Measured
-  on a bass: the echo is a faithful copy of the note, so ALLEY TONE does nothing audible there — the
-  crispness has to live in the note. The loudest slap the engine can make is MIX 127, about 6 dB under the
-  note's peak.)*
-- **Springy / boingy** — the spring-reverb chirp and flutter. *More:* DRAIN up, SIZE up; the Chapter II sound.
-  (Watch "tubby" — too much low-mid in the tail.) *(Measured: DRAIN is audible on bass, not absent — the
-  tank's high-pass is one-pole, −9 dB at 55 Hz. At DRAIN 60 the return is about −5 dB re dry on Titanic and
-  −9.7 dB on a bass with most energy below 150 Hz. The spring sits after the echo and rings the repeats; it
-  is fed the filtered voice, so a murky patch gets a murky tail.)*
-- **Roomy vs close** — amount and length of ambience (SIZE/PRE-DLY vs dry). *(PRE-DLY 4 is only about
-  1 ms.)*
-- **Wet return, measured per window** — for a patch with a slight wetness (01 Red Pill) the effect level is
-  read relative to the dry note in 0–20 / 20–100 / 100–250 ms windows, never as an average.
+- **Dry** — no tail: the Psych Chain macros at 0.
+- **Wet / drenched** — lots of tail: DRAIN up, the BBD page's MIX and FEEDBK up.
+- **Wash** — a chord that blooms in and trails into its own echo and spring: a medium amp attack, a slow vibrato, a
+  spread of detuned voices, an echo around 300 ms with plenty of feedback, a medium spring. Keep the echo above the
+  spring so it reads (16 Tidal Pull).
+- **Hover** — a chord that keeps hanging in the air after the key is up: echo FEEDBK near 100 with a short ALLEY, a
+  large spring, a slow release (19 Micro-mist, 24 Fugue State). It decays; there is no freeze.
+- **Slap** — one short, loud echo: ALLEY short, FEEDBK low, MIX up. The loudest slap sits about 6 dB under the note.
+  The slap is a copy of the note, so shape the note, not the delay's TONE.
+- **Springy / boingy** — the spring's chirp and flutter: DRAIN up, SIZE up. The Chapter II sound. Watch for "tubby" (too
+  much low-mid in the tail); the spring is fed the filtered voice, so a dark patch gets a dark tail.
+- **Roomy vs close** — how much and how long: SIZE and PRE-DLY against dry.
 
 ### Envelope, attack & dynamics
-- **Snappy / punchy** — fast attack, quick decay, immediate. *More:* AMP/FILTER ATTACK low, DECAY short.
-  *(Where the punch lives: often in the filter envelope opening and closing — the brightness falling from
-  attack to body — rather than in the amp level. A fast amp pluck can't reach the bank level on its own. A
-  heavily clipped sound (06, 05) has almost no level spike at the strike; its punch is the quick rise.)*
-- **Plucky** — percussive, fast decay, little sustain. *More:* short DECAY, low SUSTAIN, filter env.
-- **Gated (as opposed to plucky)** *(added 4 Nov, from 11 Slapback Strut)* — zero decay: the note starts at
-  once, holds its body for the length of the key, and stops in about a millisecond. *Note:* removing a
-  pluck's decay can make the note **duller**, because the pluck's initial tap carried the top end; to end up
-  bright, raise the cutoff and narrow the pulse.
-- **Soft / slow / swelling** — gentle fade-in. *More:* ATTACK up, SUSTAIN high.
-- **Bloom** *(added 4 Nov, from 21 Cowl Shadow)* — a slow filter-envelope swell that opens while the key is
-  held: dark and soft at first, then wide and bright. It needs the key (or a sustain pedal) held for its full
-  length; released early it never opens, it just fades. Short stabs on a bloom patch are far quieter than
-  the bloomed state.
-- **Sustained / drone** — holds indefinitely. *More:* high SUSTAIN, long RELEASE. Live: press **REC (HOLD)**
-  with the arpeggiator off and the held notes keep ringing until you press REC again, STOP, or send a MIDI panic
-  (see 1.1).
-- **Choppy / gated / staccato** — hard on/off, dead silence between notes. *More:* fast RELEASE (hard-chop
-  VCA), LFO→VCA square tremolo. The house dynamic — the impact of the noise comes from the silence after it.
-- **Chop / strobe** *(added 5 Nov, from 15 Trem Chop)* — a hard on/off tremolo from a SQUARE LFO routed to
-  AMP at full depth: about 43–45 dB between the on and off parts at AMP 127 (17 dB at 110, 13.5 at 100, 9 at
-  80). Rate is the RATE knob alone: 0.05 × 600^(RATE/127) Hz, steps of about 5%. *Limits:* no tempo sync; PHASE
-  SYNC restarts the chop on each detached note (so every note starts ON), FREE phase is unpredictable live;
-  VINTAGE does not make the chop edges waver — only PHASE SPREAD on a DUAL pair does (the two voices chop an
-  eighth of a cycle apart).
-- **Sputter** *(added 4 Nov, from Half-Life)* — the tail doesn't fade, it breaks into a few ragged stutters as
-  the note dies. Distinct from tremolo: the body is clean and only the tail chops. *More:* LFO SHAPE SQUARE
-  around 20 Hz routed to AMP at full depth, with LFO DELAY around 110 ms so the chop fades in after the attack.
-  *Limit:* the chop follows how long the note has been sounding, not the key coming up, so it works on short
-  notes (roughly 150–180 ms); a longer held note spits all the way through.
-- **Rip** *(added 4 Nov, from V-Sync)* — the hard-sync sweep: the synced oscillator's pitch tears down across
-  the note. *Limit:* in MONO and UNISON, a note struck while another is held slides in and does **not**
-  re-fire the envelopes, so the rip fires on detached notes only.
-- **Crash / burst** *(added 6 Nov, from 14 Reef Break)* — a noise strike that rings out like a cymbal over a
-  square sub. *Recipe that worked:* NOISE 127 over a square sub (noise 3–6 dB above it in the first 100 ms), a
-  12 dB HIGH-pass at CUTOFF 100 with ENV AMT 0 (the cutoff starts about 97 semitones low at the strike, under
-  the sub, and climbs back as the filter envelope falls, FD 100), AD = AR = 97 for the ring-out. The bands then
-  fall lowest first and the top rings longest, as a cymbal does; a closing low-pass does the reverse. Attack
-  options measured at 10 / 50 / 90%: 0 / 0.2 / 8.5 ms (near-instant), 2.2 / 8.7 / 27.2 ms (a quick swell, peak
-  at 27 ms; chosen in round 1), 1.2 / 7.2 / 8.7 ms. *v0.2 (18 Nov, by ear: the strike was too harsh coming in):*
-  14 now uses a 299 ms attack on both envelopes (FILTER ENV and AMP ENV ATTACK 82), so the crash swells in; every
-  band peaks about 235–276 ms in, the bands still fall lowest first and the top still rings longest. *Limits:* no
-  inharmonic cymbal partials (noise only); noise and sub share one filter and one amp envelope, so the sub leaves
-  early only through the high-pass; a chord of three noise voices stacks and peaks near the rail.
+- **Snappy / punchy** — fast attack, quick decay. The punch often lives in the filter envelope opening and closing,
+  not in the level; on a heavily driven sound it is the quick rise.
+- **Plucky** — percussive: a short decay, low sustain, a filter envelope.
+- **Gated** — no decay: the note starts at once, holds for the length of the key and stops dead (11 Slapback Strut).
+  Taking a pluck's decay away can make it duller; raise the cutoff to compensate.
+- **Soft / swelling** — a gentle fade-in: ATTACK up, SUSTAIN high.
+- **Bloom** — a slow filter swell that opens while the key is held: dark at first, then wide and bright. Release early
+  and it never opens (21 Cowl Shadow).
+- **Sustained / drone** — holds as long as you want: high SUSTAIN, long RELEASE, and live, **REC (HOLD)** with the
+  arpeggiator off: the notes ring until REC again, STOP or a MIDI panic.
+- **Choppy / staccato** — hard on/off with dead silence between notes: a fast RELEASE, a square LFO on AMP. The house
+  dynamic: the impact comes from the silence after.
+- **Chop / strobe** — a hard on/off tremolo: a SQUARE LFO on AMP at full depth (15 Trem Chop). The rate is LFO RATE
+  alone; it doesn't follow the tempo.
+- **Sputter** — the tail breaks into ragged stutters as the note dies: a fast square LFO on AMP with LFO DELAY so it
+  fades in after the attack (03 Half-Life). It follows how long the note has sounded, so it suits short notes.
+- **Rip** — the hard-sync sweep tearing down across the note. In MONO and UNISON a legato note doesn't re-fire it:
+  play detached.
+- **Crash** — a noise strike that rings out like a cymbal over a sub: noise through a high-pass that sweeps down
+  (14 Reef Break). The lows fall first and the top rings longest.
 
-### Struck & ringing *(added 12 Nov, from 28 Arr 2 Dee 2 and 29 i scream)*
-- **Bell (struck)** — a sustained, struck tone with inharmonic partials that ring on after the key is up. *How it
-  is built (28):* two saws, OSC 2 +15 semitones (a ratio of 2.38) feeding OSC 1 by X-MOD 32, a long amp release
-  (AR 116), a slow shimmer. *Measured:* the five classical bell partials are present at fixed ratios (hum 0.5,
-  prime 1, tierce 1.2, quint 1.5, nominal 2); the key you press is the hum and the prime sits an octave above it.
-  *Limits:* **ENV>O2 ±10 breaks the bell** (the tierce falls from −10 dB to about −47 dB); one saw modulating
-  another is not a DX7-style operator stack.
-- **Ring** — how long a struck note takes to die, read as the milliseconds to fall 6 / 12 / 20 / 30 / 40 dB
-  after the peak. *Measured:* 28 at A4 915 / 1962 / 3094 / 4700 / 5963 ms; a note released at 400 ms rings on and
-  falls 20 dB in 3012 ms. Not "dreamy" or "healthy" — those are the owner's words.
-- **Crystalline (not carried)** — a tail whose upper partials outlast the body. The engine has no per-partial
-  envelope, so it cannot be built here; the share of energy above 4 kHz at A4 falls from 4.0% in the first 20 ms to
-  0.4% at 1–2 s.
+### Struck & ringing
+- **Bell** — a struck tone with inharmonic partials that rings on after the key: two saws, one feeding the other by
+  X-MOD, a long release (28 Arr 2 Dee 2). On 28, ENV>O2 off-centre breaks the bell.
+- **Ring** — how long a struck note takes to die away.
+- **Crystalline** — a tail whose top outlasts the body. This engine can't make it (there is no per-partial envelope).
 
 ### DØG-5 house words
-- **Blown console** — the overall Chapter I aesthetic: fat sources shoved through drive until they tear.
-- **The thesis** — the pure DØG-5 move: a thick source + slop + hard-chop gate (see Half-Life).
-- **The Monologue** — the reference point for a patch that "sits under" a spoken/sung vocal in the mix.
+- **Blown console** — the Chapter I aesthetic: fat sources shoved through drive until they tear.
+- **The thesis** — the pure DØG-5 move: a thick source, slop and a hard-chop gate (03 Half-Life).
+- **Sits under the vocal** — a patch voiced to live under a singer in the mix (01 Red Pill).
 
 ---
 
-## PART 2B — TALKING IN NUMBERS (direct parameter moves)
+## PART 2B — TALKING IN NUMBERS
 
-Alongside the character words above, voicing uses plain synth-talk — direct moves on named controls ("cutoff
-down 10%", "more delay feedback", "LFO rate up a touch"). These rules keep that unambiguous.
+Synth-talk is often direct: "cutoff down 10%", "more feedback", "LFO a touch faster". These rules keep it exact.
 
-**The percent convention.** A percentage means percent of the control's **full range** — not of its current
-value, and not of the number on screen. Most DØG-5 parameters run **0–127**, so:
-- "−10%" / "down 10%" = subtract ~13 (10% of 127).
-- "set to 40%" = ~51.
-- rough sizes: *a touch* ≈ 5% (~6 steps) · *a bit* ≈ 10% · *a lot* ≈ 25–30%.
+**A percentage is percent of the control's full range,** not of where it is now. Most DØG-5 controls run 0–127, so:
+- "down 10%" = about 13 steps;
+- "set to 40%" = about 51;
+- *a touch* ≈ 5% (about 6 steps) · *a bit* ≈ 10% · *a lot* ≈ 25–30%.
 
-**Relative vs absolute** are both fine — "more feedback" / "+10%" (from where it is) or "set cutoff to 40%" /
-"cutoff at 51" (a target). Say which when it matters; if unsaid, "more/less/up/down" is relative and "set
-to / at" is absolute.
+"More / less / up / down" means from where it is now; "set to / at" means a target.
 
-**The echo rule.** Every change the session makes is reported in concrete before→after: *"CUTOFF 80 → 67
-(−10%)."* So a misread shows up in the notes, not just the sound — you catch it in the echo and correct it
-there, which is faster than another render.
+**Controls with their own units:**
 
-**Controls that aren't a plain 0–127 percent** — talk in their own units when that's easier:
-
-| Control | Native unit | How to say it |
+| Control | Unit | Say it like |
 |---|---|---|
-| BBD DELAY time (ALLEY) | free ms, 10–740 | "delay to 120 ms", or % of range |
+| BBD DELAY time (ALLEY) | milliseconds, 10–740 | "delay to 120 ms" |
 | OSC 2 SEMI | semitones, −24…+24 | "OSC 2 up a fifth" (+7), "down an octave" (−12) |
-| ENV AMT, FINE, ENV>O2 | bipolar, centre 64 | "+/−" from centre |
+| ENV AMT, FINE, ENV>O2 | centred at 64 | "+/−" from the centre |
 | OCT, BEND | octaves / semitones | in their own units |
-| WAVE, MODE, FILTER TYPE, SYNC, LFO SHAPE/PHASE | named settings (switches) | by name ("pulse", "UNISON", "band-pass") |
+| WAVE, MODE, TYPE, SYNC, LFO SHAPE / PHASE | switches | by name ("pulse", "UNISON", "band-pass") |
 | TEMPO | BPM | in BPM |
-| FLEAS | 0–100 (a screen setting, never the sound) | by stage ("ITCH", "MANGE") or number |
+| FLEAS | 0–100, the screen only | by stage ("ITCH", "MANGE") |
 
-Everything else is the straight 0–127 percent. *(Level knobs such as OSC LEVEL and VOLUME follow a square
-law, so a small number change is a larger loudness change than it looks.)*
+Level knobs (OSC levels, VOLUME, NOISE) follow a square law: a small move is a bigger loudness change than it looks.
 
-**Phrasebook — common synth-talk → the DØG-5 control it moves** (so a generic instruction lands on the right
-page/knob):
-- "open / close the filter" → CUTOFF (HOME K1, or the FILTER page)
-- "more resonance / more Q" → RESO
-- "more / less attack · decay · sustain · release" → the AMP ENV or FILTER ENV page (say which)
-- "more filter envelope / more sweep" → ENV AMT
-- "speed up / slow the wobble" → LFO RATE (the SELECT dial on HOME, or the LFO page; and check LFO DEST is on
-  PITCH / PWM / FILTER)
-- "more warmth / a bit more drive" → per-voice DRIVE (MIXER page, knob 4); "more dirt / grit / fuzz" →
-  GROWL (DRIVE page, meaningful from about 30); "more buzz / edge" → BIAS
-- "more delay feedback / more repeats" → FEEDBK (BBD page); "longer / shorter delay" → ALLEY
-- "wetter / more reverb" → DRAIN (SPRING page); "bigger tail" → SIZE
-- "more tape / more wobble / more lo-fi" → CHEW (TAPE page)
-- "detune / thicken / wider" → DETUNE (VOICE page) or OSC 2 FINE
+**Phrasebook: common synth-talk → the DØG-5 control**
+- "open / close the filter" → CUTOFF (HOME knob 1, or the FILTER page)
+- "more resonance / Q" → RESO
+- "more or less attack · decay · sustain · release" → the AMP ENV or FILTER ENV page
+- "more sweep" → ENV AMT
+- "faster / slower wobble" → LFO RATE (the SELECT dial on HOME, or the LFO page; LFO DEST says what it moves)
+- "more warmth / a bit more drive" → per-voice DRIVE (MIXER page, knob 4)
+- "more dirt / grit / fuzz" → GROWL (DRIVE page; it starts around 30) · "more buzz / edge" → BIAS
+- "more repeats" → FEEDBK (BBD DELAY page) · "longer / shorter delay" → ALLEY
+- "wetter / more reverb" → DRAIN (SPRING page) · "bigger tail" → SIZE
+- "more tape / wobble / lo-fi" → CHEW (TAPE page)
+- "thicker / wider" → DETUNE (VOICE page) or OSC 2 FINE
 - "more voices / fatter stack" → MODE + VOICES (UNISON), or the POLY count
-- "how hard is it working / am I near the limit" → GLO once, the CPU reading at the top of GLOBAL (see 1.6)
-- "dirtier screen / cleaner screen" → FLEAS (GLOBAL knob 2; see 1.8)
+- "how hard is it working?" → GLO once: the CPU reading at the top of GLOBAL (1.6)
+- "dirtier / cleaner screen" → FLEAS (GLOBAL knob 2; 1.8)

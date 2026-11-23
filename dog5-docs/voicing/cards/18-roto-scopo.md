@@ -4,9 +4,38 @@
 
 ## 2. What it sounds like
 
-A low, dark drone: a square-wave tone with a second square an octave below it, played by three slightly out-of-tune voices. A resonant low-pass filter opens and closes slowly and unpredictably by itself, so the tone moans and drifts without a knob being touched. It is dry: no echo, no spring. It only lasts while a key is held.
+A low, dark drone: a square wave with a second square an octave below, played by three slightly out-of-tune voices. A resonant low-pass opens and closes slowly and unpredictably by itself, so the tone moans and drifts without a knob being touched. Dry. It lasts only while a key is held.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Korg MS-20** — the resonant low-passed square: *resonant, unruly*.
+- **ARP 2600 sample-and-hold** — the wandering cutoff (here a smooth random, not stepped).
+- **Moog Taurus I** — *dungeon-low weight*.
+
+Closest to: **a Taurus-weight square through an MS-20 filter that a random source keeps nudging**.
+
+## 4. Sound design notes
+
+- **Hold it:** a key, the sustain pedal or REC (HOLD). REC keeps it going until you press REC again or STOP.
+- **One note at a time:** it is a three-voice unison, so a chord plays its last key.
+- **Where it lives:** low, A1 and A2.
+- **It fades in slowly,** so a short tap is much quieter than a held note.
+- **The wander is one slow random LFO on the cutoff:** LFO RATE (SELECT on HOME) speeds the moaning up.
+- Its slop is already at the top (VINTAGE 127); SLOBBER adds more.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE UNISON (VOICES 3, DETUNE 14 = ±1.2 cents), OSC1 PULSE PW 64 LVL 110, OSC2 PULSE PW 64 SEMI −12 LVL 85, FILTER LP12 CUTOFF 66 (587 Hz) RESO 115 KEY TRK 64 ENV AMT 64 (0), AMP ENV A100 D70 S100 R110, FILTER ENV FA 100 (inert: ENV AMT 0), LFO RANDOM RATE 15 (0.11 Hz) PHASE FREE FILTER 90 (±23.9 st) PITCH 0 PWM 0 AMP 0, VINTAGE 127, SPREAD 127, VOLUME 72 (−17.9 dBFS RMS on the A1 hold, peak −8.0); no echo, spring off (REV MIX 0; SIZE 120 / DAMP 80 are dead values), CHEW 0, GROWL 0, no arp` — `PF_ROTO_SCOPO` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A low, dark drone: a square-wave tone with a second square an octave below it, played by three slightly out-of-tune voices. A resonant low-pass filter opens and closes slowly and unpredictably by itself, so the tone moans and drifts without a knob being touched. It is dry: no echo, no spring. It only lasts while a key is held.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Korg MS-20** — *resonant, unruly low-passed square* (resonant: measured, a 12 dB low-pass at RESO 115 that is still linear, probe 11.3 dB against 12 for a linear filter, and sings by itself only at RESO 127; "unruly" is not measured).
 - **ARP 2600 sample-and-hold** — *wandering cutoff* (the cutoff does wander, measured below, but this variant uses the smooth RANDOM shape, not sample-and-hold; the sample-and-hold take was variant C, not chosen).
@@ -16,7 +45,7 @@ Closest to: **a Taurus-weight square through an MS-20 filter that a random sourc
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **It needs a held key, the sustain pedal or REC (HOLD).** REC latches the held notes until REC again or STOP; otherwise the sound ends with the key (AMP release about 2.7 s nominal; on A1 the tail is 20 dB down at 1.75 s and 40 dB down at 3.31 s, 60 dB is not reached in the 4.5 s render).
 - **One note at a time.** The patch is a 3-voice UNISON: a chord plays only its last key (three keys gate three voices, not nine). Legato: a key struck while another is held slides and does not restart the envelopes (MONO and UNISON behave so; known engine fact, README section 8).
@@ -26,7 +55,3 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **Tone on A1, settled hold (5 to 14 s):** energy under 60 Hz 62 %, 60 to 150 Hz 17 %, 150 to 400 Hz 11 %, 400 to 1.2k 10 %, over 1.2k 0.4 %; centroid 465 Hz. MUD ratio per window (0–1 / 2–5 / 5–10 / 10–14 s): 16 / 4 / 14 / 225.
 - **Level and cost:** VOLUME 72, −17.9 dBFS RMS over +5 s to +14 s of the A1 hold (K-weighted −20.7; the first second −18.7), peak −8.0 dBFS over all audition phrases, no clipped sample. Phrase (b) stabs read −23.3 dBFS RMS: stabs are not what this patch is for. About 1897 host instr/sample worst case (idle 1164 + 734 under load); the device render time is not measured.
 - **Tricks:** untested on this patch: SLOBBER, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, CHEW.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE UNISON (VOICES 3, DETUNE 14 = ±1.2 cents), OSC1 PULSE PW 64 LVL 110, OSC2 PULSE PW 64 SEMI −12 LVL 85, FILTER LP12 CUTOFF 66 (587 Hz) RESO 115 KEY TRK 64 ENV AMT 64 (0), AMP ENV A100 D70 S100 R110, FILTER ENV FA 100 (inert: ENV AMT 0), LFO RANDOM RATE 15 (0.11 Hz) PHASE FREE FILTER 90 (±23.9 st) PITCH 0 PWM 0 AMP 0, VINTAGE 127, SPREAD 127, VOLUME 72 (−17.9 dBFS RMS on the A1 hold, peak −8.0); no echo, spring off (REV MIX 0; SIZE 120 / DAMP 80 are dead values), CHEW 0, GROWL 0, no arp` — `PF_ROTO_SCOPO` in `firmware/src/obv_patches.h`.

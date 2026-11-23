@@ -4,9 +4,36 @@
 
 ## 2. What it sounds like
 
-A bright pair of narrow pulse waves through a notch filter, played polyphonically, with a spring reverb behind it and nothing else. It has no vibrato, no chorus and no delay (measured, below). The pulses beat slowly against each other, and the spring rings on after the notes.
+A bright organ: two narrow pulse waves through a notch filter, played polyphonically, with a spring behind it and nothing else. No vibrato, no chorus, no echo. The two pulses beat slowly against each other, so a held chord swells and dips about once a second, and the spring rings on after the notes.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Farfisa Compact** — *nasal*.
+- **Vox Continental** — *reedy, bright*.
+- **Fender spring reverb** — *springy*.
+
+Closest to: **a combo organ into a spring tank**.
+
+## 4. Sound design notes
+
+- **Where it lives:** organ chords and short stabs, around A3 to C5. Up to five notes.
+- **The movement is the two pulses beating,** not an LFO: OSC 2's FINE changes the speed, and centring it stops the beating.
+- **Fast playing blurs into the spring:** under quick staccato notes the tail catches up with the notes. DRAIN down for a tighter organ.
+- **For vibrato or a rotary feel,** add LFO PITCH (LFO DEST page); a real chorus or rotary is not in this engine.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), OSC1 PULSE PW 20 (16 %) LVL 110, OSC2 PULSE PW 108 (85 %) SEMI 0 FINE 76 (+9.4 cents) LVL 100, CUTOFF 70 (740 Hz at C4), RESO 20, ENV AMT 64 (0), KEY TRK 64, FILTER NOTCH, AMP ENV A70 D70 S100 R100, LFO TRI RATE 40 (0.37 Hz) PHASE SPREAD PWM 40 (±2.3 points) PITCH 0 AMP 0, VINTAGE 30, SPREAD 100, VOLUME 100 (−19.0 dBFS RMS on the organ phrase, peak −4.8); DRAIN 40, SIZE 100, DAMP 60, PRE-DLY 20; DLY MIX 0, CHEW 0, GROWL 0, no arp` — `PF_ATLANTIC_SWELL` in `firmware/src/obv_patches.h` (the values of the old `PF_HOLLOW_PAD`).
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A bright pair of narrow pulse waves through a notch filter, played polyphonically, with a spring reverb behind it and nothing else. It has no vibrato, no chorus and no delay (measured, below). The pulses beat slowly against each other, and the spring rings on after the notes.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Farfisa Compact** — *nasal* (the approved trait; not measured here).
 - **Vox Continental** — *reedy, bright* (bright: the note-on region's centroid is 5369 Hz and 23 % of its energy is above 1.2 kHz; reedy is not measured here).
@@ -16,7 +43,7 @@ Closest to: **a combo organ into a spring tank**.
 
 Nothing here says the patch matches these: the traits are the approved descriptions, and only the ones marked as measured have a number behind them.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Register and gate:** it was voiced on the organ phrase: an A minor triad (A3 C4 E4) held 2.4 s, one 120 ms E4, four 120 ms notes (E4 G4 A4 C5) and a D minor triad (D4 F4 A4) held 1.6 s. Other registers are untested. Polyphony is POLY 5; chords of more than five notes were not tried.
 - **What it does not have, measured:** no vibrato (LFO PITCH 0; a one-voice probe reads 0.0 cents of pitch wander), no delay (DLY MIX 0; the delay's return is below −180 dB re the note), no chorus (no pitch modulation and no left/right voice pair; the held chord's L/R correlation is 0.78 dry, 0.70 with the spring). Versions with a chorus, a rotary-speaker tremolo and a heavy echo were rendered (B, C and D, on the listen branch) and are not this patch.
@@ -29,7 +56,3 @@ Nothing here says the patch matches these: the traits are the approved descripti
 - **First play after power-on:** the program-load render differs from the render built over INIT: −25.3 dB (organ phrase) and −23.4 dB (stabs) relative to the signal; both loaded from INIT they are bit-identical. The cause is not isolated.
 - **Costs:** about 2020 host instr/sample worst case (idle 1164 + 856 under load). The device build was not run and the device render time is not measured.
 - **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, CHEW, ALLEY.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), OSC1 PULSE PW 20 (16 %) LVL 110, OSC2 PULSE PW 108 (85 %) SEMI 0 FINE 76 (+9.4 cents) LVL 100, CUTOFF 70 (740 Hz at C4), RESO 20, ENV AMT 64 (0), KEY TRK 64, FILTER NOTCH, AMP ENV A70 D70 S100 R100, LFO TRI RATE 40 (0.37 Hz) PHASE SPREAD PWM 40 (±2.3 points) PITCH 0 AMP 0, VINTAGE 30, SPREAD 100, VOLUME 100 (−19.0 dBFS RMS on the organ phrase, peak −4.8); DRAIN 40, SIZE 100, DAMP 60, PRE-DLY 20; DLY MIX 0, CHEW 0, GROWL 0, no arp` — `PF_ATLANTIC_SWELL` in `firmware/src/obv_patches.h` (the values of the old `PF_HOLLOW_PAD`).

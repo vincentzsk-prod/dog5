@@ -4,9 +4,38 @@
 
 ## 2. What it sounds like
 
-A dark pad: a pair of slightly detuned pulse waves, played polyphonically, beating slowly against each other, with a long echo and a heavy spring behind every note. It is the original patch's voice, unchanged, with the pulse-width movement removed and no tape deck. By the dictionary's ratio it is very muddy.
+A dark pad: two slightly detuned pulse waves, played polyphonically, beating slowly against each other, with a long echo and a heavy spring behind every note. Very muddy, on purpose: almost nothing up top, all low-mid body and tail.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Roland RE-201 Space Echo** — the echo: *wet*.
+- **Fender spring reverb tank** — *springy*.
+- **Mellotron M400** — the reference for the tone that was chased: *dark*.
+
+Closest to: **a dark Mellotron voice through a Space Echo and a spring tank**.
+
+## 4. Sound design notes
+
+- **Where it lives:** held chords and slow lines, around A3 to G4. Up to five notes.
+- **The movement is the two oscillators beating** about once a second; OSC 2's FINE sets it, and centring it stops it.
+- **The tail is big:** the spring is louder than the chord for a moment after you let go, and the echo (337 ms) follows. Short notes sink into it.
+- **It is quiet on short stabs** compared with held chords.
+- **Brighter:** CUTOFF up. It is a first pass Vincent means to dial further on the unit.
+- There is no tape on it: the warped-tape idea of the first brief was dropped by ear.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), OSC1 PULSE PW 64 (50 %) LVL 110, OSC2 PULSE PW 40 (31 %) SEMI 0 FINE 73 (+7.0 cents) LVL 100, CUTOFF 75 (988 Hz at C4), RESO 5, ENV AMT 74 (+10), KEY TRK 64, FILTER LP24, FILTER ENV A50 D70 S40 R60, AMP ENV A60 D70 S100 R90, LFO TRI RATE 50 (0.62 Hz) PHASE SPREAD PWM 0 PITCH 0 AMP 0, VINTAGE 50, SPREAD 100, VOLUME 55 (−18.0 dBFS RMS on the ghost phrase, peak −4.9); DLY MIX 105 (ALLEY 104 = 337 ms, FEEDBK 95, TONE 70, PINGPONG 127), DRAIN 70, SIZE 100, DAMP 25, PRE-DLY 20; CHEW 0, GROWL 0, no arp` — `PF_GHOST_BOARD` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A dark pad: a pair of slightly detuned pulse waves, played polyphonically, beating slowly against each other, with a long echo and a heavy spring behind every note. It is the original patch's voice, unchanged, with the pulse-width movement removed and no tape deck. By the dictionary's ratio it is very muddy.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Roland RE-201 Space Echo** — *wet*. The echo is 337 ms (ALLEY 104), FEEDBK 95, MIX 105. On an isolated 150 ms E4 the first repeat arrives 337 ms after the note-on, peaks 460 ms after it and is −8.7 dB re the note's peak, with the echo 10.3 dB above the spring in that window; the repeats fall 0 / −3.0 / −6.0 / −9.1 / −12.3 / −15.6 dB re the first. After the held chord's note-off the echo's return is −5.6 / −6.1 / −6.2 / −9.4 / −16.0 dB re the chord in 0 to 100 / 100 to 250 / 250 to 500 / 500 to 1000 / 1000 to 2000 ms.
 - **Fender spring reverb tank** — *springy*. DRAIN 70, SIZE 100, DAMP 25, PRE-DLY 20. After the held chord's note-off the spring's return is +6.1 / +3.2 / −2.1 / −9.2 / −26.5 dB re the chord in the same windows (louder than the chord for its first 250 ms or so); on the isolated E4 it is −39.3 / −12.9 / −12.3 dB re the note in 0 to 20 / 20 to 100 / 100 to 250 ms.
@@ -16,7 +45,7 @@ Closest to: **a dark Mellotron voice through a Space Echo and a spring tank**.
 
 Nothing here says the patch matches these: the traits are the approved descriptions, and only the ones with a number behind them are measured.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **What changed from the original brief.** The original brief was a filtered near-sine with maximum tape wow and flutter. After listening the tape deck was dropped (CHEW 0), and the pulse-width movement was removed (LFO PWM 0). The patch has no tape wobble (a one-voice probe reads 0.0 cents of pitch wander) and no near-sine tone. The echo and spring are those of an earlier round's variant D.
 - **Very muddy, by the numbers.** MUD ratio (150 to 400 Hz over 1.2 kHz and up): 314.9 over the note-on region (energy split below 60 / 60 to 150 / 150 to 400 / 400 to 1.2k / above 1.2 kHz = 0 / 0 / 74.5 / 25.3 / 0.2 %); in the tail after the held chord 1108 / 2198 / 3331 in 0 to 250 / 250 to 750 / 750 to 1500 ms (centroids 488 / 509 / 528 Hz at −15 / −19 / −26 dBFS). The benchmark of 10 to 40 (note-on) and about 80 (tail windows) is far exceeded; the original patch measured 108 over the note-on region.
@@ -29,7 +58,3 @@ Nothing here says the patch matches these: the traits are the approved descripti
 - **First play after power-on:** in the host render the program-load render and the render built over INIT are bit-identical, both from INIT and from the boot patch. (The earlier variant A2, which still had the pulse-width LFO, differed from the boot patch by −33.2 dB on the stabs and −40.7 dB on the ghost phrase; this suggests the free-running LFO's phase at program load, not isolated.)
 - **Costs:** about 2084 host instr/sample worst case (idle 1180 + 905 under load). The device build was not run and the device render time is not measured.
 - **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, CHEW, the other LFO shapes.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), OSC1 PULSE PW 64 (50 %) LVL 110, OSC2 PULSE PW 40 (31 %) SEMI 0 FINE 73 (+7.0 cents) LVL 100, CUTOFF 75 (988 Hz at C4), RESO 5, ENV AMT 74 (+10), KEY TRK 64, FILTER LP24, FILTER ENV A50 D70 S40 R60, AMP ENV A60 D70 S100 R90, LFO TRI RATE 50 (0.62 Hz) PHASE SPREAD PWM 0 PITCH 0 AMP 0, VINTAGE 50, SPREAD 100, VOLUME 55 (−18.0 dBFS RMS on the ghost phrase, peak −4.9); DLY MIX 105 (ALLEY 104 = 337 ms, FEEDBK 95, TONE 70, PINGPONG 127), DRAIN 70, SIZE 100, DAMP 25, PRE-DLY 20; CHEW 0, GROWL 0, no arp` — `PF_GHOST_BOARD` in `firmware/src/obv_patches.h`.

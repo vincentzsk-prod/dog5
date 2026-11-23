@@ -216,7 +216,7 @@ body { overflow-x: hidden; }
 .vcard header { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px 6px; border-bottom: 1px solid var(--line); }
 .vcard .vno { font: 700 22px/1 var(--mono); color: var(--acid); padding-top: 4px; }
 .vcard .vhead { flex: 1; min-width: 0; }
-.vcard h3 { margin: 0; font: 400 24px/1.15 var(--display); color: var(--fg); }
+.vcard h3 { margin: 0; font: 700 26px/1.15 var(--body); color: var(--ch, var(--fg)); }   /* the body face: the display face reads z as 3 */
 .vcard .vchap { margin: 2px 0 0; font: 400 11px/1.3 var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
 .vcard .vclose { background: none; border: 2px solid var(--line); color: var(--fg); font: 700 18px/1 var(--mono); width: 32px; height: 32px;
   cursor: pointer; flex: none; }
@@ -239,3 +239,12 @@ body { overflow-x: hidden; }
 }
 @media (max-width: 760px) { .vcard .vbody { grid-template-columns: minmax(0, 1fr); max-height: none; } }
 @media (max-width: 980px) { .vcard { margin: 0 auto 20px; } }
+
+/* Batch 30: the card in its chapter's colour, labels as in the manual */
+.vcard { --ch: var(--acid); border-top: 4px solid var(--ch); }
+.vcard[data-ch="1"] { --ch: var(--yellow); } .vcard[data-ch="2"] { --ch: var(--turq); }
+.vcard[data-ch="3"] { --ch: var(--white); } .vcard[data-ch="4"] { --ch: var(--acid); }
+.vcard .vno { align-self: center; padding: 4px 7px; font-size: 15px; color: var(--black); background: var(--ch); }
+.vcard h4, .vcard summary { color: var(--ch); letter-spacing: .12em; }
+.vcard li::marker { color: var(--violet); }
+.vcard li strong { color: #fff; }

@@ -4,9 +4,38 @@
 
 ## 2. What it sounds like
 
-A bright, struck chime built from a square wave with a second oscillator that zings down in pitch at the strike. The ring decays slowly, over a couple of seconds, and a gentle slow shimmer in pitch and level fades in after the strike and sways the ring. A small slap echo and a touch of spring sit behind it, and everything passes through a narrow, honky mid-band like a small horn speaker. There is no tape in it.
+A bright, struck chime from a square wave, with a second oscillator that zings down in pitch at the strike. The ring decays over a couple of seconds, and a gentle shimmer in pitch and level fades in and sways it. A small slap and a touch of spring sit behind it, and everything passes through a narrow, honky band, like a small horn speaker. Closer to an arcade chime than to finger cymbals.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Yamaha DX7 (tubular-bells voice)** — the zing: *FM, inharmonic*.
+- **Finger cymbals (zills)** — *bright ping*.
+- **A transistor radio or van horn speaker** — *band-limited, honky*.
+- **A music box, struck** — the idea of it (its ring here is longer).
+
+Closest to: **a music-box chime through a cheap van horn speaker**.
+
+## 4. Sound design notes
+
+- **Where it lives:** A4 to A6: melodies with notes about half a second apart, so the rings overlap.
+- **Three-note chords play whole** and are its loudest sound: use one as a wind chime.
+- **The zing is OSC 2:** it fades out toward the top of the keybed. ENV>O2 sets how far it drops.
+- **Built by ear** from Vincent's phone recordings of a real ice-cream van outside his house; nothing is sampled.
+- No tape: CHEW is 0, so there is no wow or hiss.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), OSC1 PULSE PW 50 % LEVEL 127, OSC2 SAW LEVEL 70 SEMI +15 FINE 0 X-MOD 25 ENV>O2 76 (+4.6 st at the envelope's top), FILTER BAND-PASS 12 dB CUTOFF 77 RESO 105 KEY TRK 0 ENV AMT 0 DRIVE 30, FILTER ENV A0 D50 S0 R30, AMP ENV A0 D101 S0 R50, LFO TRI RATE 55 PHASE SYNC PITCH 14 AMP 40 DELAY 40, VINTAGE 10, SPREAD 70, BBD ALLEY 56 (65 ms) FEEDBK 22 TONE 60 MIX 35 PINGPONG 127, spring SIZE 40 DAMP 40 PRE-DLY 8 DRAIN 18, CHEW 0 (WOW/FLT 64, HISS 25, DROPS 20 inert), GROWL 0, VOLUME 113` — `PF_I_SCREAM` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A bright, struck chime built from a square wave with a second oscillator that zings down in pitch at the strike. The ring decays slowly, over a couple of seconds, and a gentle slow shimmer in pitch and level fades in after the strike and sways the ring. A small slap echo and a touch of spring sit behind it, and everything passes through a narrow, honky mid-band like a small horn speaker. There is no tape in it.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Yamaha DX7 (tubular-bells voice)** — *FM clang, inharmonic.* OSC 2 sits +15 semitones above OSC 1 (a ratio of 2.38) with X-MOD 25. Through the filter that partial reads −34 dB under the note at C#6 and −18 dB at C#5 (measured, first 100 ms); the strongest partial after the note is the square's third harmonic at −15 dB (C#6). So it is faint at the top of the keybed. "Clang" is not measured.
 - **A music box, struck** — *fast-decay, nostalgic.* Not carried: the ring takes 1896 ms to fall 40 dB at C#6 (measured), a long ring, not a fast decay. "Nostalgic" is Vincent's word and is not measured.
@@ -21,7 +50,7 @@ The reference for the register was Vincent's two phone recordings of a real ice-
 
 **Vincent's ear, after hearing the final (11 Nov 2026), not measured:** he hears it as closer to an arcade or vintage video-game chime than to finger cymbals ("a cleaner ring"). The bank had nothing in that register before this patch.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Register:** voiced for A4 to A6. RMS over the first 300 ms of one struck note, with the centroid over the first 100 ms: A4 −22.1 dB / 1950 Hz, C#6 −18.5 dB / 2183 Hz, A6 −20.1 dB / 2563 Hz (measured). A4 sits 3.6 dB under C#6 and A6 1.6 dB under it; neither end falls away in that range. Nothing outside A4–A6 was measured.
 - **Ring and overlap:** the ring of a C#6 falls 6 / 12 / 20 / 40 dB in 252 / 550 / 1030 / 1896 ms (the whole patch; 276 / 584 / 938 / 1943 ms at C#5; the voice alone reads 1954 ms to −40 dB at C#6). With notes 580 ms apart several rings overlap. POLY 5 is set; POLY 4, 5 and 6 against POLY 8 change the level of what rings by at worst −0.1, −0.6 and −0.7 dB on the melody, −0.2 to −0.3 dB on the fast run's tail and 0.0 dB on the chord, so no cut ring is measurable (random oscillator start phases make a sample-for-sample comparison useless; not isolated whether stolen voices were the oldest).
@@ -33,7 +62,3 @@ The reference for the register was Vincent's two phone recordings of a real ice-
 - **Level and cost:** VOLUME 113, −17.9 dBFS RMS over the note-on region of the chime melody (K-weighted −16.6), peak −4.06 dBFS over every audition phrase (the chord); the standard stabs phrase (b) reads −21.8 dBFS. **CPU 1863 host instr/sample worst case** (idle 1179, load 685), against 2647 for the same patch with CHEW 65. The device render time is not measured.
 - **Tricks:** SLOBBER rides a pitch drift, SEQ held (Tape Stop), the kill switch (HEEL): untested on this patch.
 - **Changed from the brief:** the original VALHALLA array and round 1's PWM wash are retired; this is a new patch with a new name. The original brief is kept in `DOG-5-presets.md`.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), OSC1 PULSE PW 50 % LEVEL 127, OSC2 SAW LEVEL 70 SEMI +15 FINE 0 X-MOD 25 ENV>O2 76 (+4.6 st at the envelope's top), FILTER BAND-PASS 12 dB CUTOFF 77 RESO 105 KEY TRK 0 ENV AMT 0 DRIVE 30, FILTER ENV A0 D50 S0 R30, AMP ENV A0 D101 S0 R50, LFO TRI RATE 55 PHASE SYNC PITCH 14 AMP 40 DELAY 40, VINTAGE 10, SPREAD 70, BBD ALLEY 56 (65 ms) FEEDBK 22 TONE 60 MIX 35 PINGPONG 127, spring SIZE 40 DAMP 40 PRE-DLY 8 DRAIN 18, CHEW 0 (WOW/FLT 64, HISS 25, DROPS 20 inert), GROWL 0, VOLUME 113` — `PF_I_SCREAM` in `firmware/src/obv_patches.h`.

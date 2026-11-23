@@ -56,6 +56,7 @@
     $('#vcNo').textContent = String(p + 1).padStart(2, '0');
     $('#vcName').textContent = c.name;
     $('#vcChap').textContent = 'Chapter ' + c.chapter;
+    vcard.dataset.ch = String(Math.floor(p / 8) % 4 + 1);   // the chapter's accent (Sun Yellow / Wave Turquoise / Foam White / Acid Chartreuse)
     $('#vcSound').innerHTML = c.card.sound;            // (our own repo text, rendered by gen_patches.py; no outside input)
     $('#vcPlay').innerHTML = c.card.play;
     $('#vcGear').innerHTML = c.card.gear;

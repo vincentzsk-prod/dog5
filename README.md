@@ -48,7 +48,9 @@ installer page; no hardware). `CLAUDE.md` §9 has the whole dev setup.
 [zvenson](https://github.com/zvenson/obervave) (`zvenson/obervave`, tag `v1.5.3`, commit `7e1ccf9`), which stands on
 [Dinghy](https://github.com/zvenson/dinghy), [Felucca](https://github.com/hugelton/Felucca) (Leo Kuroshita, Hügelton
 Instruments) and [SLOOP](https://github.com/isod89/sloop-fm1) (isod89). Everything inherited keeps its copyright and
-licence; see [`NOTICE`](NOTICE), [`LICENSING.md`](LICENSING.md) and [`LICENSE`](LICENSE) (GPL-3.0-only).
+licence; see [`NOTICE`](NOTICE), [`LICENSING.md`](LICENSING.md) and [`LICENSE`](LICENSE) (GPL-3.0-only). DØG-5's art is
+hand-painted by Vincent Kruger (no AI-generated art); the fonts are Terminus, Yatra One, Cormorant Garamond and Space Mono
+(SIL OFL 1.1). Gear named in the manual and voice cards is inspiration only; those names belong to their owners.
 
 OberVave's own README (the base this was forked from) is upstream at
 [`zvenson/obervave@v1.5.3`](https://github.com/zvenson/obervave/tree/v1.5.3) and in this repo's git history.
