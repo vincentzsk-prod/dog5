@@ -54,7 +54,7 @@ static void fm1_led_key_glow(uint32_t id, int on)   /* as fm1_led_key, the dim l
 #define APP_NAME DOG5_NAME
 #endif
 #ifndef FELUCCA_ID
-#define FELUCCA_ID DOG5_ID_FM1 "000"            /* package identity: FM-1_3645XYZ = DØG-5 vX.Y.Z (tools/build.py) */
+#define FELUCCA_ID DOG5_ID_FM1 "000"            /* package identity: FM-1_54460XYZ = DØG-5 vX.Y.Z (tools/build.py) */
 #endif
 #ifndef APP_VER
 #define APP_VER "0.0"
