@@ -68,7 +68,7 @@ def dog5_id():
 
 
 ID = dog5_id()
-PRODUCT = ID["DOG5_ID_FM1"] + "000"   # DØG-5: FM-1_3645XYZ = vX.Y.Z, a dev build 000 (digits only: installers read NAME_digits)
+PRODUCT = ID["DOG5_ID_FM1"] + "000"   # DØG-5: FM-1_54460XYZ = vX.Y.Z, a dev build 000 (digits only: installers read NAME_digits)
 BOARD = "fm1"                       # the one board (fm1pkg_make.set_board)
 VERSION = None                      # APP_VER for release builds
 
@@ -294,7 +294,7 @@ def mmio_check():
 def main():
     global PRODUCT, VERSION, BOARD, APP_SLOT
     ap = argparse.ArgumentParser()
-    ap.add_argument("--release", metavar="X.Y", help="release build X.Y or X.Y.Z: identity FM-1_3645XYZ, version string X.Y[.Z]")
+    ap.add_argument("--release", metavar="X.Y", help="release build X.Y or X.Y.Z: identity FM-1_54460XYZ, version string X.Y[.Z]")
     ap.add_argument("--sdk", type=Path, help="JieLi AC79 SDK checkout (default: $AC79_SDK)")
     a = ap.parse_args()
     if (os.environ.get("BOARD") or "fm1").lower() != "fm1":

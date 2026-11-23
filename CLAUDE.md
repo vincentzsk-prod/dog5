@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 23 Nov 2026 (v0.5 = `FM-1_3645050` **released** on GitHub and **submitted to the Firmware Hub**; Batch 31: COLLAR, credits to ZIGGY), by ZIGGY (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 23 Nov 2026 (Batch 32: identity `FM-1_54460XYZ`, v0.5.1 = `FM-1_54460051`, after the Hub refused `FM-1_3645050`; v0.5 released and submitted; Batch 31: COLLAR, credits to ZIGGY), by ZIGGY (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -362,6 +362,10 @@ the manual is **COLLAR**; the art credited to **ZIGGY** (public-facing; never hi
 **Stage 4 — v0.5 released (23 Nov):** tested on the unit with the release file, the GitHub release `v0.5` (tag on `b8ae77b`,
 `dog5.fwsc` = `22915290…15f4`, attested), submitted on the Hub's form the same evening (the Hub is checking). The first tag run
 failed: the tests needed numpy, which `release.yml` never installed (fixed in PR #46, with `markdown==3.11` pinned).
+**Batch 32 (23 Nov):** the Hub refused v0.5: `FM-1_3645050` falls in Polly's claimed range `FM-1_3\d{6}`. The identity is now
+**`FM-1_54460XYZ`** (8 digits; `FM-1_5` + 6 digits is MONK-1's), v0.5.1 = `FM-1_54460051` (`6ffb7d42…9aa6`), the same firmware
+as v0.5 otherwise (`dog5-docs/BATCH-32-IDENTITY-5446.md`). **Before any identity change, test it against every
+`ident` regex in the Hub's `catalog.json`, not just the `product` values.**
 
 ---
 
@@ -383,7 +387,8 @@ failed: the tests needed numpy, which `release.yml` never installed (fixed in PR
    MODE works from DØG-5, and RESTORE FULL FLASH put the 11 Nov stock backup back; the unit booted as stock.
    **FLEAS stays screen-only** (Vincent, 21 Nov): it never touches the sound; a sound tie-in is a later-version idea.
    **The identity is `FM-1_3645XYZ` since Batch 27 (v0.4.5 = `FM-1_3645045`, on the unit 23 Nov; v0.5 = `FM-1_3645050`, Batch 31,
-   tested on the unit with the release file and released 23 Nov).** `FM-1_964` was taken on
+   tested on the unit with the release file and released 23 Nov; the Hub refused its identity).** **Since Batch 32 the
+   identity is `FM-1_54460XYZ` (v0.5.1 = `FM-1_54460051`): 8 digits, outside Polly's `FM-1_3\d{6}` and MONK-1's `FM-1_5\d{6}`.** `FM-1_964` was taken on
    the Firmware Hub (SIDOU), and so was the whole `FM-1_96N` family. 3645 = DØG-5 on a phone keypad; XYZ = vX.Y.Z (one
    digit each, `tools/build.py`); a dev build is `FM-1_3645000`. **Digits only after the one underscore**: every FM-1
    installer reads `NAME_digits` (Vincent asked for `FM-1_3645_V6.3.5`; it would leave the unit unrecognised). GitHub
@@ -420,7 +425,7 @@ failed: the tests needed numpy, which `release.yml` never installed (fixed in PR
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
   `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`), `BATCH-28-V11-CARDS-PLAYER.md` (the backlog, the card in the player, the manual page, feedback), `BATCH-29-INSTALLER-DOCS.md`
   (the background-tab install failure and its fix, Sound design notes, the art docs re-skin), `BATCH-30-SOUND-TEXT-CREDITS.md`
-  (the sound text for players, the manual page's look, the credits pass), `BATCH-31-V0.5.md` (v0.5, COLLAR, ZIGGY credits).
+  (the sound text for players, the manual page's look, the credits pass), `BATCH-31-V0.5.md` (v0.5, COLLAR, ZIGGY credits), `BATCH-32-IDENTITY-5446.md` (the identity the Hub accepts, v0.5.1).
 - ⭐ `V1.1-BACKLOG.md` — **every open item, idea and note for this release and v1.1+ in one place** (mirrored as the Project doc
   `DOG-5-v1.1-backlog.md`). New ideas go there; done or dropped items are marked, not deleted.
 - `manual/` — the Driver Manual: `DOG-5-driver-manual.md` (Parts 0–2B; a copy of the Project doc: edit the Project doc, copy

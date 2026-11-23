@@ -46,7 +46,7 @@ static void app_main(void)
 
 Names the platform defines that you can change from the build: `APP_NAME` (the rescue and crash screens,
 default `"DINGHY"`), `APP_VER` (set by `./build.sh --release`), `FELUCCA_ID` (the package identity; see
-`tools/build.py`, from the prefix in `firmware/src/dog5_id.h`: DØG-5 is `FM-1_3645XYZ` for vX.Y.Z).
+`tools/build.py`, from the prefix in `firmware/src/dog5_id.h`: DØG-5 is `FM-1_54460XYZ` for vX.Y.Z).
 
 ## Time
 

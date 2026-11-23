@@ -1,7 +1,7 @@
 # DØG-5 installer (self-hosted page)
 
 `index.html` here installs DØG-5 on an **M-VAVE FM-1** over USB-MIDI, from **Chrome or Edge**. It is one file: the
-package (`dog5-0.5-20261123.fwsc`, identity `FM-1_3645050`) is inside it, and it makes no network request of any kind. It is
+package (`dog5-0.5.1-20261123.fwsc`, identity `FM-1_54460051`) is inside it, and it makes no network request of any kind. It is
 served by GitHub Pages from `main` `/docs`; the expected address is <https://vincentzsk-prod.github.io/dog5/install/>
 (GitHub's usual form; confirm it once Pages is on). WebMIDI itself needs `https://` or `http://localhost`.
 
@@ -26,7 +26,7 @@ What the repository's own tests show, and what they do not, is at the end.
 5. **Install…** shows a last box (unit, package, what will be written). Nothing is sent before **Yes, start**.
 6. The page shows step 1 (the running firmware checks the package and switches to the update loader), step 2 (the loader
    writes; percent, one log line per chunk) and then waits for the unit to restart and checks that it reports
-   the package identity (`FM-1_3645050` for v0.5; v0.4.5 was `FM-1_3645045`, v0.4 to v0.4.4 `FM-1_964`). That is all it can check: it does not test the sound.
+   the package identity (`FM-1_54460051` for v0.5.1; v0.5 was `FM-1_3645050`, v0.4.5 `FM-1_3645045`, v0.4 to v0.4.4 `FM-1_964`). That is all it can check: it does not test the sound.
 
 If it is interrupted, **unplug, power-cycle, and run the page again**. A unit cut off during step 2 comes back in update
 mode; the page then shows **Resume**, which skips step 1 and serves the package again. The loader skips sectors that
@@ -75,8 +75,10 @@ The device asks, the host answers; the host never pushes data.
 
 ## Identity digits
 
-The package identity is `FM-1_3645XYZ`: `3645` is DØG-5's own prefix (DØG-5 on a phone keypad: D=3, O=6, G=4, then 5),
-and `XYZ` the version (`tools/build.py --release X.Y.Z`; v0.5 is `FM-1_3645050`, v0.4.5 was `FM-1_3645045`, a dev build `FM-1_3645000`). Until
+The package identity is `FM-1_54460XYZ`: `5446` is DØG-5's own prefix, then a `0`, and `XYZ` the version
+(`tools/build.py --release X.Y.Z`; v0.5.1 is `FM-1_54460051`, a dev build `FM-1_54460000`). It is 8 digits on purpose: the
+Firmware Hub matches identities against each firmware's claimed range, and `FM-1_5` + 6 digits is MONK-1's, `FM-1_3` + 6
+digits Polly's. v0.4.5 and v0.5 were `FM-1_3645XYZ` (inside Polly's range, so the Hub refused v0.5 on 23 Nov). Until
 21 Nov 2026 it was `FM-1_96N`; the Firmware Hub's catalogue showed that whole family already taken (`FM-1_964` is
 SIDOU), so it changed before DØG-5 was submitted. **Digits only after the one underscore:** every FM-1 installer reads an
 identity as `NAME_digits` (`parse_identity` in `fm1_install.py`, `parseIdentity` in `fm1install.js`), so a second
@@ -94,8 +96,8 @@ App-level USB rescue (holding OCT− at power-on) is **unproven on this hardware
 ## Rebuild and tests
 
 ```sh
-./build.sh --release 0.5                          # build/dog5-0.5.fwsc (needs the JieLi toolchain + SDK)
-python3 tools/make_installer_page.py --release 0.5 --date 2026-11-23     # the package and index.html, together
+./build.sh --release 0.5.1                        # build/dog5-0.5.1.fwsc (needs the JieLi toolchain + SDK)
+python3 tools/make_installer_page.py --release 0.5.1 --date 2026-11-23     # the package and index.html, together
 python3 tools/make_installer_page.py --check    # fails if the page or the package beside it have drifted
 sh tests/install/run.sh                         # the proof below
 ```
