@@ -16,7 +16,7 @@ A tight, plucky square stab with a resonant plop on the front, drenched in sprin
 
 Closest to: **an MS-20 plop into a Fender spring tank**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register and gate:** off-beat two-note stabs of about a tenth of a second, around A3 to C4 (the skank it was voiced on). Other registers are untested.
 - **The plop is still there, softer.** The resonant filter sweep is still audible by tone (measured: the first 23 ms of a stab are twice as bright as the next 67), but the first 20 ms is now only about 3.5 dB louder than the body, so the pop is softer than in the first version of this patch.

@@ -17,7 +17,7 @@ Closest to: **a Mono/Poly cross-mod square through a worn tape echo**.
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** it was voiced on a held A2 (2.4 s), twelve 60 ms staccato notes from A2 up to G3, and three 80 ms A3 notes; other registers are untested.
 - **It is MONO, so legato does not re-fire the envelopes:** a key held while the next goes down slides to the new note and the envelopes do not restart. Play it detached. A chord plays one note (the last).

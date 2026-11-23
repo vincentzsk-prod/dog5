@@ -16,7 +16,7 @@ weight lives at the bottom of the keyboard. It is dry and desolate, and it hangs
 
 Closest to: **a CS-80 played low and cold**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** low. Roots and fifths around A1 to A2 are where it opens up. The key tracking is almost off, so low notes get more harmonics than high ones (measured: about 8 partials under the
   centre of the sound on A1, about 3 on A3). Played high it is dark and dull; that is the design.

@@ -21,7 +21,7 @@ The reference for the register was Vincent's two phone recordings of a real ice-
 
 **Vincent's ear, after hearing the final (11 Nov 2026), not measured:** he hears it as closer to an arcade or vintage video-game chime than to finger cymbals ("a cleaner ring"). The bank had nothing in that register before this patch.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** voiced for A4 to A6. RMS over the first 300 ms of one struck note, with the centroid over the first 100 ms: A4 −22.1 dB / 1950 Hz, C#6 −18.5 dB / 2183 Hz, A6 −20.1 dB / 2563 Hz (measured). A4 sits 3.6 dB under C#6 and A6 1.6 dB under it; neither end falls away in that range. Nothing outside A4–A6 was measured.
 - **Ring and overlap:** the ring of a C#6 falls 6 / 12 / 20 / 40 dB in 252 / 550 / 1030 / 1896 ms (the whole patch; 276 / 584 / 938 / 1943 ms at C#5; the voice alone reads 1954 ms to −40 dB at C#6). With notes 580 ms apart several rings overlap. POLY 5 is set; POLY 4, 5 and 6 against POLY 8 change the level of what rings by at worst −0.1, −0.6 and −0.7 dB on the melody, −0.2 to −0.3 dB on the fast run's tail and 0.0 dB on the chord, so no cut ring is measurable (random oscillator start phases make a sample-for-sample comparison useless; not isolated whether stolen voices were the oldest).

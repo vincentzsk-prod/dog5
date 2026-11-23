@@ -3,7 +3,7 @@
 # The 32 factory names for the web player's patch list, read (never written) from the {"NAME", PF_xxx} table
 # FACTORY[NFACT] in firmware/src/obv_patches.h, as the firmware has them: "\xD8" is the Ø (font byte 0xD8).
 # With each name, its voice card (dog5-docs/voicing/cards/NN-*.md), sections 2-4 as HTML: what it sounds like, the gear
-# inspirations, how to play it. Section 5 (the final values, for debugging) and the card's italic file line stay out.
+# inspirations, sound design notes. Section 5 (the final values, for debugging) and the card's italic file line stay out.
 #   python3 web/sim/gen_patches.py OUT.json        (needs Python-Markdown: pip install markdown)
 import html, json, re, sys
 from pathlib import Path

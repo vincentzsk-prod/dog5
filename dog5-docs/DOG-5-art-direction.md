@@ -6,6 +6,14 @@ are canon and still used:** the four procedural engines, the dirty-area budget, 
 colour registers, the safety clamps, the legibility floor. Read the character brief for *what it depicts*;
 read this for *how it's drawn and budgeted*. Moonshine's colour is now **magenta `#FF2FA0`**, not purple.
 
+**AS BUILT (re-skin, 23 Nov 2026):** Chapter IV is **ACID CAN** (was Le Gato). The screen is not one spot colour on
+black: the fields are Vincent's hand-painted pictures and the panel uses the brand palette (`DOG-5-brand-palette.md`).
+**The chapter colours below are superseded** (Batch 23): the beam is Acid Chartreuse in every chapter; the accents are
+I Sun Yellow · II Wave Turquoise · III Foam White · IV Acid Chartreuse; magenta and amber are out, purple stays out. The
+four engines are built as the fence (scorch / soak / fog / wreck, healing within 1.2 s), and FLEAS with its clamps
+(under 7 Hz, never the whole screen). Not built: the per-patch dials, the debris shed, the nose alarm, the LED
+behaviour. Open items: `DOG-5-v1.1-backlog.md`.
+
 ---
 
 ## COLOUR — three registers by behaviour
@@ -18,12 +26,12 @@ read this for *how it's drawn and budgeted*. Moonshine's colour is now **magenta
 | **Functional colour** | Flashing | Alarm | Event-driven, specific objects (the nose) |
 
 Chapter identity colours: **Fire/Jalopy = acid green `#39FF14`**, **Water/Bee-tch = abyssal cyan `#00C8D4`**,
-**Air/Moonshine = bubblegum magenta `#FF2FA0`** (was bruised purple — changed 27 Oct), **Earth/Le Gato =
-golden amber `#FFBF00`**. Functional: Arterial Red `#FF0000` (FX / the nose), Hazard Yellow `#FFEA00`, Magma
+**Air/Moonshine = bubblegum magenta `#FF2FA0`** (was bruised purple — changed 27 Oct), **Earth/Acid Can (was Le Gato) =
+golden amber `#FFBF00`** *(all four superseded: see AS BUILT)*. Functional: Arterial Red `#FF0000` (FX / the nose), Hazard Yellow `#FFEA00`, Magma
 Orange `#FF4500`, Radioactive Mustard `#CCCC00`. All final values eyeballed on the real panel.
 
 **LEDs** are monochrome (brightness only): keybed = struck-key brightness tracing what you play (per-chapter
-envelope character: Jalopy snaps, Bee-tch rolls, Moonshine holds, Le Gato thuds); pads = tempo pulse + FX/ENV
+envelope character: Jalopy snaps, Bee-tch rolls, Moonshine holds, Acid Can thuds); pads = tempo pulse + FX/ENV
 alarm. No idle wash. The ~3 Hz strobe clamp covers LEDs too.
 
 ---
@@ -35,7 +43,7 @@ alarm. No idle wash. The ~3 Hz strobe clamp covers LEDs too.
 | I Jalopy | FIRE | SCORCHES | **Deletes** — chars the fence from an edge inward, embers rise |
 | II Bee-tch | WATER | SOAKS | **Covers** — a dithered mass occludes from the top, then drains |
 | III Moonshine | AIR | FOGS | **Dilutes** — rising dither density drowns status in grain; structure stays |
-| IV Le Gato | EARTH | WRECKS | **Displaces** — geometry fractures, shards fall, then re-fuse |
+| IV Acid Can | EARTH | WRECKS | **Displaces** — geometry fractures, shards fall, then re-fuse |
 
 Four cheap engines, one nozzle, four materials. All **procedural** (code-drawn, near-zero flash).
 
@@ -89,7 +97,7 @@ Throttle = per-frame quality tier from the last audio-cost reading + a mid-frame
 | 91–100 | MANGE | Dropped frames (real, over-driven SPI), HUD scramble, mustard — **never touches the bar** |
 
 **Hard clamps (compile-time):** no full-screen luminance swing faster than ~**3 Hz**, applied globally after
-all effects compose (covers LEDs too; the Le Gato seismic judder is a positional shake, inside the clamp). FX
+all effects compose (covers LEDs too; the Acid Can seismic judder is a positional shake, inside the clamp). FX
 inversion: invert to dirty white ~70% coverage, never 100%, ramped over 2–3 frames. Dither: blue-noise over
 regular grids. FLEAS never touches the beam. ⚠️ Moonshine/Air fog IS animated dither, so it runs these clamps
 at EVERY FLEAS setting, not just the high ones; its slowness is the safeguard.

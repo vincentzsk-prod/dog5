@@ -18,7 +18,7 @@ slap: no spring, no long wash, just the stab and its quick echo.
 
 Closest to: **a Prophet-5 stab through a Space Echo**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** low to low-mid. Single notes and fifth-based riffs (roots and octaves around A1 to A2) are its home ground: every note already carries its own
   fifth, so one finger plays a power chord.

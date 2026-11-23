@@ -15,7 +15,7 @@ A nervous, spitting bass made to sit under a vocal. A pair of fat saws, stacked 
 
 Closest to: **an MS-20 bass through a RAT**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** low. It was voiced on a riff from A1 (55 Hz) up to A2 and on sixteenth-note bursts of A1, C2, D2 and E2; other registers are untested. About half of the energy on the low riff sits under 60 Hz, which is the A1 fundamental itself: it is the 100 Hz and up that carries it on a small speaker, and whether it is heard enough under a vocal on a PA is for the room.
 - **Touch and gate:** short, detached notes are its home (80 to 150 ms gates were measured). The filter snap gives the "spit": on an isolated A1 the first 23 ms are about 1.8 times as bright (centroid) as the next 67 ms.

@@ -11,7 +11,7 @@ sounds like, so nobody has to remember — and its text becomes the player-facin
 2. **WHAT IT SOUNDS LIKE** — 2–3 plain sentences for a player, in the dictionary vocabulary (fat, slop, seasick, choppy…).
    No parameter numbers. Someone who has never heard the patch must know what to expect.
 3. **GEAR INSPIRATIONS** — 3–6 items from the approved list, each with the trait it carries, then one line `Closest to: …`.
-4. **HOW TO PLAY IT** — best register, touch and gate length, which tricks and macros suit it (SLOBBER slop ride, Tape Stop,
+4. **SOUND DESIGN NOTES** (was "How to play it", renamed 23 Nov) — best register, touch and gate length, which tricks and macros suit it (SLOBBER slop ride, Tape Stop,
    kill switch, GROWL…). Be honest about where it does not work, and about polyphony (POLY) where chords matter.
 5. **FINAL VALUES** — the committed parameter list as one compact line, labelled "for debugging, not for players".
 

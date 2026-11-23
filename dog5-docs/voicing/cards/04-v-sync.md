@@ -17,7 +17,7 @@ raw on purpose: that is where the rip lives.
 
 Closest to: **a Pro-One sync lead**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** mid, roughly A3 to A4 and around it, where the lead was auditioned. It is a one-note-at-a-time lead: no chords.
 - **Touch and gate: play it staccato.** The rip comes from the filter envelope sweeping the synced oscillator, and in MONO and UNISON a note struck while another is

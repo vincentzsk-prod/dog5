@@ -17,7 +17,7 @@ It is bright and crisp on top for a bass, sharp and a little biting, and dry oth
 
 Closest to: **a flatwound P-Bass into a Space Echo**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **It is a gated bass, not a pluck.** The decay is gone on purpose (measured: the level falls under 1 dB inside a 100 ms note, and the first 23 ms is as bright as the next 67), so the note starts at once, holds its body for the length of the gate and stops in about a millisecond
   (the voice alone is silent about 18 ms after the key-up). The pluck character of the first version is not in this one.

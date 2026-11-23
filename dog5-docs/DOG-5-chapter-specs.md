@@ -5,6 +5,15 @@ world (Jalopy/Bee-tch/Moonshine/Le Gato; Moonshine = magenta). The engines, dial
 stand — they are symbolic placeholders within each chapter's ranges, final tuning on hardware. Reads on top
 of `DOG-5-art-direction.md`.
 
+**AS BUILT (re-skin, 23 Nov 2026):** chapter IV is **ACID CAN** (was Le Gato): a tipped-over can oozing acid in an
+alley, no bin, no cat in the field, so §E's bin and cat beats have nothing to act on (open, `DOG-5-v1.1-backlog.md`).
+Colours as built (Batch 23): the beam is Acid Chartreuse in every chapter; accents Sun Yellow / Wave Turquoise / Foam
+White / Acid Chartreuse; Moonshine magenta and Le Gato amber are superseded. **What is built from this doc (Batch 23):**
+the fence breaks per chapter (I scorch, II soak, III fog, IV wreck) and heals within 1.2 s (U1), and FLEAS (§ the
+art-direction dial) runs its four stages with the strobe clamps. **Not built:** the per-patch dial rows below (the fence
+breaks per chapter, not per patch), the debris down the right margin, the per-patch beats (30's judder, 31's, 32's
+dormant one) and the LEDs. 29 is **i scream** (was VALHALLA). The rows stay as the spec for that later work.
+
 ## §A — TEMPLATE & UNIVERSAL RULES (U1–U4)
 Each chapter: Identity · scene · verb-as-beats · engine · dials (6 common + 1 engine-specific, with per-
 chapter floor/ceiling) · signal bindings · LEDs · per-patch rows.
@@ -54,7 +63,7 @@ covers the name). LEDs: slower rolling fall.
 Water ranges: INT 40–255 · DEN 20–150 (tighter — the flood band is widest) · SPD 40–220 · DEC 30–140 ·
 LEVEL 0–160.
 
-## §D — CHAPTER III · MOONSHINE (AIR) — magenta `#FF2FA0` · FOGS/dilutes · top bar + upper-right
+## §D — CHAPTER III · MOONSHINE (AIR) — magenta `#FF2FA0` (as built: Foam White) · FOGS/dilutes · top bar + upper-right
 Slow, latch-driven (the howl chapter). Dilutes by rising dither — structure stays, info lost. The figure
 inverts near-white (moonlit); magenta only in the moving fog. Beats: rest → exhale bloom → diffuse up → fog
 drowns status while the beam sways with the LFO → thins → re-emerges. ⚠️ Fog IS animated dither → the §9
@@ -75,7 +84,7 @@ State** tends to black-out. LEDs: held keys stay lit for the drone.
 Air ranges: INT 40–255 · DEN 20–140 · SPD 10–90 (the slowness is the chapter) · DEC 20–120 · OPAC 0–170
 (never fully opaque — it's dilute, not cover).
 
-## §E — CHAPTER IV · LE GATO (EARTH) — golden amber `#FFBF00` · WRECKS/displaces · top-right / right frame
+## §E — CHAPTER IV · ACID CAN (was LE GATO) (EARTH) — golden amber `#FFBF00` (as built: Acid Chartreuse) · WRECKS/displaces · top-right / right frame
 Displaces (not deleted/covered/diluted): glyphs fracture into polygonal shards that fall under gravity, then
 fly back and re-fuse. Beam strikes → fracture-flash → shards drift/fall down the right margin → re-fuse.
 Signature **30 THE DØG** (1–2 frame 2–3px seismic judder — a shake, not a strobe — + full keybed flash; the
@@ -88,7 +97,7 @@ bruv?** = the only patch where nothing fractures (dormant bookend). LEDs: hardes
 | 26 | BSyncA | 200 | 150 | 220 | 60 | 120 | mid | screen edge, wide |
 | 27 | R3V3RT | 180 | 120 | 230 | 50 | 90 | low | right frame, sharp |
 | 28 | Arr 2 Dee 2 | 150 | 130 | 120 | 130 | 60 | mid | poly-count; long shed |
-| 29 | VALHALLA | 160 | 110 | 90 | 120 | 80 | low | HUD-wide; radiant cracks |
+| 29 | i scream | 160 | 110 | 90 | 120 | 80 | low | HUD-wide; radiant cracks |
 | 30 | THE DØG ★ | 255 | 160 | 180 | 110 | **180** | low | top-right, heaviest |
 | 31 | Fi(l)fth ◆ | 230 | 150 | 210 | 80 | 160 | mid | bin + frame |
 | 32 | Init bruv? | 40 | 20 | 120 | 60 | 0 | — | none (dormant) |

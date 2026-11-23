@@ -19,7 +19,7 @@ Closest to: **a Mono/Poly into a Big Muff**.
 
 Nothing here says the patch matches the benchmark: it was built toward it from the descriptions, by measurement, and approved by ear. The "voltage-starved" gating and sputter of the Super-Fuzz and the MG-1 is not claimed: nothing in this patch gates (BIAS only raises the peaks).
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register and touch:** it was voiced on a held A2 (3 s), a held power chord (A2, E3, A3, 1.5 s), 300 ms power-chord stabs and a low A1. Other registers are untested.
 - **The wall, measured:** the held note's peak-to-RMS ratio is 1.7 dB (a square wave is 0, a sine 3), and the level over a 3 s hold falls by 0.0 dB, first half second to last. The held power chord is at 3.2 dB. The source is POLY with 6 voices, so a three-note chord plays whole; the number of notes it keeps before stealing is the 6 voices.

@@ -35,6 +35,7 @@ await fast();
 const txt = (id) => page.locator("#" + id).innerText();
 
 check("loads, no page errors", errors.length === 0, errors.join(" | "));
+check("its timers run in a worker (an install keeps time in a background tab)", await page.evaluate(() => __dog5.workerTimers === true));
 check("package self-check shown ok", (await txt("pkgcheck")).includes("header, file list and file CRCs ok") && (await txt("pkgid")) === py.product, await txt("pkgid"));
 check("SHA-256 shown == Python's", (await txt("pkgsha")) === py.rawSha256);
 check("Install is disabled at the start (checklist, no unit)", await page.locator("#btninstall").isDisabled());

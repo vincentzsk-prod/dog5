@@ -16,7 +16,7 @@ Closest to: **a Taurus-weight square through an MS-20 filter that a random sourc
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **It needs a held key, the sustain pedal or REC (HOLD).** REC latches the held notes until REC again or STOP; otherwise the sound ends with the key (AMP release about 2.7 s nominal; on A1 the tail is 20 dB down at 1.75 s and 40 dB down at 3.31 s, 60 dB is not reached in the 4.5 s render).
 - **One note at a time.** The patch is a 3-voice UNISON: a chord plays only its last key (three keys gate three voices, not nine). Legato: a key struck while another is held slides and does not restart the envelopes (MONO and UNISON behave so; known engine fact, README section 8).

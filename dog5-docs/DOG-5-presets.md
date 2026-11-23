@@ -5,6 +5,15 @@ slots, so A/B is now a **write-lock over slots 1–64 (THE POUND) vs 65–99 (TH
 The 32 SOUND briefs, the Psych Chain and the bank model below otherwise stand. Measured against the base
 source (`obv_params.h`, `obv_patches.h`, `obv_fx.h`).
 
+**AS BUILT (re-skin, 23 Nov 2026):** all 32 are voiced, approved by ear and on the unit; the **voice cards**
+(`dog5-docs/voicing/cards/`, shown in the web player) and Driver Manual Part 3 are the player-facing versions, and
+this doc keeps the original briefs as history. The bank is a write-lock over the 99 slots: **THE POUND = 1–32** (the
+factory, locked) and **THE PACK = 33–99** (Batch 15), not 1–64 / 65–99 as §1 says; PRESETS steps through every slot.
+Chapter names = scene names: I **JALOPY** · II **BEE-TCH** · III **MOONSHINE** · IV **ACID CAN** (the long titles in
+the headings below are retired). REC is HOLD (the drone latch, Batch 9B); there is no tap tempo; Moonshine is Foam
+White on screen, not magenta. ART lines that mention the bin or the cat describe beats with no object now (ACID CAN has
+a tipped-over acid can; open in `DOG-5-v1.1-backlog.md`).
+
 **Prime directive: TONE IS KING.** Ship fewer, better.
 
 **Names (27 Oct):** field widened to 14 chars; four names changed — 09→**Skeenhead**, 17→**Titanic**,
@@ -62,7 +71,7 @@ Chapter I re-voiced: start from FAT sources (dual-osc, unison, low register) pus
 + gate + slop — not born-thin single oscillators. Each entry: slot · name · [phase] · nearest base patch /
 SOUND / ART.
 
-### CHAPTER I — THE WASTELAND ARSENAL (egg punk & garage psych) — JALOPY
+### CHAPTER I — JALOPY (egg punk & garage psych) *(was: The Wasteland Arsenal)*
 - **01 "Red Pill" · P2 · from FAT BASS** — SOUND: dual saws, slight detune, low register, filter low+resonant
   with bass-comp, hard-chop gate, driven into asymmetric clip. ART: chaotic acid-green arcs tear the right HUD.
 - **02 "Cement Grind" · P2 · from WOBBLE BS** — SOUND: dual pulse, fast LFO→PWM, ZDF filter biting, moderate
@@ -81,7 +90,7 @@ SOUND / ART.
 - **08 "Wire Bite" · P1 · from UNISON LD** — SOUND: unison detuned saws, slow attack, chopped on release; slop
   adds the spit. ART: sparks and spits through the 5th quadrant.
 
-### CHAPTER II — THE TIDAL HEXES (surf rock & skinhead reggae) — BEE-TCH (the spring chapter)
+### CHAPTER II — BEE-TCH (surf rock & skinhead reggae; the spring chapter) *(was: The Tidal Hexes)*
 - **09 "Skeenhead" (was Skinhead Bubble) · P2 · from CLAV PLUCK** — SOUND: tight plucky square, resonant plop,
   drenched in SPRING. The reggae off-beat stab; most exposed to the spring caveat. ART: cyan spray over the HUD.
 - **10 "Atlantic Swell" · P2 · from HOLLOW PAD** — SOUND: dual pulse, slow LFO vibrato, heavy BBD. Woozy
@@ -99,7 +108,7 @@ SOUND / ART.
 - **16 "Tidal Pull" · P2 · from TIDAL/PWM** — SOUND: 5-voice poly detuned pulses, slow attack, BBD + spring.
   Massive wet wash. ART: threatens to drown the whole frame.
 
-### CHAPTER III — THE BAKSHI TOMES (dark fantasy & atmosphere) — MOONSHINE (drone-latch; magenta)
+### CHAPTER III — MOONSHINE (dark fantasy & atmosphere; hold with REC) *(was: The Bakshi Tomes)*
 - **17 "Titanic" (was North Water Ice) · P1 · from DUAL SAW + fifth** — SOUND: dual saws a fifth apart (OSC2
   +7), extreme bass-comp, low register; tape dropouts optional. **CHAPTER III ANCHOR.** ART: freezing weight
   exhales thick smoke over the top bar.
@@ -120,7 +129,7 @@ SOUND / ART.
 - **24 "Fugue State" · P2 · from NEON PAD** — SOUND: triangle, extreme LFO pitch mod, BBD self-feedback. ART:
   pitch-black fog over the 5th quadrant, only the core visible.
 
-### CHAPTER IV — THE ANCIENT RELICS (the survivors, rebuilt not ripped) — LE GATO (the closer)
+### CHAPTER IV — ACID CAN (the survivors, rebuilt not ripped; the closer) *(was: The Ancient Relics / Le Gato)*
 - **25 "SAWTOOTH" · P1 · from POLY BRASS** — SOUND: dual saws, slight detune, classic 24 dB filter-env swell.
   ART: amber shrapnel pierces the right UI border.
 - **26 "BSyncA" · P1 · from SYNC LEAD** — SOUND: a UNISON 3 hard-sync lead, an audible master under the synced slave, the pitch envelope sweeping the slave on detached notes, GROWL 44, dry. *(Brief changed after listening, 11 Nov 2026; it was: OSC2 hard-synced, pitch env sweeping the slave, silent master, MONO, with echo and spring. Vincent's notes: Prophet-5 sync solo, fat, warm, gritty, driven, not fuzzy.)* ART: geometric
@@ -144,10 +153,10 @@ SOUND / ART.
 
 | Chapter | Count | Phase split | Note |
 |---|---|---|---|
-| I Wasteland (Jalopy) | 8 | 3× P1, 5× P2 | bass, sync lead, fuzz, X-mod ✓ |
-| II Tidal (Bee-tch) | 8 | 1× P1, 7× P2 | heavily Psych-Chain-dependent ⚠️ |
-| III Bakshi (Moonshine) | 8 | 5× P1, 3× P2 | drones/pads on the latch ✓ |
-| IV Relics (Le Gato) | 8 | 6× P1, 2× P2 | gig-ready early ✓ |
+| I Jalopy | 8 | 3× P1, 5× P2 | bass, sync lead, fuzz, X-mod ✓ |
+| II Bee-tch | 8 | 1× P1, 7× P2 | heavily Psych-Chain-dependent ⚠️ |
+| III Moonshine | 8 | 5× P1, 3× P2 | drones/pads on the latch ✓ |
+| IV Acid Can | 8 | 6× P1, 2× P2 | gig-ready early ✓ |
 
 **P1 total 15 · P2 total 17.** Chapters III/IV deliver first; Chapter II waits on the spring/tape.
 
@@ -159,8 +168,8 @@ SOUND / ART.
 ## 5. OPEN
 
 - [x] Screen art budget — procedural, resolved (see foundation §3.5).
-- [ ] A/B gap scroll-wrap behaviour — match Vincent's gear.
-- [ ] Generator build — against these SOUND briefs once the host build confirms ranges by ear.
+- [x] A/B gap scroll-wrap behaviour — settled by the write-lock (Batch 15): PRESETS steps through every slot; armed SAVE wraps 99 ↔ 33.
+- [x] Generator build — done: all 32 voiced by ear (Stage 2).
 
 ## 6. WHAT'S NOT HERE YET
 Final voicing. Every SOUND brief is a starting point in the right medium; the last-mile by-ear shaping on the

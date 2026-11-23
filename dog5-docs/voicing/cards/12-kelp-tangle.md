@@ -17,7 +17,7 @@ Closest to: **a Polysix PWM pad into a spring tank**.
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **What C measured (held A2, dry, after the filter):** the PWM moves the band energies by 10.1 dB in 150 to 400 Hz, 7.6 dB in 400 to 1.2k and 7.4 dB in 1.2k to 3k (95th to 5th percentile of 23 ms frames); the level itself moves 5.7 dB (5.9 dB with the spring). The strongest modulation is 0.9 Hz in 150 to 400 Hz and 1.6 Hz in 400 to 1.2k; the LFO runs at 1.03 Hz (triangle, RATE 60) and sweeps the pulse widths 18 to 48 % (±15.2 points around 33 %, one side of 50 %). On the held chord A2 E3 C4 the depths are 9.0 / 6.4 / 5.6 dB and the level moves 4.3 dB.
 - **Cutoff 98:** a 24 dB low-pass at 100 % key tracking, CUTOFF 98 = 3729 Hz at C4, RESO 30. Held A2: centroid 531 Hz, 0.8 % of its energy above 1.2 kHz; held chord: centroid 879 Hz, 3.5 % above 1.2 kHz; note-on region MUD ratio (150 to 400 over 1.2k+) 12.3. The rendered variant B (CUTOFF 86) measured 339 Hz and 540 Hz and a note-on MUD of 38.8.

@@ -17,7 +17,7 @@ Closest to: **a Prophet-5 sync lead pushed into crunch**. "Crunch" is Vincent's 
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear. "Warm" was part of the brief and is not measured.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **UNISON, one note at a time.** Three voices all play the key you press; a chord plays the last key only. The sweep fires on **detached** notes. With **legato** playing (a new key down before the old one is up) the envelopes are not re-fired: on notes 2–8 of the same riff the centroid over the first 100 ms is 2935 Hz detached against 1742 Hz legato, and the sweep adds +303 Hz detached against +174 Hz legato. The first note of either riff is the same. Notes 2–8 read −17.8 dB detached and −19.3 dB legato over those 100 ms.
 - **Register:** the sweep was measured on A3 (above); the riff phrases run A3 to C6. No other register was measured.

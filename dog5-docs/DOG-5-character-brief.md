@@ -15,6 +15,35 @@ art) is parked by Vincent's instruction — recorded where decided (§7), not bu
 
 ---
 
+## AS BUILT — read this first (re-skin, 23 Nov 2026)
+
+The brief below is the 19 Oct design. The screen was built from it in Batches 20–25 (v0.4.4, on the unit 21 Nov) and
+some of it changed on the way. **Where the text below disagrees with this box, this box wins** (and the repo's
+`CLAUDE.md` §5 / §8 win over both on how the code behaves).
+
+- **Chapter names = scene names (locked 17 Nov):** I JALOPY · II BEE-TCH · III MOONSHINE · **IV ACID CAN** ("Le Gato"
+  is retired). The old long chapter titles (Wasteland Arsenal, Tidal Hexes, Bakshi Tomes, Ancient Relics) are retired.
+- **Chapter IV's world:** still an alley, now a **tipped-over round can with acid oozing out**. The wheelie bin and the
+  washing line are scrapped; the cat has drafts but is not in the field. The bin and cat beats (31 puts the bin over,
+  32 keeps it standing, 30 shifts the cat) have nothing to act on: open, in the v1.1 backlog.
+- **The screen is not one-spot-on-black.** Each field is Vincent's hand-painted 240×240 picture (up to 256 colours a
+  field and a dog pose); the panel pages use the brand palette (`DOG-5-brand-palette.md`). No AI art ships.
+- **Colours as built (Batch 23):** the beam is **Acid Chartreuse in every chapter** (not white, not per scene). Chapter
+  accents: I Sun Yellow · II Wave Turquoise · III Foam White · IV Acid Chartreuse. The Oct colours in §5 (acid green
+  `#39FF14`, abyssal cyan, bubblegum magenta, golden amber) are superseded; purple stays out.
+- **The knob readout** is a dial on a plate at the top left of HOME for 1.2 s (Batch 24), not in the bottom bar. The
+  bottom bar is the patch number and name only.
+- **The fence** is the top bar and breaks per chapter where the bark lands (scorch / soak / fog / wreck), healing within
+  1.2 s (Batch 23). The debris down the right margin and the per-patch impact dials are not built (backlog).
+- **The dog** (Vincent's poses: REST, BARK, MOONSHINE's inhale and howl) sways 1 px at rest; he does not invert to white
+  in MOONSHINE (the howl poses are drawn as they are). **The nose (FX alarm) is not drawn yet** (backlog).
+- **The controls (§6) as built:** ENV = HOWL is the envelope pages (there is no Drone Latch button: REC = WAG is HOLD,
+  Batch 9B); SEQ = FLOP is TAPE STOP; SEL = FETCH is LFO RATE on HOME and the "+" knobs on a Psych page (there is no FX
+  reorder: benched for v1.1); THE POUND (1–32, locked) / THE PACK (33–99) are a write-lock, not an A/B store.
+- **§9 next steps are done** (Batches 20–25) except the nose; §4.4's scrapped list stands.
+
+---
+
 ## DECISIONS LOG (provenance)
 
 - **THE LOGLINE:** *the runt bastard no one wanted.* POLY 5 — fifth of the litter, and he got out anyway.
@@ -25,7 +54,7 @@ art) is parked by Vincent's instruction — recorded where decided (§7), not bu
 - **Mouth is the only major dog animation** (+ a slow idle sway, silence-only).
 - **Identity lives in a protected bottom UI bar**, not a tag.
 - **FX alarm = the nose.** Wonky stacked eyes kept, freed of duty.
-- **Scenes:** Jalopy · Bee-tch · Moonshine · Le Gato.
+- **Scenes:** Jalopy · Bee-tch · Moonshine · Le Gato *(IV is ACID CAN since 17 Nov)*.
 - **Two palettes:** screen stays one-spot-on-black (hardware-locked); print/physical goes full multicolour
   (Vincent's hand) — parked.
 - **[27 Oct update] Moonshine's spot colour: purple is OUT, hot bubblegum magenta `#FF2FA0` is IN** (see
@@ -85,7 +114,7 @@ physical: the fence (top) breaks; the bottom bar (identity) is sacred (§4.3).
 | The orb (contained trace) | **The beam** (§4.2) | No container; truth + emission in one |
 | The banner / tag | **The bottom bar** (§4.3) | Protected UI strip; cheaper, more legible |
 | The Gloom dial | **FLEAS** (§6.1) | Same four stages, same safety clamps |
-| The icosahedron relic | **The wheelie bin** | The pristine thing that gets wrecked — now in Le Gato |
+| The icosahedron relic | **The wheelie bin** | The pristine thing that gets wrecked — now in Le Gato *(scrapped 17 Nov with the bin; ACID CAN has the can)* |
 
 ---
 
@@ -193,7 +222,7 @@ straight).
 | **I** | **JALOPY** | Acid green `#39FF14` | SCORCHES | Deletes — chars the fence from an edge in | beam → top-right; char + sparks from impact | egg punk / garage psych |
 | **II** | **BEE-TCH** | Abyssal cyan `#00C8D4` | SOAKS | Covers — dithered mass hides the fence, drains | beam → top; flood pours DOWN from landing | surf / skinhead reggae |
 | **III** | **MOONSHINE** | Bubblegum magenta `#FF2FA0` | FOGS | Dilutes — rising dither drowns the fence in grain | beam held (the howl); fog blooms & rises | drones / atmosphere |
-| **IV** | **LE GATO** | Golden amber `#FFBF00` | WRECKS | Displaces — fence fractures into falling shards | beam strikes → debris falls down right margin | the closer / signature |
+| **IV** | **ACID CAN** *(was LE GATO)* | Golden amber `#FFBF00` *(as built: Acid Chartreuse)* | WRECKS | Displaces — fence fractures into falling shards | beam strikes → debris falls down right margin | the closer / signature |
 
 **5.1 JALOPY (Fire):** acid green behaves electrically — backfiring exhaust, toxic green fumes, blown muffler.
 Bark detonates top-right and scorches the fence; green sparks shed from impact. *Field:* hot tar road, kerb,
@@ -209,7 +238,7 @@ near-white (lit by the moon); magenta only in the cold breath rising off him. St
 dither, so the 2px-lattice / every-3rd-frame / blue-noise rules apply at every FLEAS setting here. *Field:*
 bleak night, far horizon, the moon as the one static white disc. Static.
 
-**5.4 LE GATO (Earth) — the closer:** knocked-over bins, rattled fences, pots off the wall — and the cat on
+**5.4 ACID CAN (Earth) — the closer** *(written as LE GATO; as built the field is the tipped-over acid can in an alley, no bin, no washing line, no cat: see AS BUILT)*: knocked-over bins, rattled fences, pots off the wall — and the cat on
 the wall, unbothered. Amber = dusk, rust, old brass. The wheelie bin is the pristine relic that gets wrecked
 (31 Fi(l)fth puts it over; 32 Init bruv? has it standing). 30 THE DØG keeps its seismic judder + full keybed
 flash — the bark that finally shifts the cat. *Field:* back alley, wall, bin, washing line, cat in silhouette.
