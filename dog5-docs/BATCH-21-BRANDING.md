@@ -1,6 +1,6 @@
 # Batch 21: DØG-5 all the way through (the boot animation, the panel, the update screen's head, the OberVave leftovers)
 
-20 Nov 2026, Vincent Kruger with Claude. Branch `build/batch-21-branding`. Asked for (20 Nov, after v0.4's merge): bring the
+20 Nov 2026, ZIGGY with Claude. Branch `build/batch-21-branding`. Asked for (20 Nov, after v0.4's merge): bring the
 new boot splash and all the branding into v0.4 properly, no shortcuts, keeping the Felucca references.
 
 ## What changed, screen by screen

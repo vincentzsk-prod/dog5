@@ -1,6 +1,6 @@
 # Batch 24: the HOME knob dial (v0.4.3)
 
-21 Nov 2026, Vincent Kruger with Claude. Branch `build/batch-24-home-dials`. Asked for 21 Nov: on HOME, show a turned knob
+21 Nov 2026, ZIGGY with Claude. Branch `build/batch-24-home-dials`. Asked for 21 Nov: on HOME, show a turned knob
 as the round dial the panel pages draw (it shows how far the knob is turned at a glance), not only a number.
 
 **Now:** turning CUTOFF, RESO, ENV AMT or RELEASE on HOME shows that knob exactly as the panel pages draw it (the label,

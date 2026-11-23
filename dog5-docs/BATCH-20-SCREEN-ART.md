@@ -1,6 +1,6 @@
 # Batch 20: the screen art on HOME (the v0.4 test build)
 
-20 Nov 2026, Vincent Kruger with Claude. Branch `build/batch-20-screen-art-v04`. The compositions were approved by Vincent on 19–20 Nov
+20 Nov 2026, ZIGGY with Claude. Branch `build/batch-20-screen-art-v04`. The compositions were approved by Vincent on 19–20 Nov
 (scale 0.75, Bee-tch tilted 22° so he stands on the board, the howl poses kept as drawn).
 
 ## What HOME is now

@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 23 Nov 2026 (Batch 30: the player-facing sound text rewritten, Manual Parts 3–4 generated from the cards, the manual page redesigned, the credits pass), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 23 Nov 2026 (Batch 31: v0.5 = `FM-1_3645050`, the release candidate; COLLAR; credits to ZIGGY), by ZIGGY (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -356,7 +356,9 @@ web player, the Driver Manual as a page (`docs/manual/`, `tools/make_manual_page
 (`dog5-docs/BATCH-29-INSTALLER-DOCS.md`). **Batch 30:** the cards' and the manual's sound text rewritten for players (the
 measured text kept: each card's section 6, `dog5-docs/manual/DOG-5-driver-manual-records.md`); **Manual Parts 3–4 are
 generated from the cards** (`tools/make_manual_patches.py`); the manual page redesigned; the credits pass
-(`dog5-docs/BATCH-30-SOUND-TEXT-CREDITS.md`). **Stage 3 is done** pending
+(`dog5-docs/BATCH-30-SOUND-TEXT-CREDITS.md`). **Batch 31:** v0.5 = `FM-1_3645050` (`22915290…15f4`), the release candidate;
+the manual is **COLLAR**; the art credited to **ZIGGY** (public-facing; never his full name); `fmhub.json` author
+(`dog5-docs/BATCH-31-V0.5.md`). **Stage 3 is done** pending
 Vincent's look on the unit.
 
 ---
@@ -378,7 +380,8 @@ Vincent's look on the unit.
    at MANGE, the dials; each tested several times, all clear). **The stock restore is proven (21 Nov):** M-Flasher's DOWNLOAD
    MODE works from DØG-5, and RESTORE FULL FLASH put the 11 Nov stock backup back; the unit booted as stock.
    **FLEAS stays screen-only** (Vincent, 21 Nov): it never touches the sound; a sound tie-in is a later-version idea.
-   **The identity is `FM-1_3645XYZ` since Batch 27 (v0.4.5 = `FM-1_3645045`; Vincent, 21 Nov).** `FM-1_964` was taken on
+   **The identity is `FM-1_3645XYZ` since Batch 27 (v0.4.5 = `FM-1_3645045`, on the unit 23 Nov; v0.5 = `FM-1_3645050`, the
+   release candidate, Batch 31).** `FM-1_964` was taken on
    the Firmware Hub (SIDOU), and so was the whole `FM-1_96N` family. 3645 = DØG-5 on a phone keypad; XYZ = vX.Y.Z (one
    digit each, `tools/build.py`); a dev build is `FM-1_3645000`. **Digits only after the one underscore**: every FM-1
    installer reads `NAME_digits` (Vincent asked for `FM-1_3645_V6.3.5`; it would leave the unit unrecognised). GitHub
@@ -415,7 +418,7 @@ Vincent's look on the unit.
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
   `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`), `BATCH-28-V11-CARDS-PLAYER.md` (the backlog, the card in the player, the manual page, feedback), `BATCH-29-INSTALLER-DOCS.md`
   (the background-tab install failure and its fix, Sound design notes, the art docs re-skin), `BATCH-30-SOUND-TEXT-CREDITS.md`
-  (the sound text for players, the manual page's look, the credits pass).
+  (the sound text for players, the manual page's look, the credits pass), `BATCH-31-V0.5.md` (v0.5, COLLAR, ZIGGY credits).
 - ⭐ `V1.1-BACKLOG.md` — **every open item, idea and note for this release and v1.1+ in one place** (mirrored as the Project doc
   `DOG-5-v1.1-backlog.md`). New ideas go there; done or dropped items are marked, not deleted.
 - `manual/` — the Driver Manual: `DOG-5-driver-manual.md` (Parts 0–2B; a copy of the Project doc: edit the Project doc, copy
