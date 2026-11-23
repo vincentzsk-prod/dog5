@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 23 Nov 2026 (Batch 31: v0.5 = `FM-1_3645050`, the release candidate; COLLAR; credits to ZIGGY), by ZIGGY (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 23 Nov 2026 (v0.5 = `FM-1_3645050` **released** on GitHub and **submitted to the Firmware Hub**; Batch 31: COLLAR, credits to ZIGGY), by ZIGGY (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -358,8 +358,10 @@ measured text kept: each card's section 6, `dog5-docs/manual/DOG-5-driver-manual
 generated from the cards** (`tools/make_manual_patches.py`); the manual page redesigned; the credits pass
 (`dog5-docs/BATCH-30-SOUND-TEXT-CREDITS.md`). **Batch 31:** v0.5 = `FM-1_3645050` (`22915290…15f4`), the release candidate;
 the manual is **COLLAR**; the art credited to **ZIGGY** (public-facing; never his full name); `fmhub.json` author
-(`dog5-docs/BATCH-31-V0.5.md`). **Stage 3 is done** pending
-Vincent's look on the unit.
+(`dog5-docs/BATCH-31-V0.5.md`). **Stage 3 is done.**
+**Stage 4 — v0.5 released (23 Nov):** tested on the unit with the release file, the GitHub release `v0.5` (tag on `b8ae77b`,
+`dog5.fwsc` = `22915290…15f4`, attested), submitted on the Hub's form the same evening (the Hub is checking). The first tag run
+failed: the tests needed numpy, which `release.yml` never installed (fixed in PR #46, with `markdown==3.11` pinned).
 
 ---
 
@@ -380,8 +382,8 @@ Vincent's look on the unit.
    at MANGE, the dials; each tested several times, all clear). **The stock restore is proven (21 Nov):** M-Flasher's DOWNLOAD
    MODE works from DØG-5, and RESTORE FULL FLASH put the 11 Nov stock backup back; the unit booted as stock.
    **FLEAS stays screen-only** (Vincent, 21 Nov): it never touches the sound; a sound tie-in is a later-version idea.
-   **The identity is `FM-1_3645XYZ` since Batch 27 (v0.4.5 = `FM-1_3645045`, on the unit 23 Nov; v0.5 = `FM-1_3645050`, the
-   release candidate, Batch 31).** `FM-1_964` was taken on
+   **The identity is `FM-1_3645XYZ` since Batch 27 (v0.4.5 = `FM-1_3645045`, on the unit 23 Nov; v0.5 = `FM-1_3645050`, Batch 31,
+   tested on the unit with the release file and released 23 Nov).** `FM-1_964` was taken on
    the Firmware Hub (SIDOU), and so was the whole `FM-1_96N` family. 3645 = DØG-5 on a phone keypad; XYZ = vX.Y.Z (one
    digit each, `tools/build.py`); a dev build is `FM-1_3645000`. **Digits only after the one underscore**: every FM-1
    installer reads `NAME_digits` (Vincent asked for `FM-1_3645_V6.3.5`; it would leave the unit unrecognised). GitHub
@@ -442,7 +444,8 @@ prompts; nothing from them ships),
 GPL-3.0-only (inherited; non-negotiable, and correct for a DIY/punk release — whoever gets the firmware gets
 the source). No Oberheim/Sequential/Prophet marks or names in the product; "inspired by" in docs only. No
 real company name "DOOHBOX" anywhere — the fictional stand-in is **HOODBOX**. Distribution: release a `.fwsc`
-on GitHub, mail zven@thefirmwarehub.com, the Hub mirrors it and follows every release; users install from
+on GitHub, submit once on the Hub's form (`thefirmwarehub.com/submit/`, done 23 Nov for v0.5); the Hub mirrors it and
+checks for new releases every 3 h (0.x versions show as beta); users install from
 Chrome/Edge over USB. DØG-5's uniqueness is the bark-as-oscilloscope fusion + Vincent's hand — defend those;
 the 1-bit/character/glitch style is shared ground. (Note from scene research: 386DX and MONK-1 both ship a
 mouth-that-moves-with-sound, so that alone is no longer novel — the scope-IS-the-character is.)
