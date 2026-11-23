@@ -16,7 +16,7 @@ A low-mid grinder built from a pair of fat pulse waves whose widths sweep quickl
 
 Closest to: **a Juno-60 PWM bass through a RAT**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register and gate:** it was voiced on a riff of A2 (110 Hz) up to E3 with G2, in notes of about 400 ms (long enough for the PWM to swing two or three times inside each note) and on a held A2, plus a few 150 ms chops. Other registers are untested.
 - **The PWM, measured:** the sweep runs at about 11.5 Hz. On a held A2 it moves the 150 to 400 Hz band by 11.9 dB from the top of its swing to the bottom, the 400 to 1,200 Hz band by 6.7 dB, the 1.2 to 3 kHz band by 5.3 dB and the 3 kHz and up band by 5.4 dB, and the overall level by 4.1 dB; on the riff's 400 ms notes the same band moves 8.0 dB and the level 2.9 dB. Each detached note restarts the sweep from the same place.

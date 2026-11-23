@@ -6,6 +6,15 @@ finished, flashable and waiting when the FM-1 lands, so hardware time is spent t
 **Companion to** `DOG-5-base-and-ui-decisions.md` (the base lock and the navigation). This one is the list of
 things only Vincent can make, plus the handful of answers still needed before the big build starts.
 
+**AS BUILT (re-skin, 23 Nov 2026):** the art is in. Vincent delivered the four fields (repainted 240×240, up to 256
+colours each), the dog poses (REST, BARK, MOONSHINE's inhale and howl), the 96 px hand-pixelled head and the launch
+screen; they were built in Batches 20–21 (v0.4, on the unit 20 Nov). Chapter IV is **ACID CAN** (a tipped-over can
+oozing acid in an alley): the wheelie bin and washing line are scrapped and the cat is not in the field, so §1.6's
+props are not needed as drawn. **Still to draw: the nose (normal + alarmed)**, and the cat only if Vincent wants it
+back. Colours as built: the beam is Acid Chartreuse in every chapter; accents Sun Yellow / Wave Turquoise / Foam White /
+Acid Chartreuse (Moonshine magenta is superseded). Stages 1–3 of §4 are done; Stage 4 is in progress. Everything still
+open is in `DOG-5-v1.1-backlog.md` (repo `dog5-docs/V1.1-BACKLOG.md`).
+
 ---
 
 ## 0. WHAT v1.0 IS, AND WHAT IT ISN'T
@@ -110,7 +119,7 @@ read before any text does.
 | I | **JALOPY** | Hot tar road, kerb, a car arse leaving frame |
 | II | **BEE-TCH** | Flat cold Cape horizon, low dithered sea band, kelp |
 | III | **MOONSHINE** | Bleak night, far horizon, the moon as the one static white disc |
-| IV | **LE GATO** | Back alley, wall, wheelie bin, washing line, the cat in silhouette |
+| IV | **ACID CAN** *(was LE GATO)* | As built: an alley with a tipped-over round can oozing acid *(the Oct plan: back alley, wall, wheelie bin, washing line, the cat in silhouette)* |
 
 **Two constraints:**
 
@@ -121,7 +130,7 @@ read before any text does.
 2. **Leave the beam's corridor clear.** The bolt flies from the dog's mouth (left third) to a fence corner.
    Whatever is in that diagonal needs to be quiet, or the honest trace gets lost in the background.
 
-### 1.6 LE GATO'S PROPS — two states each
+### 1.6 LE GATO'S PROPS — two states each *(scrapped 17 Nov: ACID CAN has no bin; the cat is not in the field)*
 
 Le Gato is the chapter where things get wrecked, so two of its objects need a before and an after:
 
@@ -143,9 +152,9 @@ Le Gato is the chapter where things get wrecked, so two of its objects need a be
 | 3 | Dog — HOWL pose (A3) | 1 |
 | 4 | Nose — normal + alarmed | 2 |
 | 5 | Head — reducible mark | 1 |
-| 6 | Fields — Jalopy, Bee-tch, Moonshine, Le Gato | 4 |
-| 7 | Wheelie bin — upright + over | 2 |
-| 8 | Cat — sitting + moved | 2 |
+| 6 | Fields — Jalopy, Bee-tch, Moonshine, Acid Can ✔ | 4 |
+| 7 | ~~Wheelie bin — upright + over~~ (scrapped) | 0 |
+| 8 | Cat — sitting + moved (drafts; not in the field) | 0–2 |
 | 9 | Wordmark DØG-5 (+ DØGS optional) | 1–2 |
 | | **TOTAL** | **15–16 drawings** |
 
@@ -296,8 +305,8 @@ What happens in what order once the fork exists. Items marked **[V]** wait on yo
 12. The beam from the mouth, fed by the existing zero-crossing scope capture
 13. The bottom bar; the transient knob readout over the art
 14. **[V] Jalopy field** → scene one complete, as the proof scene
-15. **[V] the other three fields + props** → Bee-tch, Moonshine (magenta), Le Gato
-16. **[V] A3 + the nose** → the howl pose, the FX alarm
+15. **[V] the other three fields** → Bee-tch, Moonshine, Acid Can ✔ (Batch 20; the props were dropped with the bin)
+16. **[V] A3 + the nose** → the howl pose ✔ (Batch 20); the nose, the FX alarm: still to draw
 17. FLEAS, the fence and its fracture, per-chapter impacts
 
 **Stage 4 — the release**

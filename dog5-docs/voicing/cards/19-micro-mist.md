@@ -16,7 +16,7 @@ Closest to: **a CS-80 pad dissolved in a Microcosm Haze wash**.
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Chords work.** POLY with 6 voices, one per note. POLY is not MONO or UNISON, so the no-retrigger rule for legato does not apply (engine fact; not tested on this patch). Best in the mid-to-upper register: judged on A3 C#4 E4 (held 10 s) and a single A4.
 - **The mist after the key-up is the effect tail, not a latch.** A held chord needs the key, a sustain pedal or REC (HOLD), which latches the notes until REC again or STOP. After a 10 s chord the tail is 20 / 40 / 60 dB down at 1596 / 4132 / 5788 ms (the dry voice alone: 734 / 1304 / 1730 ms). After a 150 ms chord tap the tail is 20 dB down at 2280 ms; 40 dB is not reached inside the 4.5 s window.

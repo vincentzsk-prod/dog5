@@ -16,7 +16,7 @@ Closest to: **a dark Mellotron voice through a Space Echo and a spring tank**.
 
 Nothing here says the patch matches these: the traits are the approved descriptions, and only the ones with a number behind them are measured.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **What changed from the original brief.** The original brief was a filtered near-sine with maximum tape wow and flutter. After listening the tape deck was dropped (CHEW 0), and the pulse-width movement was removed (LFO PWM 0). The patch has no tape wobble (a one-voice probe reads 0.0 cents of pitch wander) and no near-sine tone. The echo and spring are those of an earlier round's variant D.
 - **Very muddy, by the numbers.** MUD ratio (150 to 400 Hz over 1.2 kHz and up): 314.9 over the note-on region (energy split below 60 / 60 to 150 / 150 to 400 / 400 to 1.2k / above 1.2 kHz = 0 / 0 / 74.5 / 25.3 / 0.2 %); in the tail after the held chord 1108 / 2198 / 3331 in 0 to 250 / 250 to 750 / 750 to 1500 ms (centroids 488 / 509 / 528 Hz at −15 / −19 / −26 dBFS). The benchmark of 10 to 40 (note-on) and about 80 (tail windows) is far exceeded; the original patch measured 108 over the note-on region.

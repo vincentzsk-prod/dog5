@@ -17,7 +17,7 @@ Closest to: **an SH-101 saw through a Boss TR-2 on square**.
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** it was voiced on a held A3 (2.4 s), a six-note riff of 500 ms notes (A3 C4 E4 D4 C4 A3), the chord A3 + E4 + A4, and eight 110 ms notes; other registers are untested.
 - **It is DUAL with POLY 6: every note is two voices.** A three-note chord uses all six and plays whole (the chord phrase was rendered); four-note chords were not tested. PHASE SPREAD offsets the LFO by 45° per voice, so the two voices of a note chop an eighth of a cycle apart (about 15 ms at the default rate).

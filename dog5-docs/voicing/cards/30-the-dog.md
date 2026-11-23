@@ -18,7 +18,7 @@ flagship, the DØG-5 signature, and it has presence: it sits forward and fills t
 
 Closest to: **a Minimoog in unison with Taurus weight**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** low. Roots and octaves from about A1 to A2 are the sweet spot, and it is built for single-note bass lines and chopped roots.
   The very bottom (A0, and the A1 below it) is partly under what small speakers and many PAs reproduce: most of the audible weight is in the 60–150 Hz

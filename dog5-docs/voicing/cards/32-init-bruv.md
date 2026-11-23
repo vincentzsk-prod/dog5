@@ -16,7 +16,7 @@ What was measured: through the filter, the harmonics of C3 are −7.9 / −14.3 
 
 Closest to: **an analog two-saw init patch**. "Raw" and "blank" are Vincent's words and are not measured. Nothing here says the patch matches the instruments above: it carries none of them literally.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **What it is:** the engine's own default program, with one change, VOLUME 97 (the default is 100). It is not the single raw saw with an open filter and flat envelopes that the brief described: POLY 5, two saws 4.7 cents apart (OSC 2 FINE 70), a 24 dB low-pass at CUTOFF 80 with RESO 20 and KEY TRK 64, the filter envelope (ENV AMT 90, attack 20, decay 70, sustain 40, release 60), the amp envelope (attack 10, decay 70, sustain 100, release 60), VINTAGE 30, SPREAD 60, every effect at 0. **Slots 33–99 hold the same defaults as INIT, with VOLUME 100.**
 - **Chords:** POLY 5 plays chords. Levels over the note-on region: −18.05 dBFS on the stabs phrase, −22.9 dB on the low chopped riff, −17.7 dB on the held chord (A2 E3 A3); the peak is −5.6 dBFS over every phrase tried. K-weighted level on the stabs −18.5 dB.

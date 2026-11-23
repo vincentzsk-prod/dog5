@@ -16,7 +16,7 @@ Closest to: **a soft triangle-like pad run through a Memory Man until it seasick
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **The pad:** a narrow pulse (OSC 1, PW 32 = 25 %) plus an octave-up copy of it (OSC 2, LEVEL 45) through a 12 dB low-pass at CUTOFF 63 with 100 % key tracking. Harmonics 3 / 5 / 7 of OSC 1 at rest read −17.5 / −27.9 / −37.5 dB against an ideal triangle's −19.1 / −28.0 / −34.2 (measured). The copy adds even harmonics only.
 - **Dark:** the held chord's centroid is 588 Hz, with 80 % of the energy in 150–400 Hz, 20 % in 400–1.2 kHz and 0.25 % above (4–10 s). The MUD ratio (317) is saturated by that empty top, so read the shares. A stronger copy (OSC 2 LEVEL 100) moved the 150–400 Hz share from 79 % to 64 % in the round 1 probe on the B variant.

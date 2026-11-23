@@ -16,7 +16,7 @@ Closest to: **a thin pulse and a trace of dust through a band-pass, into a short
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **The brief changed.** The brief was "noise + thin pulse, heavy tape wow, no drive". The final patch has **no tape at all (CHEW 0)**, and the noise is a trace. Vincent found that the noise drowned out the pulse and asked for it to be removed except for a tiny trace of dust. **Not in the final patch: the heavy tape wow and the warped tape character.** No drive (GROWL 0).
 - **Hold the chord.** A held pad needs the key, a sustain pedal or REC (HOLD), which latches the notes until REC again or STOP.

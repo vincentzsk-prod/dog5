@@ -19,7 +19,7 @@ Closest to: **an 808 kick smashed onto a blown-out cassette 4-track**.
 
 Nothing here says the patch matches these: it was built from the descriptions, by measurement, and approved by ear. The tape part of that picture is not in this patch: the tape was removed in round 2 at the owner's direction (CHEW, HISS and DROPS are 0), and the drive stage (GROWL) is not used either.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** it was voiced on three isolated 150 ms hits (A0 27.5 Hz, A1 55 Hz, A2 110 Hz) and four hits a bar of A1 at 120 BPM; the pilot riff and stabs phrases were rendered too. Other registers are untested.
 - **It is MONO, so legato does not re-fire the envelopes:** a key held while the next goes down slides to the new note and the envelopes do not restart. Play it detached. A chord plays one note (the last).

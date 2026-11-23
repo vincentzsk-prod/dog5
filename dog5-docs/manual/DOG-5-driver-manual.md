@@ -5,6 +5,7 @@
 **Draft 1 — 3 Nov 2026.**
 - **12 Nov, the Chapter IV checkpoint.** All four chapters are complete and all 32 patches are voiced. DØG-5 v0.1 was installed on Vincent's FM-1. The controls, keybed, CPU-meter and dictionary sections below carry what that showed. The dictionary gained Bell, Ring, Chime (band-limited) and Blank slate. Part 4 gear inspirations and Part 5 voicing notes now cover all 32.
 - **18 Nov, v0.2** (`FM-1_962`, flashed and tested on the unit). Parts 1.1, 1.2 and 1.5 were rewritten for the Batch 9B controls (21 pages with MIXER, REC = HOLD, SELECT = LFO RATE on HOME, hold EDIT + a black key). Part 1.7 was added (plain-language knob hints), and the dictionary's DRIVE and MORPH pointers were corrected.
+- **23 Nov, bullet pass.** Every list in Parts 0–2 read for need and order: dev notes out of Part 0, the filter and LFO lines in 1.4 corrected, the bank line points to 1.9, 1.9 reordered, 1.10 gains "keep the installer tab in front", Dirt & aggression reordered. The cards' "How to play it" is now **Sound design notes** (Part 3 too).
 - **21 Nov, v0.4.4** (flashed and tested on the unit). Parts 1.1, 1.2, 1.4 and 1.6 were updated: the SAVE lock, a MIDI panic releasing HOLD, FLEAS on the GLOBAL page, and the CPU reading at the top of GLOBAL. Part 1.8 was added (the screen: the boot animation, HOME's scene, the dial, the fence, FLEAS), and so were Part 1.9 (saving: THE POUND and THE PACK) and Part 1.10 (installing, leaving, coming back).
 
 This is the single source of truth for controls, voicing vocabulary, and the 32 patches. It combines and supersedes the earlier Button Matrix and Knob Parameter Map docs. Controls are drawn from the live firmware (`main` branch). Every patch description is the approved player-facing description of a **VOICED** patch. Vincent edits this draft; at release (Stage 4) it becomes the public user manual.
@@ -25,9 +26,8 @@ waveform of whatever you're playing fires out of his open mouth. The sound you s
 
 **Two rules govern everything:**
 - **TONE IS KING.** Features are negotiable; tone is not. A patch that isn't right by ear doesn't ship.
-  *(12 Nov: held on the real unit — Vincent, after installing: all 32 voices sound distinct and on brand.)*
 - **This is a LIVE instrument.** Everything is built to be played in the dark, mid-performance, without
-  menu-diving. *(The second standing rule: new controls are designed against it, e.g. the keybed shortcut layer.)*
+  menu-diving.
 
 ---
 
@@ -70,8 +70,8 @@ panel label is what's physically on the unit.
 | **MASTER** | — | Master volume. |
 | **OCT− / OCT+** | — | Octave −2..+2 (both pressed = 0). |
 
-*The hold-HOME control map lists the three tricks (HEEL STOP, FLOP TAPE STOP, SLOBBER SLOP RIDE) and WAG HOLD
-since v0.2. To fit the screen it leaves out the HOME row itself and the FX-held macros.*
+*The hold-HOME control map lists the three tricks (HEEL STOP, FLOP TAPE STOP, SLOBBER SLOP RIDE) and WAG HOLD.
+To fit the screen it leaves out the HOME row itself and the FX-held macros (both are in this table).*
 
 ### 1.2 The knobs & the 21 pages
 
@@ -122,8 +122,7 @@ Three controls built for live chaos, independent of the patch you're on:
 
 - **PLAY/STOP — Global kill switch (HEEL).** A live panic button. One press and everything stops in a few
   milliseconds: voices, and every effect buffer (delay, reverb, tape) flushed clean, so nothing rings on.
-  Instant dead air — for a band stop, or when the delay runs away. Press again to resume. (Tap-toggle.) It also
-  lets go of HOLD.
+  Instant dead air — for a band stop, or when the delay runs away. Press again to resume. It also lets go of HOLD.
 - **SEQ (held) — Tape Stop.** Hold it and the whole sound drags down to a halt like a tape machine or
   turntable losing power: pitch, brightness and all — voices, delay repeats, reverb tail and tape hiss dive
   together. Release and it snaps straight back. The dog's beam dives with it.
@@ -139,18 +138,17 @@ VOICES → DRIVE (GROWL) → BBD DELAY (ALLEY) → SPRING (DRAIN) → TAPE (CHEW
 ```
 
 - **8 voices.** Modes: POLY, DUAL, UNISON, MONO. Variable polyphony (POLY knob, 1–8, default 5).
-- **Per voice:** two oscillators (saw / pulse / both), hard sync, cross-mod, noise, a 24 dB low-pass filter
-  with drive, two ADSR envelopes, an LFO, and "Vintage Slop" (per-voice tuning/drift instability). There is
-  no triangle oscillator; a narrow pulse through a key-tracking low-pass is the nearest. There is **one LFO
-  per patch**: everything it is routed to moves at the same rate. It cannot be tempo-synced.
+- **Per voice:** two oscillators (saw / pulse / both), hard sync, cross-mod, noise, a filter with drive (LP 24,
+  LP 12, HP, BP, notch or SEM: see TYPE in 1.7), two ADSR envelopes, and "Vintage Slop" (per-voice tuning/drift
+  instability). There is no triangle oscillator; a narrow pulse through a key-tracking low-pass is the nearest.
+- **One LFO per patch:** everything it is routed to moves at the same rate. It cannot be tempo-synced.
 - **The Psych Chain** sits after the voices, reached by FX. It is the DØG-5 dirt: Drive, a free-time
   bucket-brigade delay, a spring reverb, and tape degrade. The tape stage is last, so it wobbles the finished
   wet mix: a delay repeat is pitched by the tape's state when it arrives, and everything wobbles together
   (a real tape echo warps each repeat separately; this cannot).
 - **The bank:** 99 slots. **THE POUND (1–32)** are the factory patches, locked: you can play and change them,
   but a save never lands on them (see 1.9). **THE PACK (33–99)** are yours to save into; an unused one starts as
-  the INIT sound (slot 32's engine defaults at VOLUME 100). *(Saving into the later slots was tested on the unit
-  on 12 Nov, and with the lock on 20–21 Nov: it survives a power-cycle.)*
+  the INIT sound (slot 32's engine defaults at VOLUME 100).
 
 ### 1.5 The keybed shortcuts (hold EDIT + a black key)
 
@@ -261,16 +259,17 @@ Turn it down and the rot clears. The beam and the bottom bar are never touched. 
   that is the **first free slot from 33**; on a PACK patch, the slot you are on. Turn **PRESETS** to choose another
   slot (it stays inside 33–99). Tap **SAVE** again to save: the header says `SAVED` and you are now on that slot.
   Do nothing for 3 seconds and SAVE lets go without saving.
-- **SAVE armed + press SELECT** = randomise: a new random sound instead of saving.
 - Saves keep their scene (1.8) and survive a power-cycle.
+- **SAVE armed + press SELECT** = randomise: a new random sound instead of saving.
 - *From v0.1 / v0.2:* a save made over 1–32 before the lock existed moves to the first free PACK slot at the first
   power-on. If THE PACK is full, it stays where it was, unread.
 
 ### 1.10 Installing, leaving and coming back
 
 - **Install** from Chrome or Edge with the installer page (`vincentzsk-prod.github.io/dog5/install/`), over USB.
-  It works from the stock firmware and from another custom firmware. If an install is cut off, the page offers
-  **Resume** (tested on a computer; not yet tried on the unit).
+  It works from the stock firmware and from another custom firmware. **Keep the installer tab in front until it
+  says Done:** in a background tab Chrome slows the page down, and the unit gives up waiting (it shows UPDATE
+  FAILED). If an install is cut off, the unit stays in update mode and the page offers **Resume**.
 - **Leave and come back:** another firmware (from the Firmware Hub, say) installs over DØG-5 the usual way, and
   DØG-5 installs back over it. Tested on the unit 20–21 Nov.
 - **Your saves belong to DØG-5.** It reads only its own saved patches. Another firmware's saves don't show up here,
@@ -355,11 +354,6 @@ for the voicing process and the vocabulary the patch descriptions are written in
   the strike. *Limit:* the +15 semitone partial is faint at the top of the keybed (−34 dB at C#6, −18 dB at C#5).
 
 ### Dirt & aggression
-- **Dust (trace noise)** *(added 7 Nov, from 23 Crypt Dust)* — noise present only as a faint dust under the tone.
-  *Measured:* the owner heard full-level noise (NOISE 127) as drowning a thin pulse even though the noise was only
-  about 6 dB under the pulse by level, because it fills the spectrum between the pulse's harmonics; the final
-  patch has the noise 24.4 dB under the pulse (NOISE 43; the NOISE knob is a square law: 43 against 127 is
-  −18.8 dB). Removing the noise lowered the centroid by about 1.2 kHz and the 4 kHz+ share from 2.5% to 0.7%.
 - **Clean** — no added grit. GROWL at 0 (a true bypass).
 - **Driven / pushed** — console-into-the-red warmth to crunch. *More:* **filter DRIVE** for the gentle route
   (adds harmonics without squashing dynamics; it sits before the filter, so the filter takes some of the edge
@@ -384,6 +378,11 @@ for the voicing process and the vocabulary the patch descriptions are written in
   at A4 −16.9 → −25.4 dB — not CHEW, GROWL or drive. The share of energy above 4 kHz did not move: that is the
   saw's harmonics through an open filter at the strike, which suggests it moves with CUTOFF and the filter
   envelope.)*
+- **Dust (trace noise)** *(added 7 Nov, from 23 Crypt Dust)* — noise present only as a faint dust under the tone.
+  *Measured:* the owner heard full-level noise (NOISE 127) as drowning a thin pulse even though the noise was only
+  about 6 dB under the pulse by level, because it fills the spectrum between the pulse's harmonics; the final
+  patch has the noise 24.4 dB under the pulse (NOISE 43; the NOISE knob is a square law: 43 against 127 is
+  −18.8 dB). Removing the noise lowered the centroid by about 1.2 kHz and the 4 kHz+ share from 2.5% to 0.7%.
 
 ### Movement & instability
 - **Tight / stable** — locked, in tune, steady. *More:* VINTAGE/slop low, no LFO pitch, SYNC phase.

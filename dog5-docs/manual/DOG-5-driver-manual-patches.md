@@ -1,6 +1,6 @@
 # DØG-5 — DRIVER MANUAL, PART 3–4 (the 32 patches and gear inspirations)
 
-*Continues `DOG-5-driver-manual.md` (Parts 0–2B). Last updated 12 Nov 2026 (Chapter IV checkpoint: **all 32 voiced**; installed on the FM-1 on 12 Nov, see `DOG-5-device-test-1.md`). **Updated 18 Nov for v0.2:** 14 Reef Break's new attack; REC = HOLD (the drone latch) where entries said there was none; DRIVE's new page; no tap tempo. **Updated 21 Nov for v0.4.4:** the chapters carry their scene names (JALOPY · BEE-TCH · MOONSHINE · ACID CAN, locked 17 Nov; the old long titles are retired) and their on-screen accent colours; THE POUND is write-locked (Manual 1.9).*
+*Continues `DOG-5-driver-manual.md` (Parts 0–2B). Last updated 12 Nov 2026 (Chapter IV checkpoint: **all 32 voiced**; installed on the FM-1 on 12 Nov, see `DOG-5-device-test-1.md`). **Updated 18 Nov for v0.2:** 14 Reef Break's new attack; REC = HOLD (the drone latch) where entries said there was none; DRIVE's new page; no tap tempo. **Updated 21 Nov for v0.4.4:** the chapters carry their scene names (JALOPY · BEE-TCH · MOONSHINE · ACID CAN, locked 17 Nov; the old long titles are retired) and their on-screen accent colours; THE POUND is write-locked (Manual 1.9). **23 Nov:** each entry's second part is now *Sound design notes* (was *How to play it*), as on the voice cards.*
 
 ## PART 3 — THE 32 PATCHES
 
@@ -23,7 +23,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     steady, push through a resonant filter that snaps at the start of every note, driven hard enough to be
     gritty and warm without getting piercing. It is nearly dry: a quick slap and a small spring sit behind
     each note as an afterthought, lifting it a little and never coming near the note's own loudness.
-  - *How to play it:* Low. It was voiced on a riff from A1 up to A2 and on sixteenth-note bursts; other
+  - *Sound design notes:* Low. It was voiced on a riff from A1 up to A2 and on sixteenth-note bursts; other
     registers are untested. About half of the energy of the low riff is the A1 fundamental, under 60 Hz, so on
     a small speaker it is the harmonics from about 100 Hz up that carry it. Short detached notes (80–150 ms)
     are home: the filter snap gives the spit. **It is MONO, so legato doesn't re-fire the snap** — play it
@@ -37,7 +37,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     every note shudders and churns on purpose: a clear, fast pulse-width wobble, not a shimmer. The filter
     bites, it is pushed into a moderate crunch, and each note starts with a little skid and a snap. Thick,
     dry, and it hits hard.
-  - *How to play it:* A2 up to E3 with G2 (the riff it was voiced on), in notes of about 400 ms, long enough
+  - *Sound design notes:* A2 up to E3 with G2 (the riff it was voiced on), in notes of about 400 ms, long enough
     for the wobble to swing two or three times inside a note; other registers are untested. The wobble runs at
     about 11.5 Hz; on a held A2 it moves the 150–400 Hz band by about 12 dB and the overall level by about
     4 dB, and each detached note restarts it. **One LFO does both jobs:** the pulse-width sweep and a filter
@@ -51,7 +51,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     tune with itself, and thick without going murky. Short notes are chopped stone-dead by the gate, and the
     tail doesn't fade, it sputters — a few ragged stutters as the note dies. A raw, dry, engine-only sound
     with no effects on it: the drift and the chop are the whole point.
-  - *How to play it:* Low to low-mid register — roots and fifths from about A1 to A3, with fifth-and-octave
+  - *Sound design notes:* Low to low-mid register — roots and fifths from about A1 to A3, with fifth-and-octave
     power chords as home ground. Play it staccato: short notes of roughly 150–180 ms give a hard clean body
     and a sputtering tail. Held pads and sustained leads are the wrong job; use it for riffs and stabs. Keep
     chords to three notes (every note is two voices; a fourth note steals voices from earlier ones). Best
@@ -64,7 +64,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     note, nasal and biting, with a plain saw underneath for body. A pair of voices a few cents apart makes it
     fat enough to cut through a drum machine, and the note stops dead when you let go, with only a faint quick
     slap behind it. Raw on purpose: that is where the rip lives.
-  - *How to play it:* Mid register, roughly A3–A4. One note at a time. **Play it staccato:** in MONO and
+  - *Sound design notes:* Mid register, roughly A3–A4. One note at a time. **Play it staccato:** in MONO and
     UNISON a note struck while another is held slides in and doesn't re-fire the envelopes, so the sweep fires
     on detached notes only (a legato run glides and rips once, on its first note). The voice stops dead on
     release; a faint 1/16 slap follows each note (echo MIX to 0 for a literal dead stop). Tricks: ALGORITHM
@@ -77,7 +77,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     about three random pitch steps of up to ±4.7 semitones (a longer note gets more). The wave stays almost
     entirely at its two extreme levels, there is no attack, and the hit stops quickly. Dry: no tape, no drive,
     no echo, no spring.
-  - *How to play it:* Low hits on A0, A1 and A2 (and four-in-a-bar A1 at 120 BPM); other registers are
+  - *Sound design notes:* Low hits on A0, A1 and A2 (and four-in-a-bar A1 at 120 BPM); other registers are
     untested. **It is MONO — legato doesn't re-fire the envelopes;** play it detached. The kick is mostly the
     quick pitch drop; there is no click spike. **A0 is still mostly sub** (81% of its energy under 60 Hz after
     the first 20 ms): a 27.5 Hz square is inaudible on a small speaker whatever is done. VOLUME is 123 of 127,
@@ -90,7 +90,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     quick (about 2 ms), the filter and its resonance are wide open, and when you let go there is a short tail
     of about a third of a second rather than a ring. Completely dry: no echo, no spring. A power chord stays
     whole.
-  - *How to play it:* A low A1 up to power chords around A2–E3–A3, held or stabbed; other registers are
+  - *Sound design notes:* A low A1 up to power chords around A2–E3–A3, held or stabbed; other registers are
     untested. The held note's level falls by nothing over three seconds, and its peak-to-RMS ratio is 1.7 dB
     (a square wave is 0). It is POLY with 6 voices, so every key re-fires the envelopes and a three-note
     chord plays whole. The strike's punch is the quick rise, not a level spike (+0.3 dB over the plateau):
@@ -105,7 +105,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     apart, one frequency-modulating the other so the tone carries extra energy below the note, and a random
     pitch wobble (about 9.6 cents standard deviation, the LFO depth up to ±19 cents). Notes stop quickly when
     you let go, and a tape stage on the end delays each note by a couple of milliseconds. Dry.
-  - *How to play it:* Staccato notes from A2 up to G3 (twelve 60 ms notes) and a held A2; other registers are
+  - *Sound design notes:* Staccato notes from A2 up to G3 (twelve 60 ms notes) and a held A2; other registers are
     untested. **It is MONO — legato doesn't re-fire the envelopes;** play it detached. A chord plays one
     note. The pitch wobble comes from the random LFO; X-MOD adds sidebands and low-end energy but does not
     move the measured pitch. No dropouts were measured at the shipped tape setting (a harsher setting, CHEW
@@ -117,7 +117,7 @@ are host measurements unless an entry says otherwise. Real-device CPU readings a
     that zaps at the start of every note. Fat and bright (medium to high), and it never sits still: the
     voices wander on their own and the whole stack leans and jitters in pitch. Dry, and each note is chopped
     off the moment you let go.
-  - *How to play it:* High: a held A4, eight 110 ms bites (E5, A4, C5, D5) and a held A3; low notes and
+  - *Sound design notes:* High: a held A4, eight 110 ms bites (E5, A4, C5, D5) and a held A3; low notes and
     other registers are untested. **It is a UNISON of 6 voices — legato doesn't re-fire the envelopes:** a
     key held while the next goes down slides and the zap doesn't happen again; play it detached. Chords play
     one note. The drift is measured from the engine's own log: static offsets of −9 to +7 cents between the
@@ -134,7 +134,7 @@ eight patches (09–16) are voiced.*
   - *What it sounds like:* A tight, plucky square stab with a resonant plop on the front, drenched in spring.
     The note has a body that holds for as long as you play it; the spring rings on after the note and is the
     sound of the patch. A wet, springy, boingy reggae stab.
-  - *How to play it:* Off-beat two-note stabs of about a tenth of a second, around A3 to C4 (the skank it was
+  - *Sound design notes:* Off-beat two-note stabs of about a tenth of a second, around A3 to C4 (the skank it was
     voiced on); other registers are untested. The plop is still there but softer than in the first version —
     the first 20 ms is only a few dB above the body. The filter now rests above the played notes, so the body
     survives the gate. The spring is the sound: it ships at DRAIN 90, about 6 dB under the dry note over a
@@ -147,7 +147,7 @@ eight patches (09–16) are voiced.*
   - *What it sounds like:* A bright pair of narrow pulse waves through a notch filter, played
     polyphonically, with a spring reverb behind it and nothing else. It has no vibrato, no chorus and no
     delay (measured). The two pulses beat slowly against each other and the spring rings on after the notes.
-  - *How to play it:* Organ chords and short notes: voiced on an A minor triad (A3 C4 E4) held 2.4 s, a
+  - *Sound design notes:* Organ chords and short notes: voiced on an A minor triad (A3 C4 E4) held 2.4 s, a
     120 ms E4, four 120 ms notes and a D minor triad (D4 F4 A4); other registers are untested. POLY 5. The
     beating: on the held chord an A3 band swings 17.9 dB at about 1 Hz (no LFO is needed for it; the pulse
     width LFO, ±2.3 points, is not audible as PWM). Bright: the note-on centroid is 5369 Hz and 23% of the
@@ -164,7 +164,7 @@ eight patches (09–16) are voiced.*
     you hold the key, and stops dead. Behind each note comes one clean, loud echo, a plain copy of the note a
     moment later, and then nothing. Bright and crisp on top for a bass, sharp and a little biting, and dry
     otherwise.
-  - *How to play it:* Low, A1 to A2 (the surf riff it was voiced on). It is a gated bass, not a pluck — the
+  - *Sound design notes:* Low, A1 to A2 (the surf riff it was voiced on). It is a gated bass, not a pluck — the
     first version's pluck was traded away for crispness. There is no triangle oscillator, so the sound is a
     narrow pulse through a key-tracking low-pass, bright enough that its upper harmonics are near a square
     wave's: sharp and biting, and it may buzz on a very bright amp. The slap is one copy at 80 ms (first
@@ -176,7 +176,7 @@ eight patches (09–16) are voiced.*
     triangle LFO, through a steep low-pass that leaves little in the high register, with a spring tail
     behind it. The sweep is measurable on held notes; on short notes only a slice of it is heard. No LFO pitch
     vibrato and no echo are set.
-  - *How to play it:* Held chords and notes: voiced on a held A2 (3.2 s), the chord A2 E3 C4 (3 s) and six
+  - *Sound design notes:* Held chords and notes: voiced on a held A2 (3.2 s), the chord A2 E3 C4 (3 s) and six
     150 ms notes; other registers are untested. POLY 5. On a held A2, after the filter, the sweep moves the
     150–400 Hz band by 10.1 dB, the 400–1.2k band by 7.6 dB and the level by 5.7 dB; the LFO runs at 1.03 Hz
     and sweeps the pulse widths 18 to 48% (one side of 50%), restarted on each detached note (PHASE SYNC). On
@@ -195,7 +195,7 @@ eight patches (09–16) are voiced.*
     beating slowly against each other, with a long echo and a heavy spring behind every note. It is the
     original patch's voice, unchanged, with the pulse-width movement removed and no tape deck. By the
     dictionary's ratio it is very muddy.
-  - *How to play it:* Held chords, a slow line and short notes: voiced on an A minor 7 chord held 2.4 s, four
+  - *Sound design notes:* Held chords, a slow line and short notes: voiced on an A minor 7 chord held 2.4 s, four
     800 ms notes and six 150 ms notes; other registers are untested. POLY 5. No tape, no tape wobble (a
     one-voice probe reads 0.0 cents). The movement is the beating between the two oscillators: on one held
     voice the 150–400 Hz band moves 13.6 dB at 0.9 Hz (6.2 dB on the held chord). Dark and very muddy:
@@ -212,7 +212,7 @@ eight patches (09–16) are voiced.*
   - *What it sounds like:* A crash made of a burst of noise over a square-wave sub. The noise swells in over a
     fraction of a second rather than striking at once, the lows fall away first and the top of the noise rings
     out longest, and a long echo follows each hit. There is no spring and no tape.
-  - *How to play it:* One low hit (A1), one mid hit (A2), A1 hits 1000, 600 and 400 ms apart, every gate
+  - *Sound design notes:* One low hit (A1), one mid hit (A2), A1 hits 1000, 600 and 400 ms apart, every gate
     300 ms; other registers are untested. POLY 5. **Both envelopes have a 299 ms attack** (FILTER ENV and AMP ENV
     ATTACK 82, shown as `299ms`): on A1 the hit reaches 10 / 50 / 90% of its peak at 25.2 / 126.2 / 208.0 ms
     (A2 peaks at 268 ms), and the sub's band peaks 235 ms after the note-on, the top band (4k and up) 255 ms. By
@@ -230,7 +230,7 @@ eight patches (09–16) are voiced.*
     LFO, not a gentle sine. Every note is two voices, and the two voices chop an eighth of a cycle apart, so
     the chop has an off part, a half-level part and a full part instead of a clean on/off. Dry: no echo, no
     spring, no tape.
-  - *How to play it:* A held A3, a six-note riff of 500 ms notes, the chord A3 + E4 + A4 and short 110 ms
+  - *Sound design notes:* A held A3, a six-note riff of 500 ms notes, the chord A3 + E4 + A4 and short 110 ms
     notes; other registers are untested. It is DUAL with POLY 6, so every note is two voices: a three-note
     chord uses all six. The chop is 8.10 Hz (the nearest byte to sixteenths at 120 BPM), 44.8 dB between the
     on and off parts; the held note spends 35% of the time off, 31% at one voice's level and 33% at full.
@@ -244,7 +244,7 @@ eight patches (09–16) are voiced.*
   - *What it sounds like:* A stereo chord wash of triangle-like tones (narrow pulses through a low-pass, with
     an octave-up copy), moved by a slow triangle LFO on pitch. The notes come in gradually, an echo follows
     each note, and a spring rings behind both. It is a dark patch, not a bright one.
-  - *How to play it:* Chords: voiced on A minor 7 (A3 C4 E4 G4) and F major 7 (F3 A3 C4 E4) held 2.0 s, three
+  - *Sound design notes:* Chords: voiced on A minor 7 (A3 C4 E4 G4) and F major 7 (F3 A3 C4 E4) held 2.0 s, three
     400 ms notes and three 100 ms stabs; other registers are untested. POLY 5. **It is triangle-like, not a
     sine, dark and peak-limited:** harmonics 3 / 5 / 7 read −17.2 / −27.3 / −36.8 dB against an ideal
     triangle's −19.1 / −28.0 / −34.2; centroid 595 Hz, 0.5% of the energy above 1.2 kHz, muddiness ratio 133;
@@ -269,7 +269,7 @@ STOP.)*
   - *What it sounds like:* Cold, heavy and hollow: two saws a fifth apart, steady rather than seasick, with a
     deep sub-heavy floor. Low notes open up and ring out big; high notes close down and go dull, so the
     weight lives at the bottom of the keyboard. Dry, desolate, and it hangs on after you let go.
-  - *How to play it:* Low — roots and fifths around A1 to A2, where it opens up; played high it is dark and
+  - *Sound design notes:* Low — roots and fifths around A1 to A2, where it opens up; played high it is dark and
     dull, by design. Every note is two voices, so POLY 6 plays a three-note chord in full and a fourth note
     steals. It is a held-note patch: the release is long (about 1.3 s to silence), so quick chopped notes
     overlap (not auditioned on a fast riff by ear). It ships dry; the spring is clearly audible on it (about
@@ -281,7 +281,7 @@ STOP.)*
     three slightly out-of-tune voices. A resonant low-pass filter opens and closes slowly and unpredictably by
     itself, so the tone moans and drifts without a knob being touched. Dry: no echo, no spring. It lasts only
     while a key is held.
-  - *How to play it:* **Hold a key, the sustain pedal or REC (HOLD);** the release is about 2.7 s nominal.
+  - *Sound design notes:* **Hold a key, the sustain pedal or REC (HOLD);** the release is about 2.7 s nominal.
     **One note at a time:** a chord plays only its last key, and legato does not restart the
     envelopes. Best in the low register (judged on A1 and A2 holds of 15 s). A short tap is much quieter than the
     held note because the attack is slow. The wander is one shared random LFO on the cutoff; the engine has no
@@ -293,7 +293,7 @@ STOP.)*
     an octave above it, through a band-pass filter. It hovers on its own echo and a large spring, and keeps
     hanging in the air for several seconds after you let go. Bright rather than low, and it does not flicker or
     scatter: a held pad dissolving into its effects, not a granular texture.
-  - *How to play it:* Chords work (POLY 6). **The mist after key-up is the effect tail, not a latch:** a held
+  - *Sound design notes:* Chords work (POLY 6). **The mist after key-up is the effect tail, not a latch:** a held
     chord needs the key, a sustain pedal or REC (HOLD). After a 10 s chord the tail is 20 / 40 / 60 dB down at 1.6 / 4.1 /
     5.8 s. The spring leads the echo (first repeat 3.9 dB under the spring). Short notes are faint (a 150 ms
     chord tap is 8.7 dB under the held chord). Nothing sits under 150 Hz, so it is not for low notes. Not a
@@ -303,7 +303,7 @@ STOP.)*
   - *What it sounds like:* A single-voice lead that tears into every detached note with a bright hard-sync
     sweep, which then settles into a rounder line. It is pushed into overdrive and thrown into a long,
     ping-ponging echo that sits on top of a short spring. Notes slide into each other a little.
-  - *How to play it:* **MONO, one note at a time.** The sweep fires on **detached** notes; played legato the
+  - *Sound design notes:* **MONO, one note at a time.** The sweep fires on **detached** notes; played legato the
     sweep is not re-fired (centroid over the first 100 ms of a riff: 3610 Hz detached against 1573 Hz legato).
     The sweep survives the filter (CUTOFF 84). Glide takes 94 ms for an octave step. The echo is a free 374 ms
     (FEEDBK 92; the first repeat is 10 dB under the note) and does not follow the tempo. Drive is GROWL 48. About
@@ -312,7 +312,7 @@ STOP.)*
   - *What it sounds like:* A brass wall that starts dark and soft and swells open while you hold the note: a
     quiet murky hum that, in a few seconds, blooms into a wide, full, glowing brass, with a slow drift inside
     the stack. Dry. When you let go it fades out slowly and darkens as it goes.
-  - *How to play it:* **Hold the note.** The bloom takes about five seconds (a tenth open at under a second,
+  - *Sound design notes:* **Hold the note.** The bloom takes about five seconds (a tenth open at under a second,
     nine-tenths at about four, measured on A2). A sustain pedal or REC (HOLD) should hold it open the same way
     (not tried on this patch). **Release early and it never opens** — let go at 2.4 s and it is
     still dark and just fades in about two seconds; after a long hold the release takes about a second to
@@ -324,7 +324,7 @@ STOP.)*
   - *What it sounds like:* A thick stack of detuned saw tones that opens bright when the key goes down and then
     slowly sinks: the filter closes and the pitch falls together over a few seconds until the sound settles low
     and dark. A held collapse, not a zap. Takes chords (three keys gate six voices). Dry.
-  - *How to play it:* **Hold the key;** the melt happens while it is down (the pitch ends about 6.8 semitones
+  - *Sound design notes:* **Hold the key;** the melt happens while it is down (the pitch ends about 6.8 semitones
     lower, 90% of the fall at 4.0 s on A2). A short tap hears only the bright opening. **On key-up the melt
     partly runs backwards:** pitch and brightness climb back through the fade (not tested whether it is
     audible). OSC 1 is off, because ENV>O2 bends OSC 2 only. A three-key chord peaks at −4.1 dBFS. About 2489 host
@@ -335,7 +335,7 @@ STOP.)*
   - *What it sounds like:* A thin, narrow pulse run through a band-pass into a pale, dusty tone, with only a
     trace of noise under it. The level flutters slowly and irregularly, in steps. A short echo and a large
     spring blur it. It rises slowly when you press a chord and hangs on after you let go.
-  - *How to play it:* A held-chord pad (POLY 4: all three keys of a triad sound); short notes are faint (a
+  - *Sound design notes:* A held-chord pad (POLY 4: all three keys of a triad sound); short notes are faint (a
     150 ms chord tap is 13.7 dB under the held chord). The noise sits 24.4 dB under the pulse. The chord peaks at
     −4.0 dBFS, which limits VOLUME. About 2065 host instr/sample worst case. Tricks untested.
 - **24 Fugue State — VOICED (Nov 2026, approved; variant C of Batch 5B).** A dizzying pad.
@@ -343,7 +343,7 @@ STOP.)*
     field. Each chord runs into a short echo that feeds back on itself while the pitch is still moving, so the
     repeats sit at slightly different pitches from the notes being played and the chord smears. A spring adds a
     further tail. No filter movement, only the pitch and the echo.
-  - *How to play it:* A held-chord pad (POLY 5). A triangle LFO at 4.9 Hz moves the pitch by ±178 cents; the echo
+  - *Sound design notes:* A held-chord pad (POLY 5). A triangle LFO at 4.9 Hz moves the pitch by ±178 cents; the echo
     is 144 ms at FEEDBK 95 (10 repeats above −40 dB). The tail is 20 / 40 / 60 dB down at 1.6 / 3.5 / 4.6 s.
     Runaway tests show no clipping. One shared LFO, so no true rotary. The kill switch clears the echo buffers
     (not tested here). About 2038 host instr/sample worst case. Tricks untested.
@@ -357,7 +357,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
   - *What it sounds like:* Two saws a few cents apart, stable and warm, with the filter swelling open on each
     note and settling into a solid, brassy body. It holds still: no wobble, no chop, only a gentle vibrato
     that fades in if you hold a note.
-  - *How to play it:* Low-mid to mid register; chords and fifth-and-octave voicings are home ground (each
+  - *Sound design notes:* Low-mid to mid register; chords and fifth-and-octave voicings are home ground (each
     note is one voice; three- and four-note chords should play in full — not yet chord-tested). Medium to long
     notes show the swell best: it peaks about 84 ms in, so a very short stab catches only the start. It is
     the stable counterpart to 03 Half-Life. The vibrato arrives after about 1.1 s on held notes; LFO PITCH to
@@ -368,7 +368,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
     each other, with a master oscillator you can hear underneath the synced one. Every detached note starts
     with a bright sweep that tears down into a duller body; it is pushed into drive and left dry, with a short
     glide between notes. Played legato, the sweep does not come back.
-  - *How to play it:* **UNISON, one note at a time:** three voices all play the key you press and a chord plays
+  - *Sound design notes:* **UNISON, one note at a time:** three voices all play the key you press and a chord plays
     the last key only. The sweep fires on **detached** notes: on notes 2–8 of the riff, the centroid over the
     first 100 ms is 2935 Hz detached against 1742 Hz legato. The sweep was measured on A3; the riff runs A3 to
     C6 and nothing else was measured. **The drive darkens the strike:** GROWL 44 lowers the crest factor from
@@ -384,7 +384,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
     that falls into a lower body; the body holds at a steady level for as long as the key is down, and when the
     key goes up the note stops almost at once. Played legato, the snap is not re-fired and the notes after the
     first have no front edge. Dry.
-  - *How to play it:* **MONO, one note at a time.** The snap fires on **detached** notes: on notes 2–8 of the
+  - *Sound design notes:* **MONO, one note at a time.** The snap fires on **detached** notes: on notes 2–8 of the
     eight-note line the first 20 ms centroid is 2200 Hz detached against 154 Hz legato. On A2 held 1 s the
     level is 2.0 dB under the peak at 100 ms and 3.4 dB under at 300 ms; after key-up it is down 20 / 40 / 60 dB
     in 11 / 15 / 19 ms. **Low register:** A1's fundamental is 55 Hz, and only 17% of A1's body energy is above
@@ -400,7 +400,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
   - *What it sounds like:* A sustained, struck bell tone built from two saw waves with a mid-frequency
     sideband character. It rings for several seconds, a slow shimmer moves its pitch and level, and a small
     echo and a spring sit behind it. It is dry of drive and tape.
-  - *How to play it:* **The key you press is the bell's hum, the strongest partial; the prime is an octave
+  - *Sound design notes:* **The key you press is the bell's hum, the strongest partial; the prime is an octave
     above it**, so the strike may feel an octave above the key (not measured as perceived pitch). The five
     classical bell partials (hum 0.5, prime 1, tierce 1.2, quint 1.5, nominal 2) are all present; at A4 in the
     first 300 ms they read 0 / −7.7 / −11.1 / −10.5 / −13.6 dB. **It rings on after key-up:** a note released at
@@ -425,7 +425,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
     spring sit behind it, and everything passes through a narrow, honky mid-band like a small horn speaker.
     There is no tape in it. *Vincent hears it as closer to an arcade or vintage video-game chime than to finger
     cymbals (his ear, not measured); the bank had nothing in that register before.*
-  - *How to play it:* Voiced for A4 to A6; nothing outside was measured. The ring of a C#6 falls 6 / 12 / 20 /
+  - *Sound design notes:* Voiced for A4 to A6; nothing outside was measured. The ring of a C#6 falls 6 / 12 / 20 /
     40 dB in 252 / 550 / 1030 / 1896 ms, so with notes 580 ms apart several rings overlap (POLY 5). **A
     three-note chord (A#5 C#6 F6) plays whole and is the loudest phrase** (−21.3 dB RMS, peak −4.06 dBFS): use
     it as a wind-chime. The shimmer is a TRI LFO at 0.8 Hz (the engine has no sine). The filter is a band-pass
@@ -439,7 +439,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
     just enough that the stack breathes without ever going seasick. Warm, with a driven edge that stops short
     of fuzz, and each note is chopped hard on release: no spring, no echo, no tail, only the silence after
     the hit. It has presence: it sits forward and fills the room.
-  - *How to play it:* Low register. Roots and octaves from about A1 to A2 are the sweet spot, for single-note
+  - *Sound design notes:* Low register. Roots and octaves from about A1 to A2 are the sweet spot, for single-note
     bass lines and chopped roots; the very bottom (A0 and the low end of A1) is partly below what small
     speakers and many PAs reproduce, so on a laptop you hear the body, not the floor. Staccato to medium —
     eighth-note chops (roughly 130 ms) are home — and it also holds as a wall of low unison with a slow,
@@ -457,7 +457,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
     behind it. Each note is a detuned pair, so it is fat and punchy rather than thin, warm rather than icy,
     with a bright snap on the front that settles into a solid body. Dry apart from the slap: no spring, no long
     wash, just the stab and its quick echo.
-  - *How to play it:* Low to low-mid register; single notes and fifth-based riffs (roots and octaves around A1
+  - *Sound design notes:* Low to low-mid register; single notes and fifth-based riffs (roots and octaves around A1
     to A2) are home ground — every note already carries its own fifth, so one finger plays a power chord.
     Short and hard: a stab of roughly 150–200 ms (there is no gate-length control; the stab is as long as you
     hold the key). Chords, honestly: because the fifth is built into every voice, chords of fifths stack
@@ -471,7 +471,7 @@ tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patc
   - *What it sounds like:* A plain voice made of two saw waves played through a low-pass filter with a short
     envelope, dry, with chords and single notes both playable. Nothing is added to it: no modulation, no echo,
     no spring, no tape and no drive.
-  - *How to play it:* **It is the engine's own default program with one change, VOLUME 97** (the default is
+  - *Sound design notes:* **It is the engine's own default program with one change, VOLUME 97** (the default is
     100). It is not a single raw saw with an open filter: POLY 5, two saws 4.7 cents apart, a 24 dB low-pass at
     CUTOFF 80 with RESO 20, a filter envelope and an amp envelope, VINTAGE 30, SPREAD 60, every effect at 0.
     **Slots 33–99 hold the same defaults as INIT, with VOLUME 100.** Chords play (POLY 5); −18.05 dBFS RMS on the

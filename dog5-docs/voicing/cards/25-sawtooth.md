@@ -17,7 +17,7 @@ still: no wobble, no chop, no mess, only a gentle vibrato that fades in if you h
 
 Closest to: **a Prophet-5 brass swell**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** low-mid to mid. Chords and fifth-and-octave voicings are its home ground; each note is one voice, so ordinary three- and four-note chords play in full.
 - **Touch and gate:** medium to long. The swell comes from the **filter envelope** and peaks about 84 ms in, so the brass opens on each note: notes of a couple of hundred

@@ -16,7 +16,7 @@ An anxious, thick drone that bites, like touching a live wire. A stack of pulse 
 
 Closest to: **a Mono/Poly in unison with MS-20 bite**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** high. It was voiced on a held A4 (3.5 s), eight 110 ms bites (E5, A4, C5, D5) and a held A3, plus the pilot phrases; low notes and other registers are untested.
 - **It is a UNISON of 6 voices on one note, so legato does not re-fire the envelopes:** a key held while the next goes down slides to it and the zap does not happen again. Play it detached for the bite. Chords play one note (the last).

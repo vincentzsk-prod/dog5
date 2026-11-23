@@ -16,7 +16,7 @@ Closest to: **an OB-Xa-style fat stack whose filter and pitch both sink slowly d
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Hold the key.** The melt happens while the key is down (or while REC (HOLD) latches it, until REC again or STOP). A short tap hears the open start and none of the melt (a 150 ms tap reads −1.1 / −0.6 / 0.0 dB re the held level on A1 / A2 / A3, centroid 839 / 1266 / 1729 Hz).
 - **OSC 1 is off.** ENV>O2 bends OSC 2's pitch only (and from the filter envelope, never the amp envelope), so the stack that melts is OSC 2 alone. With OSC 1 on it would stay at pitch while OSC 2 sank.

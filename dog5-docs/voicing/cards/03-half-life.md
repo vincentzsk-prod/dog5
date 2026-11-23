@@ -18,7 +18,7 @@ whole point. This is the DØG-5 thesis in a single patch.
 
 Closest to: **Korg Mono/Poly** — its drifting, detuned saw chaos, with Minimoog weight underneath, chopped by the gate.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register:** low to low-mid. Roots and fifths from about A1 to A3 are where the sub and the pair sit best. Fifth-and-octave
   power chords are its home ground.

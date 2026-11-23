@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 22 Nov 2026 (Batch 28: the v1.1 backlog, the voice cards in the web player, the manual page, feedback), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 23 Nov 2026 (Batch 29: the installer survives a background tab, Sound design notes, the manual's bullets, the art docs re-skin), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -266,16 +266,17 @@ loop.** No new drawing code may block without yielding to notes. That is the who
 
 The live world is the **dog**, not the old reaper/sorcerer (that layer is DEAD — see §12).
 Governing docs: **`dog5-docs/DOG-5-character-brief.md`** (the world, the dog, the beam, the four scenes),
-**`dog5-docs/DOG-5-build-kit.md`** (the exact hand-drawn art list + build sequence), **`dog5-docs/DOG-5-field-prompts.md`**
-(the Gemini prompts for the backgrounds), and **`dog5-docs/DOG-5-art-direction.md`** + **`dog5-docs/DOG-5-chapter-specs.md`**
-(the procedural engines, dials, budget, safety clamps — still canon; ignore their reaper framing).
+**`dog5-docs/DOG-5-build-kit.md`** (the hand-drawn art list + build sequence), and **`dog5-docs/DOG-5-art-direction.md`** +
+**`dog5-docs/DOG-5-chapter-specs.md`** (the procedural engines, dials, budget, safety clamps). Each opens with an **AS BUILT**
+box (re-skin, 23 Nov, Batch 29): read it first. **No AI-generated art ships**: the fields, dog and head are Vincent's hand
+(the old Gemini prompts are in `dog5-docs/history/`).
 
 Key points: the beam is the live scope fired from the dog's mouth (straight only — a bent waveform is mush);
 four scenes JALOPY / BEE-TCH / MOONSHINE / ACID CAN (Le Gato renamed; `SC_CHAPTER`); the dog sits left-third, the beam flies to the top-right
 corner, the fields must read in silhouette and keep the beam corridor clear. **Colour as built (Batch 23):** the beam is Acid
 Chartreuse in every chapter; the chapter accents are Sun Yellow / Wave Turquoise / Foam White / Acid Chartreuse
-(`SC_ACCENT`, `dog5_palette.h`). The old Moonshine-magenta rule is superseded (purple stays out). Hand-drawn art list: ~15–16 drawings (3 dog poses, nose ×2, head-mark, 4 fields, bin ×2, cat ×2,
-wordmark) — full spec in the build kit.
+(`SC_ACCENT`, `dog5_palette.h`). The old Moonshine-magenta rule is superseded (purple stays out). Hand-drawn art: delivered (4 fields, the dog poses, the 96 px head, the launch screen); still to draw: the nose ×2. The bin and
+washing line went with ACID CAN; the cat is not in the field (build kit, AS BUILT).
 
 ---
 
@@ -349,7 +350,10 @@ shows on the same plate (`LFO`), and the housekeeping: the flash-chip note up fr
 (`dog5-docs/BATCH-25-LFO-DIAL-HOUSEKEEPING.md`). **Batch 27:** DØG-5's own identity, `FM-1_3645XYZ`; release assets
 named `dog5.fwsc`; the README's line on other firmwares' saves (`dog5-docs/BATCH-27-IDENTITY.md`). **Batch 28:** one backlog for v1.1 and later (`dog5-docs/V1.1-BACKLOG.md`), the voice cards brought up to date and shown in the
 web player, the Driver Manual as a page (`docs/manual/`, `tools/make_manual_page.py`), a feedback form (GitHub Issues)
-(`dog5-docs/BATCH-28-V11-CARDS-PLAYER.md`). **Stage 3 is done** pending
+(`dog5-docs/BATCH-28-V11-CARDS-PLAYER.md`). **Batch 29:** an install failed when the installer tab went to the background
+(Chrome slowed the page's timers until the loader gave up): the page's waits no longer depend on throttled timers; the cards'
+"How to play it" is **Sound design notes**; the manual's bullets checked; the art docs re-skinned (AS BUILT boxes)
+(`dog5-docs/BATCH-29-INSTALLER-DOCS.md`). **Stage 3 is done** pending
 Vincent's look on the unit.
 
 ---
@@ -391,14 +395,12 @@ Vincent's look on the unit.
 - `DOG-5-base-and-ui-decisions.md` — base lock, measured numbers, UI architecture (newest, authoritative).
 - `DOG-5-build-kit.md` — the hand-drawn art list + build sequence + the name/polyphony/spring answers (newest).
 - `DOG-5-character-brief.md` — the live art world (the dog, the beam, the four scenes).
-- `DOG-5-field-prompts.md` — Gemini prompts for the four backgrounds + Le Gato props.
 - `DOG-5-foundation.md` — hardware/DSP/IP facts (⚠️ §1–2 base facts & §5 UI map are superseded by
   base-and-ui-decisions; the DSP targets, IP rules and hardware constraints stand).
-- `DOG-5-presets.md` — the 32 patches, SOUND briefs, Psych Chain, bank model (⚠️ §1 A/B store superseded:
-  it's a write-lock over 99 slots now).
+- `DOG-5-presets.md` — the 32 patches' original SOUND briefs, Psych Chain, bank model (history for the sound; its AS BUILT
+  box says what changed; the voice cards are the player-facing versions).
 - `DOG-5-art-direction.md` + `DOG-5-chapter-specs.md` — procedural engines, dials, dirty-area budget, strobe
-  clamps, per-patch rows (⚠️ ignore the reaper/orb/Fifth-Seal framing — the mechanics are canon, the
-  packaging is the dog now, per the character brief; the colours as built are in §8).
+  clamps, per-patch rows (AS BUILT box up front since Batch 29: ACID CAN, colours as built, what is and isn't built).
 - `voicing/README.md` (+ `voicing/03-half-life.md`, one log per voiced patch) — the by-ear voicing kit: audition phrases
   (`tests/voicing/phrases/`), the **bank reference level (−18.0 dBFS RMS on the stabs phrase)**, the VINTAGE-in-cents table,
   the measurement tools (`tests/voicing/`), approved-variant renders in `reference-renders/`. Read before voicing any patch.
@@ -408,14 +410,16 @@ Vincent's look on the unit.
 - `PERF-BASELINE.md` — host-instruction costs per stage, and the current image / RAM / pool numbers.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
-  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`), `BATCH-28-V11-CARDS-PLAYER.md` (the backlog, the card in the player, the manual page, feedback).
+  `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`), `BATCH-28-V11-CARDS-PLAYER.md` (the backlog, the card in the player, the manual page, feedback), `BATCH-29-INSTALLER-DOCS.md`
+  (the background-tab install failure and its fix, Sound design notes, the art docs re-skin).
 - ⭐ `V1.1-BACKLOG.md` — **every open item, idea and note for this release and v1.1+ in one place** (mirrored as the Project doc
   `DOG-5-v1.1-backlog.md`). New ideas go there; done or dropped items are marked, not deleted.
 - `manual/` — repo copies of the Project's Driver Manual docs; `tools/make_manual_page.py` builds `docs/manual/index.html`
   from them (`--check`). Edit the Project doc, copy it here, rebuild.
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
-drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why),
+drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why), `DOG-5-field-prompts.md` (the Oct Gemini
+prompts; nothing from them ships),
 `BATCH-08B-WEB-PLAYER.md`, `BATCH-12A-CLEANUP-INVENTORY.md`. The reaper-era `DOG-5-narrative-library.md` and
 `DOG-5-asset-library.md` were deleted in Batch 12B (git history only).
 - (`DOG-5-design-system.md` was deleted as outdated — it described the dead reaper world and would reproduce

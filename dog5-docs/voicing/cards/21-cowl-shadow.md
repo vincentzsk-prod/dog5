@@ -16,7 +16,7 @@ drift inside the stack. It is dry. When you let go it fades out slowly and darke
 
 Closest to: **a CS-80 brass swell, stretched**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Hold the note.** The bloom happens while the key is down and takes about five seconds (measured on A2: the sound is a tenth of the way open at under a second and nine-tenths open at about four
   seconds). A **sustain pedal** or **REC (HOLD)** should hold it open the same way (REC latches the held notes until REC again or

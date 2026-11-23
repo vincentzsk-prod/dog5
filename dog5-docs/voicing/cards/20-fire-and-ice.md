@@ -16,7 +16,7 @@ Closest to: **a Pro-One sync lead through an overdrive pedal into a Space Echo**
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **MONO lead, one note at a time.** Chords play the last key only. The sweep fires on **detached** notes; with **legato** playing (a new key down before the old one is up) the envelopes are not re-fired and the sweep does not return. Measured on the same eight-note riff, dry: the centroid over the first 100 ms of notes 2–8 averages 3610 Hz detached against 1573 Hz legato; the first note of either is 1999 Hz.
 - **Register:** the sweep was measured on A4 (above) and on A3: centroid 1999 → 1190 Hz in the windows 0–100 / 100–200 ms. Notes up to A5 were played in the riff phrases; no other register was measured.

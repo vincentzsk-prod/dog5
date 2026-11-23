@@ -15,7 +15,7 @@ A sustained, struck bell tone built from two saw waves with a mid-frequency side
 
 Closest to: **a DX7 tubular bell with a long, slowly moving tail**.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **What the key is:** the key you press is the bell's hum, the strongest partial; the prime is an octave above it. The strike may therefore feel an octave above the key (not measured as perceived pitch).
 - **The bell ladder** (first 300 ms of a held note, dB re the strongest partial, with the measured ratio against the prime): at **A4** hum 0.498 at 0, prime 0.997 at −7.7, tierce 1.197 at −11.1, quint 1.496 at −10.5, nominal 1.995 at −13.6. At **A3** hum 0.499 at 0, prime 0.996 at −4.9, tierce 1.210 at −10.1, quint 1.496 at −7.8, nominal 1.994 at −12.4. At 1–2 s (A4) the same five read 0 / −9.2 / −13.7 / −15.1 / −17.4 dB.

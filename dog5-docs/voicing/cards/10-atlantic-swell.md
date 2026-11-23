@@ -16,7 +16,7 @@ Closest to: **a combo organ into a spring tank**.
 
 Nothing here says the patch matches these: the traits are the approved descriptions, and only the ones marked as measured have a number behind them.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **Register and gate:** it was voiced on the organ phrase: an A minor triad (A3 C4 E4) held 2.4 s, one 120 ms E4, four 120 ms notes (E4 G4 A4 C5) and a D minor triad (D4 F4 A4) held 1.6 s. Other registers are untested. Polyphony is POLY 5; chords of more than five notes were not tried.
 - **What it does not have, measured:** no vibrato (LFO PITCH 0; a one-voice probe reads 0.0 cents of pitch wander), no delay (DLY MIX 0; the delay's return is below −180 dB re the note), no chorus (no pitch modulation and no left/right voice pair; the held chord's L/R correlation is 0.78 dry, 0.70 with the spring). Versions with a chorus, a rotary-speaker tremolo and a heavy echo were rendered (B, C and D, on the listen branch) and are not this patch.

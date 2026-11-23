@@ -16,7 +16,7 @@ Closest to: **a Juno-60 chord pad through a Twin Reverb spring and a Space Echo*
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. How to play it
+## 4. Sound design notes
 
 - **It is triangle-like, not a sine, dark, and peak-limited.** Two narrow pulses (PW 25 %), OSC 2 an octave up (+12 st, LEVEL 84, +1.6 cents), through a 12 dB low-pass at 100 % key tracking (CUTOFF 64 = 523 Hz at C4, RESO 0). On OSC 1 through the filter, harmonics 3 / 5 / 7 re the fundamental are −17.2 / −27.3 / −36.8 dB against an ideal triangle's −19.1 / −28.0 / −34.2 (a square: −9.5 / −14.0 / −16.9). Centroid 595 Hz over the note-on region, 0.5 % of its energy above 1.2 kHz, MUD ratio (150 to 400 over 1.2k+) 133. Level: −19.1 dBFS RMS on the wash phrase (VOLUME 76), 1.1 dB under the bank reference and inside ±1.5 dB: the peak is −4.4 dBFS at this level, so it is limited by the peak, not matched to −18.0.
 - **Attack (amp envelope, one voice, LFO off):** 10 / 50 / 90 % of the level at 17 / 93 / 219 ms (AA 82; the time table's nominal is 299 ms). Phrase (b), 180 ms stabs, reads −26.8 dBFS RMS, 7.7 dB under the wash phrase: on this phrase, short notes do not reach the level of the held chords.

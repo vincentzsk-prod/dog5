@@ -87,7 +87,7 @@
         <label class="chk"><input type="checkbox" class="pre"> <span>A USB <b>data</b> cable, straight into the computer (no hub).</span></label>
         <label class="chk"><input type="checkbox" class="pre"> <span>The cable stays plugged in until this page says it is done (about 3 minutes).</span></label>
         <label class="chk"><input type="checkbox" class="pre"> <span>I will not touch the keys, knobs or buttons while it runs.</span></label>
-        <label class="chk"><input type="checkbox" class="pre"> <span>Power stays on: the computer will not sleep, no other MIDI program is open.</span></label>
+        <label class="chk"><input type="checkbox" class="pre"> <span>Power stays on: the computer will not sleep, no other MIDI program is open. <b>This tab stays in front until it says Done.</b></span></label>
         <label class="chk"><input type="checkbox" class="pre"> <span>I have M-Flasher and my backup of the stock firmware ready.</span></label>
       </section>
 
@@ -105,6 +105,7 @@
           <button id="btngo" class="stop">Yes, start: send the first byte now</button> <button id="btncancel">Cancel</button>
         </div>
         <div id="stage" class="dim">Idle.</div>
+        <div id="bgwarn" class="box warn hide"><b>Bring this tab back to the front.</b> The install keeps running, but in a background tab Chrome can slow it down until the unit gives up. If the unit shows UPDATE FAILED, leave it plugged in, press Find my FM-1 and then Resume.</div>
         <div class="bar"><div id="pbar"></div></div>
         <div id="counter" class="dim mono"></div>
         <div id="fail" class="box bad hide"></div>
@@ -173,6 +174,35 @@
   $("envtext").textContent = why.length ? why.join(" ") : "Everything this page needs is here.";
   if (!canInstall) $("btnfind").disabled = true;
 
+  // ---- timers that keep time in a background tab. Chrome slows a hidden tab's setTimeout to about once a second,
+  // and later to about once a minute; the loader gives up on a read after about 15 s, so a background install failed
+  // (UPDATE FAILED on the unit, 23 Nov). A dedicated worker's timers are slowed less, if at all.
+  const timer = (() => {
+    let w = null, n = 0; const cbs = new Map();
+    try {
+      const src = "onmessage=function(e){setTimeout(function(){postMessage(e.data[0])},e.data[1])}";
+      w = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+      w.onmessage = (e) => { const f = cbs.get(e.data); if (f) { cbs.delete(e.data); f(); } };
+    } catch (e) { w = null; }
+    return {
+      set(fn, ms) { if (!w) return setTimeout(fn, ms); const id = "w" + (++n); cbs.set(id, fn); w.postMessage([id, Math.max(ms, 0)]); return id; },
+      clear(id) { if (typeof id === "string") cbs.delete(id); else clearTimeout(id); },
+      ok: !!w,
+    };
+  })();
+  // Short waits (the 10 ms between replies: about 1,200 of them an install) use no timer at all: they watch the clock,
+  // so no throttling policy can stretch them. Longer waits (a few, of seconds) use the worker's timer.
+  const spin = (ms) => { const end = performance.now() + ms; while (performance.now() < end) {} };
+  FM1.setSleep((ms) => ms <= 20 ? (spin(ms), Promise.resolve()) : new Promise((res) => timer.set(res, ms)));
+  let wake = null;                               // keep the screen (and the Mac) awake while it runs, where allowed
+  async function wakeOn() { try { if (navigator.wakeLock) wake = await navigator.wakeLock.request("screen"); } catch (e) { wake = null; } }
+  function wakeOff() { try { if (wake) wake.release(); } catch (e) {} wake = null; }
+  document.addEventListener("visibilitychange", () => {
+    $("bgwarn").classList.toggle("hide", !(running && document.hidden));
+    if (running) log(document.hidden ? "(the tab went to the background)" : "(the tab is in front again)");
+    if (running && !document.hidden && !wake) wakeOn();
+  });
+
   // ---- WebMIDI as a backend for FM1.Updater
   class Link {
     constructor(be, inp, out) { this.be = be; this.inp = inp; this.out = out; this.name = inp.name; this.q = []; this.waiter = null; this.buf = null;
@@ -187,7 +217,7 @@
     send(pkt) { try { this.out.send(pkt); return true; } catch (e) { return false; } }
     read(ms) {
       if (this.q.length) return Promise.resolve(this.q.shift());
-      return new Promise((res) => { const t = setTimeout(() => { this.waiter = null; res(null); }, Math.max(ms, 0)); this.waiter = (m) => { clearTimeout(t); res(m); }; });
+      return new Promise((res) => { const t = timer.set(() => { this.waiter = null; res(null); }, Math.max(ms, 0)); this.waiter = (m) => { timer.clear(t); res(m); }; });
     }
     drain() { this.q.length = 0; }
     close() { try { this.inp.onmidimessage = null; } catch (e) {} }
@@ -203,7 +233,7 @@
       if (!inp || !out) throw new Error("no such port");
       await inp.open(); await out.open();
       const l = new Link(this, inp, out);
-      await new Promise((r) => setTimeout(r, FM1.DELAY.open * 1000));   // CoreMIDI may drop a message sent just after opening
+      await new Promise((r) => timer.set(r, FM1.DELAY.open * 1000));   // CoreMIDI may drop a message sent just after opening
       return l;
     }
   }
@@ -277,7 +307,7 @@
   }
   async function install() {
     $("confirm").classList.add("hide"); $("fail").classList.add("hide"); $("done").classList.add("hide"); $("log").classList.remove("hide"); $("btncopylog").classList.remove("hide");
-    running = true; updateInstallButton(); $("btnfind").disabled = true;
+    running = true; updateInstallButton(); $("btnfind").disabled = true; wakeOn();
     let frames = 0;
     const up = new FM1.Updater(backend, { port: found.port, onFrame: (r, fr) => { frames++;
       if (r.addr >= FM1.FINISH_CHECK) log("finish ask 0x" + r.addr.toString(16) + " answered 'success'");
@@ -299,7 +329,7 @@
       $("done").classList.remove("hide");
       $("done").innerHTML = "<b>Done.</b> The unit restarted and reports <b class='mono'>" + final + "</b>, the identity of this package. (That is all this page can confirm: it does not test the sound.)";
     } catch (e) { fail(e); }
-    finally { running = false; found = null; $("btnfind").disabled = !canInstall; updateInstallButton(); }
+    finally { running = false; wakeOff(); $("bgwarn").classList.add("hide"); found = null; $("btnfind").disabled = !canInstall; updateInstallButton(); }
   }
 
   $("btnfind").onclick = findDevice;
@@ -317,7 +347,7 @@
   $("btngo").onclick = install;
   $("btncopylog").onclick = () => navigator.clipboard && navigator.clipboard.writeText(logLines.join("\n"));
   window.addEventListener("beforeunload", (e) => { if (running) { e.preventDefault(); e.returnValue = ""; } });
-  window.__dog5 = { get running() { return running; } };
+  window.__dog5 = { get running() { return running; }, get workerTimers() { return timer.ok; } };
 })();
 </script>
 </body>

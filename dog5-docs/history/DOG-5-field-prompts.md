@@ -1,5 +1,10 @@
 # DØG-5 — GEMINI IMAGE PROMPTS (the four fields + Le Gato props)
 
+**HISTORY (moved here 23 Nov 2026).** Not used for anything that ships: **no AI-generated art is in DØG-5.** The four
+fields, the dog and the head are hand-painted by Vincent in Pixelorama (provenance: Project doc
+`DOG-5-chapter-names.md`). Chapter IV is ACID CAN now (no bin, no washing line, no cat in the field). Kept only as the
+record of the Oct planning.
+
 **Status:** 27 Oct 2026. Prompts for the four scene backgrounds and the Le Gato props, for a Gemini image
 bot (raw samples already in Gemini, working from them there). Two things baked in beyond the character brief:
 **(1)** these are pure black-and-white (scene colour is added later in firmware as the moving beam, NOT
