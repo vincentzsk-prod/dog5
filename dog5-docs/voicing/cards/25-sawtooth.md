@@ -4,10 +4,40 @@
 
 ## 2. What it sounds like
 
+The iconic poly brass: two saws a few cents apart, stable and warm, with the filter swelling open on each note and settling into a solid, brassy body. It holds still: no wobble, no chop, only a gentle vibrato that fades in if you hold a note. A survivor of the classic polysynths, rebuilt by ear.
+
+## 3. Gear inspirations (docs only, "inspired by")
+
+- **Sequential Prophet-5** — the swell and the two-saw body: *fat, warm, swell*.
+- **Oberheim OB-Xa** — the brass-section feel: *brassy, full*.
+- **Roland Jupiter-8** — the bright blare at the top of the swell: *bright brass*.
+- **Memorymoog** — the weight of the chord: *thick, warm*.
+- **Korg Polysix** — the slow vibrato on a held note: *wobble*.
+
+Closest to: **a Prophet-5 brass swell**.
+
+## 4. Sound design notes
+
+- **Where it lives:** low-mid to mid, chords and fifth-and-octave voicings. Each note is one voice, so ordinary chords play in full.
+- **Medium to long notes show the swell best:** it peaks just under a tenth of a second in, so a very short stab catches only the start.
+- **The vibrato** arrives after about a second on held notes; LFO PITCH at 0 makes it fully still.
+- **The steady counterpart to 03 Half-Life.** SLOBBER makes it wobble like tired string-brass; Tape Stop is a good swell-out ending.
+- **All effects are at 0:** a dry brass, with a spring or echo yours to add.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), VINTAGE 30, OSC1 SAW 110, OSC2 SAW 0st FINE 71 (~5.5 cents) LVL 100, CUTOFF 56, RESO 15, ENV AMT 100, FILTER LP24, FILTER ENV A70 (~117 ms) D85 S50 R60, AMP ENV A50 D70 S100 R55, LFO TRI RATE 75 DELAY 60 -> PITCH 20, VOLUME 97 (-18.0 dBFS RMS bank reference, phrase b); GROWL/ALLEY/DRAIN/CHEW 0, no arp` — `PF_SAWTOOTH` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
 The iconic poly brass: a pair of saws slightly apart, stable and warm, with the filter swelling open on each note and settling into a solid, brassy body. It holds
 still: no wobble, no chop, no mess, only a gentle vibrato that fades in if you hold a note. A survivor of the classic poly synths, rebuilt by ear.
 
-## 3. Gear inspirations (docs only, "inspired by")
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Sequential Prophet-5** — the swell and the two-saw body: *fat, warm, swell*.
 - **Oberheim OB-Xa** — the brass section feel: *brassy, full*.
@@ -17,7 +47,7 @@ still: no wobble, no chop, no mess, only a gentle vibrato that fades in if you h
 
 Closest to: **a Prophet-5 brass swell**.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Register:** low-mid to mid. Chords and fifth-and-octave voicings are its home ground; each note is one voice, so ordinary three- and four-note chords play in full.
 - **Touch and gate:** medium to long. The swell comes from the **filter envelope** and peaks about 84 ms in, so the brass opens on each note: notes of a couple of hundred
@@ -30,7 +60,3 @@ Closest to: **a Prophet-5 brass swell**.
   - **Kill switch (HEEL)** for a dead stop; there are no effects tails to hide behind.
   - **GROWL:** **0 on purpose.** A touch measured as almost nothing audible on this patch and costs noticeable CPU, so it is left to you live (GROWL only starts to do something above about 28). Untested by ear here.
   - **ALLEY, DRAIN, CHEW:** at 0 on purpose (a dry brass); a spring or echo is yours to add.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), VINTAGE 30, OSC1 SAW 110, OSC2 SAW 0st FINE 71 (~5.5 cents) LVL 100, CUTOFF 56, RESO 15, ENV AMT 100, FILTER LP24, FILTER ENV A70 (~117 ms) D85 S50 R60, AMP ENV A50 D70 S100 R55, LFO TRI RATE 75 DELAY 60 -> PITCH 20, VOLUME 97 (-18.0 dBFS RMS bank reference, phrase b); GROWL/ALLEY/DRAIN/CHEW 0, no arp` — `PF_SAWTOOTH` in `firmware/src/obv_patches.h`.

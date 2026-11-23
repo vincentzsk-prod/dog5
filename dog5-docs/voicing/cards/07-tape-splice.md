@@ -4,9 +4,38 @@
 
 ## 2. What it sounds like
 
-A fat square with a wobble in its pitch, chopped short. A pair of square waves a hair apart, one frequency-modulating the other so the tone carries extra energy below the note, and a random pitch wobble. Notes stop quickly when you let go, and a tape stage on the end delays every note slightly. It is dry: no echo, no spring.
+A fat square with a wobble in its pitch, chopped short. Two square waves a hair apart, one frequency-modulating the other, so the tone carries extra weight below the note, and a random pitch wobble on top. Notes stop quickly when you let go, and a tape stage on the end nudges each note's timing slightly. Dry: no echo, no spring.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Korg Mono/Poly** — the cross-modulated source: *fat, drifting*.
+- **Sequential Prophet-5** — *wobble, nervous*.
+- **Roland RE-201 Space Echo** — the worn tape stage: *wobble, lo-fi*.
+- **Roland SH-101** — *punchy*.
+
+Closest to: **a Mono/Poly cross-mod square through a worn tape echo**.
+
+## 4. Sound design notes
+
+- **Where it lives:** staccato lines from A2 up to G3, and held notes.
+- **Play it detached.** It is MONO: a legato note slides without restarting, and a chord plays one note.
+- **The wobble is the random pitch LFO;** X-MOD adds the weight and the sidebands, not the wobble.
+- **More tape:** CHEW is on at a mild setting. Turn it up for dropouts (they start around the middle of the knob and grow toward the top); it costs more CPU.
+- Turning OSC 2's level to 0 does not remove it entirely: it still modulates through X-MOD.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE MONO, GLIDE 0, OSC1 PULSE PW 64 LVL 110, OSC2 PULSE PW 64 SEMI 0 FINE 68 (+3.1 cents) LVL 100, X-MOD 70, CUTOFF 60, RESO 20, ENV AMT 114, KEY TRK 64, FILTER LP24 DRIVE 40, FILTER ENV A20 D60 S60 R60, AMP ENV A2 D70 S100 R25, LFO RANDOM RATE 94 (5.7 Hz) PHASE FREE PITCH 16 (±19 cents) PITCH> BOTH, VINTAGE 30, SPREAD 60, VOLUME 104 (−18.1 dBFS RMS on the splice phrase, peak −12.9), CHEW 80 WOW/FLT 64 HISS 0 DROPS 90; DLY MIX 0, DRAIN 0, ALLEY 0, GROWL 0, no arp` — `PF_TAPE_SPLICE` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A fat square with a wobble in its pitch, chopped short. A pair of square waves a hair apart, one frequency-modulating the other so the tone carries extra energy below the note, and a random pitch wobble. Notes stop quickly when you let go, and a tape stage on the end delays every note slightly. It is dry: no echo, no spring.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Korg Mono/Poly** — the source: *fat, drifting*.
 - **Sequential Prophet-5** — *wobble, nervous*.
@@ -17,7 +46,7 @@ Closest to: **a Mono/Poly cross-mod square through a worn tape echo**.
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Register:** it was voiced on a held A2 (2.4 s), twelve 60 ms staccato notes from A2 up to G3, and three 80 ms A3 notes; other registers are untested.
 - **It is MONO, so legato does not re-fire the envelopes:** a key held while the next goes down slides to the new note and the envelopes do not restart. Play it detached. A chord plays one note (the last).
@@ -29,7 +58,3 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **Level:** matched to the bank reference on the splice phrase (−18.1 dBFS RMS, peak −12.9); phrase (b) reads −17.6 with a peak of −12.5.
 - **Costs, honestly:** about 2177 host instr/sample worst case (the original: 1384); CHEW accounts for about 770 of it. The device build was not run and the render time on the device is not measured.
 - **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, ALLEY, DRAIN, ENV>O2. OSC 2 LEVEL 0 still modulates through X-MOD (measured on this patch's held A2: the render with X-MOD 100 differs from X-MOD 0 by 3.1 dB re the signal); how that sounds is untested.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE MONO, GLIDE 0, OSC1 PULSE PW 64 LVL 110, OSC2 PULSE PW 64 SEMI 0 FINE 68 (+3.1 cents) LVL 100, X-MOD 70, CUTOFF 60, RESO 20, ENV AMT 114, KEY TRK 64, FILTER LP24 DRIVE 40, FILTER ENV A20 D60 S60 R60, AMP ENV A2 D70 S100 R25, LFO RANDOM RATE 94 (5.7 Hz) PHASE FREE PITCH 16 (±19 cents) PITCH> BOTH, VINTAGE 30, SPREAD 60, VOLUME 104 (−18.1 dBFS RMS on the splice phrase, peak −12.9), CHEW 80 WOW/FLT 64 HISS 0 DROPS 90; DLY MIX 0, DRAIN 0, ALLEY 0, GROWL 0, no arp` — `PF_TAPE_SPLICE` in `firmware/src/obv_patches.h`.

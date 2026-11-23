@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A broken-strobe tremolo: a bright saw chopped on and off by a hard square-shaped LFO, not a gentle sine. Every note is a pair of voices, and the voices of the pair chop slightly out of step, so the chop has an off part, a reduced-level part and a full part instead of a clean on/off. It is dry: no echo, no spring, no tape.
+A broken-strobe tremolo: a bright saw chopped on and off by a hard square-wave LFO, not a gentle sine. Every note is two voices, and the pair chop slightly out of step, so the chop has an off part, a half part and a full part instead of a clean on/off. Dry.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
@@ -15,9 +15,37 @@ A broken-strobe tremolo: a bright saw chopped on and off by a hard square-shaped
 
 Closest to: **an SH-101 saw through a Boss TR-2 on square**.
 
+## 4. Sound design notes
+
+- **Where it lives:** held notes, riffs and three-note chords around A3 to A4. Every note is two voices, so three notes fill it.
+- **The chop does not follow the tempo.** It ships at sixteenths for 120 BPM. Set it by ear with LFO RATE (SELECT on HOME): RATE 87 is eighths and 101 sixteenths at 120 BPM; at 140 BPM, 90 and 104; at 90 BPM, 81 and 95. Over a long phrase it slowly slides against the beat.
+- **Notes don't always start on:** the chop runs freely, so a note can begin in an off part.
+- **It reads a little hot** next to the rest of the bank: about 2.5 dB on stabs.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE DUAL (DETUNE 30: the pair is 5.5 cents apart), POLY 6, GLIDE 0, OSC1 SAW LVL 127, OSC2 SAW SEMI 0 FINE 69 (+3.9 cents) LVL 127, CUTOFF 95, RESO 20, ENV AMT 90, KEY TRK 64, FILTER LP24 DRIVE 60, FILTER ENV A20 D70 S40 R60, AMP ENV A3 D70 S127 R40, LFO SQUARE RATE 101 (8.10 Hz) PHASE SPREAD DELAY 0 AMP 127 PITCH 0, VINTAGE 60, SPREAD 60, VOLUME 84 (−17.9 dBFS RMS on the chop phrase, peak −6.2); DLY MIX 0 (DLY FEEDBK 35 is inert), DRAIN 0, CHEW 0, GROWL 0, no arp` — `PF_TREM_CHOP` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A broken-strobe tremolo: a bright saw chopped on and off by a hard square-shaped LFO, not a gentle sine. Every note is a pair of voices, and the voices of the pair chop slightly out of step, so the chop has an off part, a reduced-level part and a full part instead of a clean on/off. It is dry: no echo, no spring, no tape.
+
+### 3. Gear inspirations (docs only, "inspired by")
+
+- **Roland SH-101** — the source: *bright, punchy*.
+- **Boss TR-2 Tremolo (square setting)** — the chop: *choppy, gated*.
+- **Electro-Harmonix Pulsar** — *choppy, rhythmic*.
+- **Korg Polysix** — *drift*.
+
+Closest to: **an SH-101 saw through a Boss TR-2 on square**.
+
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Register:** it was voiced on a held A3 (2.4 s), a six-note riff of 500 ms notes (A3 C4 E4 D4 C4 A3), the chord A3 + E4 + A4, and eight 110 ms notes; other registers are untested.
 - **It is DUAL with POLY 6: every note is two voices.** A three-note chord uses all six and plays whole (the chord phrase was rendered); four-note chords were not tested. PHASE SPREAD offsets the LFO by 45° per voice, so the two voices of a note chop an eighth of a cycle apart (about 15 ms at the default rate).
@@ -30,7 +58,3 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **Level:** matched to the bank reference on the chop phrase, off parts included (−17.9 dBFS RMS). **It reads about 2.5 dB hot on phrase (b)** (−15.4), and its peak is −6.2 dBFS (whole renders; the limit is −4).
 - **Costs, honestly:** about 2375 host instr/sample worst case (idle 1163 plus 1211 under load); the original is 1402 and the MONO variant B 1366; B and D differ only in MODE (MONO to DUAL), POLY 6, PHASE (SYNC to SPREAD) and VOLUME. The device build was not run and the render time on the device is not measured.
 - **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, CHEW, ALLEY, DRAIN, the other LFO shapes (RAMP, SAW, S&H) on the amp.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE DUAL (DETUNE 30: the pair is 5.5 cents apart), POLY 6, GLIDE 0, OSC1 SAW LVL 127, OSC2 SAW SEMI 0 FINE 69 (+3.9 cents) LVL 127, CUTOFF 95, RESO 20, ENV AMT 90, KEY TRK 64, FILTER LP24 DRIVE 60, FILTER ENV A20 D70 S40 R60, AMP ENV A3 D70 S127 R40, LFO SQUARE RATE 101 (8.10 Hz) PHASE SPREAD DELAY 0 AMP 127 PITCH 0, VINTAGE 60, SPREAD 60, VOLUME 84 (−17.9 dBFS RMS on the chop phrase, peak −6.2); DLY MIX 0 (DLY FEEDBK 35 is inert), DRAIN 0, CHEW 0, GROWL 0, no arp` — `PF_TREM_CHOP` in `firmware/src/obv_patches.h`.

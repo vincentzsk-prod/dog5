@@ -4,11 +4,39 @@
 
 ## 2. What it sounds like
 
+A kick substitute made of one hard square wave: pixelated, gritty and blown out, like a photocopy reduced to pure black and white. The pitch drops fast at the strike, and a random stepped pitch moves each hit to new values, so no two hits sound quite alike. No attack, and it stops quickly when you let go. Dry: no tape, no drive, no echo, no spring.
+
+## 3. Gear inspirations (docs only, "inspired by")
+
+- **Roland TR-808 kick** — *sub, thump*.
+- **Roland SH-101** — *sub, thick*.
+- **Tascam Portastudio cassette 4-track** — *lo-fi, noisy*.
+- **ProCo RAT** — *crunchy, driven*.
+
+Closest to: **an 808 kick smashed onto a blown-out cassette 4-track (the tape and the drive are the inspiration, not in the patch)**.
+
+## 4. Sound design notes
+
+- **Where it lives:** low hits on A1 and A2, or four on the floor. A0 is mostly below what a small speaker can play.
+- **Play it detached.** It is MONO: a legato note slides without a new hit, and a chord plays one note.
+- **The kick is the quick pitch drop,** not a click. The random steps are the glitch: LFO PITCH on the LFO DEST page sets how wild they get, and 0 makes every hit the same.
+- **It is already near the top of its VOLUME,** so there is little room above the bank level: turn the master up, not the patch.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE MONO, GLIDE 0, OSC1 OFF (LVL 40), OSC2 PULSE PW 64 SEMI +12 FINE 68 (+3.1 cents) LVL 127, ENV>O2 110 (+17 st), X-MOD 0, NOISE 0, CUTOFF 105, RESO 0, ENV AMT 64 (0), KEY TRK 0, FILTER LP12 DRIVE 0, FILTER ENV A0 D40 S0 R60, AMP ENV A0 D76 S0 R20, LFO S&H RATE 120 (21.1 Hz) PHASE FREE PITCH 80 (±470 cents) PITCH> BOTH, VINTAGE 30, SPREAD 60, VOLUME 123 (−18.1 dBFS RMS on the kick phrase, peak −10.7); CHEW 0 HISS 0 DROPS 0, GROWL 0, DLY MIX 0, DRAIN 0, ALLEY 0, no arp` — `PF_ZEAROX` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
 A kick substitute made of a single square wave. The pitch drops fast at the very start, and a fast random stepped pitch LFO moves it to a new random value again and again, so each hit gets a few random pitch steps (a longer note gets more). The wave stays almost entirely at its extreme levels, there is no attack, and the hit stops quickly when you let go. It is dry: no tape, no drive stage, no echo, no spring.
 
 The owner's own description of the intent: pixelated, gritty, blown out, like a photocopy reduced to pure black and white. That is the intent, not a measurement.
 
-## 3. Gear inspirations (docs only, "inspired by")
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Roland TR-808 kick** — *sub, thump*.
 - **Roland SH-101** — *sub, thick*.
@@ -19,7 +47,7 @@ Closest to: **an 808 kick smashed onto a blown-out cassette 4-track**.
 
 Nothing here says the patch matches these: it was built from the descriptions, by measurement, and approved by ear. The tape part of that picture is not in this patch: the tape was removed in round 2 at the owner's direction (CHEW, HISS and DROPS are 0), and the drive stage (GROWL) is not used either.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **Register:** it was voiced on three isolated 150 ms hits (A0 27.5 Hz, A1 55 Hz, A2 110 Hz) and four hits a bar of A1 at 120 BPM; the pilot riff and stabs phrases were rendered too. Other registers are untested.
 - **It is MONO, so legato does not re-fire the envelopes:** a key held while the next goes down slides to the new note and the envelopes do not restart. Play it detached. A chord plays one note (the last).
@@ -33,7 +61,3 @@ Nothing here says the patch matches these: it was built from the descriptions, b
 - **Not bit-comparable from the boot patch:** the sample-and-hold LFO follows the engine's random state, and the audio differs between the boot patch and INIT (the difference between the two renders is 1.9 to 2.9 dB louder than the signal on the test phrases; they are bit-identical when both load from INIT). The cause was not isolated.
 - **Costs, honestly:** about 1337 host instr/sample worst case (idle 1164, the engine alone, plus 173 under load; the original 1361). Not used here: GROWL 104 would add about 595 and CHEW 127 about 784 (measured on the round-2 test patch). The device build was not run and the render time on the device is not measured.
 - **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), ALLEY, DRAIN, GROWL, CHEW.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE MONO, GLIDE 0, OSC1 OFF (LVL 40), OSC2 PULSE PW 64 SEMI +12 FINE 68 (+3.1 cents) LVL 127, ENV>O2 110 (+17 st), X-MOD 0, NOISE 0, CUTOFF 105, RESO 0, ENV AMT 64 (0), KEY TRK 0, FILTER LP12 DRIVE 0, FILTER ENV A0 D40 S0 R60, AMP ENV A0 D76 S0 R20, LFO S&H RATE 120 (21.1 Hz) PHASE FREE PITCH 80 (±470 cents) PITCH> BOTH, VINTAGE 30, SPREAD 60, VOLUME 123 (−18.1 dBFS RMS on the kick phrase, peak −10.7); CHEW 0 HISS 0 DROPS 0, GROWL 0, DLY MIX 0, DRAIN 0, ALLEY 0, no arp` — `PF_ZEAROX` in `firmware/src/obv_patches.h`.

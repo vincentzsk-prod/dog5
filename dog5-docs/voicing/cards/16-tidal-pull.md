@@ -4,9 +4,37 @@
 
 ## 2. What it sounds like
 
-A stereo chord wash of triangle-like tones (narrow pulses through a low-pass, with an octave-up copy), moved by a slow triangle LFO on pitch. The notes come in gradually, an echo follows each note, and a spring rings behind both. It is a dark patch, not a bright one.
+A stereo chord wash of soft, triangle-like tones (narrow pulses through a low-pass, with an octave-up copy), moved by a slow vibrato. The notes come in gradually, an echo follows each one and a spring rings behind both. A dark patch, not a bright one.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Roland Juno-60** — a wash of pulses: *wash*.
+- **Fender Twin Reverb** — the spring: *springy*.
+- **Roland RE-201 Space Echo** — the echo: *wet*.
+
+Closest to: **a Juno-60 chord pad through a Twin Reverb spring and a Space Echo**.
+
+## 4. Sound design notes
+
+- **Where it lives:** held chords (sevenths suit it) around F3 to G4. Up to five notes.
+- **It fades in,** so held chords bloom and short stabs stay quiet.
+- **The echo sits above the spring** (337 ms): you hear the repeat first, then the spring around it.
+- **Wider:** DUAL mode with more voices widens it at the cost of polyphony and CPU.
+- Soft and dark by design; CUTOFF up brightens it.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), OSC1 PULSE PW 32 (25 %) LVL 110, OSC2 PULSE PW 32 SEMI +12 FINE 66 (+1.6 cents) LVL 84, CUTOFF 64 (523 Hz at C4), RESO 0, ENV AMT 64 (0), KEY TRK 127, FILTER LP12, AMP ENV A82 D70 S127 R92, LFO TRI RATE 76 (2.30 Hz) PHASE SPREAD PITCH 16 (±19 cents) PWM 0 AMP 0, VINTAGE 50, SPREAD 127, VOLUME 76 (−19.1 dBFS RMS on the wash phrase, peak −4.4); DLY MIX 110 (ALLEY 104 = 337 ms, FEEDBK 78, TONE 100, PINGPONG 127), DRAIN 45, SIZE 90, DAMP 35, PRE-DLY 20; CHEW 0, GROWL 0, no arp` — `PF_TIDAL_PULL` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A stereo chord wash of triangle-like tones (narrow pulses through a low-pass, with an octave-up copy), moved by a slow triangle LFO on pitch. The notes come in gradually, an echo follows each note, and a spring rings behind both. It is a dark patch, not a bright one.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Roland Juno-60** — *a wash of pulses* (pulses only; the L/R correlation is 0.70 dry and 0.66 with the echo and spring; the pair is 1.6 cents apart and beats 0.6 dB in the A3 band, so "fat" is not supported by the measurements).
 - **Fender Twin Reverb** — *springy* (the spring's measured return is in section 4; "bright" is not supported: the centroid is 595 Hz).
@@ -16,7 +44,7 @@ Closest to: **a Juno-60 chord pad through a Twin Reverb spring and a Space Echo*
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **It is triangle-like, not a sine, dark, and peak-limited.** Two narrow pulses (PW 25 %), OSC 2 an octave up (+12 st, LEVEL 84, +1.6 cents), through a 12 dB low-pass at 100 % key tracking (CUTOFF 64 = 523 Hz at C4, RESO 0). On OSC 1 through the filter, harmonics 3 / 5 / 7 re the fundamental are −17.2 / −27.3 / −36.8 dB against an ideal triangle's −19.1 / −28.0 / −34.2 (a square: −9.5 / −14.0 / −16.9). Centroid 595 Hz over the note-on region, 0.5 % of its energy above 1.2 kHz, MUD ratio (150 to 400 over 1.2k+) 133. Level: −19.1 dBFS RMS on the wash phrase (VOLUME 76), 1.1 dB under the bank reference and inside ±1.5 dB: the peak is −4.4 dBFS at this level, so it is limited by the peak, not matched to −18.0.
 - **Attack (amp envelope, one voice, LFO off):** 10 / 50 / 90 % of the level at 17 / 93 / 219 ms (AA 82; the time table's nominal is 299 ms). Phrase (b), 180 ms stabs, reads −26.8 dBFS RMS, 7.7 dB under the wash phrase: on this phrase, short notes do not reach the level of the held chords.
@@ -29,7 +57,3 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **First play after power-on:** the program-load render differs from the render built over INIT: −24.0 dB (wash phrase) and −28.0 dB (stabs) relative to the signal; both loaded from INIT they are bit-identical. The cause is not isolated.
 - **Costs:** about 2027 host instr/sample worst case (idle 1180 + 847 under load). The device build was not run and the device render time is not measured.
 - **Tricks:** untested on this patch: the SLOBBER slop ride, SEQ held (Tape Stop), the kill switch (HEEL), GROWL, CHEW.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), OSC1 PULSE PW 32 (25 %) LVL 110, OSC2 PULSE PW 32 SEMI +12 FINE 66 (+1.6 cents) LVL 84, CUTOFF 64 (523 Hz at C4), RESO 0, ENV AMT 64 (0), KEY TRK 127, FILTER LP12, AMP ENV A82 D70 S127 R92, LFO TRI RATE 76 (2.30 Hz) PHASE SPREAD PITCH 16 (±19 cents) PWM 0 AMP 0, VINTAGE 50, SPREAD 127, VOLUME 76 (−19.1 dBFS RMS on the wash phrase, peak −4.4); DLY MIX 110 (ALLEY 104 = 337 ms, FEEDBK 78, TONE 100, PINGPONG 127), DRAIN 45, SIZE 90, DAMP 35, PRE-DLY 20; CHEW 0, GROWL 0, no arp` — `PF_TIDAL_PULL` in `firmware/src/obv_patches.h`.

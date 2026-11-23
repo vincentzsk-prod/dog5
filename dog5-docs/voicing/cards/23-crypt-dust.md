@@ -4,9 +4,37 @@
 
 ## 2. What it sounds like
 
-A thin, narrow pulse run through a band-pass into a pale, dusty tone, with only a trace of noise under it. The level flutters slowly and irregularly, in steps. A short echo and a large spring blur it. It rises slowly when you press a chord and hangs on after you let go. It is a held-chord pad; short notes are faint.
+A thin, narrow pulse through a band-pass into a pale, dusty tone, with only a trace of noise under it. The level flutters slowly and irregularly, in steps. A short echo and a large spring blur it. It rises slowly when you press a chord and hangs on after you let go.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Korg MS-20** — noise plus a thin pulse: *thin*.
+- **Roland RE-201 Space Echo** — the worn echo.
+- **Mellotron M400** — the dusty, pale tone as the reference.
+
+Closest to: **a thin pulse and a trace of dust through a band-pass, into a short echo and a large spring**.
+
+## 4. Sound design notes
+
+- **Hold the chord:** a key, the sustain pedal or REC (HOLD). It is a held-chord pad; it fades in slowly, so short notes are faint.
+- **Chords: up to four notes.**
+- **The dust is the NOISE knob** (MIXER page). Keep it low: more noise quickly drowns the thin pulse.
+- **The flutter is one stepped LFO** on level and filter: LFO RATE changes its pace.
+- A chord peaks close to the limit, so there is little VOLUME headroom. There is no tape on it.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 4), OSC1 PULSE PW 15 (12 %) LEVEL 127, OSC2 OFF, NOISE 43, FILTER BP12 CUTOFF 72 (831 Hz before key tracking) RESO 50 KEY TRK 64 ENV AMT 64 (zero), FILTER ENV A60 D70 S40 R60 (inert at ENV AMT 64), AMP ENV A100 D70 S100 R110, LFO S&H RATE 58 (0.93 Hz) PHASE FREE AMP 46 FILTER 45 PITCH 0, VINTAGE 30, SPREAD 60, BBD ALLEY 60 (75 ms) FEEDBK 60 TONE 55 MIX 85 PINGPONG 127, spring SIZE 127 DAMP 40 PRE-DLY 20 DRAIN 80, GROWL 0, CHEW 0, VOLUME 120` — `PF_CRYPT_DUST` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A thin, narrow pulse run through a band-pass into a pale, dusty tone, with only a trace of noise under it. The level flutters slowly and irregularly, in steps. A short echo and a large spring blur it. It rises slowly when you press a chord and hangs on after you let go. It is a held-chord pad; short notes are faint.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Korg MS-20** — *noise plus a thin pulse; Thin, Gritty.* The thin pulse is a 12 % pulse (OSC 1, PW 15) and the noise is a trace: it reads 24.4 dB under the pulse in the settled chord (NOISE 43, a square law) (measured). Thin: the pulse is narrow (measured as a setting); a comparison with a thin sound was not made. Gritty: not measured.
 - **Roland RE-201 Space Echo** — *the worn echo.* The echo is 75 ms at FEEDBK 60 and MIX 85: the first repeat sits 9.6 dB under the note on a short chord stab, 6 repeats stay above −40 dB under the note and 4 above −20 dB, and the echo return takes 381 ms to fall to −40 dB (measured on a probe copy with a fast attack and release). The tape wobble and lo-fi trait of the worn unit are not in this patch: the tape is off.
@@ -16,7 +44,7 @@ Closest to: **a thin pulse and a trace of dust through a band-pass, into a short
 
 Nothing here says the patch matches these: it was built toward the descriptions, by measurement, and approved by ear.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **The brief changed.** The brief was "noise + thin pulse, heavy tape wow, no drive". The final patch has **no tape at all (CHEW 0)**, and the noise is a trace. Vincent found that the noise drowned out the pulse and asked for it to be removed except for a tiny trace of dust. **Not in the final patch: the heavy tape wow and the warped tape character.** No drive (GROWL 0).
 - **Hold the chord.** A held pad needs the key, a sustain pedal or REC (HOLD), which latches the notes until REC again or STOP.
@@ -29,7 +57,3 @@ Nothing here says the patch matches these: it was built toward the descriptions,
 - **What it loses against round 1, measured.** Against the noisy D (NOISE 127): the held-chord centroid 3289 → 1970 Hz (D2, the same with two voices: 2064 Hz), the share above 4 kHz 2.5 % → 0.7 %. Against the tape versions: the tape wow (pulse pitch s.d. 7.4 cents at heavy tape B, 3.3 cents at half tape C2, here 1.9), the dropouts (4 over 6 dB, deepest 10.7 dB, at B) and the hiss floor (−53.5 dBFS at B, −65 .. −67 at C, here −74 .. −87).
 - **Legato:** POLY, so the MONO / UNISON no-retrigger rule does not apply (engine fact; not tested on this patch).
 - **Tricks:** SLOBBER, SEQ held (Tape Stop), the kill switch (HEEL), GROWL are untested on this patch; CHEW is off. The kill switch clears the echo buffers (engine fact; not tested here).
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 4), OSC1 PULSE PW 15 (12 %) LEVEL 127, OSC2 OFF, NOISE 43, FILTER BP12 CUTOFF 72 (831 Hz before key tracking) RESO 50 KEY TRK 64 ENV AMT 64 (zero), FILTER ENV A60 D70 S40 R60 (inert at ENV AMT 64), AMP ENV A100 D70 S100 R110, LFO S&H RATE 58 (0.93 Hz) PHASE FREE AMP 46 FILTER 45 PITCH 0, VINTAGE 30, SPREAD 60, BBD ALLEY 60 (75 ms) FEEDBK 60 TONE 55 MIX 85 PINGPONG 127, spring SIZE 127 DAMP 40 PRE-DLY 20 DRAIN 80, GROWL 0, CHEW 0, VOLUME 120` — `PF_CRYPT_DUST` in `firmware/src/obv_patches.h`.

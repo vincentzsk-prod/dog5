@@ -4,7 +4,7 @@
 
 ## 2. What it sounds like
 
-A tight, plucky square stab with a resonant plop on the front, drenched in spring. The note has a body now and it holds for as long as you play it; the spring rings on after the note and is the sound of the patch. It is a wet, springy, boingy reggae stab.
+A tight, plucky square stab with a resonant plop on the front, drenched in spring. The note holds its body for as long as you play it; the spring rings on after the note and is the sound of the patch. A wet, springy, boingy reggae stab.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
@@ -18,6 +18,35 @@ Closest to: **an MS-20 plop into a Fender spring tank**.
 
 ## 4. Sound design notes
 
+- **Where it lives:** off-beat two-note stabs of about a tenth of a second, around A3 to C4: the skank.
+- **The spring is the sound.** It sits a little under the note while you play and rings louder than it just after: that's the boing. DRAIN is the knob if you want it drier.
+- **The plop is soft on purpose:** the filter rests above the notes so the body survives the gate. RESO brings more plop.
+- It is a stab patch: one oscillator, steady, no wobble. Chords up to five notes.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), OSC1 PULSE PW 64 LVL 110, OSC2 OFF, CUTOFF 46, RESO 62, ENV AMT 118, KEY TRK 100, FILTER LP12, FILTER ENV A20 D56 S40 R60, AMP ENV A0 D70 S64 R28, SPRING DRAIN 90 SIZE 70 DAMP 40 PRE-DLY 4 (1.1 ms), VOLUME 92 (-17.9 dBFS RMS over the stabs of the skank phrase, spring on; dry stabs alone -19.0; phrase (b) -17.4; peak -6.3); GROWL/ALLEY/CHEW 0, no LFO, no arp` — `PF_SKEENHEAD` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A tight, plucky square stab with a resonant plop on the front, drenched in spring. The note has a body now and it holds for as long as you play it; the spring rings on after the note and is the sound of the patch. It is a wet, springy, boingy reggae stab.
+
+### 3. Gear inspirations (docs only, "inspired by")
+
+- **Korg MS-20** — the resonant filter plop: *plucky, biting*.
+- **Roland SH-101** — the tight, quick stab: *tight, punchy*.
+- **Moog Prodigy** — the single raw square: *fat, cheap, raw*.
+- **Fender spring reverb tank (Twin Reverb style)** — the drench: *springy, boingy*.
+- **Roland RE-201 Space Echo** — the dub-style tail: *warm*.
+
+Closest to: **an MS-20 plop into a Fender spring tank**.
+
+### 4. Sound design notes
+
 - **Register and gate:** off-beat two-note stabs of about a tenth of a second, around A3 to C4 (the skank it was voiced on). Other registers are untested.
 - **The plop is still there, softer.** The resonant filter sweep is still audible by tone (measured: the first 23 ms of a stab are twice as bright as the next 67), but the first 20 ms is now only about 3.5 dB louder than the body, so the pop is softer than in the first version of this patch.
 - **The body survives the gate.** The filter now rests above the played notes instead of closing under them, and the amp holds (measured: the level falls under 4 dB inside the gate; the first version fell almost 17 dB and left a hum).
@@ -27,7 +56,3 @@ Closest to: **an MS-20 plop into a Fender spring tank**.
 - **Chords:** polyphony is the default 5, so a two-note stab uses two voices; larger chords were not tried.
 - **Tricks that suit it:** untested on this patch: the SLOBBER slop ride, Tape Stop (SEQ held), the kill switch (HEEL), the ALLEY echo, GROWL, CHEW. Turning DRAIN down for a drier stab is untested.
 - **Held notes:** it is a stab patch. A held note was not measured on this version.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), OSC1 PULSE PW 64 LVL 110, OSC2 OFF, CUTOFF 46, RESO 62, ENV AMT 118, KEY TRK 100, FILTER LP12, FILTER ENV A20 D56 S40 R60, AMP ENV A0 D70 S64 R28, SPRING DRAIN 90 SIZE 70 DAMP 40 PRE-DLY 4 (1.1 ms), VOLUME 92 (-17.9 dBFS RMS over the stabs of the skank phrase, spring on; dry stabs alone -19.0; phrase (b) -17.4; peak -6.3); GROWL/ALLEY/CHEW 0, no LFO, no arp` — `PF_SKEENHEAD` in `firmware/src/obv_patches.h`.

@@ -4,10 +4,7 @@
 
 ## 2. What it sounds like
 
-Fat, slop-heavy dual saws with a sub-octave underneath: seasick, never quite in tune with itself, and thick without
-going murky. Short notes are chopped stone-dead by the gate, and the tail doesn't fade, it sputters — a few ragged
-stutters as the note dies. It is a raw, dry, engine-only sound with no effects on it: the drift and the chop are the
-whole point. This is the DØG-5 thesis in a single patch.
+Fat, slop-heavy dual saws with a sub-octave underneath: seasick, never quite in tune with itself, and thick without going murky. Short notes are chopped stone-dead by the gate, and the tail doesn't fade, it sputters: a few ragged stutters as the note dies. Raw, dry, engine-only: the drift and the chop are the whole point. The DØG-5 thesis in one patch.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
@@ -16,9 +13,41 @@ whole point. This is the DØG-5 thesis in a single patch.
 - **Minimoog** — the body under the instability: *fat, sub-heavy, thick*.
 - **Korg MS-20** — the bite and the spit in the filter and the tail: *nasty, biting, spitting*.
 
-Closest to: **Korg Mono/Poly** — its drifting, detuned saw chaos, with Minimoog weight underneath, chopped by the gate.
+Closest to: **a Korg Mono/Poly: drifting, detuned saw chaos with Minimoog weight underneath, chopped by the gate**.
 
 ## 4. Sound design notes
+
+- **Where it lives:** low to low-mid, roots and fifths from about A1 to A3. Fifth-and-octave power chords are home ground.
+- **Play it staccato:** notes of roughly 150 to 180 ms give a hard clean body and a sputtering tail. Hold a note longer and it spits all the way through; very short notes only catch the start. Riffs and stabs, not pads.
+- **Chords: three notes at most.** Every note is two voices, so a fourth note steals from the others.
+- **SLOBBER is its best trick:** ride ALGORITHM up and it goes from seasick to dying tape motor. Tape Stop (hold SEQ) makes a good riff ending; HEEL stops the sound and the sputter dead.
+- **Keep the Psych Chain off:** a wash of ALLEY or DRAIN buries the sputter.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE DUAL, DETUNE 60, POLY 6, SPREAD 110, VINTAGE 90, OSC1 SAW 110, OSC2 SAW -12st LVL 80, CUTOFF 76, RESO 30, ENV AMT 96, FILTER LP24, AMP RELEASE 62 (others default), LFO SQUARE RATE 119 (20.1 Hz) DELAY 19 (112 ms) -> AMP 100, VOLUME 112 (-18.0 dBFS RMS bank reference); GROWL/ALLEY/DRAIN/CHEW 0` — `PF_HALF_LIFE` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+Fat, slop-heavy dual saws with a sub-octave underneath: seasick, never quite in tune with itself, and thick without
+going murky. Short notes are chopped stone-dead by the gate, and the tail doesn't fade, it sputters — a few ragged
+stutters as the note dies. It is a raw, dry, engine-only sound with no effects on it: the drift and the chop are the
+whole point. This is the DØG-5 thesis in a single patch.
+
+### 3. Gear inspirations (docs only, "inspired by")
+
+- **Korg Mono/Poly** — detuned oscillators that drift and never settle: *fat, slop, seasick, thick*.
+- **Sequential Prophet-5 (early, tuning-unstable revisions)** — the dual-saw warmth with the drift: *fat, warm, drift*.
+- **Minimoog** — the body under the instability: *fat, sub-heavy, thick*.
+- **Korg MS-20** — the bite and the spit in the filter and the tail: *nasty, biting, spitting*.
+
+Closest to: **Korg Mono/Poly** — its drifting, detuned saw chaos, with Minimoog weight underneath, chopped by the gate.
+
+### 4. Sound design notes
 
 - **Register:** low to low-mid. Roots and fifths from about A1 to A3 are where the sub and the pair sit best. Fifth-and-octave
   power chords are its home ground.
@@ -36,7 +65,3 @@ Closest to: **Korg Mono/Poly** — its drifting, detuned saw chaos, with Minimoo
   - **Kill switch (HEEL)** for a dead stop mid-riff: the sound and the sputter stop at once.
   - **Macros (GROWL, ALLEY, DRAIN, CHEW):** all at 0 on purpose. Untested on this patch, so treat them as
     open: the dry chop is the sound, and a wash of ALLEY or DRAIN on the tail will bury the sputter.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE DUAL, DETUNE 60, POLY 6, SPREAD 110, VINTAGE 90, OSC1 SAW 110, OSC2 SAW -12st LVL 80, CUTOFF 76, RESO 30, ENV AMT 96, FILTER LP24, AMP RELEASE 62 (others default), LFO SQUARE RATE 119 (20.1 Hz) DELAY 19 (112 ms) -> AMP 100, VOLUME 112 (-18.0 dBFS RMS bank reference); GROWL/ALLEY/DRAIN/CHEW 0` — `PF_HALF_LIFE` in `firmware/src/obv_patches.h`.

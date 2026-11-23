@@ -5,7 +5,7 @@ the build. Where it conflicts with anything in the preserved OberVave notes (`do
 the base code, **this brief wins.** Full reasoning for every decision here lives in `dog5-docs/` — this is the
 summary a fresh session needs before touching anything.
 
-**Last updated:** 23 Nov 2026 (Batch 29: the installer survives a background tab, Sound design notes, the manual's bullets, the art docs re-skin), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
+**Last updated:** 23 Nov 2026 (Batch 30: the player-facing sound text rewritten, Manual Parts 3–4 generated from the cards, the manual page redesigned, the credits pass), by Vincent Kruger (DØGS) with Claude. First assembled 27 Oct as an
 account-transition handoff — treat `dog5-docs/` as the complete project record.
 
 ---
@@ -291,8 +291,8 @@ washing line went with ACID CAN; the cat is not in the field (build kit, AS BUIL
   **Browser player (Batch 8B, live at `docs/play/` = `https://vincentzsk-prod.github.io/dog5/play/`):** `sh web/sim/build.sh`
   builds the unchanged firmware + `web/sim/sim.c` to `docs/play/dog5.wasm` (zig cc, then Binaryen `wasm-opt --asyncify`) and copies
   the page (`index.html`, `sim.js`, `sim.css`, `worklet.js`) and `patches.json` (the 32 factory names, read from
-  `obv_patches.h` by `web/sim/gen_patches.py`, plus each patch's voice card from `dog5-docs/voicing/cards/`, shown under the
-  unit when a patch is picked, Batch 28). Tools, installed by hand once (the script installs nothing and prints the
+  `obv_patches.h` by `web/sim/gen_patches.py`, plus each patch's voice card from `dog5-docs/voicing/cards/` (sections 2–4; the
+  same text as Manual Part 3), shown under the unit when a patch is picked, Batch 28). Tools, installed by hand once (the script installs nothing and prints the
   commands): `python3 -m venv ~/.local/share/obervave-wasm && ~/.local/share/obervave-wasm/bin/pip install ziglang`, and
   `npm install --prefix ~/.local/share/obervave-wasm/npm binaryen` (wasm-opt 132; the script finds it there). Test:
   `node tests/sim_test.mjs` (default `docs/play/dog5.wasm`; sound is checked bit-for-bit against the host build). The sim keeps
@@ -353,7 +353,10 @@ web player, the Driver Manual as a page (`docs/manual/`, `tools/make_manual_page
 (`dog5-docs/BATCH-28-V11-CARDS-PLAYER.md`). **Batch 29:** an install failed when the installer tab went to the background
 (Chrome slowed the page's timers until the loader gave up): the page's waits no longer depend on throttled timers; the cards'
 "How to play it" is **Sound design notes**; the manual's bullets checked; the art docs re-skinned (AS BUILT boxes)
-(`dog5-docs/BATCH-29-INSTALLER-DOCS.md`). **Stage 3 is done** pending
+(`dog5-docs/BATCH-29-INSTALLER-DOCS.md`). **Batch 30:** the cards' and the manual's sound text rewritten for players (the
+measured text kept: each card's section 6, `dog5-docs/manual/DOG-5-driver-manual-records.md`); **Manual Parts 3–4 are
+generated from the cards** (`tools/make_manual_patches.py`); the manual page redesigned; the credits pass
+(`dog5-docs/BATCH-30-SOUND-TEXT-CREDITS.md`). **Stage 3 is done** pending
 Vincent's look on the unit.
 
 ---
@@ -411,11 +414,15 @@ Vincent's look on the unit.
 - `BATCH-09B-CONTROLS.md` (the control surface in detail), `BATCH-11-TEST-BUILD-0.2.md` (the 0.2 build record),
   `BATCH-12B-CLEANUP.md` (the repo clean-up), `BATCH-13-FIRMWARE-CLEANUP.md` (the firmware clean-up and its proofs), `BATCH-14-SMALL-CLEANUPS.md` (installer and web-player fixes) and
   `BATCH-15-WRITE-LOCK.md` (THE POUND / THE PACK), `BATCH-20-SCREEN-ART.md` (HOME's scene, v0.4) and `BATCH-21-BRANDING.md` (the boot animation and the brand look), `BATCH-22-HOME-READOUT-CHAPTERS.md` (v0.4.1), `BATCH-23-FLEAS-FENCE.md` (v0.4.2), `BATCH-24-HOME-DIALS.md` (v0.4.3), `BATCH-25-LFO-DIAL-HOUSEKEEPING.md` (v0.4.4), `BATCH-27-IDENTITY.md` (v0.4.5, `FM-1_3645045`), `BATCH-28-V11-CARDS-PLAYER.md` (the backlog, the card in the player, the manual page, feedback), `BATCH-29-INSTALLER-DOCS.md`
-  (the background-tab install failure and its fix, Sound design notes, the art docs re-skin).
+  (the background-tab install failure and its fix, Sound design notes, the art docs re-skin), `BATCH-30-SOUND-TEXT-CREDITS.md`
+  (the sound text for players, the manual page's look, the credits pass).
 - ⭐ `V1.1-BACKLOG.md` — **every open item, idea and note for this release and v1.1+ in one place** (mirrored as the Project doc
   `DOG-5-v1.1-backlog.md`). New ideas go there; done or dropped items are marked, not deleted.
-- `manual/` — repo copies of the Project's Driver Manual docs; `tools/make_manual_page.py` builds `docs/manual/index.html`
-  from them (`--check`). Edit the Project doc, copy it here, rebuild.
+- `manual/` — the Driver Manual: `DOG-5-driver-manual.md` (Parts 0–2B; a copy of the Project doc: edit the Project doc, copy
+  it here) and `DOG-5-driver-manual-patches.md` (Parts 3–4, **generated from the voice cards** by `tools/make_manual_patches.py`
+  since Batch 30: edit the cards, never this file), plus `DOG-5-driver-manual-records.md` (the measured text of Parts 2–4
+  before the Batch 30 rewrite). `tools/make_manual_page.py` builds `docs/manual/index.html`; both tools have `--check`, and
+  `tests/run_tests.sh` runs them.
 
 **HISTORY — records, do NOT build from (`dog5-docs/history/`):** `DOG-5-build-review.md` (the 20 Oct critique that
 drove the decisions above), `BATCH-07-IDENTITY-AUDIT.md` (which OberVave attributions were kept and why), `DOG-5-field-prompts.md` (the Oct Gemini

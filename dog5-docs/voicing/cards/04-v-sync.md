@@ -4,9 +4,7 @@
 
 ## 2. What it sounds like
 
-A tearing hard-sync lead: the pitch of the synced oscillator rips down on every note, nasal and biting, with a plain saw underneath for body. A pair of voices
-detuned slightly apart makes it fat enough to cut through a drum machine, and the note stops dead when you let go, with only a faint quick slap behind it. It is
-raw on purpose: that is where the rip lives.
+A tearing hard-sync lead: the pitch of the synced oscillator rips down on every note, nasal and biting, with a plain saw underneath for body. Two voices a few cents apart make it fat enough to cut through a drum machine. The note stops dead when you let go, with only a faint, quick slap behind it. Raw on purpose: that is where the rip lives.
 
 ## 3. Gear inspirations (docs only, "inspired by")
 
@@ -18,6 +16,36 @@ raw on purpose: that is where the rip lives.
 Closest to: **a Pro-One sync lead**.
 
 ## 4. Sound design notes
+
+- **Where it lives:** mid register, around A3 to A4. One note at a time: no chords.
+- **Play it staccato.** A note struck while another is held slides in without the rip; a legato run glides and rips only once, on its first note. Detached notes rip every time.
+- **The slap:** a faint 1/16 echo follows each note. The BBD page's MIX at 0 gives a literal dead stop.
+- **Tricks:** SLOBBER pulls the two voices apart; GROWL adds edge (it does little below about 28); HEEL kills the slap too. Keep DRAIN low: a spring blurs the rip.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE UNISON, VOICES 2, DETUNE 22 (~5.5 cents between the pair), GLIDE 20, OSC1 SAW LVL 80, OSC2 SAW +7st LVL 127 SYNC ON, ENV>O2 112 (+48, ~18 st sweep), CUTOFF 92, RESO 24, ENV AMT 88, FILTER LP24 DRIVE 20, FILTER ENV A20 D78 S28 R30, AMP ENV A0 D70 S127 R30, DLY 1/16 FEEDBK 18 MIX 12, VOLUME 91 (-18.0 dBFS RMS bank reference on the lead phrase); GROWL/DRAIN/CHEW 0, no LFO, no arp` — `PF_V_SYNC` in `firmware/src/obv_patches.h`.
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A tearing hard-sync lead: the pitch of the synced oscillator rips down on every note, nasal and biting, with a plain saw underneath for body. A pair of voices
+detuned slightly apart makes it fat enough to cut through a drum machine, and the note stops dead when you let go, with only a faint quick slap behind it. It is
+raw on purpose: that is where the rip lives.
+
+### 3. Gear inspirations (docs only, "inspired by")
+
+- **Sequential Pro-One** — the sync sweep itself: *sync, punchy, ripping*.
+- **Sequential Prophet-5** — the fatness of a doubled voice: *sync, fat*.
+- **ARP Odyssey** — the nasal, cutting tone: *nasal, biting*.
+- **Moog Prodigy** — the cheap, raw edge: *fat, cheap, raw*.
+
+Closest to: **a Pro-One sync lead**.
+
+### 4. Sound design notes
 
 - **Register:** mid, roughly A3 to A4 and around it, where the lead was auditioned. It is a one-note-at-a-time lead: no chords.
 - **Touch and gate: play it staccato.** The rip comes from the filter envelope sweeping the synced oscillator, and in MONO and UNISON a note struck while another is
@@ -31,7 +59,3 @@ Closest to: **a Pro-One sync lead**.
   - **GROWL (adding it live):** more edge on top of the filter DRIVE the patch already has; untested here, and GROWL below about 28 does little.
   - **DRAIN:** at 0 on purpose (no spring); a wash will blur the rip.
 - **Level:** it is set to the bank's level on its lead phrase. Its own volume is a little *below* the default (about 1.6 dB), because the two-voice stack is louder than the one-voice version (which needed about 3 dB more).
-
-## 5. Final values (for debugging, not for players)
-
-`MODE UNISON, VOICES 2, DETUNE 22 (~5.5 cents between the pair), GLIDE 20, OSC1 SAW LVL 80, OSC2 SAW +7st LVL 127 SYNC ON, ENV>O2 112 (+48, ~18 st sweep), CUTOFF 92, RESO 24, ENV AMT 88, FILTER LP24 DRIVE 20, FILTER ENV A20 D78 S28 R30, AMP ENV A0 D70 S127 R30, DLY 1/16 FEEDBK 18 MIX 12, VOLUME 91 (-18.0 dBFS RMS bank reference on the lead phrase); GROWL/DRAIN/CHEW 0, no LFO, no arp` — `PF_V_SYNC` in `firmware/src/obv_patches.h`.

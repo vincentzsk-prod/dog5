@@ -4,9 +4,38 @@
 
 ## 2. What it sounds like
 
-A sustained, struck bell tone built from two saw waves with a mid-frequency sideband character. It rings for several seconds, a slow shimmer moves its pitch and level, and a small echo and a spring sit behind it. It is dry of drive and tape.
+A sustained, struck bell built from two saw waves with a mid-range sideband ring. It rings for several seconds after the strike, a slow shimmer moves its pitch and level, and a small echo and a spring sit behind it. No drive, no tape.
 
 ## 3. Gear inspirations (docs only, "inspired by")
+
+- **Yamaha DX7 (tubular-bells voice)** — the FM ring: *inharmonic*.
+- **A struck tubular or church bell** — the classical bell partials.
+- **Casio CZ-101 (phase-distortion bells)** — a bright, bell-like tone (inspiration only).
+- **Roland D-50 ("Fantasia")** — crystalline (inspiration only: the engine can't make a tail that outlasts its body).
+
+Closest to: **a DX7 tubular bell with a long, slowly moving tail**.
+
+## 4. Sound design notes
+
+- **The key you press is the bell's hum,** its deepest partial; the strike may sound an octave above the key.
+- **It rings on after you let go:** five or six seconds to fade. Leave space between notes, or let them pile up.
+- **Shape it live:** CUTOFF and X-MOD change the brightness without changing the bell. Leave ENV>O2 at the centre: a step either way breaks the bell.
+- **Where it lives:** A2 to A6, level across the whole keybed; the top octave is bright. Up to five notes; a fast run is its loudest phrase.
+- **CPU:** adding CHEW or GROWL on top costs a lot here; on the unit, four notes with all effects pushed read about 4500 of 5800 µs on GLOBAL.
+
+## 5. Final values (for debugging, not for players)
+
+`MODE POLY (POLY 5), OSC1 SAW LEVEL 127, OSC2 SAW LEVEL 70 SEMI +15 FINE 64, X-MOD 32, ENV>O2 64, FILTER LP24 CUTOFF 88 RESO 0 KEY TRK 64 ENV AMT 88, FILTER ENV A0 D90 S30 R70, AMP ENV A0 D116 S0 R116, LFO TRI RATE 40 PITCH 14 AMP 20 DELAY 35 PHASE SYNC, VINTAGE 20, SPREAD 70, GROWL 0, CHEW 0, DRIVE 0, ECHO SYNC 1/8 ALLEY 80 FEEDBK 25 TONE 80 MIX 45, SPRING SIZE 70 DAMP 35 PRE-DLY 15 DRAIN 35, VOLUME 105` — `PF_ARE_TWO_D2` in `firmware/src/obv_patches.h` (was `PF_BELL_XMOD`, round 2's C2 had AMP DECAY / RELEASE 111, echo MIX 30, DRAIN 20, VOLUME 113).
+
+## 6. The voicing record (measured notes, not for players)
+
+*Sections 2–4 as they stood before the Batch 30 rewrite (23 Nov 2026): the measurements, the variants and what was and wasn't tested. The player text above is drawn from this.*
+
+### 2. What it sounds like
+
+A sustained, struck bell tone built from two saw waves with a mid-frequency sideband character. It rings for several seconds, a slow shimmer moves its pitch and level, and a small echo and a spring sit behind it. It is dry of drive and tape.
+
+### 3. Gear inspirations (docs only, "inspired by")
 
 - **Yamaha DX7 (tubular-bells voice)** — *FM clang, inharmonic.* Partly carried: OSC 2 sits +15 semitones above OSC 1 (a ratio of 2.38) and feeds OSC 1 by X-MOD 32. At A4 in the first 300 ms that partial reads 1.197 × the prime at −11.1 dB. With the FM, 3 peaks within −30 dB sit off the key's harmonic series and off that partial (100–400 ms window, A4). Not carried: DX7-style operators (this is one saw modulating another). "Clang" is not measured.
 - **Roland D-50 ("Fantasia")** — *crystalline.* **Not carried.** The engine has no per-partial envelope, so no partial outlasts the body. At A4 the share of energy above 4 kHz is 4.0 % in the first 20 ms and 0.4 % at 1–2 s. The round-1 calibration renders Xopen and Yrise (a filter held open, a filter opening slowly) are on the branch `listen/batch-06b-bell-init`; neither was called crystalline. "Crystalline" is not carried and not measured.
@@ -15,7 +44,7 @@ A sustained, struck bell tone built from two saw waves with a mid-frequency side
 
 Closest to: **a DX7 tubular bell with a long, slowly moving tail**.
 
-## 4. Sound design notes
+### 4. Sound design notes
 
 - **What the key is:** the key you press is the bell's hum, the strongest partial; the prime is an octave above it. The strike may therefore feel an octave above the key (not measured as perceived pitch).
 - **The bell ladder** (first 300 ms of a held note, dB re the strongest partial, with the measured ratio against the prime): at **A4** hum 0.498 at 0, prime 0.997 at −7.7, tierce 1.197 at −11.1, quint 1.496 at −10.5, nominal 1.995 at −13.6. At **A3** hum 0.499 at 0, prime 0.996 at −4.9, tierce 1.210 at −10.1, quint 1.496 at −7.8, nominal 1.994 at −12.4. At 1–2 s (A4) the same five read 0 / −9.2 / −13.7 / −15.1 / −17.4 dB.
@@ -41,7 +70,3 @@ Closest to: **a DX7 tubular bell with a long, slowly moving tail**.
 - **Level and peak:** −19.13 dBFS RMS on the slow toll, peak over all phrases tried −4.03 dBFS, no sample at full scale; the dry strike's crest factor is 10.5 dB.
 - **Tricks:** SLOBBER, SEQ held (Tape Stop), the kill switch (HEEL): untested on this patch.
 - **Changed from the brief:** the original brief (an inharmonic FM chime against the hard-chop gate, "the friction is the point") is retired. Vincent asked for a bell ring with body, a healthy decay and sustain, a clean base to shape live and no top grit; the name changed from Bell Tolls. The original brief is kept in `DOG-5-presets.md`.
-
-## 5. Final values (for debugging, not for players)
-
-`MODE POLY (POLY 5), OSC1 SAW LEVEL 127, OSC2 SAW LEVEL 70 SEMI +15 FINE 64, X-MOD 32, ENV>O2 64, FILTER LP24 CUTOFF 88 RESO 0 KEY TRK 64 ENV AMT 88, FILTER ENV A0 D90 S30 R70, AMP ENV A0 D116 S0 R116, LFO TRI RATE 40 PITCH 14 AMP 20 DELAY 35 PHASE SYNC, VINTAGE 20, SPREAD 70, GROWL 0, CHEW 0, DRIVE 0, ECHO SYNC 1/8 ALLEY 80 FEEDBK 25 TONE 80 MIX 45, SPRING SIZE 70 DAMP 35 PRE-DLY 15 DRAIN 35, VOLUME 105` — `PF_ARE_TWO_D2` in `firmware/src/obv_patches.h` (was `PF_BELL_XMOD`, round 2's C2 had AMP DECAY / RELEASE 111, echo MIX 30, DRAIN 20, VOLUME 113).

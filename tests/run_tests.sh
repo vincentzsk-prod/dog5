@@ -86,5 +86,11 @@ else
     echo "(no node: the installer page's test is skipped)"
 fi
 
+if python3 -c "import markdown" 2>/dev/null; then
+    run "Driver Manual: Parts 3-4 match the voice cards, the manual page matches its sources" sh -c "python3 tools/make_manual_patches.py --check && python3 tools/make_manual_page.py --check"
+else
+    echo "(no Python-Markdown: the manual's check is skipped)"
+fi
+
 [ "$fail" = 0 ] && echo "ALL TESTS PASSED" || echo "SOME TESTS FAILED"
 exit "$fail"

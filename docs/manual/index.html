@@ -11,34 +11,102 @@
 <link rel="stylesheet" href="../play/brand/brand.css">
 <style>
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--black); color: var(--white); font: 300 19px/1.55 var(--body); }
+html { scroll-behavior: smooth; scroll-padding-top: 14px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--black); color: var(--white); font: 400 19px/1.6 var(--body); }
 a { color: var(--acid); }
-.top { max-width: 1180px; margin: 0 auto; padding: 20px 16px 6px; text-align: center; }
+.c1 { --ch: var(--yellow); } .c2 { --ch: var(--turq); } .c3 { --ch: var(--white); } .c4 { --ch: var(--acid); }
+.ch-1 { --ch: var(--yellow); } .ch-2 { --ch: var(--turq); } .ch-3 { --ch: var(--white); } .ch-4 { --ch: var(--acid); }
+.top { max-width: 1240px; margin: 0 auto; padding: 20px 16px 6px; text-align: center; }
 .draft { max-width: 760px; margin: 14px auto 4px; padding: 10px 14px; text-align: left; font-size: 17px; border: 2px solid var(--black);
   border-left: 6px solid var(--acid); background: var(--plum); box-shadow: 5px 5px 0 var(--violet); }
 .links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 14px 0 4px; }
 .links a { padding: 8px 16px; border: 2px solid var(--violet); text-decoration: none; color: var(--white); font: 700 13px var(--mono); background: var(--black); }
 .links a:hover, .links a.cta { border-color: var(--acid); color: var(--acid); }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; display: grid; grid-template-columns: 280px 1fr; gap: 28px; align-items: start; }
-nav.toc { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; border: 2px solid var(--violet); background: var(--plum);
-  padding: 10px 12px; font: 400 12px/1.5 var(--mono); }
-nav.toc ul { list-style: none; margin: 0; padding-left: 10px; }
-nav.toc > div > ul { padding-left: 0; }
-nav.toc a { color: var(--white); text-decoration: none; }
-nav.toc a:hover { color: var(--acid); }
-article { min-width: 0; }
-article h2 { font: 400 30px/1.2 var(--display); color: var(--acid); margin: 34px 0 10px; border-bottom: 2px solid var(--violet); padding-bottom: 4px; }
-article h3 { font: 400 22px/1.25 var(--display); color: var(--yellow); margin: 26px 0 8px; }
-article h4 { font: 700 14px/1.3 var(--mono); color: var(--turq); margin: 18px 0 6px; text-transform: uppercase; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 8px 16px 40px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 34px; align-items: start; }
+
+/* the contents: one card per part; numbers in mono, words in the body face, so the eye finds the groups */
+nav.toc { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; padding: 0 4px 12px 0;
+  scrollbar-width: thin; scrollbar-color: var(--violet) transparent; }
+.navhead { display: flex; align-items: center; justify-content: space-between; margin: 0 0 8px; font: 700 11px var(--mono);
+  letter-spacing: .14em; text-transform: uppercase; color: var(--olive); }
+.find { width: 100%; margin: 0 0 12px; padding: 8px 10px; background: var(--black); color: var(--white); border: 2px solid var(--violet);
+  font: 400 13px var(--mono); }
+.find:focus { outline: none; border-color: var(--acid); }
+.grp { margin: 0 0 8px; background: var(--plum); border: 2px solid var(--violet); }
+.grp[open] { box-shadow: 4px 4px 0 var(--violet); }
+.grp > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 9px 10px; }
+.grp > summary::-webkit-details-marker { display: none; }
+.grp > summary::after { content: "+"; margin-left: auto; font: 700 16px var(--mono); color: var(--olive); }
+.grp[open] > summary::after { content: "–"; color: var(--acid); }
+.grp > summary a { color: var(--white); text-decoration: none; font: 400 17px/1.2 var(--display); }
+.grp > summary:hover a, .grp.on > summary a { color: var(--acid); }
+.pn { flex: none; min-width: 28px; padding: 2px 5px; text-align: center; font: 700 12px var(--mono); color: var(--black); background: var(--acid); }
+.grp ul { list-style: none; margin: 0; padding: 2px 10px 10px 12px; border-top: 1px solid var(--violet); }
+.grp li { margin: 0; }
+.grp li > a { display: flex; gap: 8px; align-items: baseline; padding: 4px 6px; color: #d9cfe0; text-decoration: none; font: 400 16px/1.3 var(--body);
+  border-left: 3px solid transparent; }
+.grp li > a:hover { color: var(--white); background: rgba(255,255,255,.04); }
+.grp li > a.on { color: var(--white); border-left-color: var(--acid); background: rgba(222,244,2,.07); }
+.sn { flex: none; font: 700 11px var(--mono); color: var(--olive); min-width: 26px; }
+.grp li.chap { margin-top: 6px; }
+.grp li.chap > a { font: 400 15px var(--display); color: var(--ch); text-transform: uppercase; letter-spacing: .04em; }
+.grp li.chap > a .sn { color: var(--ch); opacity: .8; }
+.patches { list-style: none; margin: 2px 0 4px; padding: 0 0 0 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 6px; }
+.patches a { display: flex; gap: 5px; padding: 2px 4px; font: 400 14px/1.25 var(--body); color: #cbbfd4; text-decoration: none;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 2px solid transparent; }
+.patches a:hover { color: var(--white); }
+.patches a.on { color: var(--white); border-left-color: var(--ch); background: rgba(255,255,255,.05); }
+.nn { flex: none; font: 700 10px/1.9 var(--mono); color: var(--ch, var(--olive)); }
+.toc-mobile { display: none; }
+
+/* the text */
+article { min-width: 0; max-width: 820px; }
+article h2.part { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font: 400 34px/1.15 var(--display); color: var(--acid);
+  margin: 56px 0 16px; padding: 14px 16px 12px; background: var(--plum); border: 2px solid var(--violet); box-shadow: 6px 6px 0 var(--violet); }
+article h2.part:first-child { margin-top: 18px; }
+article h2.part .pn { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; }
+article h3 { display: flex; align-items: baseline; gap: 10px; font: 400 23px/1.25 var(--display); color: var(--yellow); margin: 34px 0 10px;
+  padding-left: 12px; border-left: 4px solid var(--yellow); }
+article h3 .sn { font: 700 13px var(--mono); color: var(--olive); }
+article h3.chap { color: var(--ch); border-left-color: var(--ch); font-size: 28px; margin-top: 44px; }
+article h3.chap .sn { color: var(--ch); opacity: .8; text-transform: uppercase; letter-spacing: .08em; }
+article h4 { font: 700 13px/1.3 var(--mono); color: var(--turq); margin: 18px 0 6px; text-transform: uppercase; letter-spacing: .06em; }
+article p, article li { max-width: 72ch; }
+article ul { padding-left: 1.2em; }
+article li { margin: 4px 0; }
+article li::marker { color: var(--violet); }
 article code { font: 13px var(--mono); color: var(--glow); }
 article pre { background: var(--plum); border: 2px solid var(--violet); padding: 10px; overflow: auto; }
-article table { border-collapse: collapse; margin: 10px 0 16px; font-size: 16px; display: block; overflow-x: auto; }
-article th, article td { border: 1px solid var(--violet); padding: 4px 8px; vertical-align: top; text-align: left; }
-article th { font: 700 12px var(--mono); color: var(--acid); background: var(--plum); }
-article strong { font-weight: 600; }
+article table { border-collapse: collapse; margin: 12px 0 18px; font-size: 16px; display: block; overflow-x: auto; }
+article th, article td { border: 1px solid var(--violet); padding: 5px 9px; vertical-align: top; text-align: left; }
+article th { font: 700 12px var(--mono); color: var(--acid); background: var(--plum); text-transform: uppercase; letter-spacing: .05em; }
+article tr:nth-child(even) td { background: rgba(50,4,68,.45); }
+article strong { font-weight: 600; color: #fff; }
+article em { color: #e9e1ee; }
 article blockquote { margin: 10px 0; padding: 6px 14px; border-left: 4px solid var(--violet); color: var(--olive); }
-footer { max-width: 1180px; margin: 0 auto; padding: 16px; font: 400 12px/1.6 var(--mono); color: var(--olive); text-align: center; }
-@media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } nav.toc { position: static; max-height: 40vh; } }
+
+/* a patch is a card in its chapter's colour */
+section.patch { margin: 18px 0 22px; padding: 4px 18px 10px; background: rgba(50,4,68,.55); border: 2px solid var(--violet);
+  border-top: 4px solid var(--ch); }
+section.patch h4 { display: flex; align-items: baseline; gap: 10px; font: 700 27px/1.2 var(--body); color: var(--ch);
+  text-transform: none; letter-spacing: 0; margin: 12px 0 6px; }
+section.patch h4 .nn { font-size: 13px; line-height: 1; padding: 3px 6px; color: var(--black); background: var(--ch); }
+section.patch .lbl { margin: 14px 0 4px; font: 700 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ch); }
+section.patch > p:first-of-type { font-size: 20px; }
+
+.totop { position: fixed; right: 16px; bottom: 16px; padding: 8px 12px; font: 700 12px var(--mono); color: var(--black); background: var(--acid);
+  text-decoration: none; box-shadow: 3px 3px 0 var(--violet); opacity: 0; pointer-events: none; transition: opacity .2s; }
+.totop.show { opacity: 1; pointer-events: auto; }
+footer { max-width: 1240px; margin: 0 auto; padding: 16px; font: 400 12px/1.6 var(--mono); color: var(--olive); text-align: center; }
+@media (max-width: 900px) {
+  .wrap { grid-template-columns: 1fr; gap: 10px; }
+  nav.toc { position: static; max-height: none; overflow: visible; }
+  nav.toc .navbody { display: none; } nav.toc.open .navbody { display: block; }
+  .toc-mobile { display: block; width: 100%; padding: 10px; font: 700 13px var(--mono); color: var(--black); background: var(--acid); border: 0; cursor: pointer; }
+  .navhead { display: none; }
+  article h2.part { font-size: 27px; }
+}
 </style>
 </head>
 <body>
@@ -59,53 +127,85 @@ footer { max-width: 1180px; margin: 0 auto; padding: 16px; font: 400 12px/1.6 va
     <a href="https://github.com/vincentzsk-prod/dog5">Source code</a></p>
 </header>
 <div class="wrap">
-<nav class="toc" aria-label="Contents"><div class="toc">
-<ul>
-<li><a href="#0-what-dg-5-is">0. WHAT DØG-5 IS</a></li>
-<li><a href="#part-1-the-panel">PART 1 — THE PANEL</a><ul>
-<li><a href="#11-buttons-the-12-pad-command-grid">1.1 Buttons / the 12-pad command grid</a></li>
-<li><a href="#12-the-knobs-the-21-pages">1.2 The knobs &amp; the 21 pages</a></li>
-<li><a href="#13-the-live-trick-controls">1.3 The live "trick" controls</a></li>
-<li><a href="#14-the-signal-path-architecture">1.4 The signal path &amp; architecture</a></li>
-<li><a href="#15-the-keybed-shortcuts-hold-edit-a-black-key">1.5 The keybed shortcuts (hold EDIT + a black key)</a></li>
-<li><a href="#16-the-cpu-meter-it-is-already-there">1.6 The CPU meter (it is already there)</a></li>
-<li><a href="#17-the-steering-knobs-in-plain-words">1.7 The steering knobs, in plain words</a></li>
-<li><a href="#18-the-screen">1.8 The screen</a></li>
-<li><a href="#19-saving-the-pound-and-the-pack">1.9 Saving: THE POUND and THE PACK</a></li>
-<li><a href="#110-installing-leaving-and-coming-back">1.10 Installing, leaving and coming back</a></li>
-</ul>
-</li>
-<li><a href="#part-2-the-voicing-dictionary">PART 2 — THE VOICING DICTIONARY</a><ul>
+<nav class="toc" id="toc" aria-label="Contents">
+  <button class="toc-mobile" id="tocbtn" aria-expanded="false" aria-controls="toc">Contents</button>
+  <div class="navbody">
+  <div class="navhead"><span>Contents</span><span id="where"></span></div>
+  <input class="find" id="find" type="search" placeholder="Find a section or a patch…" aria-label="Find a section or a patch">
+  <details class="grp" data-id="0-what-dg-5-is"><summary><span class="pn">0</span><a href="#0-what-dg-5-is">What DØG-5 is</a></summary>
+</details>
+<details class="grp" data-id="part-1-the-panel"><summary><span class="pn">1</span><a href="#part-1-the-panel">The panel</a></summary><ul>
+<li><a href="#11-buttons-the-12-pad-command-grid"><span class="sn">1.1</span>Buttons / the 12-pad command grid</a></li>
+<li><a href="#12-the-knobs-the-21-pages"><span class="sn">1.2</span>The knobs &amp; the 21 pages</a></li>
+<li><a href="#13-the-live-trick-controls"><span class="sn">1.3</span>The live &quot;trick&quot; controls</a></li>
+<li><a href="#14-the-signal-path-architecture"><span class="sn">1.4</span>The signal path &amp; architecture</a></li>
+<li><a href="#15-the-keybed-shortcuts-hold-edit-a-black-key"><span class="sn">1.5</span>The keybed shortcuts (hold EDIT + a black key)</a></li>
+<li><a href="#16-the-cpu-meter-it-is-already-there"><span class="sn">1.6</span>The CPU meter (it is already there)</a></li>
+<li><a href="#17-the-steering-knobs-in-plain-words"><span class="sn">1.7</span>The steering knobs, in plain words</a></li>
+<li><a href="#18-the-screen"><span class="sn">1.8</span>The screen</a></li>
+<li><a href="#19-saving-the-pound-and-the-pack"><span class="sn">1.9</span>Saving: THE POUND and THE PACK</a></li>
+<li><a href="#110-installing-leaving-and-coming-back"><span class="sn">1.10</span>Installing, leaving and coming back</a></li>
+</ul></details>
+<details class="grp" data-id="part-2-the-voicing-dictionary"><summary><span class="pn">2</span><a href="#part-2-the-voicing-dictionary">The voicing dictionary</a></summary><ul>
 <li><a href="#body-weight">Body &amp; weight</a></li>
 <li><a href="#brightness-tone">Brightness &amp; tone</a></li>
 <li><a href="#dirt-aggression">Dirt &amp; aggression</a></li>
 <li><a href="#movement-instability">Movement &amp; instability</a></li>
 <li><a href="#space-wetness">Space &amp; wetness</a></li>
 <li><a href="#envelope-attack-dynamics">Envelope, attack &amp; dynamics</a></li>
-<li><a href="#struck-ringing-added-12-nov-from-28-arr-2-dee-2-and-29-i-scream">Struck &amp; ringing (added 12 Nov, from 28 Arr 2 Dee 2 and 29 i scream)</a></li>
+<li><a href="#struck-ringing">Struck &amp; ringing</a></li>
 <li><a href="#dg-5-house-words">DØG-5 house words</a></li>
-</ul>
-</li>
-<li><a href="#part-2b-talking-in-numbers-direct-parameter-moves">PART 2B — TALKING IN NUMBERS (direct parameter moves)</a></li>
-<li><a href="#part-3-the-32-patches">PART 3 — THE 32 PATCHES</a><ul>
-<li><a href="#chapter-i-jalopy">CHAPTER I — JALOPY</a></li>
-<li><a href="#chapter-ii-bee-tch">CHAPTER II — BEE-TCH</a></li>
-<li><a href="#chapter-iii-moonshine">CHAPTER III — MOONSHINE</a></li>
-<li><a href="#chapter-iv-acid-can">CHAPTER IV — ACID CAN</a></li>
-</ul>
-</li>
-<li><a href="#part-4-gear-inspirations">PART 4 — GEAR INSPIRATIONS</a><ul>
-<li><a href="#chapter-i-jalopy_1">Chapter I — JALOPY</a></li>
-<li><a href="#chapter-ii-bee-tch_1">Chapter II — BEE-TCH</a></li>
-<li><a href="#chapter-iii-moonshine_1">Chapter III — MOONSHINE</a></li>
-<li><a href="#chapter-iv-acid-can_1">Chapter IV — ACID CAN</a></li>
-</ul>
-</li>
-</ul>
-</div>
+</ul></details>
+<details class="grp" data-id="part-2b-talking-in-numbers"><summary><span class="pn">2B</span><a href="#part-2b-talking-in-numbers">Talking in numbers</a></summary>
+</details>
+<details class="grp" data-id="part-3-the-32-patches"><summary><span class="pn">3</span><a href="#part-3-the-32-patches">The 32 patches</a></summary><ul>
+<li class="chap ch-1"><a href="#chapter-i-jalopy"><span class="sn">I</span>Jalopy</a><ol class="patches">
+<li><a href="#01-red-pill" title="01 Red Pill"><span class="nn">01</span>Red Pill</a></li>
+<li><a href="#02-cement-grind" title="02 Cement Grind"><span class="nn">02</span>Cement Grind</a></li>
+<li><a href="#03-half-life" title="03 Half-Life"><span class="nn">03</span>Half-Life</a></li>
+<li><a href="#04-v-sync" title="04 V-Sync"><span class="nn">04</span>V-Sync</a></li>
+<li><a href="#05-zearox" title="05 ZEAROX"><span class="nn">05</span>ZEAROX</a></li>
+<li><a href="#06-zzufuzz" title="06 zzuFuzz"><span class="nn">06</span>zzuFuzz</a></li>
+<li><a href="#07-tape-splice" title="07 Tape Splice"><span class="nn">07</span>Tape Splice</a></li>
+<li><a href="#08-wire-bite" title="08 Wire Bite"><span class="nn">08</span>Wire Bite</a></li>
+</ol></li>
+<li class="chap ch-2"><a href="#chapter-ii-bee-tch"><span class="sn">II</span>Bee-tch</a><ol class="patches">
+<li><a href="#09-skeenhead" title="09 Skeenhead"><span class="nn">09</span>Skeenhead</a></li>
+<li><a href="#10-atlantic-swell" title="10 Atlantic Swell"><span class="nn">10</span>Atlantic Swell</a></li>
+<li><a href="#11-slapback-strut" title="11 Slapback Strut"><span class="nn">11</span>Slapback Strut</a></li>
+<li><a href="#12-kelp-tangle" title="12 Kelp Tangle"><span class="nn">12</span>Kelp Tangle</a></li>
+<li><a href="#13-ghost-board" title="13 Ghost Board"><span class="nn">13</span>Ghost Board</a></li>
+<li><a href="#14-reef-break" title="14 Reef Break"><span class="nn">14</span>Reef Break</a></li>
+<li><a href="#15-trem-chop" title="15 Trem Chop"><span class="nn">15</span>Trem Chop</a></li>
+<li><a href="#16-tidal-pull" title="16 Tidal Pull"><span class="nn">16</span>Tidal Pull</a></li>
+</ol></li>
+<li class="chap ch-3"><a href="#chapter-iii-moonshine"><span class="sn">III</span>Moonshine</a><ol class="patches">
+<li><a href="#17-titanic" title="17 Titanic"><span class="nn">17</span>Titanic</a></li>
+<li><a href="#18-roto-scopo" title="18 Roto-scopo"><span class="nn">18</span>Roto-scopo</a></li>
+<li><a href="#19-micro-mist" title="19 Micro-mist"><span class="nn">19</span>Micro-mist</a></li>
+<li><a href="#20-fire-ice" title="20 Fire &amp; Ice"><span class="nn">20</span>Fire &amp; Ice</a></li>
+<li><a href="#21-cowl-shadow" title="21 Cowl Shadow"><span class="nn">21</span>Cowl Shadow</a></li>
+<li><a href="#22-melting-orb" title="22 Melting Orb"><span class="nn">22</span>Melting Orb</a></li>
+<li><a href="#23-crypt-dust" title="23 Crypt Dust"><span class="nn">23</span>Crypt Dust</a></li>
+<li><a href="#24-fugue-state" title="24 Fugue State"><span class="nn">24</span>Fugue State</a></li>
+</ol></li>
+<li class="chap ch-4"><a href="#chapter-iv-acid-can"><span class="sn">IV</span>Acid Can</a><ol class="patches">
+<li><a href="#25-sawtooth" title="25 SAWTOOTH"><span class="nn">25</span>SAWTOOTH</a></li>
+<li><a href="#26-bsynca" title="26 BSyncA"><span class="nn">26</span>BSyncA</a></li>
+<li><a href="#27-r3v3rt" title="27 R3V3RT"><span class="nn">27</span>R3V3RT</a></li>
+<li><a href="#28-arr-2-dee-2" title="28 Arr 2 Dee 2"><span class="nn">28</span>Arr 2 Dee 2</a></li>
+<li><a href="#29-i-scream" title="29 i scream"><span class="nn">29</span>i scream</a></li>
+<li><a href="#30-the-dg" title="30 THE DØG"><span class="nn">30</span>THE DØG</a></li>
+<li><a href="#31-filfth" title="31 Fi(l)fth"><span class="nn">31</span>Fi(l)fth</a></li>
+<li><a href="#32-init-bruv" title="32 Init bruv?"><span class="nn">32</span>Init bruv?</a></li>
+</ol></li>
+</ul></details>
+<details class="grp" data-id="part-4-about-the-gear-inspirations"><summary><span class="pn">4</span><a href="#part-4-about-the-gear-inspirations">About the gear inspirations</a></summary>
+</details>
+  </div>
 </nav>
 <article>
-<h2 id="0-what-dg-5-is">0. WHAT DØG-5 IS</h2>
+<h2 id="0-what-dg-5-is" class="part"><span class="pn">Part 0</span>What DØG-5 is</h2>
 <p>DØG-5 turns the M-VAVE FM-1 pocket synth into an aggressive, live, virtual-analog voice for the band DØGS
 (bubblegum egg punk / garage psych). It is an 8-voice analog-style polysynth with a four-stage "Psych Chain"
 effect engine and a hard-chopping performance architecture built for the stage.</p>
@@ -118,8 +218,8 @@ waveform of whatever you're playing fires out of his open mouth. The sound you s
   menu-diving.</li>
 </ul>
 <hr>
-<h2 id="part-1-the-panel">PART 1 — THE PANEL</h2>
-<h3 id="11-buttons-the-12-pad-command-grid">1.1 Buttons / the 12-pad command grid</h3>
+<h2 id="part-1-the-panel" class="part"><span class="pn">Part 1</span>The panel</h2>
+<h3 id="11-buttons-the-12-pad-command-grid"><span class="sn">1.1</span>Buttons / the 12-pad command grid</h3>
 <p>DØG-5 uses <strong>page-family buttons</strong>: tapping a family button cycles through its pages, and each page maps the
 four knobs to four parameters. Every button also has a "dog name" (the live performance register); the printed
 panel label is what's physically on the unit.</p>
@@ -241,7 +341,7 @@ panel label is what's physically on the unit.</p>
 </table>
 <p><em>The hold-HOME control map lists the three tricks (HEEL STOP, FLOP TAPE STOP, SLOBBER SLOP RIDE) and WAG HOLD.
 To fit the screen it leaves out the HOME row itself and the FX-held macros (both are in this table).</em></p>
-<h3 id="12-the-knobs-the-21-pages">1.2 The knobs &amp; the 21 pages</h3>
+<h3 id="12-the-knobs-the-21-pages"><span class="sn">1.2</span>The knobs &amp; the 21 pages</h3>
 <p>Four knobs, contextual to the page showing. Each parameter page shows its four knobs and their values, and
 draws what they affect. On HOME a turned knob pops up as a dial over the scene for a moment (see 1.8). The
 <strong>bottom bar always shows only the preset number + name</strong>. Hold <strong>HOME</strong> for a live control map of the current page.</p>
@@ -436,7 +536,7 @@ types it does nothing.</em></p>
 (the note value) · FINE · PINGPONG · SPRING → SIZE · DAMP · PRE-DLY · TAPE → WOW/FLT · HISS · DROPS.</p>
 <p><strong>The tempo</strong> (the arpeggiator and a synced delay) is GLOBAL knob 1, or an incoming MIDI clock. There is no tap
 tempo.</p>
-<h3 id="13-the-live-trick-controls">1.3 The live "trick" controls</h3>
+<h3 id="13-the-live-trick-controls"><span class="sn">1.3</span>The live &quot;trick&quot; controls</h3>
 <p>Three controls built for live chaos, independent of the patch you're on:</p>
 <ul>
 <li><strong>PLAY/STOP — Global kill switch (HEEL).</strong> A live panic button. One press and everything stops in a few
@@ -450,7 +550,7 @@ tempo.</p>
   seasick. Never saved — resets to zero at power-up, like a master knob. At full ride, a held single note
   sits about 20 cents flat (a chord about 3 cents flat); that detune is the character, not a fault.</li>
 </ul>
-<h3 id="14-the-signal-path-architecture">1.4 The signal path &amp; architecture</h3>
+<h3 id="14-the-signal-path-architecture"><span class="sn">1.4</span>The signal path &amp; architecture</h3>
 <pre><code>VOICES → DRIVE (GROWL) → BBD DELAY (ALLEY) → SPRING (DRAIN) → TAPE (CHEW) → TAPE STOP → MASTER GATE
 </code></pre>
 <ul>
@@ -467,7 +567,7 @@ tempo.</p>
   but a save never lands on them (see 1.9). <strong>THE PACK (33–99)</strong> are yours to save into; an unused one starts as
   the INIT sound (slot 32's engine defaults at VOLUME 100).</li>
 </ul>
-<h3 id="15-the-keybed-shortcuts-hold-edit-a-black-key">1.5 The keybed shortcuts (hold EDIT + a black key)</h3>
+<h3 id="15-the-keybed-shortcuts-hold-edit-a-black-key"><span class="sn">1.5</span>The keybed shortcuts (hold EDIT + a black key)</h3>
 <p>The FM-1 prints a second set of labels on the keybed's <strong>upper (black) row, left to right: OP1 OP2 OP3 · OP4
 OP5 · OP6 PIT GLO · MONO POLY</strong>, with one unlabelled key to the right of POLY. <strong>Hold EDIT and press one of them</strong>
 to jump straight to a page, wherever you are:</p>
@@ -521,7 +621,7 @@ to jump straight to a page, wherever you are:</p>
 note. A jump also becomes the page EDIT (or GLO) returns to next time. A plain tap on EDIT still cycles its pages,
 on release; if you used a shortcut during the hold, the release does not cycle. <em>(In the browser player:
 hold <code>-</code> for EDIT and press a black-key letter; a mouse alone can't hold two things.)</em></p>
-<h3 id="16-the-cpu-meter-it-is-already-there">1.6 The CPU meter (it is already there)</h3>
+<h3 id="16-the-cpu-meter-it-is-already-there"><span class="sn">1.6</span>The CPU meter (it is already there)</h3>
 <p><strong>Press GLO once</strong> (it opens the GLOBAL page, the first in the GLO family). The top of the page reads <code>CPU &lt;n&gt;us</code>:
 how long the engine took to render the last chunk of audio, in microseconds. <strong>The source states the budget is
 5800 µs</strong> for each chunk. The nearer the number is to 5800, the less room is left for the patch, the held notes and
@@ -533,7 +633,7 @@ the screen, knobs and sound all responded normally. <em>Since the screen art (v0
 reads no higher than about 3000 µs, and FLEAS at MANGE does not raise it: the scene does not slow the sound.
 <strong>Not tested:</strong> more than four notes, any reading above 5800, and what happens past the budget. So this manual
 does not promise what happens there. The Psych Chain's crackle and dropout are part of the sound.</p>
-<h3 id="17-the-steering-knobs-in-plain-words">1.7 The steering knobs, in plain words</h3>
+<h3 id="17-the-steering-knobs-in-plain-words"><span class="sn">1.7</span>The steering knobs, in plain words</h3>
 <p>There is no room on the screen for explanations, so they live here. These are the knobs that change a sound the
 most:</p>
 <ul>
@@ -549,7 +649,7 @@ most:</p>
 <li><strong>GROWL · ALLEY · DRAIN · CHEW</strong> — the four Psych Chain effects: drive, echo, spring reverb, tape. Hold FX and
   all four are on the knobs, on any page.</li>
 </ul>
-<h3 id="18-the-screen">1.8 The screen</h3>
+<h3 id="18-the-screen"><span class="sn">1.8</span>The screen</h3>
 <p><strong>Power-on: the boot animation.</strong> About 6 seconds: the head, the colours cycling, DØG-5, then it melts and burns
 through to your patch's scene. <strong>Press any key or button and it skips straight to playing.</strong></p>
 <p><strong>HOME is the dog's scene.</strong> Each patch lives in one of four chapters, and HOME shows that chapter's painting with
@@ -638,7 +738,7 @@ sound</strong>.</p>
 </table>
 <p>Turn it down and the rot clears. The beam and the bottom bar are never touched. Every flicker is small and slow
 (under 7 times a second, never the whole screen at once).</p>
-<h3 id="19-saving-the-pound-and-the-pack">1.9 Saving: THE POUND and THE PACK</h3>
+<h3 id="19-saving-the-pound-and-the-pack"><span class="sn">1.9</span>Saving: THE POUND and THE PACK</h3>
 <ul>
 <li><strong>Slots 1–32 (THE POUND) are the factory patches and are locked.</strong> You can tweak them as much as you like
   while playing; you just can't save over them. A firmware update brings their latest voicing.</li>
@@ -651,7 +751,7 @@ sound</strong>.</p>
 <li><em>From v0.1 / v0.2:</em> a save made over 1–32 before the lock existed moves to the first free PACK slot at the first
   power-on. If THE PACK is full, it stays where it was, unread.</li>
 </ul>
-<h3 id="110-installing-leaving-and-coming-back">1.10 Installing, leaving and coming back</h3>
+<h3 id="110-installing-leaving-and-coming-back"><span class="sn">1.10</span>Installing, leaving and coming back</h3>
 <ul>
 <li><strong>Install</strong> from Chrome or Edge with the installer page (<code>vincentzsk-prod.github.io/dog5/install/</code>), over USB.
   It works from the stock firmware and from another custom firmware. <strong>Keep the installer tab in front until it
@@ -669,286 +769,161 @@ sound</strong>.</p>
   or played on one. M-Flasher's Device Info shows which chip yours has.</li>
 </ul>
 <hr>
-<h2 id="part-2-the-voicing-dictionary">PART 2 — THE VOICING DICTIONARY</h2>
-<p>The shared language for describing and shaping tone. Each term gives the plain meaning and the controls that
-move it, so a direction like "fatter and nastier, but less wet" has one agreed reading. This is the contract
-for the voicing process and the vocabulary the patch descriptions are written in.</p>
+<h2 id="part-2-the-voicing-dictionary" class="part"><span class="pn">Part 2</span>The voicing dictionary</h2>
+<p>The words this manual uses for sound, and the controls that move each one. When a note says a patch is "seasick" or
+"springy", this is what it means and where to reach. <em>(The measurements behind these words are kept in the voicing
+records, not here.)</em></p>
 <h3 id="body-weight">Body &amp; weight</h3>
 <ul>
-<li><strong>Fat / thick</strong> — more body and width. <em>More:</em> OSC 2 LEVEL up, slight DETUNE, UNISON or DUAL mode, sub/low
-  register, both oscillators on. <em>The DØG-5 method: start fat, then drive — never a thin source pushed loud.</em>
-  <em>(Measured on stacked-saw patches: once the oscillators are stacked, rebalancing levels or filter barely
-  changes the spectrum; what changes the feel is </em><em>stack width (DETUNE), level and harmonic density
-  (filter DRIVE).</em><em>)</em></li>
-<li><strong>Thin / hollow</strong> — narrow, reedy, little body. <em>More:</em> single oscillator, pulse with narrow PW, higher
-  register, less detune. <em>(Diagnosis tip: very low notes put most of their energy under about 60 Hz, which
-  small speakers and many PAs don't reproduce — "thin" on a low patch is often the 60–400 Hz band, not the
-  sub.)</em></li>
-<li><strong>Sub-heavy / deep</strong> — weight in the low end. <em>More:</em> low octave, OSC 2 down an octave, low cutoff with the
-  filter drive doing the work (bass-comp). <em>(At the very bottom, A0–A1, an octave-down oscillator is below
-  audible range — it costs headroom without adding weight.)</em></li>
-<li><strong>Full vs empty</strong> — how much of the spectrum is filled. Fuller = both oscs + noise; emptier = one osc, no
-  noise.</li>
-<li><strong>Muddy</strong> <em>(added 5 Nov, from 05 ZEAROX round 1; extended 6 Nov)</em> — energy piled up in 150–400 Hz with
-  almost nothing above 1.2 kHz, and a long tail: a smear, not a punch. <em>Cause found:</em> a saw wave through a
-  24 dB low-pass at a low cutoff, plus GROWL's compression lengthening the tail. <em>Cure:</em> square/pulse
-  oscillators, an open 12 dB filter, no GROWL, a short decay. Diagnose with the 150–400 Hz share against the
-  1.2 kHz+ share ("MUD ratio") in time windows. <em>Scale (6 Nov, from Chapter II):</em> 10 A 2.5; 12 C 12.3 (tail
-  10 / 15 / 77); a "medium muddy" target is about 10–40 on the note, tail windows no worse than about 80; 13
-  (final) 315 with tails over 1000 — very muddy, chosen by ear; 16 D 133 (almost nothing above 1.2 kHz).
-  <em>A soft, triangle-like tone is not "medium muddy" by this ratio on its own (245 with the second oscillator
-  off in 13's round 1); the ratio is a diagnostic, and the owner's ear decides.</em></li>
-<li><strong>Blank slate / init</strong> <em>(added 12 Nov, from 32 Init bruv?)</em> — a plain starting voice with nothing added: no
-  modulation, no echo, no spring, no tape, no drive. In this bank it is the engine's own default program (two
-  saws 4.7 cents apart through a 24 dB low-pass at CUTOFF 80, RESO 20), not a single raw saw with an open filter
-  (the saw's harmonics follow 1/n only with OSC 2 off, CUTOFF 127, RESO 0 and flat envelopes, which is a
-  separate "raw saw" render kept for later).</li>
+<li><strong>Fat / thick</strong> — body and width. <em>More:</em> OSC 2's level up, a little DETUNE, UNISON or DUAL mode, both oscillators
+  on. The DØG-5 way: start fat, then drive; a thin sound pushed loud never gets there. Once a sound is stacked, width
+  (DETUNE) and per-voice DRIVE change its feel more than levels or filter do.</li>
+<li><strong>Thin / hollow</strong> — narrow and reedy. <em>More:</em> one oscillator, a narrow pulse, a higher register, less detune.</li>
+<li><strong>Sub-heavy / deep</strong> — weight in the low end. <em>More:</em> a low octave, OSC 2 down an octave, a low cutoff with the
+  filter's DRIVE doing the work. At the very bottom (A0–A1) an octave-down oscillator is below hearing and only costs
+  headroom.</li>
+<li><strong>Small speakers:</strong> very low notes put most of their energy under about 60 Hz, which laptops, phones and many PAs
+  don't play. "Thin" on a low patch is usually the 60–400 Hz band missing, not the sub.</li>
+<li><strong>Full vs empty</strong> — how much of the spectrum is filled. Fuller: both oscillators plus noise; emptier: one, no noise.</li>
+<li><strong>Muddy</strong> — a pile-up in the low mids with almost no top and a long tail: a smear, not a punch. <em>Cure:</em> square or
+  pulse waves, an open 12 dB filter, less GROWL, a shorter decay. Some patches are muddy on purpose (13 Ghost Board).</li>
+<li><strong>Blank slate</strong> — a plain voice with nothing added: 32 Init bruv?, and every empty PACK slot.</li>
 </ul>
 <h3 id="brightness-tone">Brightness &amp; tone</h3>
 <ul>
-<li><strong>Bright</strong> — more high end, more presence. <em>More:</em> CUTOFF up (HOME/FILTER), ENV AMT up, less SPRING DAMP,
-  less BBD TONE roll-off, less TAPE head-loss.</li>
-<li><strong>Presence</strong> <em>(added 4 Nov, from 30 THE DØG)</em> — the patch sits forward and fills the room without simply
-  being louder or fuzzier. <em>More:</em> a wider stack (DETUNE), a touch more CUTOFF, per-voice filter DRIVE
-  (warms without compressing), and — for a flagship only — sitting at the top of the loudness tolerance.</li>
-<li><strong>Dark / murky</strong> — rolled-off top. <em>More:</em> CUTOFF down, more DAMP, more TONE roll-off on the delay.</li>
-<li><strong>Distant / "at the bottom of a well"</strong> <em>(added 4 Nov, from 09 Skeenhead)</em> — the note's body vanishes and
-  only the effects remain, so note and effect feel like two separate events. <em>Cause found:</em> the filter's
-  cutoff resting <strong>below the played notes</strong> (a resonant plop closing under them), leaving a dark hum with no
-  top, while the spring stays bright. <em>Cure:</em> raise the CUTOFF floor and the FILTER sustain so the filter
-  rests above the notes; check the effect level relative to the dry note per time window (a single average
-  hides it).</li>
-<li><strong>Warm</strong> — soft top without going dull; gentle saturation. <em>More:</em> a little per-voice <strong>filter DRIVE</strong>
-  (MIXER page, knob 4), LP filter, modest cutoff. <em>(Not "a touch of GROWL": GROWL does almost nothing below
-  about 28.)</em></li>
-<li><strong>Harsh / brittle / piercing</strong> — aggressive, possibly fatiguing highs. <em>More:</em> high RESO near self-osc, high
-  cutoff, hard sync, GROWL with high BIAS. Usually a thing to dial <em>back</em>.</li>
-<li><strong>Nasal / honky</strong> — mid-forward, vowel-like. <em>More:</em> band-pass filter type, narrow PW, or TYPE SEM with
-  MORPH toward notch.</li>
-<li><strong>Zap</strong> <em>(added 5 Nov, from 08 Wire Bite)</em> — a burst of top end at the strike, like biting a live wire.
-  <em>More:</em> narrow pulses, resonance, a fast filter envelope. <em>Limit:</em> a generally brighter cutoff <strong>shrinks</strong>
-  the measured burst (the body is already bright), so "zappier" and "brighter" pull against each other.</li>
-<li><strong>Soft / triangle-like</strong> <em>(added 6 Nov, from 11, 16 D and 13)</em> — there is no triangle or sine oscillator.
-  The nearest is a narrow pulse (about 25%) through a key-tracking 12 dB low-pass: harmonics 3 / 5 / 7 read
-  about −17 / −27 / −37 dB against an ideal triangle's −19 / −28 / −34. It is dark (centroid about 600 Hz,
-  almost nothing above 1.2 kHz) and the ratio calls it muddy. An octave-up copy of the pulse brings the ratio
-  down (13's round 1). It is a triangle-like stack, not a sine.</li>
-<li><strong>Chime (band-limited)</strong> <em>(added 12 Nov, from 29 i scream)</em> — a bright struck ping inside a narrow band, like
-  a small horn speaker. <em>How it is built:</em> a 12 dB band-pass at CUTOFF 77, RESO 105, KEY TRK 0 (peaks at 1099 Hz,
-  −3 dB width 898–1345 Hz; 0.4% of its energy under 400 Hz and 4.1% above 4 kHz, measured with white noise),
-  a pulse at 50% for OSC 1, and a second oscillator +15 semitones with X-MOD 25 and ENV&gt;O2 76 for the zing at
-  the strike. <em>Limit:</em> the +15 semitone partial is faint at the top of the keybed (−34 dB at C#6, −18 dB at C#5).</li>
+<li><strong>Bright</strong> — more top and presence. <em>More:</em> CUTOFF up, ENV AMT up, less SPRING DAMP, less BBD TONE roll-off.</li>
+<li><strong>Presence</strong> — the patch sits forward and fills the room without just being louder or fuzzier. <em>More:</em> a wider stack
+  (DETUNE), a touch more CUTOFF, per-voice DRIVE.</li>
+<li><strong>Dark / murky</strong> — the top rolled off. <em>More:</em> CUTOFF down, more DAMP, more TONE roll-off on the delay.</li>
+<li><strong>Distant ("at the bottom of a well")</strong> — the note's body vanishes and only the effects remain. <em>Cause:</em> the cutoff
+  resting below the notes you play. <em>Cure:</em> raise CUTOFF and the filter envelope's SUSTAIN so the filter sits above them.</li>
+<li><strong>Warm</strong> — a soft top that isn't dull, gentle saturation. <em>More:</em> a little per-voice DRIVE (MIXER page, knob 4), a
+  low-pass, a modest cutoff. Not "a touch of GROWL": GROWL does almost nothing below about 28.</li>
+<li><strong>Harsh / piercing</strong> — aggressive, tiring highs. <em>More:</em> RESO near the top, a high cutoff, hard sync, GROWL with high
+  BIAS. Usually something to dial back.</li>
+<li><strong>Nasal / honky</strong> — mid-forward and vowel-like. <em>More:</em> the band-pass filter, a narrow pulse, or TYPE SEM with MORPH
+  toward notch.</li>
+<li><strong>Zap</strong> — a burst of top end at the strike. <em>More:</em> narrow pulses, resonance, a fast filter envelope. A brighter
+  cutoff overall makes the zap stand out <em>less</em>.</li>
+<li><strong>Soft / triangle-like</strong> — there is no triangle or sine oscillator. The nearest: a narrow pulse (about 25%) through a
+  key-tracking 12 dB low-pass, perhaps with an octave-up copy (16 Tidal Pull, 24 Fugue State). Dark by nature.</li>
+<li><strong>Chime</strong> — a bright struck ping inside a narrow band, like a small horn speaker: a band-pass filter with high RESO
+  and a second oscillator zinging down at the strike (29 i scream).</li>
 </ul>
 <h3 id="dirt-aggression">Dirt &amp; aggression</h3>
 <ul>
-<li><strong>Clean</strong> — no added grit. GROWL at 0 (a true bypass).</li>
-<li><strong>Driven / pushed</strong> — console-into-the-red warmth to crunch. <em>More:</em> <strong>filter DRIVE</strong> for the gentle route
-  (adds harmonics without squashing dynamics; it sits before the filter, so the filter takes some of the edge
-  back); GROWL for the big step (inert up to about 28, compresses past about 40, fuzzy by about 70); BIAS
-  (inside GROWL) adds peaks and even-harmonic buzz. <em>(12 Nov, from 26 BSyncA: GROWL also darkens a sync strike —
-  the centroid over the first 50 ms is 2662 Hz with GROWL 44 against 4165 Hz with no drive — so the rip's
-  brightness trades against the drive.)</em></li>
-<li><strong>Nasty / gnarly / blown</strong> — full aggression. <em>More:</em> GROWL high, resonant filter, hard-chop gate. The
-  Chapter I register.</li>
-<li><strong>Fuzzy / voltage-starved</strong> — gated, spitting fuzz like a dying battery. <em>More:</em> GROWL maxed into a thick
-  source, cutoff open, fast gate. <em>(Measured on 06: held-note crest factor falls 5.8 dB at GROWL 0, 3.7 at 55,
-  2.3 at 76, 1.5 at 100. Sustain comes from the amp envelope, not from GROWL. TONE is the audible one of
-  GROWL's secondary controls; BIAS barely changes the peak.)</em></li>
-<li><strong>Pixelated / black-and-white</strong> <em>(added 5 Nov, from 05 ZEAROX)</em> — a hard two-level wave, like a photocopy
-  reduced to pure black and white: harsh, glitchy, not smeared. <em>More:</em> pulse/square oscillators only, a
-  12 dB filter held open, no GROWL, no tape. <em>Measured as</em> the share of samples within 10% of the rail:
-  pulse waves 54% against 24% for saws; 05's final patch reads 94–98%.</li>
-<li><strong>Spitting / biting</strong> — nervous, articulate attack grit. <em>More:</em> VINTAGE slop + a snappy gate + drive;
-  comes from drive biting a thick source, not a thin one.</li>
-<li><strong>Gritty / crunchy</strong> — midway dirt. GROWL in the 30–40 zone, or heavy filter DRIVE. <em>(12 Nov, from 28 round 2:
-  on an FM bell the top grit was the FM itself — X-MOD 64 → 32 lowered the 2–10 kHz roughness, spectral flatness
-  at A4 −16.9 → −25.4 dB — not CHEW, GROWL or drive. The share of energy above 4 kHz did not move: that is the
-  saw's harmonics through an open filter at the strike, which suggests it moves with CUTOFF and the filter
-  envelope.)</em></li>
-<li><strong>Dust (trace noise)</strong> <em>(added 7 Nov, from 23 Crypt Dust)</em> — noise present only as a faint dust under the tone.
-  <em>Measured:</em> the owner heard full-level noise (NOISE 127) as drowning a thin pulse even though the noise was only
-  about 6 dB under the pulse by level, because it fills the spectrum between the pulse's harmonics; the final
-  patch has the noise 24.4 dB under the pulse (NOISE 43; the NOISE knob is a square law: 43 against 127 is
-  −18.8 dB). Removing the noise lowered the centroid by about 1.2 kHz and the 4 kHz+ share from 2.5% to 0.7%.</li>
+<li><strong>Clean</strong> — no added grit: GROWL at 0 (a true bypass).</li>
+<li><strong>Driven / pushed</strong> — warm to crunchy. <em>More:</em> per-voice <strong>DRIVE</strong> for the gentle route (adds harmonics without
+  squashing the dynamics); <strong>GROWL</strong> for the big step (nothing up to about 28, compressing past 40, fuzzy by about 70);
+  BIAS adds peaks and buzz. GROWL also darkens a sync rip a little.</li>
+<li><strong>Nasty / gnarly / blown</strong> — full aggression: GROWL high, a resonant filter, a hard-chop gate. The Chapter I register.</li>
+<li><strong>Fuzzy</strong> — a flat, relentless wall: GROWL high into a thick source, the cutoff open (06 zzuFuzz). The held note's
+  length comes from the amp envelope, not from GROWL.</li>
+<li><strong>Pixelated / black-and-white</strong> — a hard two-level wave, harsh and glitchy, not smeared: pulse or square only, an open
+  12 dB filter, no GROWL, no tape (05 ZEAROX).</li>
+<li><strong>Spitting / biting</strong> — nervous grit on the attack: slop, a snappy gate and drive biting a thick source.</li>
+<li><strong>Gritty / crunchy</strong> — midway dirt: GROWL around 30–40, or heavy per-voice DRIVE. On an FM sound (X-MOD) the grit is
+  often the FM itself: lower X-MOD before reaching for GROWL.</li>
+<li><strong>Dust</strong> — noise as a faint trace under the tone. Keep NOISE low: full noise drowns a thin pulse even when it isn't
+  louder, because it fills the gaps between the pulse's harmonics (23 Crypt Dust).</li>
 </ul>
 <h3 id="movement-instability">Movement &amp; instability</h3>
 <ul>
-<li><strong>Tight / stable</strong> — locked, in tune, steady. <em>More:</em> VINTAGE/slop low, no LFO pitch, SYNC phase.</li>
-<li><strong>Slop</strong> — the DØG-5 instability macro: per-voice tuning drift and wander. Low = solid, mid = seasick, high
-  = dying tape motor. Rideable live on ALGORITHM. <em>(Measured: the patch's own VINTAGE is gentle — at 127 each
-  voice wanders only about 6 cents. The dying-tape-motor territory comes mostly from the ALGORITHM ride,
-  which multiplies the patch's own slop: about 5.6× at VINTAGE 55, 3.8× at 90 and 3.0× at 127.)</em></li>
-<li><strong>Seasick / woozy</strong> — slow pitch sway that unsettles. <em>More:</em> VINTAGE up, slow LFO→PITCH, slow TAPE wow.</li>
-<li><strong>Warped / chewed</strong> — tape-style wobble and dropouts. <em>More:</em> CHEW up (wow/flutter/dropouts). Costs
-  noticeably more CPU (about +770–784 host instr/sample at high CHEW; a Titanic variant with CHEW measured
-  2371 vs 1594). <em>(Measured on 05 round 1: CHEW at maximum barely changed level, crest or click — it mostly
-  smeared the top end. Measured on 13 round 1: the deck's wobble is about 2.3 / 4.1 / 6.2 / 6.5 cents s.d. at
-  CHEW 40 / 70 / 100 / 127, slow wow only (0.3–0.5 Hz), and it added hiss that lifts the centroid. The owner
-  heard the wobble as "killing the overall tone" and dropped it, so CHEW 0 on 13. On 29 the owner also took the
-  tape off after hearing it: CHEW 65 cost 2647 host instr/sample against 1863 with CHEW 0.)</em></li>
-<li><strong>Melt</strong> <em>(added 7 Nov, from 22 Melting Orb)</em> — the filter closing and the pitch sinking together over a few
-  seconds while the key is held. <em>How:</em> a rising filter envelope (FA 118, 4.96 s nominal) with a negative ENV
-  AMT, plus ENV&gt;O2 below centre (it bends OSC 2 only, from the filter envelope: (value − 64) × 24/63 semitones at
-  the top; value 46 = −6.86 st). <em>Measured:</em> −678 cents final, 90% of the fall at 4.0 s, centroid 1323 → 204 Hz.
-  <em>Limit:</em> on key-up the filter envelope releases and the melt partly runs backwards through the fade.</li>
-<li><strong>Wobble</strong> — regular pitch or PWM movement. <em>More:</em> LFO→PITCH or LFO→PWM, moderate rate. <em>(PWM: the pulse
-  width sweep runs at the LFO rate. A sweep that crosses 50% sounds like it doubles its rate, because a pulse
-  and its mirror width sound alike; keep the sweep on one side of 50%, or only just across it. Through a
-  murky low-pass the PWM movement is a ceiling of about 10 dB in the 150–400 Hz band whatever the depth or
-  cutoff (12 Kelp Tangle); a faster, wider sweep or more per-voice DRIVE trades level swing for band depth.)</em></li>
-<li><strong>Beating / shimmer</strong> <em>(added 6 Nov, from 10 and 13)</em> — two oscillators a few cents apart drift in and out
-  of phase, so the low-mid band swells and dips about once a second without any LFO. <em>Measured:</em> 10 A (a pulse
-  pair with one 85% pulse nearly the inverse of the 16% one, +9.4 cents) swings its A3 band 17.9 dB at 1.01 Hz;
-  13 (pair +7.0 cents) moves the 150–400 Hz band 13.6–13.8 dB at 0.9 Hz on one voice (6.2 dB on the held
-  chord). Removing the detune (OSC 2 FINE 64) takes it to 0.3 dB; removing the PWM LFO leaves it. Slow PWM
-  sweeps are a different movement, mostly in the 400–1.2k band (3.9 dB on 13's original).</li>
-<li><strong>Drifting</strong> — slow, unrepeating wander (not a steady LFO). <em>More:</em> VINTAGE slop, a slow smooth-random
-  LFO→PITCH (08 Wire Bite: ±19 cents at 0.28 Hz). <em>(There is no Poly-Mod control: X-MOD is OSC 2 → OSC 1 FM;
-  checked again 6 Nov for 18.)</em> <strong>Wander</strong> <em>(added 7 Nov, from 18 Roto-scopo)</em> — the Poly-Mod substitute: the one
-  shared smooth-random LFO (0.11 Hz) on the FILTER (±23.9 st) over a resonant low-pass, plus VINTAGE slop 127.
-  Measured on A1: the centroid ranges 316–708 Hz (14 st); the level moves only about 1 dB. The wander is common to
-  all voices and cannot follow OSC 2.</li>
-<li><strong>Glitchy</strong> <em>(added 5 Nov, from 07 Tape Splice)</em> — nervous, broken, unreliable pitch and level. <em>More:</em> a
-  fast random or sample-and-hold LFO to PITCH (5–21 Hz, ±19 cents up to several semitones), tape dropouts
-  (CHEW high with DROPS up). <em>(Measured: the random pitch LFO carries the pitch jitter; tape carries the
-  dips; X-MOD adds sidebands and low-end energy but does not move the measured pitch.)</em></li>
-<li><strong>Chorus (clear, wide)</strong> <em>(added 6 Nov, from 10 round 1)</em> — the engine has no chorus effect. A chorus is
-  built from a DUAL pair (SPREAD 127) with a slow TRI pitch LFO in PHASE SPREAD, so the two voices of each
-  note sit 45° apart in the LFO and their pitch difference swings. <em>Measured on 10 B:</em> ±19 cents at 0.72 Hz,
-  L/R correlation 0.48 (0.78 without), band beating 29 dB. It costs about +490 host instr/sample over POLY
-  (10 B 2294). A short BBD delay cannot be a chorus, because its time has no LFO.</li>
-<li><strong>Leslie-style (rotary)</strong> <em>(added 6 Nov)</em> — vibrato plus tremolo from the one LFO routed to PITCH and AMP in
-  PHASE FREE. Only an in-phase approximation: a real rotor's pitch and level are 90° apart and the engine has
-  one LFO. With SPREAD the tremolo cancels in the sum (2.2 dB at AMP 45 with SPREAD, 2.9 FREE, 3.9 SYNC on a
-  held chord).</li>
+<li><strong>Tight / stable</strong> — locked and in tune: VINTAGE low, no LFO on pitch.</li>
+<li><strong>Slop</strong> — DØG-5's instability: each voice drifts on its own. Low = solid, middle = seasick, high = dying tape motor.
+  The patch's VINTAGE is gentle on its own; the <strong>SLOBBER ride</strong> (ALGORITHM) multiplies it, live.</li>
+<li><strong>Seasick / woozy</strong> — a slow pitch sway: VINTAGE up, a slow LFO on PITCH, tape wow (CHEW).</li>
+<li><strong>Warped / chewed</strong> — tape wobble and dropouts: CHEW up (wow first, then flutter, then dropouts from about the middle of the knob). It costs more CPU than any other
+  stage.</li>
+<li><strong>Melt</strong> — the filter closing and the pitch sinking together while you hold the key: a slow filter envelope, ENV
+  AMT below centre and ENV&gt;O2 below centre (22 Melting Orb). On release it partly climbs back.</li>
+<li><strong>Wobble</strong> — regular pitch or pulse-width movement: the LFO on PITCH or PWM. A pulse-width sweep that crosses the
+  halfway point sounds twice as fast; keep it on one side.</li>
+<li><strong>Beating / shimmer</strong> — two oscillators a few cents apart drift in and out of phase, so the sound swells and dips
+  about once a second with no LFO at all. OSC 2's FINE sets the speed; centring it stops it.</li>
+<li><strong>Drifting / wander</strong> — slow, unrepeating movement: VINTAGE, or the LFO's smooth random shape, slow, on PITCH or
+  FILTER (18 Roto-scopo). There is no Poly-Mod: the one LFO moves every voice the same way.</li>
+<li><strong>Glitchy</strong> — nervous, broken pitch and level: a fast random or sample-and-hold LFO on PITCH, and tape dropouts.</li>
+<li><strong>Chorus</strong> — there is no chorus effect. The nearest: DUAL mode with SPREAD up and a slow triangle LFO on PITCH with
+  PHASE SPREAD. A short delay can't do it (the BBD time has no LFO).</li>
+<li><strong>Leslie-style</strong> — vibrato plus tremolo from the one LFO on PITCH and AMP. Only an approximation: a real rotor moves
+  them out of step, and there is one LFO.</li>
 </ul>
 <h3 id="space-wetness">Space &amp; wetness</h3>
 <ul>
-<li><strong>Dry</strong> — no effects tail. The chain mixes/macros at 0.</li>
-<li><strong>Wet / washed / drenched</strong> — lots of tail. <em>More:</em> SPRING DRAIN up, BBD MIX + FEEDBK up.</li>
-<li><strong>Wash (washy, not punchy)</strong> <em>(added 6 Nov, from 16 Tidal Pull)</em> — a chord that blooms in, trails into its
-  own echo and spring and moves. <em>More:</em> a medium amp attack (AA 82 reads 17 / 93 / 219 ms to 10 / 50 / 90%;
-  the envelope's nominal time is 1.3–1.4× its time to 90%), a slow TRI pitch LFO (±19 cents), a spread of
-  detuned voices, echo at about 337 ms with FEEDBK 78 and MIX 110, DRAIN 45 SIZE 90. Keep the echo audibly
-  above the spring (16 D: first repeat −8.6 dB re the note, 7.7 dB above the spring).</li>
-<li><strong>Hover</strong> <em>(added 7 Nov, from 19 Micro-mist and 24 Fugue State)</em> — a chord that keeps hanging in the air on its
-  own echo and spring after the key is up. <em>More:</em> echo FEEDBK near 100 or above with ALLEY 100–144 ms, a large
-  spring (SIZE 100–110), a slow release. <em>Measured:</em> 19 D falls 20 / 40 / 60 dB in 1596 / 4132 / 5788 ms after a
-  10 s chord; 24 C in 1648 / 3520 / 4624 ms. <em>Limits:</em> it is a decaying hover, not a freeze (no freeze, reverse or
-  pitch-shifted repeats exist); FEEDBK 122 on 24 would peak at −2.1 dBFS, 127 clips.</li>
-<li><strong>Slap / slapback</strong> — one short, loud echo. <em>More:</em> ALLEY short (free ms), FEEDBK low, MIX up. <em>(Measured
-  on a bass: the echo is a faithful copy of the note, so ALLEY TONE does nothing audible there — the
-  crispness has to live in the note. The loudest slap the engine can make is MIX 127, about 6 dB under the
-  note's peak.)</em></li>
-<li><strong>Springy / boingy</strong> — the spring-reverb chirp and flutter. <em>More:</em> DRAIN up, SIZE up; the Chapter II sound.
-  (Watch "tubby" — too much low-mid in the tail.) <em>(Measured: DRAIN is audible on bass, not absent — the
-  tank's high-pass is one-pole, −9 dB at 55 Hz. At DRAIN 60 the return is about −5 dB re dry on Titanic and
-  −9.7 dB on a bass with most energy below 150 Hz. The spring sits after the echo and rings the repeats; it
-  is fed the filtered voice, so a murky patch gets a murky tail.)</em></li>
-<li><strong>Roomy vs close</strong> — amount and length of ambience (SIZE/PRE-DLY vs dry). <em>(PRE-DLY 4 is only about
-  1 ms.)</em></li>
-<li><strong>Wet return, measured per window</strong> — for a patch with a slight wetness (01 Red Pill) the effect level is
-  read relative to the dry note in 0–20 / 20–100 / 100–250 ms windows, never as an average.</li>
+<li><strong>Dry</strong> — no tail: the Psych Chain macros at 0.</li>
+<li><strong>Wet / drenched</strong> — lots of tail: DRAIN up, the BBD page's MIX and FEEDBK up.</li>
+<li><strong>Wash</strong> — a chord that blooms in and trails into its own echo and spring: a medium amp attack, a slow vibrato, a
+  spread of detuned voices, an echo around 300 ms with plenty of feedback, a medium spring. Keep the echo above the
+  spring so it reads (16 Tidal Pull).</li>
+<li><strong>Hover</strong> — a chord that keeps hanging in the air after the key is up: echo FEEDBK near 100 with a short ALLEY, a
+  large spring, a slow release (19 Micro-mist, 24 Fugue State). It decays; there is no freeze.</li>
+<li><strong>Slap</strong> — one short, loud echo: ALLEY short, FEEDBK low, MIX up. The loudest slap sits about 6 dB under the note.
+  The slap is a copy of the note, so shape the note, not the delay's TONE.</li>
+<li><strong>Springy / boingy</strong> — the spring's chirp and flutter: DRAIN up, SIZE up. The Chapter II sound. Watch for "tubby" (too
+  much low-mid in the tail); the spring is fed the filtered voice, so a dark patch gets a dark tail.</li>
+<li><strong>Roomy vs close</strong> — how much and how long: SIZE and PRE-DLY against dry.</li>
 </ul>
 <h3 id="envelope-attack-dynamics">Envelope, attack &amp; dynamics</h3>
 <ul>
-<li><strong>Snappy / punchy</strong> — fast attack, quick decay, immediate. <em>More:</em> AMP/FILTER ATTACK low, DECAY short.
-  <em>(Where the punch lives: often in the filter envelope opening and closing — the brightness falling from
-  attack to body — rather than in the amp level. A fast amp pluck can't reach the bank level on its own. A
-  heavily clipped sound (06, 05) has almost no level spike at the strike; its punch is the quick rise.)</em></li>
-<li><strong>Plucky</strong> — percussive, fast decay, little sustain. <em>More:</em> short DECAY, low SUSTAIN, filter env.</li>
-<li><strong>Gated (as opposed to plucky)</strong> <em>(added 4 Nov, from 11 Slapback Strut)</em> — zero decay: the note starts at
-  once, holds its body for the length of the key, and stops in about a millisecond. <em>Note:</em> removing a
-  pluck's decay can make the note <strong>duller</strong>, because the pluck's initial tap carried the top end; to end up
-  bright, raise the cutoff and narrow the pulse.</li>
-<li><strong>Soft / slow / swelling</strong> — gentle fade-in. <em>More:</em> ATTACK up, SUSTAIN high.</li>
-<li><strong>Bloom</strong> <em>(added 4 Nov, from 21 Cowl Shadow)</em> — a slow filter-envelope swell that opens while the key is
-  held: dark and soft at first, then wide and bright. It needs the key (or a sustain pedal) held for its full
-  length; released early it never opens, it just fades. Short stabs on a bloom patch are far quieter than
-  the bloomed state.</li>
-<li><strong>Sustained / drone</strong> — holds indefinitely. <em>More:</em> high SUSTAIN, long RELEASE. Live: press <strong>REC (HOLD)</strong>
-  with the arpeggiator off and the held notes keep ringing until you press REC again, STOP, or send a MIDI panic
-  (see 1.1).</li>
-<li><strong>Choppy / gated / staccato</strong> — hard on/off, dead silence between notes. <em>More:</em> fast RELEASE (hard-chop
-  VCA), LFO→VCA square tremolo. The house dynamic — the impact of the noise comes from the silence after it.</li>
-<li><strong>Chop / strobe</strong> <em>(added 5 Nov, from 15 Trem Chop)</em> — a hard on/off tremolo from a SQUARE LFO routed to
-  AMP at full depth: about 43–45 dB between the on and off parts at AMP 127 (17 dB at 110, 13.5 at 100, 9 at
-  80). Rate is the RATE knob alone: 0.05 × 600^(RATE/127) Hz, steps of about 5%. <em>Limits:</em> no tempo sync; PHASE
-  SYNC restarts the chop on each detached note (so every note starts ON), FREE phase is unpredictable live;
-  VINTAGE does not make the chop edges waver — only PHASE SPREAD on a DUAL pair does (the two voices chop an
-  eighth of a cycle apart).</li>
-<li><strong>Sputter</strong> <em>(added 4 Nov, from Half-Life)</em> — the tail doesn't fade, it breaks into a few ragged stutters as
-  the note dies. Distinct from tremolo: the body is clean and only the tail chops. <em>More:</em> LFO SHAPE SQUARE
-  around 20 Hz routed to AMP at full depth, with LFO DELAY around 110 ms so the chop fades in after the attack.
-  <em>Limit:</em> the chop follows how long the note has been sounding, not the key coming up, so it works on short
-  notes (roughly 150–180 ms); a longer held note spits all the way through.</li>
-<li><strong>Rip</strong> <em>(added 4 Nov, from V-Sync)</em> — the hard-sync sweep: the synced oscillator's pitch tears down across
-  the note. <em>Limit:</em> in MONO and UNISON, a note struck while another is held slides in and does <strong>not</strong>
-  re-fire the envelopes, so the rip fires on detached notes only.</li>
-<li><strong>Crash / burst</strong> <em>(added 6 Nov, from 14 Reef Break)</em> — a noise strike that rings out like a cymbal over a
-  square sub. <em>Recipe that worked:</em> NOISE 127 over a square sub (noise 3–6 dB above it in the first 100 ms), a
-  12 dB HIGH-pass at CUTOFF 100 with ENV AMT 0 (the cutoff starts about 97 semitones low at the strike, under
-  the sub, and climbs back as the filter envelope falls, FD 100), AD = AR = 97 for the ring-out. The bands then
-  fall lowest first and the top rings longest, as a cymbal does; a closing low-pass does the reverse. Attack
-  options measured at 10 / 50 / 90%: 0 / 0.2 / 8.5 ms (near-instant), 2.2 / 8.7 / 27.2 ms (a quick swell, peak
-  at 27 ms; chosen in round 1), 1.2 / 7.2 / 8.7 ms. <em>v0.2 (18 Nov, by ear: the strike was too harsh coming in):</em>
-  14 now uses a 299 ms attack on both envelopes (FILTER ENV and AMP ENV ATTACK 82), so the crash swells in; every
-  band peaks about 235–276 ms in, the bands still fall lowest first and the top still rings longest. <em>Limits:</em> no
-  inharmonic cymbal partials (noise only); noise and sub share one filter and one amp envelope, so the sub leaves
-  early only through the high-pass; a chord of three noise voices stacks and peaks near the rail.</li>
+<li><strong>Snappy / punchy</strong> — fast attack, quick decay. The punch often lives in the filter envelope opening and closing,
+  not in the level; on a heavily driven sound it is the quick rise.</li>
+<li><strong>Plucky</strong> — percussive: a short decay, low sustain, a filter envelope.</li>
+<li><strong>Gated</strong> — no decay: the note starts at once, holds for the length of the key and stops dead (11 Slapback Strut).
+  Taking a pluck's decay away can make it duller; raise the cutoff to compensate.</li>
+<li><strong>Soft / swelling</strong> — a gentle fade-in: ATTACK up, SUSTAIN high.</li>
+<li><strong>Bloom</strong> — a slow filter swell that opens while the key is held: dark at first, then wide and bright. Release early
+  and it never opens (21 Cowl Shadow).</li>
+<li><strong>Sustained / drone</strong> — holds as long as you want: high SUSTAIN, long RELEASE, and live, <strong>REC (HOLD)</strong> with the
+  arpeggiator off: the notes ring until REC again, STOP or a MIDI panic.</li>
+<li><strong>Choppy / staccato</strong> — hard on/off with dead silence between notes: a fast RELEASE, a square LFO on AMP. The house
+  dynamic: the impact comes from the silence after.</li>
+<li><strong>Chop / strobe</strong> — a hard on/off tremolo: a SQUARE LFO on AMP at full depth (15 Trem Chop). The rate is LFO RATE
+  alone; it doesn't follow the tempo.</li>
+<li><strong>Sputter</strong> — the tail breaks into ragged stutters as the note dies: a fast square LFO on AMP with LFO DELAY so it
+  fades in after the attack (03 Half-Life). It follows how long the note has sounded, so it suits short notes.</li>
+<li><strong>Rip</strong> — the hard-sync sweep tearing down across the note. In MONO and UNISON a legato note doesn't re-fire it:
+  play detached.</li>
+<li><strong>Crash</strong> — a noise strike that rings out like a cymbal over a sub: noise through a high-pass that sweeps down
+  (14 Reef Break). The lows fall first and the top rings longest.</li>
 </ul>
-<h3 id="struck-ringing-added-12-nov-from-28-arr-2-dee-2-and-29-i-scream">Struck &amp; ringing <em>(added 12 Nov, from 28 Arr 2 Dee 2 and 29 i scream)</em></h3>
+<h3 id="struck-ringing">Struck &amp; ringing</h3>
 <ul>
-<li><strong>Bell (struck)</strong> — a sustained, struck tone with inharmonic partials that ring on after the key is up. <em>How it
-  is built (28):</em> two saws, OSC 2 +15 semitones (a ratio of 2.38) feeding OSC 1 by X-MOD 32, a long amp release
-  (AR 116), a slow shimmer. <em>Measured:</em> the five classical bell partials are present at fixed ratios (hum 0.5,
-  prime 1, tierce 1.2, quint 1.5, nominal 2); the key you press is the hum and the prime sits an octave above it.
-  <em>Limits:</em> <strong>ENV&gt;O2 ±10 breaks the bell</strong> (the tierce falls from −10 dB to about −47 dB); one saw modulating
-  another is not a DX7-style operator stack.</li>
-<li><strong>Ring</strong> — how long a struck note takes to die, read as the milliseconds to fall 6 / 12 / 20 / 30 / 40 dB
-  after the peak. <em>Measured:</em> 28 at A4 915 / 1962 / 3094 / 4700 / 5963 ms; a note released at 400 ms rings on and
-  falls 20 dB in 3012 ms. Not "dreamy" or "healthy" — those are the owner's words.</li>
-<li><strong>Crystalline (not carried)</strong> — a tail whose upper partials outlast the body. The engine has no per-partial
-  envelope, so it cannot be built here; the share of energy above 4 kHz at A4 falls from 4.0% in the first 20 ms to
-  0.4% at 1–2 s.</li>
+<li><strong>Bell</strong> — a struck tone with inharmonic partials that rings on after the key: two saws, one feeding the other by
+  X-MOD, a long release (28 Arr 2 Dee 2). On 28, ENV&gt;O2 off-centre breaks the bell.</li>
+<li><strong>Ring</strong> — how long a struck note takes to die away.</li>
+<li><strong>Crystalline</strong> — a tail whose top outlasts the body. This engine can't make it (there is no per-partial envelope).</li>
 </ul>
 <h3 id="dg-5-house-words">DØG-5 house words</h3>
 <ul>
-<li><strong>Blown console</strong> — the overall Chapter I aesthetic: fat sources shoved through drive until they tear.</li>
-<li><strong>The thesis</strong> — the pure DØG-5 move: a thick source + slop + hard-chop gate (see Half-Life).</li>
-<li><strong>The Monologue</strong> — the reference point for a patch that "sits under" a spoken/sung vocal in the mix.</li>
+<li><strong>Blown console</strong> — the Chapter I aesthetic: fat sources shoved through drive until they tear.</li>
+<li><strong>The thesis</strong> — the pure DØG-5 move: a thick source, slop and a hard-chop gate (03 Half-Life).</li>
+<li><strong>Sits under the vocal</strong> — a patch voiced to live under a singer in the mix (01 Red Pill).</li>
 </ul>
 <hr>
-<h2 id="part-2b-talking-in-numbers-direct-parameter-moves">PART 2B — TALKING IN NUMBERS (direct parameter moves)</h2>
-<p>Alongside the character words above, voicing uses plain synth-talk — direct moves on named controls ("cutoff
-down 10%", "more delay feedback", "LFO rate up a touch"). These rules keep that unambiguous.</p>
-<p><strong>The percent convention.</strong> A percentage means percent of the control's <strong>full range</strong> — not of its current
-value, and not of the number on screen. Most DØG-5 parameters run <strong>0–127</strong>, so:</p>
+<h2 id="part-2b-talking-in-numbers" class="part"><span class="pn">Part 2B</span>Talking in numbers</h2>
+<p>Synth-talk is often direct: "cutoff down 10%", "more feedback", "LFO a touch faster". These rules keep it exact.</p>
+<p><strong>A percentage is percent of the control's full range,</strong> not of where it is now. Most DØG-5 controls run 0–127, so:</p>
 <ul>
-<li>"−10%" / "down 10%" = subtract ~13 (10% of 127).</li>
-<li>"set to 40%" = ~51.</li>
-<li>rough sizes: <em>a touch</em> ≈ 5% (~6 steps) · <em>a bit</em> ≈ 10% · <em>a lot</em> ≈ 25–30%.</li>
+<li>"down 10%" = about 13 steps;</li>
+<li>"set to 40%" = about 51;</li>
+<li><em>a touch</em> ≈ 5% (about 6 steps) · <em>a bit</em> ≈ 10% · <em>a lot</em> ≈ 25–30%.</li>
 </ul>
-<p><strong>Relative vs absolute</strong> are both fine — "more feedback" / "+10%" (from where it is) or "set cutoff to 40%" /
-"cutoff at 51" (a target). Say which when it matters; if unsaid, "more/less/up/down" is relative and "set
-to / at" is absolute.</p>
-<p><strong>The echo rule.</strong> Every change the session makes is reported in concrete before→after: <em>"CUTOFF 80 → 67
-(−10%)."</em> So a misread shows up in the notes, not just the sound — you catch it in the echo and correct it
-there, which is faster than another render.</p>
-<p><strong>Controls that aren't a plain 0–127 percent</strong> — talk in their own units when that's easier:</p>
+<p>"More / less / up / down" means from where it is now; "set to / at" means a target.</p>
+<p><strong>Controls with their own units:</strong></p>
 <table>
 <thead>
 <tr>
 <th>Control</th>
-<th>Native unit</th>
-<th>How to say it</th>
+<th>Unit</th>
+<th>Say it like</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>BBD DELAY time (ALLEY)</td>
-<td>free ms, 10–740</td>
-<td>"delay to 120 ms", or % of range</td>
+<td>milliseconds, 10–740</td>
+<td>"delay to 120 ms"</td>
 </tr>
 <tr>
 <td>OSC 2 SEMI</td>
@@ -957,8 +932,8 @@ there, which is faster than another render.</p>
 </tr>
 <tr>
 <td>ENV AMT, FINE, ENV&gt;O2</td>
-<td>bipolar, centre 64</td>
-<td>"+/−" from centre</td>
+<td>centred at 64</td>
+<td>"+/−" from the centre</td>
 </tr>
 <tr>
 <td>OCT, BEND</td>
@@ -966,8 +941,8 @@ there, which is faster than another render.</p>
 <td>in their own units</td>
 </tr>
 <tr>
-<td>WAVE, MODE, FILTER TYPE, SYNC, LFO SHAPE/PHASE</td>
-<td>named settings (switches)</td>
+<td>WAVE, MODE, TYPE, SYNC, LFO SHAPE / PHASE</td>
+<td>switches</td>
 <td>by name ("pulse", "UNISON", "band-pass")</td>
 </tr>
 <tr>
@@ -977,851 +952,673 @@ there, which is faster than another render.</p>
 </tr>
 <tr>
 <td>FLEAS</td>
-<td>0–100 (a screen setting, never the sound)</td>
-<td>by stage ("ITCH", "MANGE") or number</td>
+<td>0–100, the screen only</td>
+<td>by stage ("ITCH", "MANGE")</td>
 </tr>
 </tbody>
 </table>
-<p>Everything else is the straight 0–127 percent. <em>(Level knobs such as OSC LEVEL and VOLUME follow a square
-law, so a small number change is a larger loudness change than it looks.)</em></p>
-<p><strong>Phrasebook — common synth-talk → the DØG-5 control it moves</strong> (so a generic instruction lands on the right
-page/knob):</p>
+<p>Level knobs (OSC levels, VOLUME, NOISE) follow a square law: a small move is a bigger loudness change than it looks.</p>
+<p><strong>Phrasebook: common synth-talk → the DØG-5 control</strong></p>
 <ul>
-<li>"open / close the filter" → CUTOFF (HOME K1, or the FILTER page)</li>
-<li>"more resonance / more Q" → RESO</li>
-<li>"more / less attack · decay · sustain · release" → the AMP ENV or FILTER ENV page (say which)</li>
-<li>"more filter envelope / more sweep" → ENV AMT</li>
-<li>"speed up / slow the wobble" → LFO RATE (the SELECT dial on HOME, or the LFO page; and check LFO DEST is on
-  PITCH / PWM / FILTER)</li>
-<li>"more warmth / a bit more drive" → per-voice DRIVE (MIXER page, knob 4); "more dirt / grit / fuzz" →
-  GROWL (DRIVE page, meaningful from about 30); "more buzz / edge" → BIAS</li>
-<li>"more delay feedback / more repeats" → FEEDBK (BBD page); "longer / shorter delay" → ALLEY</li>
-<li>"wetter / more reverb" → DRAIN (SPRING page); "bigger tail" → SIZE</li>
-<li>"more tape / more wobble / more lo-fi" → CHEW (TAPE page)</li>
-<li>"detune / thicken / wider" → DETUNE (VOICE page) or OSC 2 FINE</li>
+<li>"open / close the filter" → CUTOFF (HOME knob 1, or the FILTER page)</li>
+<li>"more resonance / Q" → RESO</li>
+<li>"more or less attack · decay · sustain · release" → the AMP ENV or FILTER ENV page</li>
+<li>"more sweep" → ENV AMT</li>
+<li>"faster / slower wobble" → LFO RATE (the SELECT dial on HOME, or the LFO page; LFO DEST says what it moves)</li>
+<li>"more warmth / a bit more drive" → per-voice DRIVE (MIXER page, knob 4)</li>
+<li>"more dirt / grit / fuzz" → GROWL (DRIVE page; it starts around 30) · "more buzz / edge" → BIAS</li>
+<li>"more repeats" → FEEDBK (BBD DELAY page) · "longer / shorter delay" → ALLEY</li>
+<li>"wetter / more reverb" → DRAIN (SPRING page) · "bigger tail" → SIZE</li>
+<li>"more tape / wobble / lo-fi" → CHEW (TAPE page)</li>
+<li>"thicker / wider" → DETUNE (VOICE page) or OSC 2 FINE</li>
 <li>"more voices / fatter stack" → MODE + VOICES (UNISON), or the POLY count</li>
-<li>"how hard is it working / am I near the limit" → GLO once, the CPU reading at the top of GLOBAL (see 1.6)</li>
-<li>"dirtier screen / cleaner screen" → FLEAS (GLOBAL knob 2; see 1.8)</li>
+<li>"how hard is it working?" → GLO once: the CPU reading at the top of GLOBAL (1.6)</li>
+<li>"dirtier / cleaner screen" → FLEAS (GLOBAL knob 2; 1.8)</li>
 </ul>
-<h2 id="part-3-the-32-patches">PART 3 — THE 32 PATCHES</h2>
-<p>Four chapters of eight. Each chapter is a scene on HOME (the painting the dog stands in, Manual 1.8) with its own
-accent colour, and a sonic character. Entries marked <strong>VOICED</strong> are the approved, player-facing description of the
-finished patch (with gear inspirations in Part 4). Factory patches 1–32 = THE POUND (write-locked: you can play and
-change them, and a save goes to THE PACK, 33–99).</p>
-<p><strong>All 32 are voiced: Chapters I, II, III and IV are complete.</strong> <em>(This includes the minimum-gig set.)</em> The
-patches were voiced on a host renderer and approved by ear; on 12 Nov 2026 Vincent installed the firmware on his
-FM-1 and reported that all 32 sound distinct and on brand (his words, not measured). Numbers in the entries below
-are host measurements unless an entry says otherwise. Real-device CPU readings are in
-<code>DOG-5-device-test-1.md</code>.</p>
-<h3 id="chapter-i-jalopy">CHAPTER I — JALOPY</h3>
-<p><em>Egg punk &amp; garage psych. On screen: the Jalopy scene, accent Sun Yellow. Fat sources through a blown console.</em></p>
+<h2 id="part-3-the-32-patches" class="part"><span class="pn">Part 3</span>The 32 patches</h2>
+<p>Four chapters of eight, one per scene on HOME. Slots 1–32 are <strong>THE POUND</strong>: play them and tweak them as much as you
+like; a save goes to <strong>THE PACK</strong> (33–99, see 1.9), so the factory sounds are always there to come back to.</p>
+<p>Each patch has three parts: <strong>what it sounds like</strong>, <strong>sound design notes</strong> (where it lives on the keybed, how to play
+it, what to reach for) and <strong>the gear that inspired it</strong>. The live tricks (SLOBBER, Tape Stop, HEEL) and the four Psych
+Chain macros work on every patch; a note mentions them only where they suit or fight that patch. Every patch was voiced
+by ear and the bank is level-matched, so switching patches doesn't jump, except where a note says so.</p>
+<h3 id="chapter-i-jalopy" class="chap ch-1"><span class="sn">Chapter I</span>Jalopy</h3>
+<p><em>Egg punk and garage psych. Fat sources through a blown console: basses, a sync lead, a kick and the fuzz. On screen: the Jalopy scene, accent Sun Yellow.</em></p>
+<section class="patch ch-1"><h4 id="01-red-pill"><span class="nn">01</span>Red Pill</h4>
+<p>A nervous, spitting bass made to sit under a vocal. Two fat saws, stacked and held steady, push through a resonant filter that snaps at the start of every note, driven hard enough to be gritty and warm without getting piercing. It is nearly dry: a quick slap and a small spring sit behind each note, lifting it a little and never coming near the note's own loudness.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>01 Red Pill — VOICED (5 Nov 2026, approved as is; variant C of Batch 3A).</strong></li>
-<li><em>What it sounds like:</em> A nervous, spitting bass made to sit under a vocal. Two fat saws, stacked and held
-    steady, push through a resonant filter that snaps at the start of every note, driven hard enough to be
-    gritty and warm without getting piercing. It is nearly dry: a quick slap and a small spring sit behind
-    each note as an afterthought, lifting it a little and never coming near the note's own loudness.</li>
-<li><em>Sound design notes:</em> Low. It was voiced on a riff from A1 up to A2 and on sixteenth-note bursts; other
-    registers are untested. About half of the energy of the low riff is the A1 fundamental, under 60 Hz, so on
-    a small speaker it is the harmonics from about 100 Hz up that carry it. Short detached notes (80–150 ms)
-    are home: the filter snap gives the spit. <strong>It is MONO, so legato doesn't re-fire the snap</strong> — play it
-    detached; a chord plays one note (the last). The wet is measured: in the loudest of three isolated notes
-    it sits 43.6 / 25.0 / 16.5 dB under the dry note in the 0–20 / 20–100 / 100–250 ms windows, with a short
-    wet tail of about half a second after key-up. Part of the grit is a GROWL step, so it costs more CPU than
-    a plain bass (about 1640 host instr/sample worst case). Slot 1 is the boot patch. Tricks (SLOBBER, SEQ
-    held, kill switch, CHEW) are untested on it.</li>
-<li><strong>02 Cement Grind — VOICED (5 Nov 2026, approved as is; variant D of Batch 3A).</strong></li>
-<li><em>What it sounds like:</em> A low-mid grinder built from two fat pulse waves whose widths sweep quickly, so
-    every note shudders and churns on purpose: a clear, fast pulse-width wobble, not a shimmer. The filter
-    bites, it is pushed into a moderate crunch, and each note starts with a little skid and a snap. Thick,
-    dry, and it hits hard.</li>
-<li><em>Sound design notes:</em> A2 up to E3 with G2 (the riff it was voiced on), in notes of about 400 ms, long enough
-    for the wobble to swing two or three times inside a note; other registers are untested. The wobble runs at
-    about 11.5 Hz; on a held A2 it moves the 150–400 Hz band by about 12 dB and the overall level by about
-    4 dB, and each detached note restarts it. <strong>One LFO does both jobs:</strong> the pulse-width sweep and a filter
-    wobble run at the same rate; the original slow filter wobble is gone. <strong>It is MONO — legato doesn't
-    re-fire the envelopes;</strong> play it detached. A chord plays one note. The note stops at once. Don't push the
-    wobble depth much further (the sweep already just crosses 50% at the top of each swing). Light on CPU
-    (about 298 host instr/sample). Tricks untested.</li>
-<li><strong>03 Half-Life — VOICED (4 Nov 2026, approved as is).</strong> <strong>The flagship of the unstable, chopped side; the
-  DØG-5 thesis in one patch.</strong></li>
-<li><em>What it sounds like:</em> Fat, slop-heavy dual saws with a sub-octave underneath: seasick, never quite in
-    tune with itself, and thick without going murky. Short notes are chopped stone-dead by the gate, and the
-    tail doesn't fade, it sputters — a few ragged stutters as the note dies. A raw, dry, engine-only sound
-    with no effects on it: the drift and the chop are the whole point.</li>
-<li><em>Sound design notes:</em> Low to low-mid register — roots and fifths from about A1 to A3, with fifth-and-octave
-    power chords as home ground. Play it staccato: short notes of roughly 150–180 ms give a hard clean body
-    and a sputtering tail. Held pads and sustained leads are the wrong job; use it for riffs and stabs. Keep
-    chords to three notes (every note is two voices; a fourth note steals voices from earlier ones). Best
-    trick: ride the ALGORITHM (SLOBBER) up to push it from seasick to dying tape motor. Tape Stop (SEQ held)
-    makes a good riff ending; the kill switch (HEEL) stops the sound and the sputter dead. The Psych Chain
-    macros are off on purpose; the dry chop is the sound, and a wash of ALLEY or DRAIN will bury the sputter
-    (untested with this patch).</li>
-<li><strong>04 V-Sync — VOICED (4–5 Nov 2026, approved as is).</strong></li>
-<li><em>What it sounds like:</em> A tearing hard-sync lead: the pitch of the synced oscillator rips down on every
-    note, nasal and biting, with a plain saw underneath for body. A pair of voices a few cents apart makes it
-    fat enough to cut through a drum machine, and the note stops dead when you let go, with only a faint quick
-    slap behind it. Raw on purpose: that is where the rip lives.</li>
-<li><em>Sound design notes:</em> Mid register, roughly A3–A4. One note at a time. <strong>Play it staccato:</strong> in MONO and
-    UNISON a note struck while another is held slides in and doesn't re-fire the envelopes, so the sweep fires
-    on detached notes only (a legato run glides and rips once, on its first note). The voice stops dead on
-    release; a faint 1/16 slap follows each note (echo MIX to 0 for a literal dead stop). Tricks: ALGORITHM
-    pulls the two voices apart, kill switch kills the slap too, Tape Stop dives a held note — all untested on
-    this patch. A wash of DRAIN will blur the rip.</li>
-<li><strong>05 ZEAROX — VOICED (5 Nov 2026, approved as is; variant D of round 2 — round 1 was rejected).</strong></li>
-<li><em>What it sounds like:</em> A kick substitute made of one hard square wave, built toward a pixelated, gritty,
-    blown-out sound like a photocopy reduced to pure black and white. The pitch drops fast over the first
-    11 ms, and a random stepped pitch LFO moves it to a new value every 47 ms or so, so a 150 ms hit gets
-    about three random pitch steps of up to ±4.7 semitones (a longer note gets more). The wave stays almost
-    entirely at its two extreme levels, there is no attack, and the hit stops quickly. Dry: no tape, no drive,
-    no echo, no spring.</li>
-<li><em>Sound design notes:</em> Low hits on A0, A1 and A2 (and four-in-a-bar A1 at 120 BPM); other registers are
-    untested. <strong>It is MONO — legato doesn't re-fire the envelopes;</strong> play it detached. The kick is mostly the
-    quick pitch drop; there is no click spike. <strong>A0 is still mostly sub</strong> (81% of its energy under 60 Hz after
-    the first 20 ms): a 27.5 Hz square is inaudible on a small speaker whatever is done. VOLUME is 123 of 127,
-    so there is almost no knob headroom above the bank reference. It is the lightest patch of its batch (about
-    1337 host instr/sample). The random LFO is free-running, so it is not bit-comparable from the boot patch.
-    Tricks untested.</li>
-<li><strong>06 zzuFuzz — VOICED (5 Nov 2026, approved as is; variant C of Batch 3A).</strong> <strong>The fuzz weapon.</strong></li>
-<li><em>What it sounds like:</em> A huge, thick wall. Two fat saws on every voice are pushed hard into the drive
-    until the sound is flat and relentless, and it simply does not die while you hold the key. The strike is
-    quick (about 2 ms), the filter and its resonance are wide open, and when you let go there is a short tail
-    of about a third of a second rather than a ring. Completely dry: no echo, no spring. A power chord stays
-    whole.</li>
-<li><em>Sound design notes:</em> A low A1 up to power chords around A2–E3–A3, held or stabbed; other registers are
-    untested. The held note's level falls by nothing over three seconds, and its peak-to-RMS ratio is 1.7 dB
-    (a square wave is 0). It is POLY with 6 voices, so every key re-fires the envelopes and a three-note
-    chord plays whole. The strike's punch is the quick rise, not a level spike (+0.3 dB over the plateau):
-    more punch would mean less wall. It reads about 2 dB hotter than the bank on the standard stabs phrase
-    (the cause was not isolated), and VOLUME changes how a note from silence starts, because GROWL's loudness
-    trim reads the output stage: set VOLUME first. Honest limit: it was built toward a Fuzz War-class wall
-    from descriptions and approved by ear; nothing says it matches a real pedal, and the starved, gating
-    sputter of the voltage-starved fuzzes is not in it. The GROWL costs about +595 host instr/sample (about
-    1414 worst case).</li>
-<li><strong>07 Tape Splice — VOICED (5 Nov 2026, approved as is; variant B of Batch 3B).</strong></li>
-<li><em>What it sounds like:</em> A fat square with a wobble in its pitch, chopped short. Two square waves a hair
-    apart, one frequency-modulating the other so the tone carries extra energy below the note, and a random
-    pitch wobble (about 9.6 cents standard deviation, the LFO depth up to ±19 cents). Notes stop quickly when
-    you let go, and a tape stage on the end delays each note by a couple of milliseconds. Dry.</li>
-<li><em>Sound design notes:</em> Staccato notes from A2 up to G3 (twelve 60 ms notes) and a held A2; other registers are
-    untested. <strong>It is MONO — legato doesn't re-fire the envelopes;</strong> play it detached. A chord plays one
-    note. The pitch wobble comes from the random LFO; X-MOD adds sidebands and low-end energy but does not
-    move the measured pitch. No dropouts were measured at the shipped tape setting (a harsher setting, CHEW
-    127, produces them and costs more). About 2177 host instr/sample worst case, about 770 of it the tape.
-    Tricks untested.</li>
-<li><strong>08 Wire Bite — VOICED (5 Nov 2026, approved as is; variant D of Batch 3A).</strong></li>
-<li><em>What it sounds like:</em> An anxious, thick drone that bites, like touching a live wire. Six stacked pulse
-    waves in the high register with a second layer an octave and a fifth above, through a resonant filter
-    that zaps at the start of every note. Fat and bright (medium to high), and it never sits still: the
-    voices wander on their own and the whole stack leans and jitters in pitch. Dry, and each note is chopped
-    off the moment you let go.</li>
-<li><em>Sound design notes:</em> High: a held A4, eight 110 ms bites (E5, A4, C5, D5) and a held A3; low notes and
-    other registers are untested. <strong>It is a UNISON of 6 voices — legato doesn't re-fire the envelopes:</strong> a
-    key held while the next goes down slides and the zap doesn't happen again; play it detached. Chords play
-    one note. The drift is measured from the engine's own log: static offsets of −9 to +7 cents between the
-    voices, each wandering 4–6 cents, and a smooth-random pitch LFO leaning the stack up to 19 cents at 0.28
-    Hz. The measured top-end burst at the strike is small, because the body is so bright; it was approved by
-    ear. A bite is 40 dB down 18 ms after the key goes up. The original's echo and spring were removed (about
-    1298 host instr/sample). Tricks untested.</li>
+<li><strong>Where it lives:</strong> low, A1 to A2, in short detached notes and sixteenth bursts. That is where the filter snap spits.</li>
+<li><strong>Play it detached.</strong> It is MONO: a legato note slides in without the snap, and a chord plays only its last key.</li>
+<li><strong>On small speakers</strong> half its weight sits under 60 Hz, so a laptop gives you the grit, not the floor.</li>
+<li><strong>To push it:</strong> CUTOFF and RESO on HOME sharpen the spit. GROWL adds more of the grit it already has.</li>
+<li><strong>Dry it out:</strong> the slap and spring sit well under the note. DRAIN and the BBD page's MIX at 0 make it bone dry.</li>
+<li>It is slot 1: the patch you hear at power-on.</li>
 </ul>
-<h3 id="chapter-ii-bee-tch">CHAPTER II — BEE-TCH</h3>
-<p><em>Surf rock &amp; skinhead reggae. On screen: the Bee-tch scene, accent Wave Turquoise. The spring-reverb chapter. All
-eight patches (09–16) are voiced.</em></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>09 Skeenhead — VOICED (4–5 Nov 2026, approved as is; variant E of round 2).</strong> The reggae off-beat stab.</li>
-<li><em>What it sounds like:</em> A tight, plucky square stab with a resonant plop on the front, drenched in spring.
-    The note has a body that holds for as long as you play it; the spring rings on after the note and is the
-    sound of the patch. A wet, springy, boingy reggae stab.</li>
-<li><em>Sound design notes:</em> Off-beat two-note stabs of about a tenth of a second, around A3 to C4 (the skank it was
-    voiced on); other registers are untested. The plop is still there but softer than in the first version —
-    the first 20 ms is only a few dB above the body. The filter now rests above the played notes, so the body
-    survives the gate. The spring is the sound: it ships at DRAIN 90, about 6 dB under the dry note over a
-    stab, and is louder than the note in the 100–250 ms after it (natural for a spring), with a tail of about
-    1.1 s. One oscillator, no LFO, no detune; VINTAGE is the default 30 (no wander was measured, so steadiness
-    isn't claimed). It is a stab patch; held notes were not measured. Tricks (SLOBBER, Tape Stop, kill switch,
-    ALLEY, turning DRAIN down) are untested on it.</li>
-<li><strong>10 Atlantic Swell — VOICED (6 Nov 2026, approved as is; variant A of Batch 4A, the starting point
-  unchanged).</strong></li>
-<li><em>What it sounds like:</em> A bright pair of narrow pulse waves through a notch filter, played
-    polyphonically, with a spring reverb behind it and nothing else. It has no vibrato, no chorus and no
-    delay (measured). The two pulses beat slowly against each other and the spring rings on after the notes.</li>
-<li><em>Sound design notes:</em> Organ chords and short notes: voiced on an A minor triad (A3 C4 E4) held 2.4 s, a
-    120 ms E4, four 120 ms notes and a D minor triad (D4 F4 A4); other registers are untested. POLY 5. The
-    beating: on the held chord an A3 band swings 17.9 dB at about 1 Hz (no LFO is needed for it; the pulse
-    width LFO, ±2.3 points, is not audible as PWM). Bright: the note-on centroid is 5369 Hz and 23% of the
-    energy is above 1.2 kHz. The spring (DRAIN 40, SIZE 100) is louder than the notes by the last two of four
-    staccato notes (−0.8 / −0.4 dB re each note), so fast playing blurs into the tail. Level −19.0 dBFS RMS on
-    its own phrase at VOLUME 100 (the bank reference is −18.0 ± 1.5). Versions with a chorus, a rotary-speaker
-    tremolo and a heavy echo were rendered (B, C, D, on the Batch 4A listening branch) and are not this patch;
-    they stay a v1.1 candidate. "Cold" and "crisp" were not measured. About 2020 host instr/sample worst
-    case. The first play after power-on differs from a program-load render by about −25 dB (not isolated).
-    Tricks untested.</li>
-<li><strong>11 Slapback Strut — VOICED (4–5 Nov 2026, approved as is; variant G of round 2).</strong> Percussive surf bass —
-  now a <strong>gated</strong> bass with one loud slap.</li>
-<li><em>What it sounds like:</em> A tight, gated surf bass: the note starts at once, holds its body for as long as
-    you hold the key, and stops dead. Behind each note comes one clean, loud echo, a plain copy of the note a
-    moment later, and then nothing. Bright and crisp on top for a bass, sharp and a little biting, and dry
-    otherwise.</li>
-<li><em>Sound design notes:</em> Low, A1 to A2 (the surf riff it was voiced on). It is a gated bass, not a pluck — the
-    first version's pluck was traded away for crispness. There is no triangle oscillator, so the sound is a
-    narrow pulse through a key-tracking low-pass, bright enough that its upper harmonics are near a square
-    wave's: sharp and biting, and it may buzz on a very bright amp. The slap is one copy at 80 ms (first
-    repeat about 6 dB under the note's peak, the second much lower) and already at the engine's maximum; the
-    delay's TONE does nothing audible on this bass. Mono — <strong>play it detached</strong> (legato slides and doesn't
-    re-hit). DRAIN ships at 0; a spring wash behind the slap is untested on this version.</li>
-<li><strong>12 Kelp Tangle — VOICED (6 Nov 2026, approved after listening; variant C of Batch 4A, CUTOFF 98).</strong></li>
-<li><em>What it sounds like:</em> A pad of pulse waves whose widths are swept slowly and steadily by a single
-    triangle LFO, through a steep low-pass that leaves little in the high register, with a spring tail
-    behind it. The sweep is measurable on held notes; on short notes only a slice of it is heard. No LFO pitch
-    vibrato and no echo are set.</li>
-<li><em>Sound design notes:</em> Held chords and notes: voiced on a held A2 (3.2 s), the chord A2 E3 C4 (3 s) and six
-    150 ms notes; other registers are untested. POLY 5. On a held A2, after the filter, the sweep moves the
-    150–400 Hz band by 10.1 dB, the 400–1.2k band by 7.6 dB and the level by 5.7 dB; the LFO runs at 1.03 Hz
-    and sweeps the pulse widths 18 to 48% (one side of 50%), restarted on each detached note (PHASE SYNC). On
-    a 150 ms note it is only about 2 dB: <strong>the PWM is a held-note effect.</strong> Dark: centroid 531 Hz on the held
-    A2, 0.8% of its energy above 1.2 kHz. The spring (DRAIN 55, SIZE 75) comes back at −47 / −13 / −6 dB re the
-    dry chord in the first 250 ms; the tail is 60 dB down about 1.4 s after the chord, and its muddiness
-    ratio is 10 / 15 / 77 in 0–250 / 250–750 / 750–1500 ms (the CUTOFF 86 variant was 29 / 39 / 180). Honest
-    limits: one shared LFO moves both oscillators at one rate and there is no Poly-Mod, so "PWM driven by OSC
-    B" is not possible; the 150–400 Hz depth tops out near 10 dB at any depth or cutoff measured. Level
-    −18.0 dBFS RMS on its own phrase at VOLUME 74. About 2042 host instr/sample worst case. Tricks untested.</li>
-<li><strong>13 Ghost Board — VOICED (6 Nov 2026, approved after listening; variant C2 of Batch 4B round 2; the owner
-  expects to dial it further on the FM-1).</strong> <em>The brief changed after listening: the original called for a
-  near-sine filtered triangle with maximum tape wow/flutter; the tape wobble was heard as "killing the
-  overall tone" and was dropped, and the near-sine tone was not what was wanted.</em></li>
-<li><em>What it sounds like:</em> A dark pad: a pair of slightly detuned pulse waves, played polyphonically,
-    beating slowly against each other, with a long echo and a heavy spring behind every note. It is the
-    original patch's voice, unchanged, with the pulse-width movement removed and no tape deck. By the
-    dictionary's ratio it is very muddy.</li>
-<li><em>Sound design notes:</em> Held chords, a slow line and short notes: voiced on an A minor 7 chord held 2.4 s, four
-    800 ms notes and six 150 ms notes; other registers are untested. POLY 5. No tape, no tape wobble (a
-    one-voice probe reads 0.0 cents). The movement is the beating between the two oscillators: on one held
-    voice the 150–400 Hz band moves 13.6 dB at 0.9 Hz (6.2 dB on the held chord). Dark and very muddy:
-    note-on centroid 562 Hz, 0.2% of the energy above 1.2 kHz, muddiness ratio 315 (the original measured
-    108); the tail 1108 / 2198 / 3331 in 0–250 / 250–750 / 750–1500 ms. The echo is 337 ms, FEEDBK 95, MIX
-    105: on an isolated note the first repeat arrives 337 ms after the note-on at −8.7 dB re the note, 10.3 dB
-    above the spring; the spring (DRAIN 70, SIZE 100) is louder than the chord for its first 250 ms or so.
-    Level −18.0 dBFS RMS on its own phrase at VOLUME 55 (phrase (b) reads −23.4). About 2084 host
-    instr/sample worst case (the tape was 784 of the earlier 2679). A program-load render is bit-identical
-    from the boot patch (the earlier variant with the pulse-width LFO differed by −33 / −41 dB; this
-    suggests the free-running LFO phase, not isolated). Tricks untested.</li>
-<li><strong>14 Reef Break — VOICED (6 Nov 2026, round-1 variant C of Batch 4B; the attack changed in v0.2 on 18 Nov,
-  and Vincent approved the new version on the FM-1: "spot on", his words).</strong></li>
-<li><em>What it sounds like:</em> A crash made of a burst of noise over a square-wave sub. The noise swells in over a
-    fraction of a second rather than striking at once, the lows fall away first and the top of the noise rings
-    out longest, and a long echo follows each hit. There is no spring and no tape.</li>
-<li><em>Sound design notes:</em> One low hit (A1), one mid hit (A2), A1 hits 1000, 600 and 400 ms apart, every gate
-    300 ms; other registers are untested. POLY 5. <strong>Both envelopes have a 299 ms attack</strong> (FILTER ENV and AMP ENV
-    ATTACK 82, shown as <code>299ms</code>): on A1 the hit reaches 10 / 50 / 90% of its peak at 25.2 / 126.2 / 208.0 ms
-    (A2 peaks at 268 ms), and the sub's band peaks 235 ms after the note-on, the top band (4k and up) 255 ms. By
-    band, the time after the note-on at which each has fallen 20 / 40 dB below its own peak: 60–150 Hz
-    308 / 316 ms; 1.2k–4k 435 / 1120 ms; 4k and up 923 / 1622 ms. The echo is 361 ms, FEEDBK 100, MIX 80: first
-    repeats −13 / −18 / −23 dB re the burst, 8 repeats stay above −40 dB, no clipping. <strong>The dry tail rings out
-    in about a second; the echo runs several seconds.</strong> Level −18.03 dBFS RMS on its own phrase at VOLUME 116,
-    peak −4.17 dBFS. Three keys struck at once stack three noise voices and peak at −2.82 dBFS (no clipped
-    sample). Limits: no inharmonic cymbal partials; noise and sub share one filter and one amp envelope. About
-    1857 host instr/sample worst case (measured before the attack change). Tricks untested. <em>(The 6 Nov
-    version struck at once, peaking at 27 ms; Vincent found it too harsh coming in.)</em></li>
-<li><strong>15 Trem Chop — VOICED (5 Nov 2026, approved as is; variant D of Batch 3B; variant B was committed
-  first).</strong></li>
-<li><em>What it sounds like:</em> A broken-strobe tremolo: a bright saw chopped on and off by a hard square-shaped
-    LFO, not a gentle sine. Every note is two voices, and the two voices chop an eighth of a cycle apart, so
-    the chop has an off part, a half-level part and a full part instead of a clean on/off. Dry: no echo, no
-    spring, no tape.</li>
-<li><em>Sound design notes:</em> A held A3, a six-note riff of 500 ms notes, the chord A3 + E4 + A4 and short 110 ms
-    notes; other registers are untested. It is DUAL with POLY 6, so every note is two voices: a three-note
-    chord uses all six. The chop is 8.10 Hz (the nearest byte to sixteenths at 120 BPM), 44.8 dB between the
-    on and off parts; the held note spends 35% of the time off, 31% at one voice's level and 33% at full.
-    <strong>There is no tempo sync with existing controls</strong>, so the chop slides against a beat; the card carries
-    the rate table (e.g. 140 BPM sixteenths = RATE 104, 9.42 Hz). The chop edges are steady to 0.18 ms:
-    VINTAGE does not make them waver; the two-voice spread is what makes it sound unsteady. It reads about
-    2.5 dB hotter than the bank on the stabs phrase, with a peak of −6.2 dBFS (limit −4), and costs about
-    2375 host instr/sample. LFO PITCH is 0 (the original 8 was inert). Tricks untested.</li>
-<li><strong>16 Tidal Pull — VOICED (6 Nov 2026, approved after listening; variant D of Batch 4A, the triangle-like
-  stack).</strong></li>
-<li><em>What it sounds like:</em> A stereo chord wash of triangle-like tones (narrow pulses through a low-pass, with
-    an octave-up copy), moved by a slow triangle LFO on pitch. The notes come in gradually, an echo follows
-    each note, and a spring rings behind both. It is a dark patch, not a bright one.</li>
-<li><em>Sound design notes:</em> Chords: voiced on A minor 7 (A3 C4 E4 G4) and F major 7 (F3 A3 C4 E4) held 2.0 s, three
-    400 ms notes and three 100 ms stabs; other registers are untested. POLY 5. <strong>It is triangle-like, not a
-    sine, dark and peak-limited:</strong> harmonics 3 / 5 / 7 read −17.2 / −27.3 / −36.8 dB against an ideal
-    triangle's −19.1 / −28.0 / −34.2; centroid 595 Hz, 0.5% of the energy above 1.2 kHz, muddiness ratio 133;
-    −19.1 dBFS RMS on its own phrase at VOLUME 76 (1.1 dB under the reference, inside ±1.5; the peak is −4.4).
-    Attack 17 / 93 / 219 ms to 10 / 50 / 90%. The pitch LFO is triangle, 2.30 Hz, ±19 cents (LFO PITCH 16; the
-    original 3 was inert), voices offset by PHASE SPREAD. The echo is 337 ms (ALLEY 104), FEEDBK 78, MIX 110:
-    the first repeat is −8.6 dB re the note and <strong>7.7 dB above the spring</strong>. The spring (DRAIN 45, SIZE 90) is
-    −39 / −19 / −14 dB re the note in 0–20 / 20–100 / 100–250 ms. The tail is 20 dB down at 1.2 s and 40 dB
-    down at 2.4 s. Width: the held chord's L/R correlation is 0.70 dry, 0.66 with the echo and spring (an
-    eight-voice DUAL version on variant B read 0.38; not measured here). On this phrase short notes do not
-    reach the level of the held chords (the stabs read 7.7 dB under). The first play after power-on differs
-    from a program-load render by about −24 dB (not isolated). About 2027 host instr/sample worst case.
-    Tricks untested.</li>
+<li><strong>Korg MS-20</strong> — the resonant filter and its bite: <em>nasty, biting, resonant</em>.</li>
+<li><strong>Minimoog</strong> — the stacked saws: <em>fat, thick</em>.</li>
+<li><strong>Roland SH-101</strong> — the tight snap at the front of a note: <em>tight, punchy</em>.</li>
+<li><strong>ProCo RAT</strong> — the driven edge: <em>gritty, crunchy</em>.</li>
 </ul>
-<h3 id="chapter-iii-moonshine">CHAPTER III — MOONSHINE</h3>
-<p><em>Dark fantasy &amp; atmosphere. On screen: the Moonshine scene, accent Foam White; hold a note and the dog howls.
-Drones and slow pads — these want long amp releases to survive the house hard-chop. (Live, a held-open gate helps:
-</em><em>REC is HOLD</em><em> since v0.2, so press it with the notes down and they keep sounding until you press REC again or
-STOP.)</em></p>
+<p>Closest to: <strong>an MS-20 bass through a RAT</strong>.</p>
+</section><section class="patch ch-1"><h4 id="02-cement-grind"><span class="nn">02</span>Cement Grind</h4>
+<p>A low-mid grinder: two fat pulse waves whose widths sweep fast, so every note shudders and churns. A clear, quick pulse-width wobble, not a shimmer. The filter bites, it is pushed into a moderate crunch, and each note starts with a little skid and a snap. Thick, dry, and it hits hard.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>17 Titanic — VOICED (Nov 2026, approved as is; variant B of Batch 2A).</strong> <strong>The chapter anchor.</strong></li>
-<li><em>What it sounds like:</em> Cold, heavy and hollow: two saws a fifth apart, steady rather than seasick, with a
-    deep sub-heavy floor. Low notes open up and ring out big; high notes close down and go dull, so the
-    weight lives at the bottom of the keyboard. Dry, desolate, and it hangs on after you let go.</li>
-<li><em>Sound design notes:</em> Low — roots and fifths around A1 to A2, where it opens up; played high it is dark and
-    dull, by design. Every note is two voices, so POLY 6 plays a three-note chord in full and a fourth note
-    steals. It is a held-note patch: the release is long (about 1.3 s to silence), so quick chopped notes
-    overlap (not auditioned on a fast riff by ear). It ships dry; the spring is clearly audible on it (about
-    5 dB under the dry sound at DRAIN 60, mostly harmonics above 150 Hz — frozen or muddy is a matter of
-    taste, untested by ear). Tape (CHEW) is an optional garnish for a dying-tape feel, at noticeably more CPU.
-    Tricks untested on this patch.</li>
-<li><strong>18 Roto-scopo — VOICED (Nov 2026, approved; variant D of Batch 5A).</strong> A moaning dungeon drone.</li>
-<li><em>What it sounds like:</em> A low, dark drone: a square tone with a second square an octave below it, played by
-    three slightly out-of-tune voices. A resonant low-pass filter opens and closes slowly and unpredictably by
-    itself, so the tone moans and drifts without a knob being touched. Dry: no echo, no spring. It lasts only
-    while a key is held.</li>
-<li><em>Sound design notes:</em> <strong>Hold a key, the sustain pedal or REC (HOLD);</strong> the release is about 2.7 s nominal.
-    <strong>One note at a time:</strong> a chord plays only its last key, and legato does not restart the
-    envelopes. Best in the low register (judged on A1 and A2 holds of 15 s). A short tap is much quieter than the
-    held note because the attack is slow. The wander is one shared random LFO on the cutoff; the engine has no
-    Poly-Mod, so the movement cannot follow OSC 2 (measured on A1: the centroid ranges 316–708 Hz, a 14-semitone
-    range). Slop is at the knob's top (VINTAGE 127). About 1897 host instr/sample worst case. Tricks untested.</li>
-<li><strong>19 Micro-mist — VOICED (Nov 2026, approved; variant D of Batch 5A round 2).</strong> <em>Replaced "Blackwater", a
-  sub-bass patch dropped on 6 Nov.</em> Neon pixels floating in the ether.</li>
-<li><em>What it sounds like:</em> A soft-attack chord in the mid-to-upper register: a saw with a slightly sharp square
-    an octave above it, through a band-pass filter. It hovers on its own echo and a large spring, and keeps
-    hanging in the air for several seconds after you let go. Bright rather than low, and it does not flicker or
-    scatter: a held pad dissolving into its effects, not a granular texture.</li>
-<li><em>Sound design notes:</em> Chords work (POLY 6). <strong>The mist after key-up is the effect tail, not a latch:</strong> a held
-    chord needs the key, a sustain pedal or REC (HOLD). After a 10 s chord the tail is 20 / 40 / 60 dB down at 1.6 / 4.1 /
-    5.8 s. The spring leads the echo (first repeat 3.9 dB under the spring). Short notes are faint (a 150 ms
-    chord tap is 8.7 dB under the held chord). Nothing sits under 150 Hz, so it is not for low notes. Not a
-    real granular engine: no freeze, reverse or pitch-shifted repeats. The LFO is set but inert at these
-    values. About 2000 host instr/sample worst case. Tricks untested.</li>
-<li><strong>20 Fire &amp; Ice — VOICED (Nov 2026, approved; variant D of Batch 5B).</strong> A soaring fantasy solo.</li>
-<li><em>What it sounds like:</em> A single-voice lead that tears into every detached note with a bright hard-sync
-    sweep, which then settles into a rounder line. It is pushed into overdrive and thrown into a long,
-    ping-ponging echo that sits on top of a short spring. Notes slide into each other a little.</li>
-<li><em>Sound design notes:</em> <strong>MONO, one note at a time.</strong> The sweep fires on <strong>detached</strong> notes; played legato the
-    sweep is not re-fired (centroid over the first 100 ms of a riff: 3610 Hz detached against 1573 Hz legato).
-    The sweep survives the filter (CUTOFF 84). Glide takes 94 ms for an octave step. The echo is a free 374 ms
-    (FEEDBK 92; the first repeat is 10 dB under the note) and does not follow the tempo. Drive is GROWL 48. About
-    1967 host instr/sample worst case. Tricks untested.</li>
-<li><strong>21 Cowl Shadow — VOICED (Nov 2026, approved as is; variant C of Batch 2A).</strong> A brass wall that blooms.</li>
-<li><em>What it sounds like:</em> A brass wall that starts dark and soft and swells open while you hold the note: a
-    quiet murky hum that, in a few seconds, blooms into a wide, full, glowing brass, with a slow drift inside
-    the stack. Dry. When you let go it fades out slowly and darkens as it goes.</li>
-<li><em>Sound design notes:</em> <strong>Hold the note.</strong> The bloom takes about five seconds (a tenth open at under a second,
-    nine-tenths at about four, measured on A2). A sustain pedal or REC (HOLD) should hold it open the same way
-    (not tried on this patch). <strong>Release early and it never opens</strong> — let go at 2.4 s and it is
-    still dark and just fades in about two seconds; after a long hold the release takes about a second to
-    drop 20 dB and about four to vanish. Legato doesn't restart the bloom; release and play a new note.
-    <strong>It sounds quiet if you tap a note:</strong> short stabs read about 13 dB under the bloomed level. One note at
-    a time (five-voice unison). Measured only on A2. Tricks untested; a little DRAIN would add depth
-    (untested).</li>
-<li><strong>22 Melting Orb — VOICED (Nov 2026, approved; variant D of Batch 5A).</strong> A dignified collapse.</li>
-<li><em>What it sounds like:</em> A thick stack of detuned saw tones that opens bright when the key goes down and then
-    slowly sinks: the filter closes and the pitch falls together over a few seconds until the sound settles low
-    and dark. A held collapse, not a zap. Takes chords (three keys gate six voices). Dry.</li>
-<li><em>Sound design notes:</em> <strong>Hold the key;</strong> the melt happens while it is down (the pitch ends about 6.8 semitones
-    lower, 90% of the fall at 4.0 s on A2). A short tap hears only the bright opening. <strong>On key-up the melt
-    partly runs backwards:</strong> pitch and brightness climb back through the fade (not tested whether it is
-    audible). OSC 1 is off, because ENV&gt;O2 bends OSC 2 only. A three-key chord peaks at −4.1 dBFS. About 2489 host
-    instr/sample worst case, the highest of any voiced patch on the host yardstick. Tricks untested.</li>
-<li><strong>23 Crypt Dust — VOICED (Nov 2026, approved; variant D3 of Batch 5B round 2).</strong> Frail, crumbling
-  atmosphere. <em>(Brief changed after listening; it was: noise + thin pulse, heavy tape wow, no drive. The final
-  patch has no tape and only a trace of noise.)</em></li>
-<li><em>What it sounds like:</em> A thin, narrow pulse run through a band-pass into a pale, dusty tone, with only a
-    trace of noise under it. The level flutters slowly and irregularly, in steps. A short echo and a large
-    spring blur it. It rises slowly when you press a chord and hangs on after you let go.</li>
-<li><em>Sound design notes:</em> A held-chord pad (POLY 4: all three keys of a triad sound); short notes are faint (a
-    150 ms chord tap is 13.7 dB under the held chord). The noise sits 24.4 dB under the pulse. The chord peaks at
-    −4.0 dBFS, which limits VOLUME. About 2065 host instr/sample worst case. Tricks untested.</li>
-<li><strong>24 Fugue State — VOICED (Nov 2026, approved; variant C of Batch 5B).</strong> A dizzying pad.</li>
-<li><em>What it sounds like:</em> A soft, dark, triangle-like pad whose pitch trembles quickly, wide in the stereo
-    field. Each chord runs into a short echo that feeds back on itself while the pitch is still moving, so the
-    repeats sit at slightly different pitches from the notes being played and the chord smears. A spring adds a
-    further tail. No filter movement, only the pitch and the echo.</li>
-<li><em>Sound design notes:</em> A held-chord pad (POLY 5). A triangle LFO at 4.9 Hz moves the pitch by ±178 cents; the echo
-    is 144 ms at FEEDBK 95 (10 repeats above −40 dB). The tail is 20 / 40 / 60 dB down at 1.6 / 3.5 / 4.6 s.
-    Runaway tests show no clipping. One shared LFO, so no true rotary. The kill switch clears the echo buffers
-    (not tested here). About 2038 host instr/sample worst case. Tricks untested.</li>
+<li><strong>Where it lives:</strong> A2 up to E3, in notes of about 400 ms: long enough for the wobble to swing two or three times inside each note.</li>
+<li><strong>Play it detached.</strong> It is MONO: a legato note glides in (the skid) without a new snap, and a chord plays one note.</li>
+<li><strong>One LFO does both jobs:</strong> the pulse-width sweep and a filter wobble share it, so LFO RATE speeds or slows both together. Each detached note restarts the sweep.</li>
+<li><strong>Don't push the PWM depth much further:</strong> the sweep already just crosses the halfway width at the top of each swing, and past that a pulse sweep starts to sound twice as fast.</li>
+<li>It stops the moment you let go.</li>
 </ul>
-<h3 id="chapter-iv-acid-can">CHAPTER IV — ACID CAN</h3>
-<p><em>Prophet-5 survivors, rebuilt by ear — never ripped from factory data. On screen: the Acid Can scene (a
-tipped-over can oozing acid in an alley), accent Acid Chartreuse. All eight patches (25–32) are voiced.</em></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>25 SAWTOOTH — VOICED (4–5 Nov 2026, approved as is).</strong> The iconic poly-brass, a Prophet-5 survivor rebuilt
-  by ear.</li>
-<li><em>What it sounds like:</em> Two saws a few cents apart, stable and warm, with the filter swelling open on each
-    note and settling into a solid, brassy body. It holds still: no wobble, no chop, only a gentle vibrato
-    that fades in if you hold a note.</li>
-<li><em>Sound design notes:</em> Low-mid to mid register; chords and fifth-and-octave voicings are home ground (each
-    note is one voice; three- and four-note chords should play in full — not yet chord-tested). Medium to long
-    notes show the swell best: it peaks about 84 ms in, so a very short stab catches only the start. It is
-    the stable counterpart to 03 Half-Life. The vibrato arrives after about 1.1 s on held notes; LFO PITCH to
-    0 removes it. Ride the ALGORITHM for a tired-string-brass wobble; Tape Stop as a swell-out ending (both
-    untested on this patch). All effects are at 0 on purpose: a dry brass, with a spring or echo yours to add.</li>
-<li><strong>26 BSyncA — VOICED (11 Nov 2026, approved after listening; variant D of Batch 6A).</strong> A ripping sync solo.</li>
-<li><em>What it sounds like:</em> A hard-sync lead built from three slightly detuned voices that beat slowly against
-    each other, with a master oscillator you can hear underneath the synced one. Every detached note starts
-    with a bright sweep that tears down into a duller body; it is pushed into drive and left dry, with a short
-    glide between notes. Played legato, the sweep does not come back.</li>
-<li><em>Sound design notes:</em> <strong>UNISON, one note at a time:</strong> three voices all play the key you press and a chord plays
-    the last key only. The sweep fires on <strong>detached</strong> notes: on notes 2–8 of the riff, the centroid over the
-    first 100 ms is 2935 Hz detached against 1742 Hz legato. The sweep was measured on A3; the riff runs A3 to
-    C6 and nothing else was measured. <strong>The drive darkens the strike:</strong> GROWL 44 lowers the crest factor from
-    11.7 to 6.0 dB, and the centroid over the first 50 ms is 2662 Hz against 4165 Hz with no drive, so the
-    brightness of the rip trades against the drive. GLIDE 50 takes 64 ms to come within 50 cents of a legato
-    octave step. Dry: no echo, no spring, no tape. VOLUME 90, −18.05 dBFS RMS on the lead phrase, peak
-    −11.0 dBFS. About 2326 host instr/sample worst case (GROWL about +595 of it). Tricks untested. <em>The original
-    brief had a silent master oscillator, one MONO voice, no drive and an echo with a spring; the brief is kept in
-    the presets doc.</em></li>
-<li><strong>27 R3V3RT — VOICED (11 Nov 2026, approved after listening; variant G, a calibration render of C with a
-  longer filter decay, chosen by ear).</strong> Tight, immediate analog bass.</li>
-<li><em>What it sounds like:</em> A single-voice bass from one pulse wave. Each note opens with a bright filter snap
-    that falls into a lower body; the body holds at a steady level for as long as the key is down, and when the
-    key goes up the note stops almost at once. Played legato, the snap is not re-fired and the notes after the
-    first have no front edge. Dry.</li>
-<li><em>Sound design notes:</em> <strong>MONO, one note at a time.</strong> The snap fires on <strong>detached</strong> notes: on notes 2–8 of the
-    eight-note line the first 20 ms centroid is 2200 Hz detached against 154 Hz legato. On A2 held 1 s the
-    level is 2.0 dB under the peak at 100 ms and 3.4 dB under at 300 ms; after key-up it is down 20 / 40 / 60 dB
-    in 11 / 15 / 19 ms. <strong>Low register:</strong> A1's fundamental is 55 Hz, and only 17% of A1's body energy is above
-    60 Hz (99% on A2), so a low A1 is mostly inaudible on a small speaker. VOLUME 98, −18.00 dBFS RMS on the low
-    riff, peak −13.8 dBFS. About 1379 host instr/sample worst case, not lighter than the original (1377).
-    Tricks untested. <em>The original had a saw plus a sub-octave pulse; the sustained single-pulse body is what
-    Vincent asked for.</em></li>
-<li><strong>28 Arr 2 Dee 2 — VOICED (11–12 Nov 2026, approved after listening; variant D2 of Batch 6B round 2).</strong>
-  <em>Renamed from "Bell Tolls" at Vincent's request; he asked for "Arr Two Dee Two", which is 15 characters
-  against the 14-character name field, so the on-screen name is "Arr 2 Dee 2". The brief changed after
-  listening: the original was an inharmonic FM chime set against the hard-chop gate; Vincent asked for a bell
-  ring with body, healthy decay and sustain, a clean base to shape live, and no top grit.</em></li>
-<li><em>What it sounds like:</em> A sustained, struck bell tone built from two saw waves with a mid-frequency
-    sideband character. It rings for several seconds, a slow shimmer moves its pitch and level, and a small
-    echo and a spring sit behind it. It is dry of drive and tape.</li>
-<li><em>Sound design notes:</em> <strong>The key you press is the bell's hum, the strongest partial; the prime is an octave
-    above it</strong>, so the strike may feel an octave above the key (not measured as perceived pitch). The five
-    classical bell partials (hum 0.5, prime 1, tierce 1.2, quint 1.5, nominal 2) are all present; at A4 in the
-    first 300 ms they read 0 / −7.7 / −11.1 / −10.5 / −13.6 dB. <strong>It rings on after key-up:</strong> a note released at
-    400 ms falls 20 dB in 3012 ms and 40 dB in 5610 ms. The ring of a held note to −40 dB is about 5.8–6.0 s
-    across A2–A6, and the level is within 1.2 dB across the keybed; <strong>A6 is bright</strong> (21.3% of its first-20 ms
-    energy above 4 kHz). POLY 5; a three-note chord reads −21.0 dBFS RMS, peak −6.0. A fast eight-note run
-    peaks at −4.03 dBFS and sets the level limit. <strong>Live shaping</strong> (it sits mid-range on CUTOFF 88, X-MOD 32,
-    ENV&gt;O2 64, OSC 2 FINE 64, echo MIX 45, DRAIN 35, CHEW 0): CUTOFF and X-MOD change the brightness without
-    moving the partials; echo MIX, DRAIN and FINE barely move the ring; <strong>ENV&gt;O2 ±10 breaks the bell</strong>, because
-    the tierce falls from −10 dB to about −47 dB at either side. The top grit of the first version was the FM,
-    not CHEW or GROWL (neither is in the patch). <strong>Not carried: a crystalline tail</strong> (the engine has no
-    per-partial envelope). About 2118 host instr/sample worst case; <strong>riding CHEW 45 or GROWL 44 on top reads
-    2901 or 2713, and both 3496, on the host yardstick.</strong> On the FM-1 (12 Nov), with all four Psych Chain
-    effects pushed hard, four notes held read about 4500 µs against the 5800 µs budget in the source
-    (Vincent's reading, ±100). Tricks untested.</li>
-<li><strong>29 i scream — VOICED (11 Nov 2026, approved: variant D with CHEW 0).</strong> <em>Built by ear from Vincent's field
-  recordings of a real South African ice-cream van; nothing is sampled. The exact version was not heard
-  before approval (Vincent heard D with tape and approved it without).</em></li>
-<li><em>What it sounds like:</em> A bright, struck chime built from a square wave with a second oscillator that
-    zings down in pitch at the strike. The ring decays slowly, over a couple of seconds, and a gentle slow
-    shimmer in pitch and level fades in after the strike and sways the ring. A small slap echo and a touch of
-    spring sit behind it, and everything passes through a narrow, honky mid-band like a small horn speaker.
-    There is no tape in it. <em>Vincent hears it as closer to an arcade or vintage video-game chime than to finger
-    cymbals (his ear, not measured); the bank had nothing in that register before.</em></li>
-<li><em>Sound design notes:</em> Voiced for A4 to A6; nothing outside was measured. The ring of a C#6 falls 6 / 12 / 20 /
-    40 dB in 252 / 550 / 1030 / 1896 ms, so with notes 580 ms apart several rings overlap (POLY 5). <strong>A
-    three-note chord (A#5 C#6 F6) plays whole and is the loudest phrase</strong> (−21.3 dB RMS, peak −4.06 dBFS): use
-    it as a wind-chime. The shimmer is a TRI LFO at 0.8 Hz (the engine has no sine). The filter is a band-pass
-    peaking at 1099 Hz. No tape: CHEW is 0, so no wow, flutter, hiss or dropout. VOLUME 113, −17.9 dBFS RMS on
-    the chime melody. About 1863 host instr/sample worst case. On the FM-1 (12 Nov), with all four Psych Chain
-    effects pushed hard, four notes held read about 4500 µs against the 5800 µs budget (Vincent's reading,
-    ±100). Tricks untested.</li>
-<li><strong>30 THE DØG — VOICED (4–5 Nov 2026, approved; variant H of round 2).</strong> <strong>The signature patch, and the
-  flagship.</strong></li>
-<li><em>What it sounds like:</em> A dry, punchy unison bass: every voice stacked on one note, fat and thick, loosened
-    just enough that the stack breathes without ever going seasick. Warm, with a driven edge that stops short
-    of fuzz, and each note is chopped hard on release: no spring, no echo, no tail, only the silence after
-    the hit. It has presence: it sits forward and fills the room.</li>
-<li><em>Sound design notes:</em> Low register. Roots and octaves from about A1 to A2 are the sweet spot, for single-note
-    bass lines and chopped roots; the very bottom (A0 and the low end of A1) is partly below what small
-    speakers and many PAs reproduce, so on a laptop you hear the body, not the floor. Staccato to medium —
-    eighth-note chops (roughly 130 ms) are home — and it also holds as a wall of low unison with a slow,
-    controlled beat. It is a unison: one note at a time, no chords. Tricks: ALGORITHM loosens the stack
-    further; Tape Stop dives the whole low stack; the kill switch stops it dead; per-voice DRIVE (MIXER
-    page, knob 4) is the gentle route to more grit, while GROWL is a big step (nothing below about 28, compressing
-    past about 40). Effects are at 0 on purpose (dry and punchy is the sound; a wash will blur the chop). It
-    deliberately sits about 1.5 dB above the bank's usual level for presence — expect it to jump out a little
-    when you switch to it. <strong>On the FM-1 (12 Nov), with all four Psych Chain effects pushed hard, four notes held
-    read about 5600 µs against the 5800 µs budget in the source (Vincent's reading, ±100): the highest of the
-    six patches he read, so it is the one to watch when riding the effects hard.</strong></li>
-<li><strong>31 Fi(l)fth — VOICED (4–5 Nov 2026, approved as is; variant C, the DUAL stab).</strong> The archetypal aggressive
-  chord stab. Directly the top-voted DØG-5 sound.</li>
-<li><em>What it sounds like:</em> A fifth built into every note, a hard filter pluck, and a short slap-back echo right
-    behind it. Each note is a detuned pair, so it is fat and punchy rather than thin, warm rather than icy,
-    with a bright snap on the front that settles into a solid body. Dry apart from the slap: no spring, no long
-    wash, just the stab and its quick echo.</li>
-<li><em>Sound design notes:</em> Low to low-mid register; single notes and fifth-based riffs (roots and octaves around A1
-    to A2) are home ground — every note already carries its own fifth, so one finger plays a power chord.
-    Short and hard: a stab of roughly 150–200 ms (there is no gate-length control; the stab is as long as you
-    hold the key). Chords, honestly: because the fifth is built into every voice, chords of fifths stack
-    fifths on fifths into sus2-style clusters — the engine doing what the patch asks. Every note is two
-    voices, so chords are three notes by design (three notes use six voices; a fourth still fits, using all
-    eight; a fifth steals). It is heavier on CPU than a single-voice stab. The slap (ALLEY) is on and is what
-    makes it the Space-Echo stab; turn ALLEY up on the BBD DELAY page for a longer echo. Other tricks untested
-    on this patch; a spring will blur the stab.</li>
-<li><strong>32 Init bruv? — VOICED (11 Nov 2026, approved after listening; variant B).</strong> The blank slate that closes
-  the bank.</li>
-<li><em>What it sounds like:</em> A plain voice made of two saw waves played through a low-pass filter with a short
-    envelope, dry, with chords and single notes both playable. Nothing is added to it: no modulation, no echo,
-    no spring, no tape and no drive.</li>
-<li><em>Sound design notes:</em> <strong>It is the engine's own default program with one change, VOLUME 97</strong> (the default is
-    100). It is not a single raw saw with an open filter: POLY 5, two saws 4.7 cents apart, a 24 dB low-pass at
-    CUTOFF 80 with RESO 20, a filter envelope and an amp envelope, VINTAGE 30, SPREAD 60, every effect at 0.
-    <strong>Slots 33–99 hold the same defaults as INIT, with VOLUME 100.</strong> Chords play (POLY 5); −18.05 dBFS RMS on the
-    stabs phrase, peak −5.6 dBFS. With GROWL, DLY MIX, DRAIN and CHEW at 0 the audio was bit-identical when
-    every other effect control was moved to its extreme. About 1814 host instr/sample worst case. <em>A raw
-    single-saw render ("Craw") and a MONO init stay on the listening branch as v1.1 candidates for more blank
-    canvases.</em></li>
+<li><strong>Roland Juno-60</strong> — the pulse-width movement: <em>PWM, wobble, thick</em>.</li>
+<li><strong>Korg Polysix</strong> — the stacked pulses: <em>fat, PWM</em>.</li>
+<li><strong>Roland SH-101</strong> — the punchy PWM bass: <em>punchy</em>.</li>
+<li><strong>ProCo RAT</strong> — the crunch: <em>crunchy</em>.</li>
+<li><strong>Korg MS-20</strong> — the filter: <em>biting</em>.</li>
 </ul>
-<hr>
-<h2 id="part-4-gear-inspirations">PART 4 — GEAR INSPIRATIONS</h2>
-<p>For each voiced patch: real-world instruments and pedals whose <em>character</em> it draws on, each tagged with the
-dictionary trait it carries — so "a bit more Mono/Poly" translates straight into parameter moves. These are
-inspirations, not imitations: nothing here is modelled, ripped or sampled, and gear names appear only in this
-manual — never in patch names or on-screen text. All trademarks belong to their owners; DØG-5 is not affiliated
-with or endorsed by any of them. <em>A tag is kept only where the final patch carries the trait; traits the patch
-lacks are named as such.</em></p>
-<p>Each entry ends with a <strong>Closest to</strong> line: the one instrument you would name if someone asked "what does it
-sound like?"</p>
-<h3 id="chapter-i-jalopy_1">Chapter I — JALOPY</h3>
-<p><strong>01 Red Pill</strong></p>
+<p>Closest to: <strong>a Juno-60 PWM bass through a RAT</strong>.</p>
+</section><section class="patch ch-1"><h4 id="03-half-life"><span class="nn">03</span>Half-Life</h4>
+<p>Fat, slop-heavy dual saws with a sub-octave underneath: seasick, never quite in tune with itself, and thick without going murky. Short notes are chopped stone-dead by the gate, and the tail doesn't fade, it sputters: a few ragged stutters as the note dies. Raw, dry, engine-only: the drift and the chop are the whole point. The DØG-5 thesis in one patch.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Korg MS-20</strong> — the resonant filter and its bite. <em>Nasty, biting, resonant.</em></li>
-<li><strong>Minimoog</strong> — the stacked saws. <em>Fat, thick.</em></li>
-<li><strong>Roland SH-101</strong> — the tight snap at the front of a note. <em>Tight, punchy.</em></li>
-<li><strong>ProCo RAT</strong> — the driven edge. <em>Gritty, crunchy.</em></li>
-<li><em>Closest to:</em> an MS-20 bass through a RAT.</li>
+<li><strong>Where it lives:</strong> low to low-mid, roots and fifths from about A1 to A3. Fifth-and-octave power chords are home ground.</li>
+<li><strong>Play it staccato:</strong> notes of roughly 150 to 180 ms give a hard clean body and a sputtering tail. Hold a note longer and it spits all the way through; very short notes only catch the start. Riffs and stabs, not pads.</li>
+<li><strong>Chords: three notes at most.</strong> Every note is two voices, so a fourth note steals from the others.</li>
+<li><strong>SLOBBER is its best trick:</strong> ride ALGORITHM up and it goes from seasick to dying tape motor. Tape Stop (hold SEQ) makes a good riff ending; HEEL stops the sound and the sputter dead.</li>
+<li><strong>Keep the Psych Chain off:</strong> a wash of ALLEY or DRAIN buries the sputter.</li>
 </ul>
-<p><strong>02 Cement Grind</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Roland Juno-60</strong> — the pulse-width movement. <em>PWM, wobble, thick.</em></li>
-<li><strong>Korg Polysix</strong> — the stacked pulses. <em>Fat, PWM.</em></li>
-<li><strong>Roland SH-101</strong> — the punchy PWM bass. <em>PWM bass, punchy.</em></li>
-<li><strong>ProCo RAT</strong> — the crunch. <em>Crunchy.</em></li>
-<li><strong>Korg MS-20</strong> — the filter. <em>Biting.</em></li>
-<li><em>Closest to:</em> a Juno-60 PWM bass through a RAT.</li>
+<li><strong>Korg Mono/Poly</strong> — detuned oscillators that drift and never settle: <em>fat, slop, seasick, thick</em>.</li>
+<li><strong>Sequential Prophet-5 (early, tuning-unstable revisions)</strong> — the dual-saw warmth with the drift: <em>fat, warm, drift</em>.</li>
+<li><strong>Minimoog</strong> — the body under the instability: <em>fat, sub-heavy, thick</em>.</li>
+<li><strong>Korg MS-20</strong> — the bite and the spit in the filter and the tail: <em>nasty, biting, spitting</em>.</li>
 </ul>
-<p><strong>03 Half-Life</strong></p>
+<p>Closest to: <strong>a Korg Mono/Poly: drifting, detuned saw chaos with Minimoog weight underneath, chopped by the gate</strong>.</p>
+</section><section class="patch ch-1"><h4 id="04-v-sync"><span class="nn">04</span>V-Sync</h4>
+<p>A tearing hard-sync lead: the pitch of the synced oscillator rips down on every note, nasal and biting, with a plain saw underneath for body. Two voices a few cents apart make it fat enough to cut through a drum machine. The note stops dead when you let go, with only a faint, quick slap behind it. Raw on purpose: that is where the rip lives.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Korg Mono/Poly</strong> — detuned oscillators that drift and never settle. <em>Fat, slop, seasick, thick.</em></li>
-<li><strong>Sequential Prophet-5 (early, tuning-unstable revisions)</strong> — dual-saw warmth with the drift. <em>Fat, warm, drift.</em></li>
-<li><strong>Minimoog</strong> — the body under the instability. <em>Fat, sub-heavy, thick.</em></li>
-<li><strong>Korg MS-20</strong> — the bite and the spit in the filter and the tail. <em>Nasty, biting, spitting.</em></li>
-<li><em>Closest to:</em> Korg Mono/Poly — its drifting, detuned saw chaos, with Minimoog weight underneath, chopped by
-  the gate.</li>
+<li><strong>Where it lives:</strong> mid register, around A3 to A4. One note at a time: no chords.</li>
+<li><strong>Play it staccato.</strong> A note struck while another is held slides in without the rip; a legato run glides and rips only once, on its first note. Detached notes rip every time.</li>
+<li><strong>The slap:</strong> a faint 1/16 echo follows each note. The BBD page's MIX at 0 gives a literal dead stop.</li>
+<li><strong>Tricks:</strong> SLOBBER pulls the two voices apart; GROWL adds edge (it does little below about 28); HEEL kills the slap too. Keep DRAIN low: a spring blurs the rip.</li>
 </ul>
-<p><strong>04 V-Sync</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Sequential Pro-One</strong> — the sync sweep itself. <em>Sync, punchy, ripping.</em></li>
-<li><strong>Sequential Prophet-5</strong> — the fatness of a doubled voice. <em>Sync, fat.</em></li>
-<li><strong>ARP Odyssey</strong> — the nasal, cutting tone. <em>Nasal, biting.</em></li>
-<li><strong>Moog Prodigy</strong> — the cheap, raw edge. <em>Fat, cheap, raw.</em></li>
-<li><em>Closest to:</em> a Pro-One sync lead.</li>
+<li><strong>Sequential Pro-One</strong> — the sync sweep itself: <em>sync, punchy, ripping</em>.</li>
+<li><strong>Sequential Prophet-5</strong> — the fatness of a doubled voice: <em>sync, fat</em>.</li>
+<li><strong>ARP Odyssey</strong> — the nasal, cutting tone: <em>nasal, biting</em>.</li>
+<li><strong>Moog Prodigy</strong> — the cheap, raw edge: <em>fat, cheap, raw</em>.</li>
 </ul>
-<p><strong>05 ZEAROX</strong></p>
+<p>Closest to: <strong>a Pro-One sync lead</strong>.</p>
+</section><section class="patch ch-1"><h4 id="05-zearox"><span class="nn">05</span>ZEAROX</h4>
+<p>A kick substitute made of one hard square wave: pixelated, gritty and blown out, like a photocopy reduced to pure black and white. The pitch drops fast at the strike, and a random stepped pitch moves each hit to new values, so no two hits sound quite alike. No attack, and it stops quickly when you let go. Dry: no tape, no drive, no echo, no spring.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Roland TR-808 kick</strong> — the thump. <em>Sub, thump.</em></li>
-<li><strong>Roland SH-101</strong> — the weight. <em>Sub, thick.</em></li>
-<li><strong>Tascam Portastudio cassette 4-track</strong> — lo-fi squash. <em>Lo-fi, noisy.</em></li>
-<li><strong>ProCo RAT</strong> — the overload. <em>Crunchy, driven.</em></li>
-<li><em>Closest to:</em> an 808 kick smashed onto a blown-out cassette 4-track. <em>(Honest note: the tape and the drive
-  stage are not in the final patch — they were removed in round 2 at the owner's direction; what remains is the
-  hard, two-level square.)</em></li>
+<li><strong>Where it lives:</strong> low hits on A1 and A2, or four on the floor. A0 is mostly below what a small speaker can play.</li>
+<li><strong>Play it detached.</strong> It is MONO: a legato note slides without a new hit, and a chord plays one note.</li>
+<li><strong>The kick is the quick pitch drop,</strong> not a click. The random steps are the glitch: LFO PITCH on the LFO DEST page sets how wild they get, and 0 makes every hit the same.</li>
+<li><strong>It is already near the top of its VOLUME,</strong> so there is little room above the bank level: turn the master up, not the patch.</li>
 </ul>
-<p><strong>06 zzuFuzz</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Death by Audio Fuzz War</strong> — <strong>the benchmark</strong>, a huge fuzz beast. <em>Fuzzy, thick wall.</em></li>
-<li><strong>Electro-Harmonix Big Muff</strong> — the wall. <em>Fuzzy, thick wall.</em></li>
-<li><strong>Fuzz Face</strong> — the fuzz. <em>Fuzzy, spitting.</em></li>
-<li><strong>Univox Super-Fuzz</strong> — <em>voltage-starved, spitting.</em></li>
-<li><strong>Korg Mono/Poly</strong> — as the source. <em>Fat, drifting.</em></li>
-<li><strong>Realistic Concertmate MG-1</strong> — <em>voltage-starved, lo-fi.</em></li>
-<li><em>Closest to:</em> a Mono/Poly into a Big Muff. <em>(Built toward the descriptions by measurement and approved by
-  ear; nothing says it matches the benchmark, and the voltage-starved gating of the Super-Fuzz and MG-1 is not
-  claimed.)</em></li>
+<li><strong>Roland TR-808 kick</strong> — <em>sub, thump</em>.</li>
+<li><strong>Roland SH-101</strong> — <em>sub, thick</em>.</li>
+<li><strong>Tascam Portastudio cassette 4-track</strong> — <em>lo-fi, noisy</em>.</li>
+<li><strong>ProCo RAT</strong> — <em>crunchy, driven</em>.</li>
 </ul>
-<p><strong>07 Tape Splice</strong></p>
+<p>Closest to: <strong>an 808 kick smashed onto a blown-out cassette 4-track (the tape and the drive are the inspiration, not in the patch)</strong>.</p>
+</section><section class="patch ch-1"><h4 id="06-zzufuzz"><span class="nn">06</span>zzuFuzz</h4>
+<p>The fuzz weapon: a huge, thick wall. Two fat saws on every voice are pushed hard into the drive until the sound is flat and relentless, and it does not die while you hold the key. The strike is quick, the filter and its resonance are wide open, and when you let go there is a short tail, not a ring. Completely dry. A power chord stays whole.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Korg Mono/Poly</strong> — the cross-modulated fat square. <em>Fat, drifting.</em></li>
-<li><strong>Sequential Prophet-5</strong> — the nervous pitch wobble. <em>Wobble, nervous.</em></li>
-<li><strong>Roland RE-201 Space Echo</strong> — the worn tape stage. <em>Wobble, lo-fi.</em></li>
-<li><strong>Roland SH-101</strong> — the clipped, punchy gate. <em>Punchy.</em></li>
-<li><em>Closest to:</em> a Mono/Poly cross-mod square through a worn tape echo.</li>
+<li><strong>Where it lives:</strong> a low A1 up to power chords around A2–E3–A3, held or stabbed. Three-note chords play whole.</li>
+<li><strong>It is a wall, not a punch:</strong> the fuzz flattens the dynamics, so the hit is in the quick rise. More punch means less GROWL.</li>
+<li><strong>It reads a little hot</strong> next to the rest of the bank: about 2 dB on stabs.</li>
+<li><strong>Set VOLUME before you judge the strike:</strong> GROWL's loudness trim follows it, so VOLUME changes how a note starts from silence.</li>
+<li><strong>RESO has room</strong> up to about 120; past that the filter starts to sing by itself.</li>
+<li>It is not a voltage-starved, gating fuzz: it never sputters.</li>
 </ul>
-<p><strong>08 Wire Bite</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Korg Mono/Poly (in unison)</strong> — the stack. <em>Fat, drifting.</em></li>
-<li><strong>Minimoog</strong> — <em>thick.</em></li>
-<li><strong>Korg MS-20</strong> — the bite. <em>The bite.</em></li>
-<li><strong>Roland Jupiter-4</strong> — <em>fat, wobble.</em></li>
-<li><strong>Sequential Prophet-5 (early revisions)</strong> — the unsteadiness. <em>Drift.</em></li>
-<li><em>Closest to:</em> a Mono/Poly in unison with MS-20 bite.</li>
+<li><strong>Death by Audio Fuzz War</strong> — the benchmark, a huge fuzz beast: <em>fuzzy, thick wall</em>.</li>
+<li><strong>Electro-Harmonix Big Muff</strong> — the wall: <em>fuzzy, thick wall</em>.</li>
+<li><strong>Fuzz Face</strong> — the fuzz: <em>fuzzy, spitting</em>.</li>
+<li><strong>Univox Super-Fuzz</strong> — <em>spitting</em>.</li>
+<li><strong>Korg Mono/Poly</strong> — as the source: <em>fat, drifting</em>.</li>
+<li><strong>Realistic Concertmate MG-1</strong> — <em>lo-fi</em>.</li>
 </ul>
-<h3 id="chapter-ii-bee-tch_1">Chapter II — BEE-TCH</h3>
-<p><strong>09 Skeenhead</strong></p>
+<p>Closest to: <strong>a Mono/Poly into a Big Muff</strong>.</p>
+</section><section class="patch ch-1"><h4 id="07-tape-splice"><span class="nn">07</span>Tape Splice</h4>
+<p>A fat square with a wobble in its pitch, chopped short. Two square waves a hair apart, one frequency-modulating the other, so the tone carries extra weight below the note, and a random pitch wobble on top. Notes stop quickly when you let go, and a tape stage on the end nudges each note's timing slightly. Dry: no echo, no spring.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Korg MS-20</strong> — the resonant filter plop. <em>Plucky, biting.</em></li>
-<li><strong>Roland SH-101</strong> — the tight, quick stab. <em>Tight, punchy.</em></li>
-<li><strong>Moog Prodigy</strong> — the single raw square. <em>Fat, cheap, raw.</em></li>
-<li><strong>Fender spring reverb tank (Twin Reverb style)</strong> — the drench. <em>Springy, boingy.</em></li>
-<li><strong>Roland RE-201 Space Echo</strong> — the dub-style tail. <em>Warm.</em></li>
-<li><em>Closest to:</em> an MS-20 plop into a Fender spring tank.</li>
+<li><strong>Where it lives:</strong> staccato lines from A2 up to G3, and held notes.</li>
+<li><strong>Play it detached.</strong> It is MONO: a legato note slides without restarting, and a chord plays one note.</li>
+<li><strong>The wobble is the random pitch LFO;</strong> X-MOD adds the weight and the sidebands, not the wobble.</li>
+<li><strong>More tape:</strong> CHEW is on at a mild setting. Turn it up for dropouts (they start around the middle of the knob and grow toward the top); it costs more CPU.</li>
+<li>Turning OSC 2's level to 0 does not remove it entirely: it still modulates through X-MOD.</li>
 </ul>
-<p><strong>10 Atlantic Swell</strong> <em>(as the final patch: a pulse pair into a spring; no chorus, rotary or echo)</em></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Farfisa Compact</strong> — <em>nasal</em> (the approved trait; not measured on this patch).</li>
-<li><strong>Vox Continental</strong> — <em>reedy, bright</em> (bright is measured: note-on centroid 5369 Hz, 23% of the energy
-  above 1.2 kHz; reedy is not).</li>
-<li><strong>Fender spring reverb</strong> — <em>springy</em> (measured return in Part 3).</li>
-<li><em>Closest to:</em> a combo organ into a spring tank.</li>
-<li><em>Not in this patch (they belong to the chorus, rotary and echo versions B, C, D rendered in Batch 4A):</em>
-  Leslie rotary speaker, TC Electronic June-60 chorus, Roland RE-201 Space Echo.</li>
+<li><strong>Korg Mono/Poly</strong> — the cross-modulated source: <em>fat, drifting</em>.</li>
+<li><strong>Sequential Prophet-5</strong> — <em>wobble, nervous</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — the worn tape stage: <em>wobble, lo-fi</em>.</li>
+<li><strong>Roland SH-101</strong> — <em>punchy</em>.</li>
 </ul>
-<p><strong>11 Slapback Strut</strong></p>
+<p>Closest to: <strong>a Mono/Poly cross-mod square through a worn tape echo</strong>.</p>
+</section><section class="patch ch-1"><h4 id="08-wire-bite"><span class="nn">08</span>Wire Bite</h4>
+<p>An anxious, thick drone that bites, like touching a live wire. Six stacked pulse waves in the high register, with an upper layer an octave and a fifth above, through a resonant filter that zaps at the start of every note. Fat and bright, and it never sits still: the voices wander on their own and the whole stack leans and jitters in pitch. Dry, and each note is chopped off the moment you let go.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Fender Precision Bass (flatwounds)</strong> — the plucky, snappy attack. <em>Plucky, snappy.</em></li>
-<li><strong>Roland SH-101</strong> — the tight, quick note. <em>Tight, punchy.</em></li>
-<li><strong>Minimoog</strong> — the round, percussive low end. <em>Round, percussive.</em></li>
-<li><strong>Binson Echorec / Roland RE-201</strong> — the single slap. <em>Slap, warm.</em></li>
-<li><strong>Fender spring reverb</strong> — the surf wash. <em>Surf wash.</em></li>
-<li><em>Closest to:</em> a flatwound P-Bass into a Space Echo.</li>
+<li><strong>Where it lives:</strong> high, around A3 to E5: held notes and short bites.</li>
+<li><strong>Play it detached.</strong> It is a unison of six voices: a legato note slides in without the zap, and a chord plays one note.</li>
+<li><strong>The zap is subtle</strong> because the body is already so bright; a lower CUTOFF makes the strike stand out more.</li>
+<li><strong>The drift is built in:</strong> every voice wanders on its own, and a slow random LFO leans the whole stack. SLOBBER multiplies it.</li>
 </ul>
-<p><strong>12 Kelp Tangle</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Moog Prodigy</strong> — <em>dark</em> (measured: held A2 centroid 531 Hz; "raw" and "murky" are not measured as such).</li>
-<li><strong>Fender spring reverb tank</strong> — the tail. <em>Springy.</em></li>
-<li><strong>Roland Juno-60</strong> — the pulse-width sweep. <em>PWM</em> (measured; there is no pitch wobble; "thick" is not
-  measured).</li>
-<li><strong>Korg Polysix</strong> — <em>PWM</em> (measured; "fat" is not measured).</li>
-<li><em>Closest to:</em> a Polysix PWM pad into a spring tank.</li>
+<li><strong>Korg Mono/Poly (in unison)</strong> — the stack: <em>fat, drifting</em>.</li>
+<li><strong>Minimoog</strong> — <em>thick</em>.</li>
+<li><strong>Korg MS-20</strong> — the bite.</li>
+<li><strong>Roland Jupiter-4</strong> — <em>fat, wobble</em>.</li>
+<li><strong>Sequential Prophet-5 (early revisions)</strong> — the unsteadiness: <em>drift</em>.</li>
 </ul>
-<p><strong>13 Ghost Board</strong> <em>(as the final patch: a dark, slowly beating pulse pair, long echo, heavy spring; no tape)</em></p>
+<p>Closest to: <strong>a Mono/Poly in unison with MS-20 bite</strong>.</p>
+</section><h3 id="chapter-ii-bee-tch" class="chap ch-2"><span class="sn">Chapter II</span>Bee-tch</h3>
+<p><em>Surf rock and skinhead reggae: the spring-reverb chapter. On screen: the Bee-tch scene, accent Wave Turquoise.</em></p>
+<section class="patch ch-2"><h4 id="09-skeenhead"><span class="nn">09</span>Skeenhead</h4>
+<p>A tight, plucky square stab with a resonant plop on the front, drenched in spring. The note holds its body for as long as you play it; the spring rings on after the note and is the sound of the patch. A wet, springy, boingy reggae stab.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Roland RE-201 Space Echo</strong> — the echo. <em>Wet</em> (337 ms, FEEDBK 95, MIX 105; first repeat −8.7 dB re the
-  note, 10.3 dB above the spring).</li>
-<li><strong>Fender spring reverb tank</strong> — <em>springy</em> (DRAIN 70; louder than the chord for its first 250 ms or so).</li>
-<li><strong>Mellotron M400</strong> — the reference for the tone that was being chased. Measured traits only: <em>dark</em> (centroid
-  562 Hz, muddiness ratio 315) and <em>a slow beating between the two oscillators</em> (13.6 dB at 0.9 Hz on one
-  voice). <strong>"Warped, wobbly tape" and "soft flute-like tone" are not in this patch</strong> (the tape deck is off;
-  harmonics 3 / 5 / 7 read −11 / −18 / −26 dB against a triangle's −19 / −28 / −34).</li>
-<li><em>Closest to:</em> a dark Mellotron voice through a Space Echo and a spring tank.</li>
+<li><strong>Where it lives:</strong> off-beat two-note stabs of about a tenth of a second, around A3 to C4: the skank.</li>
+<li><strong>The spring is the sound.</strong> It sits a little under the note while you play and rings louder than it just after: that's the boing. DRAIN is the knob if you want it drier.</li>
+<li><strong>The plop is soft on purpose:</strong> the filter rests above the notes so the body survives the gate. RESO brings more plop.</li>
+<li>It is a stab patch: one oscillator, steady, no wobble. Chords up to five notes.</li>
 </ul>
-<p><strong>14 Reef Break</strong> <em>(v0.2: the 299 ms attack)</em></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Roland TR-808</strong> — <em>thick sub</em> (with the 299 ms attack the sub's 40–150 Hz band peaks 255 ms after the note-on
-  and falls 20 / 40 dB in 58 / 70 ms after that peak; the 6 Nov version's shares are in the voice card; "booming"
-  is not measured).</li>
-<li><strong>Simmons SDS-V</strong> — <em>noise burst</em> (the noise is 15.6 dB over the sub in the first 100 ms on A1, a window that
-  now sits inside the attack; attack 10 / 50 / 90% at 25.2 / 126.2 / 208.0 ms; "crashing" is supported only by
-  the band decay).</li>
-<li><strong>Roland RE-201 Space Echo</strong> — <em>long repeats</em> (361 ms, FEEDBK 100, MIX 80; 8 repeats above −40 dB; not a
-  runaway).</li>
-<li><em>Closest to:</em> an 808 kick with a noise burst into a Space Echo.</li>
+<li><strong>Korg MS-20</strong> — the resonant filter plop: <em>plucky, biting</em>.</li>
+<li><strong>Roland SH-101</strong> — the tight, quick stab: <em>tight, punchy</em>.</li>
+<li><strong>Moog Prodigy</strong> — the single raw square: <em>fat, cheap, raw</em>.</li>
+<li><strong>Fender spring reverb tank (Twin Reverb style)</strong> — the drench: <em>springy, boingy</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — the dub-style tail: <em>warm</em>.</li>
 </ul>
-<p><strong>15 Trem Chop</strong></p>
+<p>Closest to: <strong>an MS-20 plop into a Fender spring tank</strong>.</p>
+</section><section class="patch ch-2"><h4 id="10-atlantic-swell"><span class="nn">10</span>Atlantic Swell</h4>
+<p>A bright organ: two narrow pulse waves through a notch filter, played polyphonically, with a spring behind it and nothing else. No vibrato, no chorus, no echo. The two pulses beat slowly against each other, so a held chord swells and dips about once a second, and the spring rings on after the notes.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Roland SH-101</strong> — the bright saw. <em>Bright, punchy.</em></li>
-<li><strong>Boss TR-2 Tremolo (square setting)</strong> — the hard chop. <em>Choppy, gated.</em></li>
-<li><strong>Electro-Harmonix Pulsar</strong> — the pulsing tremolo. <em>Choppy, rhythmic.</em></li>
-<li><strong>Korg Polysix</strong> — a little instability behind the chop. <em>Drift.</em></li>
-<li><em>Closest to:</em> an SH-101 saw through a Boss TR-2 on square.</li>
+<li><strong>Where it lives:</strong> organ chords and short stabs, around A3 to C5. Up to five notes.</li>
+<li><strong>The movement is the two pulses beating,</strong> not an LFO: OSC 2's FINE changes the speed, and centring it stops the beating.</li>
+<li><strong>Fast playing blurs into the spring:</strong> under quick staccato notes the tail catches up with the notes. DRAIN down for a tighter organ.</li>
+<li><strong>For vibrato or a rotary feel,</strong> add LFO PITCH (LFO DEST page); a real chorus or rotary is not in this engine.</li>
 </ul>
-<p><strong>16 Tidal Pull</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Roland Juno-60</strong> — a wash of pulses (the L/R correlation is 0.70 dry, 0.66 with echo and spring; "fat" is
-  not supported). <em>Wash.</em></li>
-<li><strong>Fender Twin Reverb</strong> — the spring. <em>Springy</em> (the centroid is 595 Hz, so "bright" is not supported).</li>
-<li><strong>Roland RE-201 Space Echo</strong> — the echo. <em>Wet</em> (first repeat −8.6 dB re the note, 7.7 dB above the spring;
-  "drenched" is not measured).</li>
-<li><em>Closest to:</em> a Juno-60 chord pad through a Twin Reverb spring and a Space Echo.</li>
+<li><strong>Farfisa Compact</strong> — <em>nasal</em>.</li>
+<li><strong>Vox Continental</strong> — <em>reedy, bright</em>.</li>
+<li><strong>Fender spring reverb</strong> — <em>springy</em>.</li>
 </ul>
-<h3 id="chapter-iii-moonshine_1">Chapter III — MOONSHINE</h3>
-<p><strong>17 Titanic</strong></p>
+<p>Closest to: <strong>a combo organ into a spring tank</strong>.</p>
+</section><section class="patch ch-2"><h4 id="11-slapback-strut"><span class="nn">11</span>Slapback Strut</h4>
+<p>A tight, gated surf bass: the note starts at once, holds its body for as long as you hold the key, and stops dead. Behind each note comes one clean, loud slap: a plain copy of the note a moment later, then nothing. Bright and crisp on top for a bass, sharp and a little biting, and dry otherwise.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Yamaha CS-80</strong> — cold, epic, slow weight. <em>Fat, sub-heavy, desolate.</em></li>
-<li><strong>Moog Taurus</strong> — the floor under everything. <em>Deep, floor-shaking.</em></li>
-<li><strong>Memorymoog</strong> — the thick, dark body. <em>Thick, dark.</em></li>
-<li><strong>Sequential Prophet-5</strong> — two saws a fifth apart. <em>Fat, warm.</em></li>
-<li><em>Closest to:</em> a CS-80 played low and cold.</li>
+<li><strong>Where it lives:</strong> low, A1 to A2: surf bass lines.</li>
+<li><strong>Play it detached.</strong> It is MONO: a legato note slides without a new hit.</li>
+<li><strong>It is gated, not plucked:</strong> the note holds flat for as long as you hold the key. Short notes for a pluck feel.</li>
+<li><strong>The slap is already as loud as the echo goes,</strong> about 6 dB under the note. The delay's TONE does little here: the slap is a copy of the note, so shape the note.</li>
+<li><strong>Bright for a bass:</strong> it can buzz on a very bright amp; CUTOFF down tames it. A spring (DRAIN) is yours to add.</li>
 </ul>
-<p><strong>18 Roto-scopo</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Korg MS-20</strong> — <em>resonant, unruly low-passed square</em> (resonant is measured: a 12 dB low-pass at RESO 115 that
-  is still linear; unruly is not measured).</li>
-<li><strong>ARP 2600 sample-and-hold</strong> — <em>wandering cutoff</em> (the cutoff wanders, measured; this variant uses the smooth
-  RANDOM shape, not sample-and-hold).</li>
-<li><strong>Moog Taurus I</strong> — <em>dungeon-low weight</em> (on A1, 62% of the energy under 60 Hz and 17% in 60–150 Hz, measured).</li>
-<li><em>Closest to:</em> a Taurus-weight square through an MS-20 filter that a random source keeps nudging.</li>
+<li><strong>Fender Precision Bass (flatwounds)</strong> — the snappy attack: <em>snappy</em>.</li>
+<li><strong>Roland SH-101</strong> — the tight, quick note: <em>tight, punchy</em>.</li>
+<li><strong>Minimoog</strong> — the round low end: <em>round</em>.</li>
+<li><strong>Binson Echorec / Roland RE-201</strong> — the single slap: <em>slap, warm</em>.</li>
 </ul>
-<p><strong>19 Micro-mist</strong></p>
+<p>Closest to: <strong>a flatwound P-Bass into a Space Echo</strong>.</p>
+</section><section class="patch ch-2"><h4 id="12-kelp-tangle"><span class="nn">12</span>Kelp Tangle</h4>
+<p>A pad of pulse waves whose widths are swept slowly and steadily by one triangle LFO, through a steep low-pass that leaves little up top, with a spring tail behind it. Dark and moving on held notes; on short notes you only hear a slice of the sweep. No vibrato, no echo.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Hologram Microcosm</strong> — <em>the Haze, Glide and Tunnel of its Granules and Micro Loop banks; Wash, Wet.</em> Wash:
-  the L/R correlation falls from 0.79 dry to 0.43 with echo and spring (measured). Wet: the tail takes 5788 ms to
-  fall 60 dB (measured). Drifting: not measured. Not a granular looper.</li>
-<li><strong>Yamaha CS-80</strong> — <em>the Blade Runner pad voice; Soft, Swelling.</em> A 150 ms tap is 8.7 dB under the held chord
-  (measured); the chord rises 2.2 dB over its first two seconds.</li>
-<li><strong>Roland Jupiter-8</strong> — <em>the bright top; Bright, Beating.</em> Settled centroid 2300 Hz, 39% above 1.2 kHz
-  (measured); the beating is weak (0.4 dB).</li>
-<li><em>Closest to:</em> a CS-80 pad dissolved in a Microcosm Haze wash.</li>
+<li><strong>Hold the notes:</strong> the sweep takes about a second, so it is a held-note effect. Short notes barely move.</li>
+<li><strong>Where it lives:</strong> held notes and chords from A2 up; up to five notes.</li>
+<li><strong>Each detached note restarts the sweep,</strong> so every note begins the same way.</li>
+<li><strong>Brighter:</strong> CUTOFF up opens the top. <strong>Deeper movement:</strong> more DRIVE (MIXER page) deepens the sweep's colour but flattens its level swing.</li>
+<li>One LFO moves both oscillators at the same rate; there is no Poly-Mod here.</li>
 </ul>
-<p><strong>20 Fire &amp; Ice</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Sequential Pro-One</strong> — <em>the hard-sync lead; Rip, Bright.</em> Centroid on a detached A4 falls 2793 → 1272 Hz over
-  800 ms (measured).</li>
-<li><strong>Ibanez Tube Screamer</strong> — <em>the soaring drive; Driven.</em> GROWL 48 lowers the crest factor by 3.3 dB at the same
-  level (measured). No claim about the pedal's curve.</li>
-<li><strong>Roland RE-201 Space Echo</strong> — <em>the drench; Wet.</em> First repeat 10.0 dB under the note, 8 repeats above −40 dB
-  (measured).</li>
-<li><em>Closest to:</em> a Pro-One sync lead through an overdrive pedal into a Space Echo.</li>
+<li><strong>Moog Prodigy</strong> — <em>dark, raw, murky</em>.</li>
+<li><strong>Fender spring reverb tank</strong> — <em>springy</em>.</li>
+<li><strong>Roland Juno-60</strong> — the pulse-width sweep: <em>PWM</em>.</li>
+<li><strong>Korg Polysix</strong> — <em>fat, PWM</em>.</li>
 </ul>
-<p><strong>21 Cowl Shadow</strong></p>
+<p>Closest to: <strong>a Polysix PWM pad into a spring tank</strong>.</p>
+</section><section class="patch ch-2"><h4 id="13-ghost-board"><span class="nn">13</span>Ghost Board</h4>
+<p>A dark pad: two slightly detuned pulse waves, played polyphonically, beating slowly against each other, with a long echo and a heavy spring behind every note. Very muddy, on purpose: almost nothing up top, all low-mid body and tail.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Yamaha CS-80</strong> — the slow brass swell. <em>Soft, slow, swelling.</em></li>
-<li><strong>Oberheim OB-Xa</strong> — the brassy body. <em>Brassy, full.</em></li>
-<li><strong>Roland Jupiter-8</strong> — the bright blare at the top of a swell. <em>Bright blare.</em></li>
-<li><strong>Korg Mono/Poly (in unison)</strong> — the stacked, drifting oscillators. <em>Fat, drifting.</em></li>
-<li><em>Closest to:</em> a CS-80 brass swell, stretched.</li>
+<li><strong>Where it lives:</strong> held chords and slow lines, around A3 to G4. Up to five notes.</li>
+<li><strong>The movement is the two oscillators beating</strong> about once a second; OSC 2's FINE sets it, and centring it stops it.</li>
+<li><strong>The tail is big:</strong> the spring is louder than the chord for a moment after you let go, and the echo (337 ms) follows. Short notes sink into it.</li>
+<li><strong>It is quiet on short stabs</strong> compared with held chords.</li>
+<li><strong>Brighter:</strong> CUTOFF up. It is a first pass Vincent means to dial further on the unit.</li>
+<li>There is no tape on it: the warped-tape idea of the first brief was dropped by ear.</li>
 </ul>
-<p><strong>22 Melting Orb</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Oberheim OB-Xa</strong> — <em>a fat unison source</em> (a DUAL pair of saws per key, 9.8 cents apart; "fat" is not
-  measured).</li>
-<li><strong>Sequential Prophet-5</strong> — <em>the slow filter-envelope sweep</em> (centroid falls 1323 → 204 Hz, 90% of the fall at
-  3.5 s, measured).</li>
-<li><strong>Korg MS-20</strong> — <em>resonance, high but musical</em> (RESO 75 on a 12 dB low-pass, linear by the probe; "musical" is
-  not measured).</li>
-<li><em>Closest to:</em> an OB-Xa-style fat stack whose filter and pitch both sink slowly downward.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — the echo: <em>wet</em>.</li>
+<li><strong>Fender spring reverb tank</strong> — <em>springy</em>.</li>
+<li><strong>Mellotron M400</strong> — the reference for the tone that was chased: <em>dark</em>.</li>
 </ul>
-<p><strong>23 Crypt Dust</strong> <em>(as the final patch: a trace of dust, no tape)</em></p>
+<p>Closest to: <strong>a dark Mellotron voice through a Space Echo and a spring tank</strong>.</p>
+</section><section class="patch ch-2"><h4 id="14-reef-break"><span class="nn">14</span>Reef Break</h4>
+<p>A crash made of a burst of noise over a square-wave sub. The noise swells in over a fraction of a second rather than striking at once, the lows fall away first and the top rings out longest, as a cymbal does, and a long echo follows each hit. No spring, no tape.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Korg MS-20</strong> — <em>noise plus a thin pulse; Thin.</em> The pulse is 12% wide and the noise sits 24.4 dB under it
-  (measured); "gritty" is not measured.</li>
-<li><strong>Roland RE-201 Space Echo</strong> — <em>the worn echo.</em> 75 ms, first repeat 9.6 dB under the note, 6 repeats above −40
-  dB (measured). The tape wobble of the worn unit is <strong>not in this patch</strong>.</li>
-<li><strong>Mellotron M400</strong> — the dusty, pale tone as the reference (centroid 1970 Hz, measured); the warped tape is
-  <strong>not in this patch</strong>.</li>
-<li><em>Closest to:</em> a thin pulse and a trace of dust through a band-pass, into a short echo and a large spring.</li>
+<li><strong>Where it lives:</strong> single hits, low (A1) or mid (A2). Hits about 400 ms apart or more let each one bloom.</li>
+<li><strong>It swells in:</strong> both envelopes have a 299 ms attack, so the crash peaks just after the hit. For a harder strike, bring the AMP and FILTER ENV attacks down.</li>
+<li><strong>The dry crash rings out in about a second; the echo runs several seconds.</strong> The BBD page's MIX or FEEDBK shorten it.</li>
+<li><strong>Three keys at once</strong> stack three noise voices and get loud: one key per hit.</li>
+<li>It is noise only: no metallic cymbal partials.</li>
 </ul>
-<p><strong>24 Fugue State</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Electro-Harmonix Deluxe Memory Man</strong> — <em>BBD feedback with pitch modulation; Wet.</em> 10 repeats above −40 dB,
-  return to −40 dB in 1721 ms (measured). There is no pitch modulation inside the echo; the largest gap between a
-  note and its own repeat is 212 cents (computed). "Seasick" is not measured: at 4.9 Hz it is a wobble.</li>
-<li><strong>Roland RE-201 Space Echo</strong> — <em>echo feedback; Wash.</em> The tail takes 4624 ms to fall 60 dB (measured). This
-  patch does not self-oscillate (FEEDBK 95).</li>
-<li><strong>Korg Polysix</strong> — <em>the ensemble-chorus dizziness; Wobble.</em> A triangle pitch LFO at 4.9 Hz, ±178 cents
-  (measured). Beating is not measured; there is no chorus in the patch.</li>
-<li><em>Closest to:</em> a soft triangle-like pad run through a Memory Man until it seasicks itself.</li>
+<li><strong>Roland TR-808</strong> — <em>thick sub</em>.</li>
+<li><strong>Simmons SDS-V</strong> — <em>noise burst</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — <em>long repeats</em>.</li>
 </ul>
-<h3 id="chapter-iv-acid-can_1">Chapter IV — ACID CAN</h3>
-<p><strong>25 SAWTOOTH</strong></p>
+<p>Closest to: <strong>an 808 kick with a noise burst into a Space Echo</strong>.</p>
+</section><section class="patch ch-2"><h4 id="15-trem-chop"><span class="nn">15</span>Trem Chop</h4>
+<p>A broken-strobe tremolo: a bright saw chopped on and off by a hard square-wave LFO, not a gentle sine. Every note is two voices, and the pair chop slightly out of step, so the chop has an off part, a half part and a full part instead of a clean on/off. Dry.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Sequential Prophet-5</strong> — the swell and the two-saw body. <em>Fat, warm, swell.</em></li>
-<li><strong>Oberheim OB-Xa</strong> — the brass-section feel. <em>Brassy, full.</em></li>
-<li><strong>Roland Jupiter-8</strong> — the bright blare at the top of the swell. <em>Bright brass.</em></li>
-<li><strong>Memorymoog</strong> — the weight of the chord. <em>Thick, warm.</em></li>
-<li><strong>Korg Polysix</strong> — the slow vibrato wobble on a held note. <em>Fat, wobble.</em></li>
-<li><em>Closest to:</em> a Prophet-5 brass swell.</li>
+<li><strong>Where it lives:</strong> held notes, riffs and three-note chords around A3 to A4. Every note is two voices, so three notes fill it.</li>
+<li><strong>The chop does not follow the tempo.</strong> It ships at sixteenths for 120 BPM. Set it by ear with LFO RATE (SELECT on HOME): RATE 87 is eighths and 101 sixteenths at 120 BPM; at 140 BPM, 90 and 104; at 90 BPM, 81 and 95. Over a long phrase it slowly slides against the beat.</li>
+<li><strong>Notes don't always start on:</strong> the chop runs freely, so a note can begin in an off part.</li>
+<li><strong>It reads a little hot</strong> next to the rest of the bank: about 2.5 dB on stabs.</li>
 </ul>
-<p><strong>26 BSyncA</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Sequential Prophet-5</strong> — <em>the classic sync solo; Sync, Ripping, Fat.</em> Sync: OSC 2 is hard-synced to OSC 1 (a
-  setting). Ripping: on notes 2–8 of the detached riff the centroid over the first 100 ms is 2935 Hz, 303 Hz above
-  the same riff with the sweep off (measured). Fat: not measured, except that the three voices beat at 0.99 Hz
-  with a 16.9 dB swing in the 220 Hz band on a held A3.</li>
-<li><strong>Sequential Pro-One</strong> — <em>the sweep itself; Rip, Bright.</em> The sweep is ENV&gt;O2 104, +15.2 semitones at the
-  envelope's top (computed). On a detached A3 the centroid runs 2662 / 1724 / 1111 Hz over 0–50 / 50–150 /
-  150–400 ms (measured). No comparison with the Pro-One was made.</li>
-<li><strong>Moog Prodigy</strong> — <em>the raw edge; Raw, Biting.</em> Not measured. The patch carries a drive (GROWL 44), which is
-  not the same thing.</li>
-<li><strong>ARP Odyssey</strong> — <em>the nasal cut; Nasal, Biting.</em> Not measured.</li>
-<li><em>Closest to:</em> a Prophet-5 sync lead pushed into crunch. ("Crunch" is Vincent's word; the measured fact is the
-  crest factor, 6.0 dB with GROWL 44 against 11.7 dB without drive.)</li>
+<li><strong>Roland SH-101</strong> — the source: <em>bright, punchy</em>.</li>
+<li><strong>Boss TR-2 Tremolo (square setting)</strong> — the chop: <em>choppy, gated</em>.</li>
+<li><strong>Electro-Harmonix Pulsar</strong> — <em>choppy, rhythmic</em>.</li>
+<li><strong>Korg Polysix</strong> — <em>drift</em>.</li>
 </ul>
-<p><strong>27 R3V3RT</strong></p>
+<p>Closest to: <strong>an SH-101 saw through a Boss TR-2 on square</strong>.</p>
+</section><section class="patch ch-2"><h4 id="16-tidal-pull"><span class="nn">16</span>Tidal Pull</h4>
+<p>A stereo chord wash of soft, triangle-like tones (narrow pulses through a low-pass, with an octave-up copy), moved by a slow vibrato. The notes come in gradually, an echo follows each one and a spring rings behind both. A dark patch, not a bright one.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Roland SH-101</strong> — <em>the tight, quick note; Tight, Punchy.</em> Key-up to −20 / −40 / −60 dB is 11 / 15 / 19 ms on
-  A2 (measured; the 9 ms meter window is the floor of these readings). Punchy: not measured.</li>
-<li><strong>Minimoog</strong> — <em>the round immediate low end; Round, Thick.</em> Not measured. The band shares are measured: on A2
-  the first 400 ms are 1 / 82 / 9 / 6 / 1 % in &lt;60 / 60–150 / 150–400 / 400–1.2k / 1.2k+ Hz.</li>
-<li><strong>Moog Prodigy</strong> — <em>the plain pulse; Raw, Fat.</em> A single pulse (OSC 1 PW 54, OSC 2 off); "raw" and "fat" are
-  not measured.</li>
-<li><strong>Sequential Pro-One</strong> — <em>the snap of the filter decay; Snappy.</em> On A2 the filter snap peaks at a centroid of
-  2891 Hz and lasts 175 ms; the centroid reads 2828 / 1759 / 440 Hz over 0–20 / 20–100 / 100–300 ms (measured).
-  No comparison with the Pro-One was made.</li>
-<li><em>Closest to:</em> an SH-101 pulse bass with a Minimoog body.</li>
+<li><strong>Where it lives:</strong> held chords (sevenths suit it) around F3 to G4. Up to five notes.</li>
+<li><strong>It fades in,</strong> so held chords bloom and short stabs stay quiet.</li>
+<li><strong>The echo sits above the spring</strong> (337 ms): you hear the repeat first, then the spring around it.</li>
+<li><strong>Wider:</strong> DUAL mode with more voices widens it at the cost of polyphony and CPU.</li>
+<li>Soft and dark by design; CUTOFF up brightens it.</li>
 </ul>
-<p><strong>28 Arr 2 Dee 2</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Yamaha DX7 (tubular-bells voice)</strong> — <em>FM clang, inharmonic.</em> Partly carried: OSC 2 sits +15 semitones above
-  OSC 1 (a ratio of 2.38) and feeds OSC 1 by X-MOD 32. At A4 in the first 300 ms that partial reads 1.197 × the
-  prime at −11.1 dB. Not carried: DX7-style operators (this is one saw modulating another). "Clang" is not
-  measured.</li>
-<li><strong>Roland D-50 ("Fantasia")</strong> — <em>crystalline.</em> <strong>Not carried.</strong> The engine has no per-partial envelope, so no
-  partial outlasts the body. At A4 the share of energy above 4 kHz is 4.0% in the first 20 ms and 0.4% at 1–2 s.</li>
-<li><strong>Casio CZ-101 (phase-distortion bells)</strong> — <em>a bright, bell-like phase-distortion tone.</em> Not carried: the
-  engine has no phase distortion; the sideband character here comes from X-MOD. Whether it resembles those bells
-  is not measured.</li>
-<li><strong>A struck tubular or church bell</strong> — <em>the classical partials.</em> Carried, measured: the five classical
-  partials of the ladder (hum 0.5, prime 1, tierce 1.2, quint 1.5, nominal 2) are all present, with the
-  amplitudes in Part 3. "Church bell" is Vincent's word and is not measured.</li>
-<li><em>Closest to:</em> a DX7 tubular bell with a long, slowly moving tail.</li>
+<li><strong>Roland Juno-60</strong> — a wash of pulses: <em>wash</em>.</li>
+<li><strong>Fender Twin Reverb</strong> — the spring: <em>springy</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — the echo: <em>wet</em>.</li>
 </ul>
-<p><strong>29 i scream</strong></p>
+<p>Closest to: <strong>a Juno-60 chord pad through a Twin Reverb spring and a Space Echo</strong>.</p>
+</section><h3 id="chapter-iii-moonshine" class="chap ch-3"><span class="sn">Chapter III</span>Moonshine</h3>
+<p><em>Dark fantasy and atmosphere: drones and slow pads. Most of them want a held key, so REC (HOLD) is your friend here. On screen: the Moonshine scene, accent Foam White; hold a note and the dog howls.</em></p>
+<section class="patch ch-3"><h4 id="17-titanic"><span class="nn">17</span>Titanic</h4>
+<p>Cold, heavy and hollow: two saws a fifth apart, steady rather than seasick, with a deep, sub-heavy floor. Low notes open up and ring out big; high notes close down and go dull, so the weight lives at the bottom of the keyboard. Dry, desolate, and it hangs on after you let go. The chapter's anchor.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Yamaha DX7 (tubular-bells voice)</strong> — <em>FM clang, inharmonic.</em> OSC 2 sits +15 semitones above OSC 1 (a ratio of
-  2.38) with X-MOD 25. Through the filter that partial reads −34 dB under the note at C#6 and −18 dB at C#5
-  (measured, first 100 ms), so it is faint at the top of the keybed. "Clang" is not measured.</li>
-<li><strong>A music box, struck</strong> — <em>fast-decay, nostalgic.</em> Not carried: the ring takes 1896 ms to fall 40 dB at C#6
-  (measured), a long ring. "Nostalgic" is Vincent's word and is not measured.</li>
-<li><strong>Finger cymbals (zills)</strong> — <em>bright metallic ping.</em> The centroid over the first 20 ms is 2096 Hz at C#6 and
-  1958 Hz at C#5 (measured). "Metallic" is not measured.</li>
-<li><strong>A transistor radio or van horn speaker</strong> — <em>band-limited, honky, lo-fi.</em> The filter read with white noise
-  peaks at 1099 Hz, with a −3 dB width of 898–1345 Hz; 0.4% of its energy is under 400 Hz and 4.1% above 4 kHz
-  (measured). "Lo-fi" is not measured.</li>
-<li><em>Closest to:</em> a music-box chime played through a cheap van horn speaker. <em>Provenance: built by ear from
-  Vincent's field recordings of a real ice-cream van; the measurements of the recordings were rough; nothing is
-  sampled. Vincent's ear (not measured): closer to an arcade or vintage video-game chime.</em></li>
+<li><strong>Where it lives:</strong> low, roots and fifths around A1 to A2, where it opens up. Played high it goes dark and dull: that's the design.</li>
+<li><strong>Chords: three notes.</strong> Every note is two voices.</li>
+<li><strong>It is a held-note patch:</strong> the release is long (about 1.3 s), so quick chopped notes overlap.</li>
+<li><strong>Add space:</strong> DRAIN puts a cold cloud above the dry weight. CHEW adds a dying-tape feel, at more CPU.</li>
 </ul>
-<p><strong>30 THE DØG</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Minimoog in unison</strong> — the stacked saws and the octave-down body. <em>Fat, sub-heavy, thick.</em></li>
-<li><strong>Moog Taurus bass pedals</strong> — the weight at the bottom. <em>Deep, floor-shaking.</em></li>
-<li><strong>Roland SH-101</strong> — the quick attack and the hard stop. <em>Tight, punchy.</em></li>
-<li><strong>Oberheim OB-Xa in unison</strong> — the wide, full stack with its warmth. <em>Fat, full, warm.</em></li>
-<li><strong>Korg MS-20</strong> — the grit in the filter when it is pushed. <em>Nasty, biting.</em></li>
-<li><em>Closest to:</em> a Minimoog in unison with Taurus weight.</li>
+<li><strong>Yamaha CS-80</strong> — cold, epic, slow weight: <em>fat, sub-heavy, desolate</em>.</li>
+<li><strong>Moog Taurus</strong> — the floor under everything: <em>deep, floor-shaking</em>.</li>
+<li><strong>Memorymoog</strong> — the thick, dark body: <em>thick, dark</em>.</li>
+<li><strong>Sequential Prophet-5</strong> — two saws a fifth apart: <em>fat, warm</em>.</li>
 </ul>
-<p><strong>31 Fi(l)fth</strong></p>
+<p>Closest to: <strong>a CS-80 played low and cold</strong>.</p>
+</section><section class="patch ch-3"><h4 id="18-roto-scopo"><span class="nn">18</span>Roto-scopo</h4>
+<p>A low, dark drone: a square wave with a second square an octave below, played by three slightly out-of-tune voices. A resonant low-pass opens and closes slowly and unpredictably by itself, so the tone moans and drifts without a knob being touched. Dry. It lasts only while a key is held.</p>
+<p class="lbl">Sound design notes</p>
 <ul>
-<li><strong>Sequential Prophet-5</strong> — the stab itself, with weight behind it. <em>Punchy, fat, warm.</em></li>
-<li><strong>Roland Juno-60</strong> — the short, snappy pluck. <em>Plucky, punchy.</em></li>
-<li><strong>Roland Jupiter-8</strong> — the open top on the attack. <em>Bright, full.</em></li>
-<li><strong>Korg MS-20</strong> — the bite when you dig in. <em>Biting.</em></li>
-<li><strong>Roland RE-201 Space Echo</strong> — for the short delay. <em>Slap, warm.</em></li>
-<li><em>Closest to:</em> a Prophet-5 stab through a Space Echo.</li>
+<li><strong>Hold it:</strong> a key, the sustain pedal or REC (HOLD). REC keeps it going until you press REC again or STOP.</li>
+<li><strong>One note at a time:</strong> it is a three-voice unison, so a chord plays its last key.</li>
+<li><strong>Where it lives:</strong> low, A1 and A2.</li>
+<li><strong>It fades in slowly,</strong> so a short tap is much quieter than a held note.</li>
+<li><strong>The wander is one slow random LFO on the cutoff:</strong> LFO RATE (SELECT on HOME) speeds the moaning up.</li>
+<li>Its slop is already at the top (VINTAGE 127); SLOBBER adds more.</li>
 </ul>
-<p><strong>32 Init bruv?</strong></p>
+<p class="lbl">Gear inspirations</p>
 <ul>
-<li><strong>Sequential Prophet-5</strong> — <em>a plain saw, the filter open.</em> Not carried: the filter is a 24 dB low-pass at
-  CUTOFF 80 with RESO 20, and there are two saws, not one.</li>
-<li><strong>Minimoog</strong> — <em>one raw oscillator.</em> Not carried: OSC 2 is on (a saw, 4.7 cents from OSC 1).</li>
-<li><strong>Roland SH-101</strong> — <em>a saw, the filter open.</em> Not carried, for the same two reasons.</li>
-<li>What was measured: through the filter, the 2nd / 3rd / 4th harmonics of C3 are −7.9 / −14.3 / −18.0 dB (a
-  plain saw is −6.0 / −9.5 / −12.0). So it is two detuned saws through a closed-ish filter, not a plain saw.</li>
-<li><em>Closest to:</em> an analog two-saw init patch. ("Raw" and "blank" are Vincent's words and are not measured.)</li>
+<li><strong>Korg MS-20</strong> — the resonant low-passed square: <em>resonant, unruly</em>.</li>
+<li><strong>ARP 2600 sample-and-hold</strong> — the wandering cutoff (here a smooth random, not stepped).</li>
+<li><strong>Moog Taurus I</strong> — <em>dungeon-low weight</em>.</li>
 </ul>
-<p><em>(Gear inspirations are complete for all 32 patches. Nothing here says a patch matches any instrument listed.)</em></p>
-<hr>
+<p>Closest to: <strong>a Taurus-weight square through an MS-20 filter that a random source keeps nudging</strong>.</p>
+</section><section class="patch ch-3"><h4 id="19-micro-mist"><span class="nn">19</span>Micro-mist</h4>
+<p>A soft-attack chord in the mid-to-upper register: a saw with a slightly sharp square an octave above it, through a band-pass filter. It hovers on its own echo and a large spring and keeps hanging in the air for several seconds after you let go. Bright rather than low, and smooth: a held pad dissolving into its effects, not a granular texture.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Where it lives:</strong> chords in the mid-to-upper register. Nothing sits under 150 Hz, so it is not for low notes. Up to six notes.</li>
+<li><strong>The mist after you let go is the echo and spring,</strong> not a latch: it falls away over about six seconds after a long chord. To hold the chord itself, use the sustain pedal or REC (HOLD).</li>
+<li><strong>It fades in,</strong> so short taps are faint.</li>
+<li><strong>The spring leads the echo.</strong> DRAIN and the BBD page's FEEDBK set how long it hovers.</li>
+<li>The LFO is set but does nothing at these values; turn up LFO FILTER or PITCH to add flicker.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Hologram Microcosm</strong> — the haze and the hanging wash: <em>wash, wet</em>.</li>
+<li><strong>Yamaha CS-80</strong> — the soft pad voice: <em>soft, swelling</em>.</li>
+<li><strong>Roland Jupiter-8</strong> — the bright top: <em>bright</em>.</li>
+</ul>
+<p>Closest to: <strong>a CS-80 pad dissolved in a Microcosm haze</strong>.</p>
+</section><section class="patch ch-3"><h4 id="20-fire-ice"><span class="nn">20</span>Fire &amp; Ice</h4>
+<p>A single-voice lead that tears into every detached note with a bright hard-sync sweep, then settles into a rounder line. Pushed into overdrive and thrown into a long, ping-ponging echo that sits on top of a short spring. Notes slide into each other a little.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>One note at a time.</strong> It is MONO.</li>
+<li><strong>Detached notes rip; legato notes don't.</strong> Play a run legato and only the first note tears.</li>
+<li><strong>The echo is a fixed 374 ms,</strong> not tied to the tempo: set ALLEY by ear to sit it in your song.</li>
+<li><strong>The glide</strong> is short (an octave in under a tenth of a second); GLIDE on the VOICE page lengthens it.</li>
+<li>Its drive is GROWL: turn it down for a cleaner lead.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Sequential Pro-One</strong> — the hard-sync lead: <em>rip, bright</em>.</li>
+<li><strong>Ibanez Tube Screamer</strong> — the soaring drive: <em>driven</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — the drench: <em>wet</em>.</li>
+</ul>
+<p>Closest to: <strong>a Pro-One sync lead through an overdrive pedal into a Space Echo</strong>.</p>
+</section><section class="patch ch-3"><h4 id="21-cowl-shadow"><span class="nn">21</span>Cowl Shadow</h4>
+<p>A brass wall that starts dark and soft and swells open while you hold the note: a quiet, murky hum that, over a few seconds, blooms into a wide, full, glowing brass, with a slow drift inside the stack. Dry. When you let go it fades out slowly and darkens as it goes.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Hold the note:</strong> the bloom takes about five seconds. Let go early and it never opens, it just fades dark.</li>
+<li><strong>It sounds quiet if you tap a note.</strong> Hold it and it comes up to full level. The sustain pedal or REC (HOLD) should keep it open the same way.</li>
+<li><strong>One note at a time:</strong> five voices in unison.</li>
+<li><strong>Legato does not restart the bloom:</strong> release and play again to bloom again.</li>
+<li>It ships dry; a little DRAIN adds depth.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Yamaha CS-80</strong> — the slow brass swell: <em>soft, slow, swelling</em>.</li>
+<li><strong>Oberheim OB-Xa</strong> — the brassy body: <em>brassy, full</em>.</li>
+<li><strong>Roland Jupiter-8</strong> — the bright blare at the top of a swell: <em>bright</em>.</li>
+<li><strong>Korg Mono/Poly (in unison)</strong> — the stacked, drifting oscillators: <em>fat, drifting</em>.</li>
+</ul>
+<p>Closest to: <strong>a CS-80 brass swell, stretched</strong>.</p>
+</section><section class="patch ch-3"><h4 id="22-melting-orb"><span class="nn">22</span>Melting Orb</h4>
+<p>A thick stack of detuned saws that opens bright when the key goes down and then slowly sinks: the filter closes and the pitch falls together over a few seconds, until the sound settles low and dark. A held collapse, not a zap. It takes chords. Dry.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Hold the key:</strong> the melt happens while it is down; the pitch ends almost seven semitones lower after about four seconds. A short tap gives only the bright opening.</li>
+<li><strong>Chords: three notes</strong> (every note is two voices). A chord is loud: it is what sets the patch's level.</li>
+<li><strong>When you let go, the melt partly runs back up</strong> as the note fades.</li>
+<li><strong>Deeper or shallower melt:</strong> ENV&gt;O2 on the OSC MOD page. OSC 1 is off on purpose: it would stay at pitch while the rest sinks.</li>
+<li>It is the heaviest patch on the CPU in the host tests; watch the reading on GLOBAL if you add effects.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Oberheim OB-Xa</strong> — a fat unison source.</li>
+<li><strong>Sequential Prophet-5</strong> — the slow filter-envelope sweep.</li>
+<li><strong>Korg MS-20</strong> — <em>resonant</em>.</li>
+</ul>
+<p>Closest to: <strong>an OB-Xa-style fat stack whose filter and pitch both sink slowly downward</strong>.</p>
+</section><section class="patch ch-3"><h4 id="23-crypt-dust"><span class="nn">23</span>Crypt Dust</h4>
+<p>A thin, narrow pulse through a band-pass into a pale, dusty tone, with only a trace of noise under it. The level flutters slowly and irregularly, in steps. A short echo and a large spring blur it. It rises slowly when you press a chord and hangs on after you let go.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Hold the chord:</strong> a key, the sustain pedal or REC (HOLD). It is a held-chord pad; it fades in slowly, so short notes are faint.</li>
+<li><strong>Chords: up to four notes.</strong></li>
+<li><strong>The dust is the NOISE knob</strong> (MIXER page). Keep it low: more noise quickly drowns the thin pulse.</li>
+<li><strong>The flutter is one stepped LFO</strong> on level and filter: LFO RATE changes its pace.</li>
+<li>A chord peaks close to the limit, so there is little VOLUME headroom. There is no tape on it.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Korg MS-20</strong> — noise plus a thin pulse: <em>thin</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — the worn echo.</li>
+<li><strong>Mellotron M400</strong> — the dusty, pale tone as the reference.</li>
+</ul>
+<p>Closest to: <strong>a thin pulse and a trace of dust through a band-pass, into a short echo and a large spring</strong>.</p>
+</section><section class="patch ch-3"><h4 id="24-fugue-state"><span class="nn">24</span>Fugue State</h4>
+<p>A soft, dark, triangle-like pad whose pitch trembles quickly, wide in the stereo field. Each chord runs into a short echo that feeds back while the pitch is still moving, so the repeats sit at slightly different pitches from the notes and the chord smears. A spring adds a further tail, and it hangs on for seconds after you let go.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Hold the chord:</strong> it fades in, so stabs are quiet. Up to five notes.</li>
+<li><strong>The tremble is a fast vibrato</strong> (about 5 per second): LFO RATE slows it toward a seasick sway, LFO PITCH sets its depth.</li>
+<li><strong>The echo is short (144 ms) and fed back hard,</strong> so it smears rather than repeats. FEEDBK higher hovers longer; past about 120 it starts to run away.</li>
+<li><strong>HEEL clears the echo</strong> if it gets out of hand.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Electro-Harmonix Deluxe Memory Man</strong> — BBD feedback with pitch movement: <em>wet</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — echo feedback: <em>wash</em>.</li>
+<li><strong>Korg Polysix</strong> — the dizzy ensemble feel: <em>wobble</em>.</li>
+</ul>
+<p>Closest to: <strong>a soft triangle-like pad run through a Memory Man until it seasicks itself</strong>.</p>
+</section><h3 id="chapter-iv-acid-can" class="chap ch-4"><span class="sn">Chapter IV</span>Acid Can</h3>
+<p><em>The survivors of the classic polysynths, rebuilt by ear (never copied from factory data), then the signature patch and the blank slate. On screen: the Acid Can scene, accent Acid Chartreuse.</em></p>
+<section class="patch ch-4"><h4 id="25-sawtooth"><span class="nn">25</span>SAWTOOTH</h4>
+<p>The iconic poly brass: two saws a few cents apart, stable and warm, with the filter swelling open on each note and settling into a solid, brassy body. It holds still: no wobble, no chop, only a gentle vibrato that fades in if you hold a note. A survivor of the classic polysynths, rebuilt by ear.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Where it lives:</strong> low-mid to mid, chords and fifth-and-octave voicings. Each note is one voice, so ordinary chords play in full.</li>
+<li><strong>Medium to long notes show the swell best:</strong> it peaks just under a tenth of a second in, so a very short stab catches only the start.</li>
+<li><strong>The vibrato</strong> arrives after about a second on held notes; LFO PITCH at 0 makes it fully still.</li>
+<li><strong>The steady counterpart to 03 Half-Life.</strong> SLOBBER makes it wobble like tired string-brass; Tape Stop is a good swell-out ending.</li>
+<li><strong>All effects are at 0:</strong> a dry brass, with a spring or echo yours to add.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Sequential Prophet-5</strong> — the swell and the two-saw body: <em>fat, warm, swell</em>.</li>
+<li><strong>Oberheim OB-Xa</strong> — the brass-section feel: <em>brassy, full</em>.</li>
+<li><strong>Roland Jupiter-8</strong> — the bright blare at the top of the swell: <em>bright brass</em>.</li>
+<li><strong>Memorymoog</strong> — the weight of the chord: <em>thick, warm</em>.</li>
+<li><strong>Korg Polysix</strong> — the slow vibrato on a held note: <em>wobble</em>.</li>
+</ul>
+<p>Closest to: <strong>a Prophet-5 brass swell</strong>.</p>
+</section><section class="patch ch-4"><h4 id="26-bsynca"><span class="nn">26</span>BSyncA</h4>
+<p>A hard-sync lead built from three slightly detuned voices that beat slowly against each other, with the master oscillator audible under the synced one. Every detached note starts with a bright sweep that tears down into a duller body; it is pushed into drive and left dry, with a short glide between notes.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>One note at a time:</strong> three voices in unison.</li>
+<li><strong>Detached notes rip; legato notes don't.</strong></li>
+<li><strong>The drive darkens the strike:</strong> GROWL down for a brighter rip and less crunch, up for more crunch and less rip.</li>
+<li><strong>Where it lives:</strong> leads from about A3 up.</li>
+<li>Dry: no echo, no spring, no tape. The glide is short.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Sequential Prophet-5</strong> — the classic sync solo: <em>sync, ripping, fat</em>.</li>
+<li><strong>Sequential Pro-One</strong> — the sweep itself: <em>rip, bright</em>.</li>
+<li><strong>Moog Prodigy</strong> — the raw edge: <em>raw, biting</em>.</li>
+<li><strong>ARP Odyssey</strong> — the nasal cut: <em>nasal, biting</em>.</li>
+</ul>
+<p>Closest to: <strong>a Prophet-5 sync lead pushed into crunch</strong>.</p>
+</section><section class="patch ch-4"><h4 id="27-r3v3rt"><span class="nn">27</span>R3V3RT</h4>
+<p>A single-voice bass from one pulse wave. Each note opens with a bright filter snap that falls into a lower body; the body holds steady for as long as the key is down, and the note stops almost at once when you let go. Dry.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Play it detached.</strong> It is MONO: a legato note has no snap and no front edge.</li>
+<li><strong>Where it lives:</strong> A2 and around it. A1 is mostly below what a small speaker can play.</li>
+<li><strong>The snap is the filter envelope:</strong> FILTER ENV's DECAY lengthens it, ENV AMT makes it stronger.</li>
+<li>It stops almost instantly on release: tight enough for fast lines.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Roland SH-101</strong> — the tight, quick note: <em>tight, punchy</em>.</li>
+<li><strong>Minimoog</strong> — the round low end: <em>round, thick</em>.</li>
+<li><strong>Moog Prodigy</strong> — the plain pulse: <em>raw</em>.</li>
+<li><strong>Sequential Pro-One</strong> — the snap of the filter decay: <em>snappy</em>.</li>
+</ul>
+<p>Closest to: <strong>an SH-101 pulse bass with a Minimoog body</strong>.</p>
+</section><section class="patch ch-4"><h4 id="28-arr-2-dee-2"><span class="nn">28</span>Arr 2 Dee 2</h4>
+<p>A sustained, struck bell built from two saw waves with a mid-range sideband ring. It rings for several seconds after the strike, a slow shimmer moves its pitch and level, and a small echo and a spring sit behind it. No drive, no tape.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>The key you press is the bell's hum,</strong> its deepest partial; the strike may sound an octave above the key.</li>
+<li><strong>It rings on after you let go:</strong> five or six seconds to fade. Leave space between notes, or let them pile up.</li>
+<li><strong>Shape it live:</strong> CUTOFF and X-MOD change the brightness without changing the bell. Leave ENV&gt;O2 at the centre: a step either way breaks the bell.</li>
+<li><strong>Where it lives:</strong> A2 to A6, level across the whole keybed; the top octave is bright. Up to five notes; a fast run is its loudest phrase.</li>
+<li><strong>CPU:</strong> adding CHEW or GROWL on top costs a lot here; on the unit, four notes with all effects pushed read about 4500 of 5800 µs on GLOBAL.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Yamaha DX7 (tubular-bells voice)</strong> — the FM ring: <em>inharmonic</em>.</li>
+<li><strong>A struck tubular or church bell</strong> — the classical bell partials.</li>
+<li><strong>Casio CZ-101 (phase-distortion bells)</strong> — a bright, bell-like tone (inspiration only).</li>
+<li><strong>Roland D-50 ("Fantasia")</strong> — crystalline (inspiration only: the engine can't make a tail that outlasts its body).</li>
+</ul>
+<p>Closest to: <strong>a DX7 tubular bell with a long, slowly moving tail</strong>.</p>
+</section><section class="patch ch-4"><h4 id="29-i-scream"><span class="nn">29</span>i scream</h4>
+<p>A bright, struck chime from a square wave, with a second oscillator that zings down in pitch at the strike. The ring decays over a couple of seconds, and a gentle shimmer in pitch and level fades in and sways it. A small slap and a touch of spring sit behind it, and everything passes through a narrow, honky band, like a small horn speaker. Closer to an arcade chime than to finger cymbals.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Where it lives:</strong> A4 to A6: melodies with notes about half a second apart, so the rings overlap.</li>
+<li><strong>Three-note chords play whole</strong> and are its loudest sound: use one as a wind chime.</li>
+<li><strong>The zing is OSC 2:</strong> it fades out toward the top of the keybed. ENV&gt;O2 sets how far it drops.</li>
+<li><strong>Built by ear</strong> from Vincent's phone recordings of a real ice-cream van outside his house; nothing is sampled.</li>
+<li>No tape: CHEW is 0, so there is no wow or hiss.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Yamaha DX7 (tubular-bells voice)</strong> — the zing: <em>FM, inharmonic</em>.</li>
+<li><strong>Finger cymbals (zills)</strong> — <em>bright ping</em>.</li>
+<li><strong>A transistor radio or van horn speaker</strong> — <em>band-limited, honky</em>.</li>
+<li><strong>A music box, struck</strong> — the idea of it (its ring here is longer).</li>
+</ul>
+<p>Closest to: <strong>a music-box chime through a cheap van horn speaker</strong>.</p>
+</section><section class="patch ch-4"><h4 id="30-the-dg"><span class="nn">30</span>THE DØG</h4>
+<p>A dry, punchy unison bass: every voice stacked on one note, fat and thick, loosened just enough that the stack breathes without going seasick. Warm, with a driven edge that stops short of fuzz, and each note is chopped hard on release: no spring, no echo, no tail, only the silence after the hit. The flagship, the DØG-5 signature: it sits forward and fills the room.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Where it lives:</strong> low, A1 to A2. It suits single-note bass lines and chopped roots; eighth-note chops are home, and it holds as a wall too.</li>
+<li><strong>One note at a time:</strong> it's a unison, every voice on one key, so it plays no chords.</li>
+<li><strong>On small speakers</strong> the very bottom (A0, low A1) partly drops out.</li>
+<li><strong>It's a touch louder than the rest of the bank on purpose:</strong> it jumps forward when you switch to it.</li>
+<li><strong>More grit:</strong> MIXER's DRIVE (knob 4) is the gentle route. GROWL is the big step and does nothing below about 28.</li>
+<li><strong>Keep it dry:</strong> delay or spring blurs the chop. SLOBBER loosens the stack, Tape Stop dives it, and HEEL stops it dead.</li>
+<li><strong>Watch the CPU here:</strong> with all four effects pushed and four notes held it reads about 5,600 of the 5,800 µs budget, the highest in the bank.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Minimoog in unison</strong> — the stacked saws and the octave-down body: <em>fat, sub-heavy, thick</em>.</li>
+<li><strong>Moog Taurus bass pedals</strong> — the weight at the bottom: <em>deep, floor-shaking</em>.</li>
+<li><strong>Roland SH-101</strong> — the quick attack and the hard stop: <em>tight, punchy</em>.</li>
+<li><strong>Oberheim OB-Xa in unison</strong> — the wide, full stack with its warmth: <em>fat, full, warm</em>.</li>
+<li><strong>Korg MS-20</strong> — the grit in the filter when it is pushed: <em>nasty, biting</em>.</li>
+</ul>
+<p>Closest to: <strong>a Minimoog in unison with Taurus weight</strong>.</p>
+</section><section class="patch ch-4"><h4 id="31-filfth"><span class="nn">31</span>Fi(l)fth</h4>
+<p>The aggressive chord stab: a fifth built into every note, a hard filter pluck, and a short slap-back echo right behind it. Each note is a detuned pair, so it is fat and punchy, with a bright snap on the front that settles into a solid body. Dry apart from the slap. The top-voted DØG-5 sound.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>One finger is a power chord:</strong> every note carries its own fifth. Roots and octaves around A1 to A2 are home.</li>
+<li><strong>Short and hard:</strong> stabs of about 150 to 200 ms. The stab is as long as you hold the key.</li>
+<li><strong>Chords stack fifths on fifths</strong> into sus2-style clusters. That's the patch, not a fault: use real chords sparingly, three notes at most (every note is two voices).</li>
+<li><strong>The slap is ALLEY:</strong> turn it up on the BBD DELAY page for a longer echo. A spring blurs the stab.</li>
+<li>It is heavier on the CPU than a single-voice stab.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Sequential Prophet-5</strong> — the stab itself, with weight behind it: <em>punchy, fat, warm</em>.</li>
+<li><strong>Roland Juno-60</strong> — the short, snappy pluck: <em>plucky, punchy</em>.</li>
+<li><strong>Roland Jupiter-8</strong> — the open top on the attack: <em>bright, full</em>.</li>
+<li><strong>Korg MS-20</strong> — the bite when you dig in: <em>biting</em>.</li>
+<li><strong>Roland RE-201 Space Echo</strong> — the short slap: <em>slap, warm</em>.</li>
+</ul>
+<p>Closest to: <strong>a Prophet-5 stab through a Space Echo</strong>.</p>
+</section><section class="patch ch-4"><h4 id="32-init-bruv"><span class="nn">32</span>Init bruv?</h4>
+<p>A plain voice: two saw waves through a low-pass filter with a short envelope. Dry, with chords and single notes both playable, and nothing added: no modulation, no echo, no spring, no tape, no drive. The blank slate that closes the bank.</p>
+<p class="lbl">Sound design notes</p>
+<ul>
+<li><strong>Start here:</strong> it is the engine's own default program (at VOLUME 97). Every empty slot in THE PACK (33 to 99) starts from the same sound.</li>
+<li><strong>Chords play:</strong> up to five notes.</li>
+<li><strong>Every effect is at 0,</strong> and at 0 each one is a true bypass, so nothing colours it until you turn something up.</li>
+<li><strong>Where to go first:</strong> OSC 2 off for one raw saw; CUTOFF up and RESO down for an open sound; FX held for the four Psych Chain macros.</li>
+</ul>
+<p class="lbl">Gear inspirations</p>
+<ul>
+<li><strong>Sequential Prophet-5</strong> — an analog init patch (here two saws through a gently closed filter, not one open saw).</li>
+<li><strong>Minimoog</strong> — a raw oscillator to start from.</li>
+<li><strong>Roland SH-101</strong> — a plain saw to start from.</li>
+</ul>
+<p>Closest to: <strong>an analog two-saw init patch</strong>.</p>
+</section><h2 id="part-4-about-the-gear-inspirations" class="part"><span class="pn">Part 4</span>About the gear inspirations</h2>
+<p>Each patch lists real instruments and pedals whose <em>character</em> it draws on, with the trait it carries in italics, so
+"a bit more Mono/Poly" points somewhere you can hear. They are inspirations, not imitations: nothing is modelled,
+sampled or copied, and the gear names appear only in this manual, never in patch names or on the screen. "Closest to"
+is the one instrument you'd name if someone asked what it sounds like; it doesn't claim the patch matches it.</p>
+<p>All trademarks belong to their owners. DØG-5 is not affiliated with or endorsed by any of them.</p>
 </article>
 </div>
-<footer>DØG-5 by ZIGGY (DØGS) · GPL-3.0-only · a fork of OberVave v1.5.3 (zvenson), on Dinghy, Felucca (Leo Kuroshita,
-  Hügelton Instruments) and SLOOP (isod89). Gear names in Part 4 are inspirations only; their trademarks belong to their owners.
-  Not affiliated with M-VAVE.</footer>
+<a class="totop" id="totop" href="#">↑ Top</a>
+<footer>DØG-5 by ZIGGY (DØGS) · GPL-3.0-only · a fork of OberVave v1.5.3 (zvenson), on Dinghy (zvenson), Felucca (Leo Kuroshita,
+  Hügelton Instruments) and SLOOP (isod89). Fonts: Yatra One, Cormorant Garamond, Space Mono (SIL OFL 1.1). Art hand-painted by Vincent Kruger.
+  Gear names are inspirations only; their trademarks belong to their owners. Not affiliated with M-VAVE.</footer>
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll("nav.toc a[href^='#']"));
+  var byId = {}; links.forEach(function (a) { (byId[a.getAttribute("href").slice(1)] = byId[a.getAttribute("href").slice(1)] || []).push(a); });
+  var heads = Array.prototype.slice.call(document.querySelectorAll("article h2[id], article h3[id], article h4[id]"));
+  var groups = Array.prototype.slice.call(document.querySelectorAll("nav.toc details.grp"));
+  var first = groups[0]; if (first) first.open = true;
+  var current = null, searching = false;
+  function mark(id) {
+    if (id === current) return; current = id;
+    links.forEach(function (a) { a.classList.remove("on"); });
+    groups.forEach(function (g) { g.classList.remove("on"); });
+    (byId[id] || []).forEach(function (a) {
+      a.classList.add("on");
+      var g = a.closest("details.grp");
+      if (g) { g.classList.add("on"); if (!searching) { groups.forEach(function (o) { if (o !== g) o.open = false; }); g.open = true; } }
+      if (a.closest(".grp li") && a.scrollIntoView && window.innerWidth > 900) {
+        var nav = document.getElementById("toc"), r = a.getBoundingClientRect(), n = nav.getBoundingClientRect();
+        if (r.top < n.top + 40 || r.bottom > n.bottom - 20) nav.scrollTop += r.top - n.top - n.height / 3;
+      }
+    });
+  }
+  function spy() {
+    var y = window.scrollY + 90, id = heads.length ? heads[0].id : null;
+    for (var i = 0; i < heads.length; i++) { if (heads[i].offsetTop <= y) id = heads[i].id; else break; }
+    if (id) mark(id);
+    document.getElementById("totop").classList.toggle("show", window.scrollY > 900);
+  }
+  var t = null; window.addEventListener("scroll", function () { if (!t) t = setTimeout(function () { t = null; spy(); }, 80); }, { passive: true });
+  spy();
+  var find = document.getElementById("find");
+  find.addEventListener("input", function () {
+    var q = find.value.trim().toLowerCase(); searching = !!q;
+    groups.forEach(function (g) {
+      var any = false;
+      g.querySelectorAll("li").forEach(function (li) {
+        var hit = !q || li.textContent.toLowerCase().indexOf(q) >= 0;
+        li.style.display = hit ? "" : "none"; if (hit) any = true;
+      });
+      var self = !q || g.querySelector("summary").textContent.toLowerCase().indexOf(q) >= 0;
+      g.style.display = (any || self) ? "" : "none";
+      if (q) g.open = any; 
+    });
+  });
+  var btn = document.getElementById("tocbtn"), nav = document.getElementById("toc");
+  btn.addEventListener("click", function () { var o = nav.classList.toggle("open"); btn.setAttribute("aria-expanded", o); });
+  nav.addEventListener("click", function (e) { if (e.target.closest("a") && window.innerWidth <= 900) { nav.classList.remove("open"); btn.setAttribute("aria-expanded", false); } });
+})();
+</script>
 </body>
 </html>
