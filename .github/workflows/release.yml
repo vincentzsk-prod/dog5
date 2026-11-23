@@ -24,8 +24,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      # numpy: tests/spring/regress.sh reads its WAVs with it; markdown pinned to the version that built docs/manual (its output differs between releases): the manual's sync check
       - name: Python packages
-        run: python3 -m pip install Pillow
+        run: python3 -m pip install Pillow numpy markdown==3.11
 
       - name: JieLi toolchain + AC79 SDK (our build-deps-v1 release; three SDK files are placed in the package)
         run: sh tools/get_vendored_deps.sh
