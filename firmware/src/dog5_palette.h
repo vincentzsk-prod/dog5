@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-only
- * Copyright (C) 2026 Vincent Kruger (DØG-5) */
+ * Copyright (C) 2026 ZIGGY, DØGS (DØG-5) */
 /* The DØG-5 brand palette, as RGB565 (locked 19 Nov 2026; the Project doc DOG-5-brand-palette.md has the hex and where
  * each colour comes from). Thirteen from Chapter II (BEE-TCH), two from the other chapters. Every screen of the app
  * takes its colours from here; the update loader (a separate program) repeats the few it uses in ldr_screen.c. */

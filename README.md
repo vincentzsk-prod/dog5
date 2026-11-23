@@ -11,8 +11,8 @@ open source, GPL-3.0-only. The build brief and the reasoning are in [`CLAUDE.md`
 > DØG-5 has **never been installed or played on one**, so we cannot speak to how it behaves there. On a newer unit, keep
 > M-Flasher and your backup ready, and please report what happens.
 
-**Status (21 Nov 2026): a pre-release test build, v0.4.5, package identity `FM-1_3645045`.** v0.4.4 (`FM-1_964`) is on the
-unit and tested; v0.4.5 is the same firmware under DØG-5's own identity (the old one was taken on the Firmware Hub). HOME is
+**Status (23 Nov 2026): v0.5, the first public release candidate, package identity `FM-1_3645050`.** The firmware is the
+v0.4.5 that runs on the unit (installed and played 23 Nov), released with COLLAR, the manual. HOME is
 the chapter's scene, with the dog and his bark as the live scope; a turned knob shows as a dial; the fence breaks where the
 bark lands; FLEAS dirties the screen (never the sound); the boot animation; the DØG-5 look on every screen. Installed
 from stock, over another Hub firmware and back again, and the stock backup restored with M-Flasher. Made for the
@@ -25,17 +25,17 @@ and saving in DØG-5 can write over them (other firmwares may treat DØG-5's sav
 **Install it:** the self-hosted installer page, [`docs/install/`](docs/install/README.md) (Chrome or Edge, over USB:
 <https://vincentzsk-prod.github.io/dog5/install/>). It carries the package inside
 the page, shows what it will write, has a dry run, and resumes an interrupted install. From a terminal:
-`python3 tools/fm1_install.py docs/install/dog5-0.4.5-20261121.fwsc`. If the unit will not boot: M-Flasher and your backup.
+`python3 tools/fm1_install.py docs/install/dog5-0.5-20261123.fwsc`. If the unit will not boot: M-Flasher and your backup.
 
-**Build it:** `./build.sh --release 0.4.5` makes `build/dog5-0.4.5.fwsc` (identity `FM-1_3645045`: `FM-1_3645` + the version's
-three digits; a dev build is `build/dog5.fwsc`, `FM-1_3645000`); `python3 tools/make_installer_page.py --release 0.4.5` regenerates the installer page and its package together.
+**Build it:** `./build.sh --release 0.5` makes `build/dog5-0.5.fwsc` (identity `FM-1_3645050`: `FM-1_3645` + the version's
+three digits; a dev build is `build/dog5.fwsc`, `FM-1_3645000`); `python3 tools/make_installer_page.py --release 0.5` regenerates the installer page and its package together.
 GitHub releases carry it as `dog5.fwsc` (one name every release). The product's name and identity live in one file, [`firmware/src/dog5_id.h`](firmware/src/dog5_id.h).
 
 **Play it in your browser:** <https://vincentzsk-prod.github.io/dog5/play/> is the firmware itself (the same C sources,
 compiled to WebAssembly). Pick a patch and its voice card opens under the unit. Rebuild it with `sh web/sim/build.sh`
 (the two tools it needs are listed in that script).
 
-**Read the manual:** <https://vincentzsk-prod.github.io/dog5/manual/> (the Driver Manual, a draft for v0.4; source in
+**Read the manual:** <https://vincentzsk-prod.github.io/dog5/manual/> (**COLLAR**, the DØG-5 manual, for v0.5; source in
 [`dog5-docs/manual/`](dog5-docs/manual/), page rebuilt with `python3 tools/make_manual_page.py`).
 
 **Tell us what happened:** [send feedback](https://github.com/vincentzsk-prod/dog5/issues/new?template=feedback.md)
@@ -49,7 +49,7 @@ installer page; no hardware). `CLAUDE.md` §9 has the whole dev setup.
 [Dinghy](https://github.com/zvenson/dinghy), [Felucca](https://github.com/hugelton/Felucca) (Leo Kuroshita, Hügelton
 Instruments) and [SLOOP](https://github.com/isod89/sloop-fm1) (isod89). Everything inherited keeps its copyright and
 licence; see [`NOTICE`](NOTICE), [`LICENSING.md`](LICENSING.md) and [`LICENSE`](LICENSE) (GPL-3.0-only). DØG-5's art is
-hand-painted by Vincent Kruger (no AI-generated art); the fonts are Terminus, Yatra One, Cormorant Garamond and Space Mono
+hand-painted by ZIGGY (no AI-generated art); the fonts are Terminus, Yatra One, Cormorant Garamond and Space Mono
 (SIL OFL 1.1). Gear named in the manual and voice cards is inspiration only; those names belong to their owners.
 
 OberVave's own README (the base this was forked from) is upstream at

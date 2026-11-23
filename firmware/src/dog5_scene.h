@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-only
- * Copyright (C) 2026 Vincent Kruger (DØG-5) */
+ * Copyright (C) 2026 ZIGGY, DØGS (DØG-5) */
 /* HOME: the scene (Stage 3, Batch 20). The chapter's field, the dog on it, and his bark: the live scope fired from his
  * mouth to the top-right corner (the bark IS the scope, CLAUDE.md section 1). The art is hand-painted by Vincent
  * (firmware/gen/dog5_screen_art.h, made by tools/make_screen_art.py from assets/screen/).

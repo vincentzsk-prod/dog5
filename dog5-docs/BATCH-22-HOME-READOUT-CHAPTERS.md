@@ -1,6 +1,6 @@
 # Batch 22: the HOME knob readout, the beam through TAPE STOP, a saved patch keeps its scene (v0.4.1)
 
-21 Nov 2026, Vincent Kruger with Claude. Branch `build/batch-22-home-readout-chapters`. Asked for after v0.4 was flashed and
+21 Nov 2026, ZIGGY with Claude. Branch `build/batch-22-home-readout-chapters`. Asked for after v0.4 was flashed and
 tested (20–21 Nov). The sound is untouched: WAVs byte-identical to `main` (SEQ-held scripts included).
 
 ## 1. The knob values on HOME

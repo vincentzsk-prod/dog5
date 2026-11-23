@@ -1,15 +1,16 @@
-# DØG-5 — DRIVER MANUAL (Draft 1)
+# COLLAR — THE DØG-5 MANUAL (the Driver Manual)
 
 *Free, open-source custom firmware for the M-VAVE FM-1. Forked from OberVave. GPL-3.0.*
 
-**Draft 1 — 3 Nov 2026.**
+**Final for v0.5 — approved by ZIGGY 23 Nov 2026** (drafted from 3 Nov 2026). Published as the web page `/dog5/manual/`.
+- **23 Nov, v0.5:** approved as the COLLAR text; the art credited to ZIGGY.
 - **12 Nov, the Chapter IV checkpoint.** All four chapters are complete and all 32 patches are voiced. DØG-5 v0.1 was installed on Vincent's FM-1. The controls, keybed, CPU-meter and dictionary sections below carry what that showed. The dictionary gained Bell, Ring, Chime (band-limited) and Blank slate. Part 4 gear inspirations and Part 5 voicing notes now cover all 32.
 - **18 Nov, v0.2** (`FM-1_962`, flashed and tested on the unit). Parts 1.1, 1.2 and 1.5 were rewritten for the Batch 9B controls (21 pages with MIXER, REC = HOLD, SELECT = LFO RATE on HOME, hold EDIT + a black key). Part 1.7 was added (plain-language knob hints), and the dictionary's DRIVE and MORPH pointers were corrected.
 - **23 Nov, Batch 30.** Parts 2 and 2B rewritten for players: each word's meaning and how to get more of it, with the measurements moved to the records doc (repo `dog5-docs/manual/DOG-5-driver-manual-records.md`). Parts 3–4 are now generated from the voice cards.
 - **23 Nov, bullet pass.** Every list in Parts 0–2 read for need and order: dev notes out of Part 0, the filter and LFO lines in 1.4 corrected, the bank line points to 1.9, 1.9 reordered, 1.10 gains "keep the installer tab in front", Dirt & aggression reordered. The cards' "How to play it" is now **Sound design notes** (Part 3 too).
 - **21 Nov, v0.4.4** (flashed and tested on the unit). Parts 1.1, 1.2, 1.4 and 1.6 were updated: the SAVE lock, a MIDI panic releasing HOLD, FLEAS on the GLOBAL page, and the CPU reading at the top of GLOBAL. Part 1.8 was added (the screen: the boot animation, HOME's scene, the dial, the fence, FLEAS), and so were Part 1.9 (saving: THE POUND and THE PACK) and Part 1.10 (installing, leaving, coming back).
 
-This is the single source of truth for controls, voicing vocabulary, and the 32 patches. It combines and supersedes the earlier Button Matrix and Knob Parameter Map docs. Controls are drawn from the live firmware (`main` branch). Every patch description is the approved player-facing description of a **VOICED** patch. Vincent edits this draft; at release (Stage 4) it becomes the public user manual.
+This is the single source of truth for controls, voicing vocabulary, and the 32 patches. It combines and supersedes the earlier Button Matrix and Knob Parameter Map docs. Controls are drawn from the live firmware (`main` branch). Every patch description is the approved player-facing description of a **VOICED** patch. Since v0.5 it is COLLAR, the public manual; changes after this are tracked here and in the repo.
 
 
 > **This manual is split across three Project docs (it outgrew one):** `DOG-5-driver-manual.md` (Parts 0–2B: what it is, the panel and screen, the voicing dictionary, number conventions), `DOG-5-driver-manual-patches.md` (Part 3 the 32 patches, Part 4 gear inspirations), `DOG-5-driver-manual-voicing-notes.md` (Part 5 internal voicing notes, Appendix). Together they are the single source of truth. First real-hardware readings: `DOG-5-device-test-1.md`.

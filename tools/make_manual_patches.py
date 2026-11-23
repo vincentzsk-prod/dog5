@@ -21,7 +21,7 @@ CHAPTERS = [
      "the signature patch and the blank slate. On screen: the Acid Can scene, accent Acid Chartreuse."),
 ]
 
-HEAD = """# DØG-5 — DRIVER MANUAL, PARTS 3–4 (the 32 patches)
+HEAD = """# COLLAR — THE DØG-5 MANUAL, PARTS 3–4 (the 32 patches)
 
 *Continues `DOG-5-driver-manual.md` (Parts 0–2B). **Generated from the 32 voice cards** (`dog5-docs/voicing/cards/`)
 by `tools/make_manual_patches.py` since Batch 30 (23 Nov 2026): edit a card, then run the script; don't edit this file

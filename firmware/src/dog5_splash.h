@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-only
- * Copyright (C) 2026 Vincent Kruger (DØG-5) */
+ * Copyright (C) 2026 ZIGGY, DØGS (DØG-5) */
 /* The boot animation (Batch 21): Vincent's launch screen as approved (the claude.ai artifact "DØG-5 launch screen", 19 Nov
  * 2026, its last version), drawn on the 240 x 240 panel. The page was made at 400 x 400; here everything is x 3/5.
  *

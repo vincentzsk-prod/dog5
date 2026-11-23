@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2026 zvenson (OberVave; the Firmware Hub's look)
  * Copyright (C) 2026 illuminus5 (Skiff: the idea, a loader that draws, its 5 x 7 letters and the order of things)
- * Copyright (C) 2026 Vincent Kruger (DØG-5: the dog head, the wordmark and the brand colours) */
+ * Copyright (C) 2026 ZIGGY, DØGS (DØG-5: the dog head, the wordmark and the brand colours) */
 /* The update loader's screen (loader.c; tests/ldr_screen_test.c). A unit whose install was cut off comes back to the
  * loader at every power-on and showed a black screen; now it says what it does, in DØG-5's brand colours on black:
  *   the dog head and the DØG-5 wordmark (ldr_art.h, pictures drawn row by row)

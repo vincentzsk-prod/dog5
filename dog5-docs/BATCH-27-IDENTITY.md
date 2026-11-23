@@ -1,6 +1,6 @@
 # Batch 27: DØG-5's own identity, FM-1_3645 (v0.4.5)
 
-21 Nov 2026, Vincent Kruger with Claude. Branch `build/batch-26-records` (on top of Batch 26's records).
+21 Nov 2026, ZIGGY with Claude. Branch `build/batch-26-records` (on top of Batch 26's records).
 
 ## Why
 

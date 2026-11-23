@@ -261,7 +261,7 @@ Short list. Most are one-liners.
 | # | Need | Why it blocks |
 |---|---|---|
 | 1 | **The fork created on GitHub, and its name** | I cannot create it — it needs your account. Everything is checked out from it. Suggested: `dog-5` or `dog5-fm1` |
-| 2 | **Author / credit line** for `LICENSING.md` and the README | GPL-3.0 obligation. How you want to be named — "Vincent Kruger", "DØGS", or both |
+| 2 | **Author / credit line** for `LICENSING.md` and the README | GPL-3.0 obligation. How you want to be named — "ZIGGY", "DØGS", or both |
 | 3 | **The art in §1**, in the order at §1.8 | A2 + A1 + the Jalopy field unblock the entire screen architecture |
 
 ### 3.2 Decisions, quick ones

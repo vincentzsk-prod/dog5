@@ -1,6 +1,6 @@
 # Batch 23: the fence, FLEAS, the Acid Chartreuse beam, the chapter accents (v0.4.2)
 
-21 Nov 2026, Vincent Kruger with Claude. Branch `build/batch-23-fleas-fence-beam`. Asked for 21 Nov ("finish Stage 3: the
+21 Nov 2026, ZIGGY with Claude. Branch `build/batch-23-fleas-fence-beam`. Asked for 21 Nov ("finish Stage 3: the
 fleas and the fence, and the beam in the chartreuse, one colour across all scenes"). The sound is untouched (WAVs
 byte-identical to `main`). Built from the canon (character brief §2, §4.3, §5, §6.1; art direction §2.1 U1–U4, §9, §9.1),
 re-read for the painted scenes; the choices below are mine where the canon left them open, and each is one place in
