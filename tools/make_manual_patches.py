@@ -25,8 +25,8 @@ HEAD = """# DØG-5 — DRIVER MANUAL, PARTS 3–4 (the 32 patches)
 
 *Continues `DOG-5-driver-manual.md` (Parts 0–2B). **Generated from the 32 voice cards** (`dog5-docs/voicing/cards/`)
 by `tools/make_manual_patches.py` since Batch 30 (23 Nov 2026): edit a card, then run the script; don't edit this file
-by hand. The measured voicing notes that used to be here are in each card's section 6 and in the Project doc
-`DOG-5-driver-manual-records.md`.*
+by hand. The measured voicing notes that used to be here are in each card's section 6 and in the repo's
+`dog5-docs/manual/DOG-5-driver-manual-records.md`.*
 
 ## PART 3 — THE 32 PATCHES
 

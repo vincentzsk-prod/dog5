@@ -21,8 +21,7 @@ Vincent approved a two-patch sample (01 Red Pill, 30 THE DØG) and asked for the
   where they suit or fight the patch.
 - **Manual Parts 2 and 2B rewritten:** each dictionary word keeps its meaning and how to get more of it, with a patch to
   hear it on; the measurements, the "MUD ratio" and the voicing-session conventions (the echo rule) are out.
-- **The old Parts 2, 2B, 3 and 4, word for word:** `dog5-docs/manual/DOG-5-driver-manual-records.md` (and the Project
-  doc of the same name). The Parts 3–4 file went from about 90 KB to 40 KB.
+- **The old Parts 2, 2B, 3 and 4, word for word:** `dog5-docs/manual/DOG-5-driver-manual-records.md` (in the repo). The Parts 3–4 file went from about 90 KB to 40 KB.
 - Two facts fixed on the way: card 07 and the dictionary said tape dropouts come in "from about 100"; the tape stage starts
   them at 45 % of CHEW (about the middle of the knob). Card 31's "tapping a time in on the BBD page" (tap tempo is gone)
   is out. Card 21 keeps "should" for the pedal / REC hold (not tried on that patch).
